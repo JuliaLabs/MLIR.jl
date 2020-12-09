@@ -15,8 +15,8 @@ catch e
 end
 
 wc = init(; headers = MLIR_C_HEADERS,
-          output_file = joinpath(@__DIR__, "..", "lib/libmlir_api.jl"),
-          common_file = joinpath(@__DIR__, "..", "lib/libmlir_common.jl"),
+          output_file = joinpath(@__DIR__, "lib/libmlir_api.jl"),
+          common_file = joinpath(@__DIR__, "lib/libmlir_common.jl"),
           clang_includes = vcat(LIBCLANG_INCLUDE, CLANG_INCLUDE, MLIR_C_INCLUDE),
           clang_args = ["-I", joinpath(LIBCLANG_INCLUDE, ".."),
                         "-I", joinpath(MLIR_C_INCLUDE, "..")],

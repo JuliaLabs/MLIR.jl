@@ -23,9 +23,8 @@ end
 end
 
 
-const MlirDiagnosticHandlerID = Cint
-
-# Skipping Typedef: CXType_FunctionProto MlirLogicalResult
+const MlirDiagnosticHandlerID = UInt64
+const MlirDiagnosticHandler = Ptr{Cvoid}
 
 struct MlirContext
     ptr::Ptr{Cvoid}
@@ -75,13 +74,18 @@ struct MlirValue
     ptr::Ptr{Cvoid}
 end
 
+struct MlirStringRef
+    data::Cstring
+    length::Csize_t
+end
+
 struct MlirNamedAttribute
-    name::Cint
+    name::MlirStringRef
     attribute::MlirAttribute
 end
 
 struct MlirOperationState
-    name::Cint
+    name::MlirStringRef
     location::MlirLocation
     nResults::intptr_t
     results::Ptr{MlirType}
@@ -109,9 +113,8 @@ end
 
 # Skipping MacroDefinition: MLIR_CAPI_EXPORTED __attribute__ ( ( visibility ( "default" ) ) )
 
-struct MlirStringRef
-    data::Cstring
-    length::Csize_t
-end
-
 const MlirStringCallback = Ptr{Cvoid}
+
+struct MlirLogicalResult
+    value::Int8
+end
