@@ -1,6 +1,6 @@
 # MLIR.jl
 
-Note that the package requires that you build Julia with LLVM 12 and MLIR enabled. That means you can not use it with other LLVM libraries, like the one provided by your operating system.
+Note that the package requires that you build Julia with LLVM 12 and MLIR enabled.
 
 To build Julia with LLVM 12 + MLIR, [clone Julia](https://github.com/JuliaLang/julia) and run:
 
