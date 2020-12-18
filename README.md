@@ -13,3 +13,5 @@ make -j `nproc` \
     USE_MLIR=1
 cd ..
 ```
+
+Alternatively - you can run the [create_dev.sh](https://github.com/femtomc/MLIR.jl/blob/main/create_dev.sh) script.
