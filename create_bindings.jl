@@ -1,7 +1,7 @@
 module BindingsGenerator
 
 using Clang
-using Clang.LibClang.Clang_jll
+using Clang_jll
 
 const LIBCLANG_INCLUDE = joinpath(dirname(Clang_jll.libclang_path), "..", "include", "clang-c") |> normpath
 const MLIR_C_INCLUDE = joinpath(@__DIR__, "..", "julia/usr/include/mlir-c") |> normpath
