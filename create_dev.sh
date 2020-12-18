@@ -21,4 +21,3 @@ cd ..
 # Build MLIR.jl.
 git clone https://github.com/vchuravy/MLIR.jl
 cd MLIR.jl
-$JULIA_PATH create_bindings.jl
