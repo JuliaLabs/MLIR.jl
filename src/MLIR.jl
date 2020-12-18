@@ -37,7 +37,16 @@ include(joinpath(libdir, "libmlir_common.jl"))
 include(joinpath(libdir, "libmlir_api.jl"))
 end
 
-include("utils.jl")
+# ----------- Core ------------ #
+
+import Base: ==, insert!, append!
+
+include("core/utils.jl")
 include("core/ir.jl")
+include("core/pass_manager.jl")
+
+# ------------ Standard dialects ------------ #
+
+include("dialects/affine.jl")
 
 end # module
