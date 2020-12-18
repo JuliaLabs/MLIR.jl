@@ -24,8 +24,3 @@ cd ..
 git clone https://github.com/vchuravy/MLIR.jl
 cd MLIR.jl
 $JULIA_PATH create_bindings.jl
-
-touch jl.sh
-echo $JULIA_PATH > jl.sh
-chmod +x jl.sh
-cd ..
