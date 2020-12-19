@@ -29,6 +29,7 @@ module API
 using CEnum
 using ..MLIR
 using ..MLIR: libmlir
+using ..LLVM: @checked, refcheck
 const intptr_t = Ptr{Csize_t}
 libdir = joinpath(@__DIR__, "..", "lib")
 include(joinpath(libdir, "ctypes.jl"))
@@ -39,10 +40,10 @@ end
 
 # ----------- Core ------------ #
 
-import Base: ==, insert!, append!
+import Base: ==, insert!, push!
 
 include("core/utils.jl")
-include("core/ir.jl")
+include("core/ir/IR.jl")
 include("core/pass_manager.jl")
 
 # ------------ Standard dialects ------------ #
