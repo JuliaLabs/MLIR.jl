@@ -84,7 +84,7 @@ struct MlirNamedAttribute
     attribute::MlirAttribute
 end
 
-struct MlirOperationState
+mutable struct MlirOperationState
     name::MlirStringRef
     location::MlirLocation
     nResults::intptr_t

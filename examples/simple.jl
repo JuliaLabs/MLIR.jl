@@ -21,10 +21,12 @@ test2 = () -> begin
 end
 
 test3 = () -> begin
+    # Create and dump an operation.
     ctx = MLIR.IR.create_context()
     loc = MLIR.IR.create_unknown_location(ctx)
     st = MLIR.IR.OperationState("std.add", loc)
     index_type = MLIR.IR.parse_type(ctx, "index")
+    MLIR.IR.dump(index_type)
     MLIR.IR.push!(st, 1, [index_type])
     op = MLIR.IR.Operation(st)
     MLIR.IR.dump(op)
@@ -32,6 +34,6 @@ end
 
 test1()
 test2()
-test3()
+op = test3()
 
 end # module
