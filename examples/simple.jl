@@ -21,7 +21,11 @@ test0 = () -> begin
     println(typeof(t))
     blk = MLIR.IR.Block(t)
     arg = MLIR.IR.get_arg(blk, 0)
-    blk[1]
+    try
+        blk[1]
+    catch e
+        println("Correctly caught:\n$e")
+    end
     println(typeof(arg))
     attr = MLIR.IR.Attribute(ctx, "\"add\"")
     println(typeof(attr))
@@ -82,9 +86,9 @@ test4 = () -> begin
 end
 
 test0()
-#test1()
-#test2()
-#test3()
+test1()
+test2()
+test3()
 #test4()
 
 end # module
