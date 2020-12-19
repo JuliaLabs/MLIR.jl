@@ -40,11 +40,9 @@ end
 
 # ----------- Core ------------ #
 
-import Base: ==, insert!, push!
+import Base: ==, insert!, push!, getindex
 
-include("core/utils.jl")
-include("core/ir/IR.jl")
-include("core/pass_manager.jl")
+include("core/IR.jl")
 
 # ------------ Standard dialects ------------ #
 

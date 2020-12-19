@@ -9,6 +9,8 @@ Base.:(==)(attr1::Attribute, attr2::Attribute) = MLIR.API.mlirAttributeEqual(att
 parse_attribute(ctx::Context, attr::String) = MLIR.API.mlirAttributeParseGet(ctx, StringRef(attr))
 dump(attr::Attribute) = MLIR.API.mlirAttributeDump(attr)
 
+Attribute(ctx::Context, attr::String) = parse_attribute(ctx, attr)
+
 @doc(
 """
 const Attribute = MLIR.API.MlirAttribute
@@ -25,4 +27,3 @@ NamedAttribute(name::String, attr::Attribute) = create_named_attribute(StringRef
 """
 const NamedAttribute = MLIR.API.MlirNamedAttribute
 """, NamedAttribute)
-

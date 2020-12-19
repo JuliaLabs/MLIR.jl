@@ -1,3 +1,9 @@
+# ------------ Pass API ------------ #
+
+const Pass = MLIR.API.MlirPass
+
+# ------------ Pass manager API ------------ #
+
 const PassManager = MLIR.API.MlirPassManager
 
 create_pass_manager(ctx::Context) = mlirPassManagerCreate(ctx)
