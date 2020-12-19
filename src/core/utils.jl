@@ -1,6 +1,4 @@
 const StringRef = MLIR.API.MlirStringRef
 
-create_string_ref(cstr::Cstring, len::Csize_t) = mlirStringRefCreate(cstr, len)
-create_string_ref(cstr::Cstring) = mlirStringRefCreateFromCString(cstr)
-
-const LogicalResult = MLIR.API.MlirLogicalResult
+create_string_ref(cstr::Cstring) = MLIR.API.mlirStringRefCreateFromCString(cstr)
+StringRef(str::String) = create_string_ref(Base.unsafe_convert(Cstring, str))
