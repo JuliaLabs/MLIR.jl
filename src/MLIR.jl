@@ -30,7 +30,7 @@ using CEnum
 using ..MLIR
 using ..MLIR: libmlir
 using ..LLVM: @checked, refcheck
-const intptr_t = Ptr{Csize_t}
+const intptr_t = Int
 libdir = joinpath(@__DIR__, "..", "lib")
 include(joinpath(libdir, "ctypes.jl"))
 export Ctm, Ctime_t, Cclock_t
