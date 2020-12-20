@@ -55,6 +55,8 @@ end
 
 # ----------- Core ------------ #
 
+# Builds off C API.
+
 include("core/IR.jl")
 
 # ------------ Standard dialects ------------ #
