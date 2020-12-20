@@ -6,6 +6,15 @@ create_operation_state(name::StringRef, l::Location) = MLIR.API.mlirOperationSta
 create_operation_state(name::String, l::Location) = create_operation_state(StringRef(name), l)
 OperationState(name::String, l::Location) = create_operation_state(name, l)
 
+function Base.display(state::OperationState)
+    println("  __________________________________\n")
+    println("             OperationState\n")
+    for f in fieldnames(OperationState)
+        println(" $f : $(getfield(state, f))")
+    end
+    println("  __________________________________\n")
+end
+
 @doc(
 """
 const OperationState = MLIR.API.MlirOperationState
@@ -23,7 +32,6 @@ create_operation(state::OperationState) = Operation(MLIR.API.mlirOperationCreate
 destroy!(op::Operation) = MLIR.API.mlirOperationDestroy(unwrap(op))
 is_null(op::Operation) = MLIR.API.mlirOperationIsNull(unwrap(op))
 Base.:(==)(op1::Operation, op2::Operation) = MLIR.API.mlirOperationEqual(unwrap(op1), unwrap(op2))
-get_name(op::Operation) = MLIR.API.mlirOperationGetName(unwrap(op))
 get_block(op::Operation) = MLIR.API.mlirOperationGetBlock(unwrap(op))
 get_parent_operation(op::Operation) = MLIR.API.mlirOperationGetParentOperation(unwrap(op))
 get_num_regions(op::Operation) = MLIR.API.mlirOperationGetNumRegions(unwrap(op))

@@ -12,5 +12,5 @@ push!(state::OperationState, n::Int, operands::Vector{Value}) = MLIR.API.mlirOpe
 push!(state::OperationState, n::Int, regions::Vector{Region}) = MLIR.API.mlirOperationStateAddOwnedRegions(Ref(state), n, regions)
 push!(state::OperationState, n::Int, successors::Vector{Block}) = MLIR.API.mlirOperationStateAddSuccessors(Ref(state), n, successors)
 push!(state::OperationState, n::Int, attrs::Vector{NamedAttribute}) = MLIR.API.mlirOperationStateAddAttributes(Ref(state), n, attrs)
-push!(state::OperationState, args::Vector) = push!(state, length(args), args)
-push!(state::OperationState, arg::T) where T = push!(state, 1, T[arg])
+push!(state::OperationState, args::Vector) = push!(state, length(args) - 1, args)
+push!(state::OperationState, arg::T) where T = push!(state, 0, T[arg])
