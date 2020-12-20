@@ -40,8 +40,6 @@ end
 
 # ----------- Core ------------ #
 
-import Base: ==, insert!, push!, getindex
-
 include("core/IR.jl")
 
 # ------------ Standard dialects ------------ #
