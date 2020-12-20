@@ -41,6 +41,7 @@ get_num_operands(op::Operation) = MLIR.API.mlirOperationGetNumOperands(unwrap(op
 get_operand(op::Operation, pos::Int) = MLIR.API.mlirOperationGetOperand(unwrap(op), pos)
 get_num_results(op::Operation) = MLIR.API.mlirOperationGetNumResults(unwrap(op))
 get_result(op::Operation, pos::Int) = MLIR.API.mlirOperationGetResult(unwrap(op), pos)
+verify(op::Operation) = MLIR.API.mlirOperationVerify(unwrap(op))
 dump(op::Operation) = MLIR.API.mlirOperationDump(unwrap(op))
 
 @inline Operation(state::OperationState) = create_operation(state)
