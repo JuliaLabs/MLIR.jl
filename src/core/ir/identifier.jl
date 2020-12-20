@@ -7,6 +7,7 @@ create_identifier(ctx::Context, str::StringRef) = MLIR.API.mlirIdentifierGet(ctx
 Base.:(==)(id1::Identifier, id2::Identifier) = MLIR.API.mlirIdentifierEqual(id1, id2)
 get_str(id::Identifier) = MLIR.API.mlirIdentifierStr(id)
 
+# Constructor.
 Identifier(ctx::Context, str::String) = create_identifier(ctx, StringRef(str))
 
 @doc(

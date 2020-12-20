@@ -10,6 +10,7 @@ is_null(m::Module) = MLIR.API.mlirModuleIsNull(m)
 destroy!(m::Module) = MLIR.API.mlirModuleDestroy(m)
 get_operation(m::Module) = Operation(MLIR.API.mlirModuleGetOperation(m))
 
+# Constructor.
 Module(l::Location) = create_empty_module(l)
 
 @doc(

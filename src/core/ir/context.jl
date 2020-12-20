@@ -9,11 +9,11 @@ is_null(ctx::Context) = MLIR.API.mlirContextIsNull(ctx)
 destroy!(ctx::Context) = MLIR.API.mlirContextDestroy(ctx)
 get_allow_unregistered_dialects(ctx::Context) = MLIR.API.mlirContextGetAllowUnregisteredDialects(ctx)
 create_unknown_location(ctx::Context) = MLIR.API.mlirLocationUnknownGet(ctx)
-
 register_all_dialects!(ctx::Context) = MLIR.API.MLIR.API.mlirRegisterAllDialects(ctx)
 register_standard_dialect!(ctx::Context) = MLIR.API.MLIR.API.mlirContextRegisterStandardDialect(ctx)
 load_standard_dialect!(ctx::Context) = MLIR.API.MLIR.API.mlirContextLoadStandardDialect(ctx)
 
+# Constructor.
 Context() = create_context()
 
 @doc(

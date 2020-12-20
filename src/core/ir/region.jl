@@ -10,6 +10,7 @@ insert!(r::Region, pos::Int, b::Block) = MLIR.API.mlirRegionAppendOwnedBlock(r, 
 insertafter!(r::Region, ref::Block, b::Block) = MLIR.API.mlirRegionInsertOwnedBlockAfter(r, ref, b)
 insertbefore!(r::Region, ref::Block, b::Block) = MLIR.API.mlirRegionInsertOwnedBlockBefore(r, ref, b)
 
+# Constructor.
 Region() = create_region()
 
 @doc(
