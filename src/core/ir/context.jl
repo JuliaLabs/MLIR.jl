@@ -16,6 +16,9 @@ load_standard_dialect!(ctx::Context) = MLIR.API.MLIR.API.mlirContextLoadStandard
 # Constructor.
 Context() = create_context()
 
+# Do syntax.
+Context(func::Function) = func(Context())
+
 @doc(
 """
 const Context = MLIR.API.MlirContext
