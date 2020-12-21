@@ -3,7 +3,13 @@
 </p>
 <br>
 
-Note that the package requires that you build Julia with LLVM 12 and MLIR enabled.
+> **WARNING**: This package requires that you build Julia with LLVM 12 and MLIR enabled.
+
+`MLIR.jl` presents high-level tools to manipulate MLIR dialects through [the MLIR C API](https://mlir.llvm.org/docs/CAPI/).
+
+---
+
+### Development
 
 To build Julia with LLVM 12 + MLIR, [clone Julia](https://github.com/JuliaLang/julia) and run:
 
@@ -18,4 +24,4 @@ make -j `nproc` \
 cd ..
 ```
 
-Alternatively - you can run the [create_dev.sh](https://github.com/femtomc/MLIR.jl/blob/main/create_dev.sh) script.
+Alternatively - you can run the [create_dev.sh](https://github.com/femtomc/MLIR.jl/blob/main/create_dev.sh) script which should clone Julia, checkout the correct version and build with the correct version of LLVM.
