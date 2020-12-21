@@ -24,10 +24,13 @@ const Attribute = MLIR.API.MlirAttribute
 
 const NamedAttribute = MLIR.API.MlirNamedAttribute
 
-create_named_attribute(name::StringRef, attr::Attribute) = MLIR.API.mlirNamedAttributeGet(name, attr)
+create_named_attribute(name, attr::Attribute) = MLIR.API.mlirNamedAttributeGet(name, attr)
 
 # Constructor.
-NamedAttribute(name::String, attr::Attribute) = create_named_attribute(StringRef(name), attr)
+function NamedAttribute(ctx::Context, name::String, attr::Attribute)
+    id = MLIR.IR.Identifier(ctx, name) # owned by MLIR
+    create_named_attribute(id, attr)
+end
 
 @doc(
 """
