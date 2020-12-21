@@ -1,4 +1,4 @@
-module BuildingIR
+module BuildingAddIR
 
 # Translated from: https://github.com/tachukao/ocaml-mlir/blob/master/tests/ir.ml
 
@@ -109,21 +109,12 @@ end
 construct_and_traverse_ir = () -> begin
     ctx = IR.create_context()
     loc = IR.create_unknown_location(ctx)
+    MLIR.IR.register_standard_dialect!(ctx)
     modu = make_and_dump_add(ctx, loc)
     IR.verify(modu)
     IR.dump(modu)
 end
 
-type_dump = () -> begin
-    ctx = IR.create_context()
-    i32 = IR.get_int_type(ctx, 32)
-    @assert IR.get_bitwidth(i32) == 32
-    i64 = IR.get_int_type(ctx, 64)
-    @assert IR.get_bitwidth(i64) == 64
-    f32 = IR.get_f32_type(ctx)
-end
-
-type_dump()
 modu = construct_and_traverse_ir()
 
 end # module
