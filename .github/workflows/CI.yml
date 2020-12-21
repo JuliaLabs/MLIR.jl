@@ -1,0 +1,85 @@
+name: MLIR CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+        julia-repository: [JuliaLang/julia]
+        julia-commit: [a328cb65c9649d92170ec56a7c103482d8286c1e]
+        llvm-commit: [01d1de81963d91773c92b29e2d08605293c59750] # LLVM 12
+
+    env:
+      CCACHE_DIR: ${GITHUB_WORKSPACE}/.ccache
+      CCACHE_COMPRESS: true
+      CCACHE_COMPRESSLEVEL: 6
+      CCACHE_MAXSIZE: 400M
+
+    steps:
+      # must checkout MLIR first, lest everything in ${GITHUB_WORKSPACE} be
+      # deleted when we finally do check it out
+      - name: Checkout MLIR
+        uses: actions/checkout@master
+
+      - name: Cache Julia
+        id: cache-julia
+        uses: actions/cache@v1
+        with:
+          path: julia/usr
+          key: ${{ matrix.os }}-julia-${{ matrix.julia-commit }}-${{ matrix.llvm-commit }}
+
+      # needed because they're just symlinks in usr/share
+      # long term, we will probably want to cache an installed Julia
+      - name: Cache stdlibs
+        uses: actions/cache@v1
+        with:
+          path: julia/stdlib
+          key: ${{ matrix.os }}-stdlibs-${{ matrix.julia-commit }}-${{ matrix.llvm-commit }}
+
+      - name: Install build dependencies for Julia
+        if: steps.cache-julia.outputs.cache-hit != 'true'
+        run: sudo apt-get update && sudo apt-get install gfortran
+
+      - name: Checkout Julia
+        uses: actions/checkout@v2
+        if: steps.cache-julia.outputs.cache-hit != 'true'
+        with:
+          repository: ${{ matrix.julia-repository }}
+          ref: ${{ matrix.julia-commit }}
+          path: julia
+
+      - name: Build Julia
+        if: steps.cache-julia.outputs.cache-hit != 'true'
+        run: |
+          cd julia
+          make -j `nproc` \
+              USE_BINARYBUILDER_LLVM=0 \
+              LLVM_VER=svn \
+              LLVM_DEBUG=0 \
+              USE_MLIR=1 \
+              LLVM_GIT_VER=${{ matrix.llvm-commit }} \
+              JULIA_CPU_TARGET="generic;sandybridge,-xsaveopt,clone_all;haswell,-rdrnd,base(1)"
+      - name: Check Julia version
+        run: ${GITHUB_WORKSPACE}/julia/usr/bin/julia -e "using InteractiveUtils; versioninfo()"
+
+      - name: Install build tools
+        run: sudo apt-get update && sudo apt-get install ccache
+
+      - name: Prepare timestamp for ccache cache
+        id: ccache-cache-timestamp
+        run: echo "::set-output name=timestamp::`date -u +%Y%m%d-%H%M%S`"
+
+      - name: Cache ccache files
+        uses: actions/cache@v1
+        with:
+          path: .ccache
+          key: ${{ matrix.os }}-ccache-${{ steps.ccache-cache-timestamp.outputs.timestamp }}
+          restore-keys: ${{ matrix.os }}-ccache-
+
+      - name: Test MLIR
+        run: |
+          ${GITHUB_WORKSPACE}/julia/usr/bin/julia --project=. -e 'using Pkg; pkg"test"'
