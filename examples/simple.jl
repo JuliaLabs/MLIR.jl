@@ -25,9 +25,9 @@ test0 = () -> begin
     println(arg)
     attr = MLIR.IR.Attribute(ctx, "\"add\"")
     println(attr)
-    str_ref = MLIR.IR.StringRef("type")
-    println(str_ref)
-    named_attr = MLIR.IR.NamedAttribute(str_ref, attr)
+    ident = MLIR.IR.Identifier(ctx, "type")
+    println(ident)
+    named_attr = MLIR.IR.NamedAttribute(ident, attr)
     println(named_attr)
 end
 
@@ -74,13 +74,17 @@ test4 = () -> begin
     loc = MLIR.IR.create_unknown_location(ctx)
     func_state = MLIR.IR.OperationState("func", loc)
     func_region = MLIR.IR.create_region()
+    sym_name_ref = MLIR.IR.Identifier(ctx, "sym_name")
+    func_name_attr = MLIR.IR.NamedAttribute(sym_name_ref, MLIR.IR.Attribute(ctx, "\"add\""))
     MLIR.IR.push!(func_state, func_region)
-    type_ref = MLIR.IR.StringRef("type")
-    func_type_attr = MLIR.IR.Attribute(ctx, "(memref<?xf32>) -> ()")
+    MLIR.IR.push!(func_state, func_name_attr)
+    type_ref = MLIR.IR.Identifier(ctx, "type")
+    func_type_attr = MLIR.IR.Attribute(ctx, "(f32, f32) -> f32")
     named_func_type_attr = MLIR.IR.NamedAttribute(type_ref, func_type_attr)
     MLIR.IR.push!(func_state, named_func_type_attr)
     func = MLIR.IR.Operation(func_state)
     MLIR.IR.verify(func)
+    MLIR.IR.dump(func)
 end
 
 test5 = () -> begin
@@ -98,14 +102,15 @@ test5 = () -> begin
     MLIR.IR.push!(func_region, func_body)
     func_type_attr = MLIR.IR.Attribute(ctx, "(memref<?xf32>, memref<?xf32>) -> ()")
     func_name_attr = MLIR.IR.Attribute(ctx, "\"add\"")
-    type_ref = MLIR.IR.StringRef("type")
-    sym_name_ref = MLIR.IR.StringRef("sym_name")
-    func_attrs = [MLIR.IR.NamedAttribute(type_ref, func_type_attr), MLIR.IR.NamedAttribute(sym_name_ref, func_type_attr)]
+    type_ref = MLIR.IR.Identifier(ctx, "type")
+    sym_name_ref = MLIR.IR.Identifier(ctx, "sym_name")
+    func_attrs = [MLIR.IR.NamedAttribute(type_ref, func_type_attr), MLIR.IR.NamedAttribute(sym_name_ref, func_name_attr)]
     func_state = MLIR.IR.OperationState("func", loc)
     MLIR.IR.push!(func_state, func_attrs)
     MLIR.IR.push!(func_state, func_region)
     func = MLIR.IR.Operation(func_state)
     MLIR.IR.verify(func)
+    MLIR.IR.dump(func)
 end
 
 test6 = () -> begin
@@ -123,7 +128,7 @@ test0()
 test1()
 test2()
 test3()
-#test4()
+test4()
 test5()
 test6()
 
