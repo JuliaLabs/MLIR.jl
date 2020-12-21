@@ -8,6 +8,7 @@ Base.:(==)(t1::Type, t2::Type) = MLIR.API.mlirTypeEqual(t1, t2)
 dump(t::Type) = MLIR.API.mlirTypeDump(t)
 parse_type(ctx::Context, t::String) = MLIR.API.mlirTypeParseGet(ctx, StringRef(t))
 
+# Constructor.
 Type(ctx::Context, t::String) = parse_type(ctx, t)
 
 @doc(

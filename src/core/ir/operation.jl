@@ -4,6 +4,8 @@ const OperationState = MLIR.API.MlirOperationState
 
 create_operation_state(name::StringRef, l::Location) = MLIR.API.mlirOperationStateGet(name, l)
 create_operation_state(name::String, l::Location) = create_operation_state(StringRef(name), l)
+
+# Constructor.
 OperationState(name::String, l::Location) = create_operation_state(name, l)
 
 function Base.display(state::OperationState)
@@ -41,8 +43,10 @@ get_num_operands(op::Operation) = MLIR.API.mlirOperationGetNumOperands(unwrap(op
 get_operand(op::Operation, pos::Int) = MLIR.API.mlirOperationGetOperand(unwrap(op), pos)
 get_num_results(op::Operation) = MLIR.API.mlirOperationGetNumResults(unwrap(op))
 get_result(op::Operation, pos::Int) = MLIR.API.mlirOperationGetResult(unwrap(op), pos)
+verify(op::Operation) = MLIR.API.mlirOperationVerify(unwrap(op))
 dump(op::Operation) = MLIR.API.mlirOperationDump(unwrap(op))
 
+# Constructor.
 @inline Operation(state::OperationState) = create_operation(state)
 function Operation(name::String, l::Location, 
                    num_results::Int, result_types::Vector{Type},

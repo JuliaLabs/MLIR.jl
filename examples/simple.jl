@@ -4,37 +4,36 @@ using MLIR
 
 test0 = () -> begin
     println("---- TEST 0 ----\n")
+
     # Constructors.
     ctx = MLIR.IR.Context()
-    println(typeof(ctx))
+    println(ctx)
     loc = MLIR.IR.Location(ctx)
-    println(typeof(loc))
+    println(loc)
     mod = MLIR.IR.Module(loc)
-    println(typeof(mod))
+    println(mod)
     op_state = MLIR.IR.OperationState("foo", loc)
-    println(typeof(op_state))
+    println(op_state)
     op = MLIR.IR.Operation(op_state)
-    println(typeof(op))
+    println(op)
     reg = MLIR.IR.Region()
-    println(typeof(reg))
+    println(reg)
     t = MLIR.IR.Type(ctx, "index")
-    println(typeof(t))
+    println(t)
     blk = MLIR.IR.Block(t)
     arg = MLIR.IR.get_arg(blk, 0)
-    try
-        blk[1]
-    catch e
-        println("Correctly caught:\n$e")
-    end
-    println(typeof(arg))
+    println(arg)
     attr = MLIR.IR.Attribute(ctx, "\"add\"")
-    println(typeof(attr))
-    named_attr = MLIR.IR.NamedAttribute("type", attr)
-    println(typeof(named_attr))
+    println(attr)
+    str_ref = MLIR.IR.StringRef("type")
+    println(str_ref)
+    named_attr = MLIR.IR.NamedAttribute(str_ref, attr)
+    println(named_attr)
 end
 
 test1 = () -> begin
     println("\n---- TEST 1 ----\n")
+
     # Create and destroy.
     ctx = MLIR.IR.create_context()
     MLIR.IR.num_loaded_dialects(ctx) |> y -> println("Num loaded dialects: $y")
@@ -44,6 +43,7 @@ end
 
 test2 = () -> begin
     println("\n---- TEST 2 ----\n")
+
     # Create and register standard.
     ctx = MLIR.IR.create_context()
     MLIR.IR.register_standard_dialect!(ctx)
@@ -55,6 +55,7 @@ end
 
 test3 = () -> begin
     println("\n---- TEST 3 ----\n")
+
     # Create and dump an operation.
     ctx = MLIR.IR.create_context()
     loc = MLIR.IR.create_unknown_location(ctx)
@@ -67,15 +68,25 @@ end
 
 test4 = () -> begin
     println("\n---- TEST 4 ----\n")
+
+    # Create an operation and verify.
     ctx = MLIR.IR.create_context()
     loc = MLIR.IR.create_unknown_location(ctx)
     func_state = MLIR.IR.OperationState("func", loc)
+    func_region = MLIR.IR.create_region()
+    MLIR.IR.push!(func_state, func_region)
+    type_ref = MLIR.IR.StringRef("type")
+    func_type_attr = MLIR.IR.Attribute(ctx, "(memref<?xf32>) -> ()")
+    named_func_type_attr = MLIR.IR.NamedAttribute(type_ref, func_type_attr)
+    MLIR.IR.push!(func_state, named_func_type_attr)
     func = MLIR.IR.Operation(func_state)
-    MLIR.IR.dump(func)
+    MLIR.IR.verify(func)
 end
 
 test5 = () -> begin
     println("\n---- TEST 5 ----\n")
+
+    # Create a more complex operation and verify.
     ctx = MLIR.IR.create_context()
     loc = MLIR.IR.create_unknown_location(ctx)
     module_op = MLIR.IR.Module(loc)
@@ -87,19 +98,33 @@ test5 = () -> begin
     MLIR.IR.push!(func_region, func_body)
     func_type_attr = MLIR.IR.Attribute(ctx, "(memref<?xf32>, memref<?xf32>) -> ()")
     func_name_attr = MLIR.IR.Attribute(ctx, "\"add\"")
-    func_attrs = map(x -> MLIR.IR.NamedAttribute(x, func_type_attr), ["type", "sym_name"])
+    type_ref = MLIR.IR.StringRef("type")
+    sym_name_ref = MLIR.IR.StringRef("sym_name")
+    func_attrs = [MLIR.IR.NamedAttribute(type_ref, func_type_attr), MLIR.IR.NamedAttribute(sym_name_ref, func_type_attr)]
     func_state = MLIR.IR.OperationState("func", loc)
     MLIR.IR.push!(func_state, func_attrs)
     MLIR.IR.push!(func_state, func_region)
-    display(func_state)
     func = MLIR.IR.Operation(func_state)
-    MLIR.IR.dump(func)
+    MLIR.IR.verify(func)
+end
+
+test6 = () -> begin
+    println("\n---- TEST 6 ----\n")
+
+    # Do syntax.
+    loc = MLIR.IR.Context() do ctx
+        loc = MLIR.IR.Location(ctx)
+        loc
+    end
+    println(loc)
 end
 
 test0()
 test1()
 test2()
 test3()
-test4()
+#test4()
+test5()
+test6()
 
 end # module

@@ -13,15 +13,17 @@ get_next_in_region(b::Block) = MLIR.API.mlirBlockGetNextInRegion(b)
 get_first_operation(b::Block) = MLIR.API.mlirBlockGetFirstOperation(b)
 get_terminator(b::Block) = MLIR.API.mlirBlockGetTerminator(b)
 insert!(b::Block, pos::Int, op::Operation) = MLIR.API.mlirBlockInsertOwnedOperation(b, pos, unwrap(op))
-insertbefore!(b::Block, ref::Operation, op::Operation) = MLIR.API.mlirBlockInsertOwnedoperationAfter(b, unwrap(ref), unwrap(op))
-insertafter!(b::Block, ref::Operation, op::Operation) = MLIR.API.mlirBlockInsertOwnedoperation(b, unwrap(ref), unwrap(op))
+insertbefore!(b::Block, ref::Operation, op::Operation) = MLIR.API.mlirBlockInsertOwnedOperationAfter(b, unwrap(ref), unwrap(op))
+insertafter!(b::Block, ref::Operation, op::Operation) = MLIR.API.mlirBlockInsertOwnedOperation(b, unwrap(ref), unwrap(op))
 
-Block(ts::Type...) = create_block(collect(ts))
 function Base.getindex(blk::Block, pos::Int)
     arg = get_arg(blk, pos)
     unwrap(arg) == C_NULL && error("Pointer to SSA argument at block position $pos is NULL.")
     arg
 end
+
+# Constructor.
+Block(ts::Type...) = create_block(collect(ts))
 
 @doc(
 """

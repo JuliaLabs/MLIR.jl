@@ -74,14 +74,14 @@ struct MlirValue
     ptr::Ptr{Cvoid}
 end
 
+struct MlirNamedAttribute
+    name::MlirIdentifier
+    attribute::MlirAttribute
+end
+
 struct MlirStringRef
     data::Cstring
     length::Csize_t
-end
-
-struct MlirNamedAttribute
-    name::MlirStringRef
-    attribute::MlirAttribute
 end
 
 mutable struct MlirOperationState
