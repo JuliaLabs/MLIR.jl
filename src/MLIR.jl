@@ -7,7 +7,9 @@ using LLVM: @runtime_ccall, @checked, refcheck
 const libmlir = Ref{Symbol}()
 const libmlir_private = Ref{Symbol}()
 
-# ------------ Initialization ------------ #
+#####
+##### Initialization
+#####
 
 function __init__()
 
@@ -38,7 +40,9 @@ function __init__()
     end
 end
 
-# ------------ C API ------------ #
+#####
+##### C API
+#####
 
 module API
 using CEnum
@@ -53,14 +57,10 @@ include(joinpath(libdir, "libmlir_common.jl"))
 include(joinpath(libdir, "libmlir_api.jl"))
 end
 
-# ----------- Core ------------ #
-
-# Builds off C API.
+#####
+##### Core
+#####
 
 include("core/IR.jl")
-
-# ------------ Standard dialects ------------ #
-
-include("dialects/affine.jl")
 
 end # module
