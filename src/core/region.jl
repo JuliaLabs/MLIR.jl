@@ -1,4 +1,6 @@
-# ------------ Region alias and APIs ------------ #
+#####
+##### MlirRegion alias and APIs
+#####
 
 const Region = MLIR.API.MlirRegion
 
@@ -12,6 +14,10 @@ insertbefore!(r::Region, ref::Block, b::Block) = MLIR.API.mlirRegionInsertOwnedB
 
 # Constructor.
 Region() = create_region()
+
+# Builders for regions.
+push!(r::Region, b::Block) = MLIR.API.mlirRegionAppendOwnedBlock(r, b)
+push_block!(r::Region, b::Block) = push!(r, b)
 
 @doc(
 """

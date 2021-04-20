@@ -1,4 +1,6 @@
-# ------------ Type alias and APIs ------------ #
+#####
+##### MlirType alias and APIs
+#####
 
 const Type = MLIR.API.MlirType
 
@@ -16,15 +18,14 @@ Type(ctx::Context, t::String) = parse_type(ctx, t)
 const Type = MLIR.API.MlirType
 """, Type)
 
-# ------------ Builtins ------------ #
+#####
+##### Builtin MLIR types
+#####
 
-# Integers.
 is_int(t::Type) = MLIR.API.mlirTypeIsAInteger(t)
 get_int_type(ctx::Context, bitwidth::Int64) = MLIR.API.mlirIntegerTypeGet(ctx, bitwidth)
 get_sint_type(ctx::Context, bitwidth::Int64) = MLIR.API.mlirIntegerSignedGet(ctx, bitwidth)
 get_uint_type(ctx::Context, bitwidth::Int64) = MLIR.API.mlirIntegerUnsignedGet(ctx, bitwidth)
 get_bitwidth(t::Type) = MLIR.API.mlirIntegerTypeGetWidth(t)
-
-# Floating point.
 get_f32_type(ctx::Context) = MLIR.API.mlirF32TypeGet(ctx)
 get_f64_type(ctx::Context) = MLIR.API.mlirF64TypeGet(ctx)

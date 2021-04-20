@@ -1,4 +1,6 @@
-# ------------ Identifier alias and APIs ------------ #
+#####
+##### MlirIdentifier alias and APIs
+#####
 
 const Identifier = MLIR.API.MlirIdentifier
 

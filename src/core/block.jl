@@ -1,4 +1,6 @@
-# ------------ Block alias and APIs ------------ #
+#####
+##### MlirBlock alias and APIs
+#####
 
 const Block = MLIR.API.MlirBlock
 
@@ -24,6 +26,10 @@ end
 
 # Constructor.
 Block(ts::Type...) = create_block(collect(ts))
+
+# Builders for blocks. Accepts Operation instances.
+push!(b::Block, op::Operation) = MLIR.API.mlirBlockAppendOwnedOperation(b, unwrap(op))
+push_operation!(b::Block, op::Operation) = push!(b, op)
 
 @doc(
 """

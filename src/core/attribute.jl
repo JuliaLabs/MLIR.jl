@@ -1,4 +1,6 @@
-# ------------ Attribute alias and APIs ------------ #
+#####
+##### MlirAttribute alias and APIs
+#####
 
 const Attribute = MLIR.API.MlirAttribute
 
@@ -20,7 +22,9 @@ Attribute(ctx::Context, attr::String) = parse_attribute(ctx, attr)
 const Attribute = MLIR.API.MlirAttribute
 """, Attribute)
 
-# ------------ Named attribute alias and APIs ------------ #
+#####
+##### MlirNamedAttribute alias and APIs
+#####
 
 const NamedAttribute = MLIR.API.MlirNamedAttribute
 

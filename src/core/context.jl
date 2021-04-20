@@ -1,4 +1,6 @@
-# ------------ Context alias and APIs ------------ #
+#####
+##### MlirContext alias and APIs
+#####
 
 const Context = MLIR.API.MlirContext
 

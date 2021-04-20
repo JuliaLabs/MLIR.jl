@@ -6,19 +6,18 @@ import Base: ==, insert!, push!, getindex
 
 include("utils.jl")
 
-include("ir/context.jl")
-include("ir/type.jl")
-include("ir/value.jl")
-include("ir/attribute.jl")
-include("ir/location.jl")
-include("ir/operation.jl")
-include("ir/identifier.jl")
-include("ir/block.jl")
-include("ir/region.jl")
-include("ir/dialect.jl")
-include("ir/module.jl")
-include("ir/builders.jl")
-
+include("context.jl")
+include("type.jl")
+include("value.jl")
+include("attribute.jl")
+include("location.jl")
+include("operation.jl")
+include("identifier.jl")
+include("block.jl")
+include("region.jl")
+include("operation_state.jl")
+include("dialect.jl")
+include("module.jl")
 include("pass_manager.jl")
 
 end # module

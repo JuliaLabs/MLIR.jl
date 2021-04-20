@@ -1,4 +1,6 @@
-# ------------ Module alias and APIs ------------ #
+#####
+##### MlirModule alias and APIs
+#####
 
 const Module = MLIR.API.MlirModule
 

@@ -1,9 +1,8 @@
-# ------------ Pass API ------------ #
+#####
+##### Mlir(Pass + PassManager) alias and APIs
+#####
 
 const Pass = MLIR.API.MlirPass
-
-# ------------ Pass manager API ------------ #
-
 const PassManager = MLIR.API.MlirPassManager
 
 create_pass_manager(ctx::Context) = MLIR.API.mlirPassManagerCreate(ctx)
@@ -16,7 +15,9 @@ run(pm::PassManager, mod::Module) = MLIR.API.mlirPassManagerRun(pm, mod)
 # Constructor.
 PassManager(ctx::Context) = create_pass_manager(ctx)
 
-# ------------ Operation pass manager API ------------ #
+#####
+##### MlirOpPassManager alias and APIs
+#####
 
 const OperationPassManager = MLIR.API.MlirOpPassManager
 

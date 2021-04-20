@@ -1,4 +1,6 @@
-# ------------ Dialect alias and APIs ------------ #
+#####
+##### MlirDialect alias and APIs
+#####
 
 const Dialect = MLIR.API.MlirDialect
 

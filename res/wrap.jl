@@ -1,4 +1,4 @@
-module BindingsGenerator
+module Wrap
 
 using Clang
 using Clang_jll

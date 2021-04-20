@@ -1,4 +1,6 @@
-# ------------ Location alias and APIs ------------ #
+#####
+##### MlirLocation alias and APIs
+#####
 
 const Location = MLIR.API.MlirLocation
 

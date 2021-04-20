@@ -1,18 +1,18 @@
 # Automatically generated using Clang.jl
 
 
-# Skipping MacroDefinition: DEFINE_C_API_STRUCT ( name , storage ) struct name { storage * ptr ; } ; typedef struct name name
+# Skipping MacroDefinition: DEFINE_C_API_STRUCT ( name , storage ) @checked struct name { storage * ptr ; } ; typedef @checked struct name name
 
-struct MlirAffineExpr
-    ptr::Ptr{Cvoid}
+@checked struct MlirAffineExpr
+    ref::Ptr{Cvoid}
 end
 
-struct MlirAffineMap
-    ptr::Ptr{Cvoid}
+@checked struct MlirAffineMap
+    ref::Ptr{Cvoid}
 end
 
-struct MlirDiagnostic
-    ptr::Ptr{Cvoid}
+@checked struct MlirDiagnostic
+    ref::Ptr{Cvoid}
 end
 
 @cenum MlirDiagnosticSeverity::UInt32 begin
@@ -22,56 +22,55 @@ end
     MlirDiagnosticRemark = 3
 end
 
-
 const MlirDiagnosticHandlerID = UInt64
 const MlirDiagnosticHandler = Ptr{Cvoid}
 
-struct MlirContext
-    ptr::Ptr{Cvoid}
+@checked struct MlirContext
+    ref::Ptr{Cvoid}
 end
 
-struct MlirDialect
-    ptr::Ptr{Cvoid}
+@checked struct MlirDialect
+    ref::Ptr{Cvoid}
 end
 
-struct MlirOperation
-    ptr::Ptr{Cvoid}
+@checked struct MlirOperation
+    ref::Ptr{Cvoid}
 end
 
-struct MlirOpPrintingFlags
-    ptr::Ptr{Cvoid}
+@checked struct MlirOpPrintingFlags
+    ref::Ptr{Cvoid}
 end
 
-struct MlirBlock
-    ptr::Ptr{Cvoid}
+@checked struct MlirBlock
+    ref::Ptr{Cvoid}
 end
 
-struct MlirRegion
-    ptr::Ptr{Cvoid}
+@checked struct MlirRegion
+    ref::Ptr{Cvoid}
 end
 
-struct MlirAttribute
-    ptr::Ptr{Cvoid}
+@checked struct MlirAttribute
+    ref::Ptr{Cvoid}
 end
 
-struct MlirIdentifier
-    ptr::Ptr{Cvoid}
+@checked struct MlirIdentifier
+    ref::Ptr{Cvoid}
 end
 
-struct MlirLocation
-    ptr::Ptr{Cvoid}
+@checked struct MlirLocation
+    ref::Ptr{Cvoid}
 end
 
-struct MlirModule
-    ptr::Ptr{Cvoid}
+@checked struct MlirModule
+    ref::Ptr{Cvoid}
 end
 
-struct MlirType
-    ptr::Ptr{Cvoid}
+@checked struct MlirType
+    ref::Ptr{Cvoid}
 end
 
-struct MlirValue
-    ptr::Ptr{Cvoid}
+@checked struct MlirValue
+    ref::Ptr{Cvoid}
 end
 
 struct MlirNamedAttribute
@@ -99,16 +98,16 @@ mutable struct MlirOperationState
     attributes::Ptr{MlirNamedAttribute}
 end
 
-struct MlirPass
-    ptr::Ptr{Cvoid}
+@checked struct MlirPass
+    ref::Ptr{Cvoid}
 end
 
-struct MlirPassManager
-    ptr::Ptr{Cvoid}
+@checked struct MlirPassManager
+    ref::Ptr{Cvoid}
 end
 
-struct MlirOpPassManager
-    ptr::Ptr{Cvoid}
+@checked struct MlirOpPassManager
+    ref::Ptr{Cvoid}
 end
 
 # Skipping MacroDefinition: MLIR_CAPI_EXPORTED __attribute__ ( ( visibility ( "default" ) ) )
