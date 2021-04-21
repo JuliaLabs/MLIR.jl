@@ -2,7 +2,7 @@ module IR
 
 using ..MLIR
 
-import Base: ==, insert!, push!, getindex
+import Base: ==, insert!, push!, getindex, display
 
 include("utils.jl")
 

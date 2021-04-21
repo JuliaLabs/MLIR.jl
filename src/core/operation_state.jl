@@ -56,3 +56,14 @@ function Operation(name::String, l::Location,
     state = OperationState(name, l, num_results, result_types, num_operands, operands, num_regions, regions, num_successors, successors, num_attributes, attributes)
     Operation(state)
 end
+
+#####
+##### Utilities
+#####
+
+function add_entry_block!(state::OperationState, arg_types::Vector{Type})
+    r = create_region()
+    b = create_block(arg_types)
+    push!(state, r)
+    return (b, r)
+end

@@ -25,7 +25,7 @@ function Base.getindex(blk::Block, pos::Int)
 end
 
 # Constructor.
-Block(ts::Type...) = create_block(collect(ts))
+Block(ts::Type...) = create_block(Type[ts...])
 
 # Builders for blocks. Accepts Operation instances.
 push!(b::Block, op::Operation) = MLIR.API.mlirBlockAppendOwnedOperation(b, unwrap(op))

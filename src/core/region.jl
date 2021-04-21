@@ -18,6 +18,11 @@ Region() = create_region()
 # Builders for regions.
 push!(r::Region, b::Block) = MLIR.API.mlirRegionAppendOwnedBlock(r, b)
 push_block!(r::Region, b::Block) = push!(r, b)
+function push_new_block!(r::Region)
+    b = Block()
+    push!(r, b)
+    return b
+end
 
 @doc(
 """
