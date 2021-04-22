@@ -6,11 +6,6 @@ struct Operation
     ref::MLIR.API.MlirOperation
 end
 
-@doc(
-"""
-const Operation = MLIR.API.MlirOperation
-""", Operation)
-
 unwrap(o::Operation) = o.ref
 
 destroy!(op::Operation) = MLIR.API.mlirOperationDestroy(unwrap(op))
@@ -26,7 +21,10 @@ get_operand(op::Operation, pos::Int) = MLIR.API.mlirOperationGetOperand(unwrap(o
 get_num_results(op::Operation) = MLIR.API.mlirOperationGetNumResults(unwrap(op))
 get_result(op::Operation, pos::Int) = MLIR.API.mlirOperationGetResult(unwrap(op), pos)
 verify(op::Operation) = MLIR.API.mlirOperationVerify(unwrap(op))
-function dump(op::Operation)
+function safedump(op::Operation)
     @assert(verify(op))
+    MLIR.API.mlirOperationDump(unwrap(op))
+end
+function dump(op::Operation)
     MLIR.API.mlirOperationDump(unwrap(op))
 end

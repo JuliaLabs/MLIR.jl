@@ -16,23 +16,20 @@ create_operation_state(name::String, l::Location) = create_operation_state(Strin
 OperationState(name::String, l::Location) = create_operation_state(name, l)
 
 # Builders for state.
-push!(state::OperationState, n::Int, results::Vector{Type}) = MLIR.API.mlirOperationStateAddResults(Ref(state), n, results)
-push_results!(state::OperationState, results::Vector{Type}) = push!(state, length(results), results)
+push_results!(state::OperationState, result::Type) = MLIR.API.mlirOperationStateAddResults(Ref(state), 1, Ref(result))
+push_results!(state::OperationState, results::Vector{Type}) = MLIR.API.mlirOperationStateAddResults(Ref(state), length(results), results)
 
-push!(state::OperationState, n::Int, operands::Vector{Value}) = MLIR.API.mlirOperationStateAddOperands(Ref(state), n, operands)
-push_operands!(state::OperationState, n::Int, operands::Vector{Value}) = push!(state, length(operands), operands)
+push_operands!(state::OperationState, operand::Value) = MLIR.API.mlirOperationStateAddOperands(Ref(state), 1, Ref(operand))
+push_operands!(state::OperationState, operands::Vector{Value}) = MLIR.API.mlirOperationStateAddOperands(Ref(state), length(operands), operands)
 
-push!(state::OperationState, n::Int, regions::Vector{Region}) = MLIR.API.mlirOperationStateAddOwnedRegions(Ref(state), n, regions)
-push_regions!(state::OperationState, n::Int, regions::Vector{Region}) = push!(state, length(regions), regions)
+push_regions!(state::OperationState, region::Region) = MLIR.API.mlirOperationStateAddOwnedRegions(Ref(state), 1, Ref(region))
+push_regions!(state::OperationState, regions::Vector{Region}) = MLIR.API.mlirOperationStateAddOwnedRegions(Ref(state), length(regions), regions)
 
-push!(state::OperationState, n::Int, successors::Vector{Block}) = MLIR.API.mlirOperationStateAddSuccessors(Ref(state), n, successors)
-push_successors!(state::OperationState, n::Int, successors::Vector{Block}) = push!(state, length(successors), successors)
+push_successors!(state::OperationState, successor::Block) = MLIR.API.mlirOperationStateAddSuccessors(Ref(state), 1, Ref(successor))
+push_successors!(state::OperationState, successors::Vector{Block}) = MLIR.API.mlirOperationStateAddSuccessors(Ref(state), length(successors), successors)
 
-push!(state::OperationState, n::Int, attrs::Vector{NamedAttribute}) = MLIR.API.mlirOperationStateAddAttributes(Ref(state), n, attrs)
-push_attributes!(state::OperationState, n::Int, attrs::Vector{NamedAttribute}) = push!(state, length(attrs), attrs)
-
-push!(state::OperationState, args::Vector) = push!(state, length(args), args)
-push!(state::OperationState, arg::T) where T = push!(state, T[arg])
+push_attributes!(state::OperationState, attr::NamedAttribute) = MLIR.API.mlirOperationStateAddAttributes(Ref(state), 1, Ref(attr))
+push_attributes!(state::OperationState, attrs::Vector{NamedAttribute}) = MLIR.API.mlirOperationStateAddAttributes(Ref(state), length(attrs), attrs)
 
 function Base.display(state::OperationState)
     println("  __________________________________\n")
@@ -64,6 +61,7 @@ end
 function add_entry_block!(state::OperationState, arg_types::Vector{Type})
     r = create_region()
     b = create_block(arg_types)
-    push!(state, r)
+    push!(r, b)
+    push_regions!(state, r)
     return (b, r)
 end
