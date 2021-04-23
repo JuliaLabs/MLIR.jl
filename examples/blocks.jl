@@ -8,7 +8,6 @@ import MLIR.IR as IR
 test1 = () -> begin
     ctx = IR.Context()
     IR.register_all_dialects!(ctx)
-    IR.register_standard_dialect!(ctx)
     IR.set_allow_unregistered_dialects!(ctx, true)
     @assert(IR.get_allow_unregistered_dialects(ctx))
     loc = MLIR.IR.create_unknown_location(ctx)
@@ -26,7 +25,6 @@ test1 = () -> begin
     IR.verify(brop)
     MLIR.IR.dump(brop)
     IR.push!(b1, brop)
-
     println()
 
     index_type = MLIR.IR.parse_type(ctx, "index")

@@ -6,6 +6,14 @@ function mlirAffineExprGetContext(affineExpr)
     ccall((:mlirAffineExprGetContext, libmlir[]), MlirContext, (MlirAffineExpr,), affineExpr)
 end
 
+function mlirAffineExprEqual(lhs, rhs)
+    ccall((:mlirAffineExprEqual, libmlir[]), Bool, (MlirAffineExpr, MlirAffineExpr), lhs, rhs)
+end
+
+function mlirAffineExprIsNull(affineExpr)
+    ccall((:mlirAffineExprIsNull, libmlir[]), Bool, (MlirAffineExpr,), affineExpr)
+end
+
 function mlirAffineExprPrint(affineExpr, callback, userData)
     ccall((:mlirAffineExprPrint, libmlir[]), Cvoid, (MlirAffineExpr, MlirStringCallback, Ptr{Cvoid}), affineExpr, callback, userData)
 end
@@ -34,6 +42,10 @@ function mlirAffineExprIsFunctionOfDim(affineExpr, position)
     ccall((:mlirAffineExprIsFunctionOfDim, libmlir[]), Bool, (MlirAffineExpr, intptr_t), affineExpr, position)
 end
 
+function mlirAffineExprIsADim(affineExpr)
+    ccall((:mlirAffineExprIsADim, libmlir[]), Bool, (MlirAffineExpr,), affineExpr)
+end
+
 function mlirAffineDimExprGet(ctx, position)
     ccall((:mlirAffineDimExprGet, libmlir[]), MlirAffineExpr, (MlirContext, intptr_t), ctx, position)
 end
@@ -42,12 +54,20 @@ function mlirAffineDimExprGetPosition(affineExpr)
     ccall((:mlirAffineDimExprGetPosition, libmlir[]), intptr_t, (MlirAffineExpr,), affineExpr)
 end
 
+function mlirAffineExprIsASymbol(affineExpr)
+    ccall((:mlirAffineExprIsASymbol, libmlir[]), Bool, (MlirAffineExpr,), affineExpr)
+end
+
 function mlirAffineSymbolExprGet(ctx, position)
     ccall((:mlirAffineSymbolExprGet, libmlir[]), MlirAffineExpr, (MlirContext, intptr_t), ctx, position)
 end
 
 function mlirAffineSymbolExprGetPosition(affineExpr)
     ccall((:mlirAffineSymbolExprGetPosition, libmlir[]), intptr_t, (MlirAffineExpr,), affineExpr)
+end
+
+function mlirAffineExprIsAConstant(affineExpr)
+    ccall((:mlirAffineExprIsAConstant, libmlir[]), Bool, (MlirAffineExpr,), affineExpr)
 end
 
 function mlirAffineConstantExprGet(ctx, constant)
@@ -98,6 +118,10 @@ function mlirAffineCeilDivExprGet(lhs, rhs)
     ccall((:mlirAffineCeilDivExprGet, libmlir[]), MlirAffineExpr, (MlirAffineExpr, MlirAffineExpr), lhs, rhs)
 end
 
+function mlirAffineExprIsABinary(affineExpr)
+    ccall((:mlirAffineExprIsABinary, libmlir[]), Bool, (MlirAffineExpr,), affineExpr)
+end
+
 function mlirAffineBinaryOpExprGetLHS(affineExpr)
     ccall((:mlirAffineBinaryOpExprGetLHS, libmlir[]), MlirAffineExpr, (MlirAffineExpr,), affineExpr)
 end
@@ -133,8 +157,12 @@ function mlirAffineMapEmptyGet(ctx)
     ccall((:mlirAffineMapEmptyGet, libmlir[]), MlirAffineMap, (MlirContext,), ctx)
 end
 
-function mlirAffineMapGet(ctx, dimCount, symbolCount)
-    ccall((:mlirAffineMapGet, libmlir[]), MlirAffineMap, (MlirContext, intptr_t, intptr_t), ctx, dimCount, symbolCount)
+function mlirAffineMapZeroResultGet(ctx, dimCount, symbolCount)
+    ccall((:mlirAffineMapZeroResultGet, libmlir[]), MlirAffineMap, (MlirContext, intptr_t, intptr_t), ctx, dimCount, symbolCount)
+end
+
+function mlirAffineMapGet(ctx, dimCount, symbolCount, nAffineExprs, affineExprs)
+    ccall((:mlirAffineMapGet, libmlir[]), MlirAffineMap, (MlirContext, intptr_t, intptr_t, intptr_t, Ptr{MlirAffineExpr}), ctx, dimCount, symbolCount, nAffineExprs, affineExprs)
 end
 
 function mlirAffineMapConstantGet(ctx, val)
@@ -183,6 +211,10 @@ end
 
 function mlirAffineMapGetNumResults(affineMap)
     ccall((:mlirAffineMapGetNumResults, libmlir[]), intptr_t, (MlirAffineMap,), affineMap)
+end
+
+function mlirAffineMapGetResult(affineMap, pos)
+    ccall((:mlirAffineMapGetResult, libmlir[]), MlirAffineExpr, (MlirAffineMap, intptr_t), affineMap, pos)
 end
 
 function mlirAffineMapGetNumInputs(affineMap)
@@ -768,7 +800,11 @@ function mlirTypeIsAUnrankedMemRef(type)
 end
 
 function mlirMemRefTypeGet(elementType, rank, shape, numMaps, affineMaps, memorySpace)
-    ccall((:mlirMemRefTypeGet, libmlir[]), MlirType, (MlirType, intptr_t, Ptr{Int64}, intptr_t, Ptr{MlirAttribute}, UInt32), elementType, rank, shape, numMaps, affineMaps, memorySpace)
+    ccall((:mlirMemRefTypeGet, libmlir[]), MlirType, (MlirType, intptr_t, Ptr{Int64}, intptr_t, Ptr{MlirAffineMap}, UInt32), elementType, rank, shape, numMaps, affineMaps, memorySpace)
+end
+
+function mlirMemRefTypeGetChecked(elementType, rank, shape, numMaps, affineMaps, memorySpace, loc)
+    ccall((:mlirMemRefTypeGetChecked, libmlir[]), MlirType, (MlirType, intptr_t, Ptr{Int64}, intptr_t, Ptr{MlirAffineMap}, UInt32, MlirLocation), elementType, rank, shape, numMaps, affineMaps, memorySpace, loc)
 end
 
 function mlirMemRefTypeContiguousGet(elementType, rank, shape, memorySpace)
@@ -1011,6 +1047,10 @@ end
 
 function mlirOperationStateAddAttributes(state, n, attributes)
     ccall((:mlirOperationStateAddAttributes, libmlir[]), Cvoid, (Ptr{MlirOperationState}, intptr_t, Ptr{MlirNamedAttribute}), state, n, attributes)
+end
+
+function mlirOperationStateEnableResultTypeInference(state)
+    ccall((:mlirOperationStateEnableResultTypeInference, libmlir[]), Cvoid, (Ptr{MlirOperationState},), state)
 end
 
 function mlirOpPrintingFlagsCreate()
@@ -1340,6 +1380,77 @@ end
 function mlirIdentifierStr(ident)
     ccall((:mlirIdentifierStr, libmlir[]), MlirStringRef, (MlirIdentifier,), ident)
 end
+# Julia wrapper for header: IntegerSet.h
+# Automatically generated using Clang.jl
+
+
+function mlirIntegerSetGetContext(set)
+    ccall((:mlirIntegerSetGetContext, libmlir[]), MlirContext, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetIsNull(set)
+    ccall((:mlirIntegerSetIsNull, libmlir[]), Bool, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetEqual(s1, s2)
+    ccall((:mlirIntegerSetEqual, libmlir[]), Bool, (MlirIntegerSet, MlirIntegerSet), s1, s2)
+end
+
+function mlirIntegerSetPrint(set, callback, userData)
+    ccall((:mlirIntegerSetPrint, libmlir[]), Cvoid, (MlirIntegerSet, MlirStringCallback, Ptr{Cvoid}), set, callback, userData)
+end
+
+function mlirIntegerSetDump(set)
+    ccall((:mlirIntegerSetDump, libmlir[]), Cvoid, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetEmptyGet(context, numDims, numSymbols)
+    ccall((:mlirIntegerSetEmptyGet, libmlir[]), MlirIntegerSet, (MlirContext, intptr_t, intptr_t), context, numDims, numSymbols)
+end
+
+function mlirIntegerSetGet(context, numDims, numSymbols, numConstraints, constraints, eqFlags)
+    ccall((:mlirIntegerSetGet, libmlir[]), MlirIntegerSet, (MlirContext, intptr_t, intptr_t, intptr_t, Ptr{MlirAffineExpr}, Ptr{Bool}), context, numDims, numSymbols, numConstraints, constraints, eqFlags)
+end
+
+function mlirIntegerSetReplaceGet(set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols)
+    ccall((:mlirIntegerSetReplaceGet, libmlir[]), MlirIntegerSet, (MlirIntegerSet, Ptr{MlirAffineExpr}, Ptr{MlirAffineExpr}, intptr_t, intptr_t), set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols)
+end
+
+function mlirIntegerSetIsCanonicalEmpty(set)
+    ccall((:mlirIntegerSetIsCanonicalEmpty, libmlir[]), Bool, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetGetNumDims(set)
+    ccall((:mlirIntegerSetGetNumDims, libmlir[]), intptr_t, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetGetNumSymbols(set)
+    ccall((:mlirIntegerSetGetNumSymbols, libmlir[]), intptr_t, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetGetNumInputs(set)
+    ccall((:mlirIntegerSetGetNumInputs, libmlir[]), intptr_t, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetGetNumConstraints(set)
+    ccall((:mlirIntegerSetGetNumConstraints, libmlir[]), intptr_t, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetGetNumEqualities(set)
+    ccall((:mlirIntegerSetGetNumEqualities, libmlir[]), intptr_t, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetGetNumInequalities(set)
+    ccall((:mlirIntegerSetGetNumInequalities, libmlir[]), intptr_t, (MlirIntegerSet,), set)
+end
+
+function mlirIntegerSetGetConstraint(set, pos)
+    ccall((:mlirIntegerSetGetConstraint, libmlir[]), MlirAffineExpr, (MlirIntegerSet, intptr_t), set, pos)
+end
+
+function mlirIntegerSetIsConstraintEq(set, pos)
+    ccall((:mlirIntegerSetIsConstraintEq, libmlir[]), Bool, (MlirIntegerSet, intptr_t), set, pos)
+end
 # Julia wrapper for header: Pass.h
 # Automatically generated using Clang.jl
 
@@ -1393,21 +1504,6 @@ end
 
 function mlirRegisterAllDialects(context)
     ccall((:mlirRegisterAllDialects, libmlir[]), Cvoid, (MlirContext,), context)
-end
-# Julia wrapper for header: StandardDialect.h
-# Automatically generated using Clang.jl
-
-
-function mlirContextRegisterStandardDialect(context)
-    ccall((:mlirContextRegisterStandardDialect, libmlir[]), Cvoid, (MlirContext,), context)
-end
-
-function mlirContextLoadStandardDialect(context)
-    ccall((:mlirContextLoadStandardDialect, libmlir[]), MlirDialect, (MlirContext,), context)
-end
-
-function mlirStandardDialectGetNamespace()
-    ccall((:mlirStandardDialectGetNamespace, libmlir[]), MlirStringRef, ())
 end
 # Julia wrapper for header: Support.h
 # Automatically generated using Clang.jl

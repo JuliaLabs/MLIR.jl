@@ -22,6 +22,7 @@ end
     MlirDiagnosticRemark = 3
 end
 
+
 const MlirDiagnosticHandlerID = UInt64
 const MlirDiagnosticHandler = Ptr{Cvoid}
 
@@ -96,6 +97,11 @@ mutable struct MlirOperationState
     successors::Ptr{MlirBlock}
     nAttributes::intptr_t
     attributes::Ptr{MlirNamedAttribute}
+    enableResultTypeInference::Bool
+end
+
+@checked struct MlirIntegerSet
+    ref::Ptr{Cvoid}
 end
 
 @checked struct MlirPass
@@ -108,6 +114,18 @@ end
 
 @checked struct MlirOpPassManager
     ref::Ptr{Cvoid}
+end
+
+# Skipping MacroDefinition: MLIR_DECLARE_CAPI_DIALECT_REGISTRATION ( Name , Namespace ) MLIR_CAPI_EXPORTED void mlirContextRegister ## Name ## Dialect ( MlirContext context ) ; MLIR_CAPI_EXPORTED MlirDialect mlirContextLoad ## Name ## Dialect ( MlirContext context ) ; MLIR_CAPI_EXPORTED MlirStringRef mlir ## Name ## DialectGetNamespace ( ) ; MLIR_CAPI_EXPORTED const MlirDialectRegistrationHooks * mlirGetDialectHooks__ ## Namespace ## __ ( )
+
+const MlirContextRegisterDialectHook = Ptr{Cvoid}
+const MlirContextLoadDialectHook = Ptr{Cvoid}
+const MlirDialectGetNamespaceHook = Ptr{Cvoid}
+
+struct MlirDialectRegistrationHooks
+    registerHook::MlirContextRegisterDialectHook
+    loadHook::MlirContextLoadDialectHook
+    getNamespaceHook::MlirDialectGetNamespaceHook
 end
 
 # Skipping MacroDefinition: MLIR_CAPI_EXPORTED __attribute__ ( ( visibility ( "default" ) ) )

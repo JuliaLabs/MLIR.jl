@@ -21,8 +21,8 @@ const intptr_t = Int
 libdir = joinpath(@__DIR__, "..", "lib")
 include(joinpath(libdir, "ctypes.jl"))
 export Ctm, Ctime_t, Cclock_t
-include(joinpath(libdir, "libmlir_common.jl"))
-include(joinpath(libdir, "libmlir_api.jl"))
+include(joinpath(libdir, "libMLIR_common.jl"))
+include(joinpath(libdir, "libMLIR_h.jl"))
 end
 
 #####

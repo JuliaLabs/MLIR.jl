@@ -46,8 +46,7 @@ test2 = () -> begin
 
     # Create and register standard.
     ctx = MLIR.IR.create_context()
-    MLIR.IR.register_standard_dialect!(ctx)
-    MLIR.IR.load_standard_dialect!(ctx)
+    MLIR.IR.register_all_dialects!(ctx)
     MLIR.IR.num_loaded_dialects(ctx) |> y -> println("Num loaded dialects: $y")
     MLIR.IR.num_registered_dialects(ctx) |> y -> println("Num registered dialects: $y")
     MLIR.IR.destroy!(ctx)
@@ -73,7 +72,7 @@ test4 = () -> begin
     ctx = MLIR.IR.create_context()
     loc = MLIR.IR.create_unknown_location(ctx)
     func_state = MLIR.IR.OperationState("func", loc)
-    func_region = MLIR.IR.create_region()
+    func_region = MLIR.IR.Region()
     sym_name_ref = MLIR.IR.Identifier(ctx, "sym_name")
     func_name_attr = MLIR.IR.NamedAttribute(sym_name_ref, MLIR.IR.Attribute(ctx, "\"add\""))
     MLIR.IR.push_regions!(func_state, func_region)
@@ -83,8 +82,8 @@ test4 = () -> begin
     named_func_type_attr = MLIR.IR.NamedAttribute(type_ref, func_type_attr)
     MLIR.IR.push_attributes!(func_state, named_func_type_attr)
     func = MLIR.IR.Operation(func_state)
-    MLIR.IR.verify(func)
     MLIR.IR.dump(func)
+    MLIR.IR.verify(func)
 end
 
 test5 = () -> begin
@@ -97,7 +96,7 @@ test5 = () -> begin
     module_body = MLIR.IR.get_body(module_op)
     memref_type = MLIR.IR.parse_type(ctx, "memref<?xf32>")
     func_body_arg_types = [memref_type, memref_type]
-    func_region = MLIR.IR.create_region()
+    func_region = MLIR.IR.Region()
     func_body = MLIR.IR.create_block(func_body_arg_types)
     MLIR.IR.push!(func_region, func_body)
     func_type_attr = MLIR.IR.Attribute(ctx, "(memref<?xf32>, memref<?xf32>) -> ()")
@@ -109,8 +108,8 @@ test5 = () -> begin
     MLIR.IR.push_attributes!(func_state, func_attrs)
     MLIR.IR.push_regions!(func_state, func_region)
     func = MLIR.IR.Operation(func_state)
-    MLIR.IR.verify(func)
     MLIR.IR.dump(func)
+    MLIR.IR.verify(func)
 end
 
 test6 = () -> begin
