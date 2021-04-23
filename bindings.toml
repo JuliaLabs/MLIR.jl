@@ -1,0 +1,3 @@
+[general]
+library_name = "libmlir[]"
+output_file_path = "./lib/libmlir.jl"
