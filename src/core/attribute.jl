@@ -6,6 +6,7 @@ const Attribute = MLIR.API.MlirAttribute
 
 get_context(attr::Attribute) = MLIR.API.mlirAttributeGetContext(attr)
 get_type(attr::Attribute) = MLIR.API.mlirAttributeGetType(attr)
+get_unit_attribute(ctx::Context) = MLIR.API.mlirUnitAttrGet(ctx)
 get_type_attribute(type::Type) = MLIR.API.mlirTypeAttrGet(type)
 get_string_attribute(ctx::Context, str::String) = MLIR.API.mlirStringAttrGet(ctx, StringRef(str))
 is_null(attr::Attribute) = MLIR.API.mlirAttributeIsNull(attr)
