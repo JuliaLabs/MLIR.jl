@@ -14,6 +14,11 @@ get_operation(m::Module) = Operation(MLIR.API.mlirModuleGetOperation(m))
 
 # Constructor.
 Module(l::Location) = create_empty_module(l)
+function push_operation!(m::Module, op::Operation)
+    blk = MLIR.API.mlirModuleGetBody(m)
+    term = get_terminator(blk)
+    insertbefore!(blk, term, op)
+end
 
 @doc(
 """

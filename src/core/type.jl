@@ -8,6 +8,7 @@ get_context(t::Type) = MLIR.API.mlirTypeGetContext(t)
 is_null(t::Type) = MLIR.API.mlirTypeIsNull(t)
 Base.:(==)(t1::Type, t2::Type) = MLIR.API.mlirTypeEqual(t1, t2)
 Base.display(t::Type) = MLIR.API.mlirTypeDump(t)
+Base.println(t::Type) = (MLIR.API.mlirTypeDump(t); println())
 parse_type(ctx::Context, t::String) = MLIR.API.mlirTypeParseGet(ctx, StringRef(t))
 
 # Constructor.
