@@ -1,29 +1,29 @@
 # ------------ Pass API ------------ #
 
-const Pass = MLIR.API.MlirPass
+const Pass = API.MlirPass
 
 # ------------ Pass manager API ------------ #
 
-const PassManager = MLIR.API.MlirPassManager
+const PassManager = API.MlirPassManager
 
-create_pass_manager(ctx::Context) = MLIR.API.mlirPassManagerCreate(ctx)
-destroy(pm::PassManager) = MLIR.API.mlirPassManagerDestroy(pm)
-is_null(pm::PassManager) = MLIR.API.mlirPassManagerIsNull(pm)
-get_nested_under(pm::PassManager, op_name::StringRef) = MLIR.API.mlirPassManagerGetNestedUnder(pm, op_name)
-add_owned_pass(pm::PassManager, p::Pass) = MLIR.API.mlirPassManagerAddOwnedPass(pm, p)
-run(pm::PassManager, mod::Module) = MLIR.API.mlirPassManagerRun(pm, mod)
+create_pass_manager(ctx::Context) = API.mlirPassManagerCreate(ctx)
+destroy(pm::PassManager) = API.mlirPassManagerDestroy(pm)
+is_null(pm::PassManager) = API.mlirPassManagerIsNull(pm)
+get_nested_under(pm::PassManager, op_name::StringRef) = API.mlirPassManagerGetNestedUnder(pm, op_name)
+add_owned_pass(pm::PassManager, p::Pass) = API.mlirPassManagerAddOwnedPass(pm, p)
+run(pm::PassManager, mod::Module) = API.mlirPassManagerRun(pm, mod)
 
 # Constructor.
 PassManager(ctx::Context) = create_pass_manager(ctx)
 
 # ------------ Operation pass manager API ------------ #
 
-const OperationPassManager = MLIR.API.MlirOpPassManager
+const OperationPassManager = API.MlirOpPassManager
 
-get_as_op_pm(pm::PassManager) = MLIR.API.mlirPassManagerGetAsOpPassManager(pm)
-add_owned_pass(opm::OperationPassManager, pass::Pass) = MLIR.API.mlirOpPassManagerAddOwnedPass(opm, pass)
-parse_pass_pipeline(opm::OperationPassManager, pipeline::StringRef) = MLIR.API.mlirParsePassPipeline(opm, pipeline)
-print(opm, callback, userdata) = MLIR.API.mlirPrintPassPipeline(opm, callback, userdata)
+get_as_op_pm(pm::PassManager) = API.mlirPassManagerGetAsOpPassManager(pm)
+add_owned_pass(opm::OperationPassManager, pass::Pass) = API.mlirOpPassManagerAddOwnedPass(opm, pass)
+parse_pass_pipeline(opm::OperationPassManager, pipeline::StringRef) = API.mlirParsePassPipeline(opm, pipeline)
+print(opm, callback, userdata) = API.mlirPrintPassPipeline(opm, callback, userdata)
 
 # Constructor.
 OperationPassManager(pm::PassManager) = get_as_op_pm(pm)

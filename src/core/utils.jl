@@ -1,6 +1,6 @@
 # Should not be exposed to the user.
-const StringRef = MLIR.API.MlirStringRef
-create_string_ref(str::String) = MLIR.API.mlirStringRefCreateFromCString(str)
+const StringRef = API.MlirStringRef
+create_string_ref(str::String) = API.mlirStringRefCreateFromCString(str)
 StringRef(str::String) = create_string_ref(str)
 
 # Unwraps API structs to ptr field.

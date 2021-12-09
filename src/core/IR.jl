@@ -1,6 +1,7 @@
 module IR
 
 using ..MLIR
+import ..MLIR: API
 
 import Base: ==, insert!, push!, getindex
 

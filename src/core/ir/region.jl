@@ -1,19 +1,19 @@
 # ------------ Region alias and APIs ------------ #
 
-const Region = MLIR.API.MlirRegion
+const Region = API.MlirRegion
 
-create_region() = MLIR.API.mlirRegionCreate()
-destroy!(r::Region) = MLIR.API.mlirRegionDestroy(r)
-is_null(r::Region) = MLIR.API.mlirRegionIsNull(r)
-get_first_block(r::Region) = MLIR.API.mlirRegionGetFirstBlock(r)
-insert!(r::Region, pos::Int, b::Block) = MLIR.API.mlirRegionAppendOwnedBlock(r, pos, b)
-insertafter!(r::Region, ref::Block, b::Block) = MLIR.API.mlirRegionInsertOwnedBlockAfter(r, ref, b)
-insertbefore!(r::Region, ref::Block, b::Block) = MLIR.API.mlirRegionInsertOwnedBlockBefore(r, ref, b)
+create_region() = API.mlirRegionCreate()
+destroy!(r::Region) = API.mlirRegionDestroy(r)
+is_null(r::Region) = API.mlirRegionIsNull(r)
+get_first_block(r::Region) = API.mlirRegionGetFirstBlock(r)
+insert!(r::Region, pos::Int, b::Block) = API.mlirRegionAppendOwnedBlock(r, pos, b)
+insertafter!(r::Region, ref::Block, b::Block) = API.mlirRegionInsertOwnedBlockAfter(r, ref, b)
+insertbefore!(r::Region, ref::Block, b::Block) = API.mlirRegionInsertOwnedBlockBefore(r, ref, b)
 
 # Constructor.
 Region() = create_region()
 
 @doc(
 """
-const Region = MLIR.API.MlirRegion
+const Region = API.MlirRegion
 """, Region)

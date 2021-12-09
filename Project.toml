@@ -10,5 +10,4 @@ Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 MLIR_jll = "a70bccb4-a5c0-5e2e-a329-e731972457e8"
 
 [compat]
-
 julia = "1.7"
