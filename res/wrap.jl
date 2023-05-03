@@ -25,8 +25,6 @@ function main()
     header_files = detect_headers(joinpath(includedir, "mlir-c"), args)
     filter!(h->!endswith(h, "Python/Interop.h"), header_files)
 
-    @show header_files
-
     ctx = create_context(header_files, args, options)
 
     build!(ctx, BUILDSTAGE_NO_PRINTING)
