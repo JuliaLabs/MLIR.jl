@@ -1,0 +1,37 @@
+# generate LLVM wrappers
+
+using LLVM_full_jll
+
+using Clang.Generators
+
+cd(@__DIR__)
+
+@add_def off_t
+
+function main()
+    options = load_options(joinpath(@__DIR__, "wrap.toml"))
+
+    includedir = LLVM_full_jll.llvm_config() do config
+        readchomp(`$config --includedir`)
+    end
+    cppflags = LLVM_full_jll.llvm_config() do config
+        split(readchomp(`$config --cppflags`))
+    end
+
+    args = get_default_args("x86_64-linux-gnu")
+    push!(args, "-I$includedir")
+    append!(args, cppflags)
+
+    header_files = detect_headers(joinpath(includedir, "mlir-c"), args)
+    filter!(h->!endswith(h, "Python/Interop.h"), header_files)
+
+    @show header_files
+
+    ctx = create_context(header_files, args, options)
+
+    build!(ctx, BUILDSTAGE_NO_PRINTING)
+
+    build!(ctx, BUILDSTAGE_PRINTING_ONLY)
+end
+
+isinteractive() || main()
