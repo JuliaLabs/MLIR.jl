@@ -1,6 +1,5 @@
 name = "MLIR"
 uuid = "bfde9dd4-8f40-4a1e-be09-1475335e1c92"
-authors = ["vchuravy <vchuravy@mit.edu>", "femtomc <mccoybecker@gmail.com>"]
 version = "0.1.0"
 
 [deps]
@@ -8,3 +7,9 @@ CEnum = "fa961155-64e5-5f13-b03f-caf6b980ea82"
 LLVM = "929cbde3-209d-540e-8aea-75f648917ca0"
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 MLIR_jll = "a70bccb4-a5c0-5e2e-a329-e731972457e8"
+
+[compat]
+CEnum = "0.4"
+MLIR_jll = "14,15"
+julia = "1.9"
+LLVM = "4,5"
