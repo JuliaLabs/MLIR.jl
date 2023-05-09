@@ -29,7 +29,7 @@ makedocs(;
     sitename="MLIR.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://julia.mit.edu/MLIR/",
+        canonical="https://julia.mit.edu/MLIR.jl/",
         assets = [
             asset("https://plausible.io/js/plausible.js",
                     class=:js,
