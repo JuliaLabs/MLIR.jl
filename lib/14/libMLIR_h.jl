@@ -546,7 +546,7 @@ An auxiliary class for constructing operations.
 
 This class contains all the information necessary to construct the operation. It owns the MlirRegions it has pointers to and does not own anything else. By default, the state can be constructed from a name and location, the latter being also used to access the context, and has no other components. These components can be added progressively until the operation is constructed. Users are not expected to rely on the internals of this class and should use mlirOperationState* functions instead.
 """
-struct MlirOperationState
+mutable struct MlirOperationState # TODO: make mutable in res
     name::MlirStringRef
     location::MlirLocation
     nResults::intptr_t
