@@ -5280,6 +5280,239 @@ function mlirGetDialectHandle__tensor__()
     @ccall mlir_c.mlirGetDialectHandle__tensor__()::MlirDialectHandle
 end
 
+struct MlirExecutionEngine
+    ptr::Ptr{Cvoid}
+end
+
+"""
+    mlirExecutionEngineCreate(op, optLevel, numPaths, sharedLibPaths)
+
+Creates an ExecutionEngine for the provided ModuleOp. The ModuleOp is expected to be "translatable" to LLVM IR (only contains operations in dialects that implement the `LLVMTranslationDialectInterface`). The module ownership stays with the client and can be destroyed as soon as the call returns. `optLevel` is the optimization level to be used for transformation and code generation. LLVM passes at `optLevel` are run before code generation. The number and array of paths corresponding to shared libraries that will be loaded are specified via `numPaths` and `sharedLibPaths` respectively. TODO: figure out other options.
+"""
+function mlirExecutionEngineCreate(op, optLevel, numPaths, sharedLibPaths)
+    @ccall mlir_c.mlirExecutionEngineCreate(op::MlirModule, optLevel::Cint, numPaths::Cint, sharedLibPaths::Ptr{MlirStringRef})::MlirExecutionEngine
+end
+
+"""
+    mlirExecutionEngineDestroy(jit)
+
+Destroy an ExecutionEngine instance.
+"""
+function mlirExecutionEngineDestroy(jit)
+    @ccall mlir_c.mlirExecutionEngineDestroy(jit::MlirExecutionEngine)::Cvoid
+end
+
+"""
+    mlirExecutionEngineIsNull(jit)
+
+Checks whether an execution engine is null.
+"""
+function mlirExecutionEngineIsNull(jit)
+    @ccall mlir_c.mlirExecutionEngineIsNull(jit::MlirExecutionEngine)::Bool
+end
+
+"""
+    mlirExecutionEngineInvokePacked(jit, name, arguments)
+
+Invoke a native function in the execution engine by name with the arguments and result of the invoked function passed as an array of pointers. The function must have been tagged with the `llvm.emit\\_c\\_interface` attribute. Returns a failure if the execution fails for any reason (the function name can't be resolved for instance).
+"""
+function mlirExecutionEngineInvokePacked(jit, name, arguments)
+    @ccall mlir_c.mlirExecutionEngineInvokePacked(jit::MlirExecutionEngine, name::MlirStringRef, arguments::Ptr{Ptr{Cvoid}})::MlirLogicalResult
+end
+
+"""
+    mlirExecutionEngineLookupPacked(jit, name)
+
+Lookup the wrapper of the native function in the execution engine with the given name, returns nullptr if the function can't be looked-up.
+"""
+function mlirExecutionEngineLookupPacked(jit, name)
+    @ccall mlir_c.mlirExecutionEngineLookupPacked(jit::MlirExecutionEngine, name::MlirStringRef)::Ptr{Cvoid}
+end
+
+"""
+    mlirExecutionEngineLookup(jit, name)
+
+Lookup a native function in the execution engine by name, returns nullptr if the name can't be looked-up.
+"""
+function mlirExecutionEngineLookup(jit, name)
+    @ccall mlir_c.mlirExecutionEngineLookup(jit::MlirExecutionEngine, name::MlirStringRef)::Ptr{Cvoid}
+end
+
+"""
+    mlirExecutionEngineRegisterSymbol(jit, name, sym)
+
+Register a symbol with the jit: this symbol will be accessible to the jitted code.
+"""
+function mlirExecutionEngineRegisterSymbol(jit, name, sym)
+    @ccall mlir_c.mlirExecutionEngineRegisterSymbol(jit::MlirExecutionEngine, name::MlirStringRef, sym::Ptr{Cvoid})::Cvoid
+end
+
+"""
+    mlirExecutionEngineDumpToObjectFile(jit, fileName)
+
+Dump as an object in `fileName`.
+"""
+function mlirExecutionEngineDumpToObjectFile(jit, fileName)
+    @ccall mlir_c.mlirExecutionEngineDumpToObjectFile(jit::MlirExecutionEngine, fileName::MlirStringRef)::Cvoid
+end
+
+struct MlirIntegerSet
+    ptr::Ptr{Cvoid}
+end
+
+"""
+    mlirIntegerSetGetContext(set)
+
+Gets the context in which the given integer set lives.
+"""
+function mlirIntegerSetGetContext(set)
+    @ccall mlir_c.mlirIntegerSetGetContext(set::MlirIntegerSet)::MlirContext
+end
+
+"""
+    mlirIntegerSetIsNull(set)
+
+Checks whether an integer set is a null object.
+"""
+function mlirIntegerSetIsNull(set)
+    @ccall mlir_c.mlirIntegerSetIsNull(set::MlirIntegerSet)::Bool
+end
+
+"""
+    mlirIntegerSetEqual(s1, s2)
+
+Checks if two integer set objects are equal. This is a "shallow" comparison of two objects. Only the sets with some small number of constraints are uniqued and compare equal here. Set objects that represent the same integer set with different constraints may be considered non-equal by this check. Set difference followed by an (expensive) emptiness check should be used to check equivalence of the underlying integer sets.
+"""
+function mlirIntegerSetEqual(s1, s2)
+    @ccall mlir_c.mlirIntegerSetEqual(s1::MlirIntegerSet, s2::MlirIntegerSet)::Bool
+end
+
+"""
+    mlirIntegerSetPrint(set, callback, userData)
+
+Prints an integer set by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
+"""
+function mlirIntegerSetPrint(set, callback, userData)
+    @ccall mlir_c.mlirIntegerSetPrint(set::MlirIntegerSet, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
+end
+
+"""
+    mlirIntegerSetDump(set)
+
+Prints an integer set to the standard error stream.
+"""
+function mlirIntegerSetDump(set)
+    @ccall mlir_c.mlirIntegerSetDump(set::MlirIntegerSet)::Cvoid
+end
+
+"""
+    mlirIntegerSetEmptyGet(context, numDims, numSymbols)
+
+Gets or creates a new canonically empty integer set with the give number of dimensions and symbols in the given context.
+"""
+function mlirIntegerSetEmptyGet(context, numDims, numSymbols)
+    @ccall mlir_c.mlirIntegerSetEmptyGet(context::MlirContext, numDims::intptr_t, numSymbols::intptr_t)::MlirIntegerSet
+end
+
+"""
+    mlirIntegerSetGet(context, numDims, numSymbols, numConstraints, constraints, eqFlags)
+
+Gets or creates a new integer set in the given context. The set is defined by a list of affine constraints, with the given number of input dimensions and symbols, which are treated as either equalities (eqFlags is 1) or inequalities (eqFlags is 0). Both `constraints` and `eqFlags` are expected to point to at least `numConstraint` consecutive values.
+"""
+function mlirIntegerSetGet(context, numDims, numSymbols, numConstraints, constraints, eqFlags)
+    @ccall mlir_c.mlirIntegerSetGet(context::MlirContext, numDims::intptr_t, numSymbols::intptr_t, numConstraints::intptr_t, constraints::Ptr{MlirAffineExpr}, eqFlags::Ptr{Bool})::MlirIntegerSet
+end
+
+"""
+    mlirIntegerSetReplaceGet(set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols)
+
+Gets or creates a new integer set in which the values and dimensions of the given set are replaced with the given affine expressions. `dimReplacements` and `symbolReplacements` are expected to point to at least as many consecutive expressions as the given set has dimensions and symbols, respectively. The new set will have `numResultDims` and `numResultSymbols` dimensions and symbols, respectively.
+"""
+function mlirIntegerSetReplaceGet(set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols)
+    @ccall mlir_c.mlirIntegerSetReplaceGet(set::MlirIntegerSet, dimReplacements::Ptr{MlirAffineExpr}, symbolReplacements::Ptr{MlirAffineExpr}, numResultDims::intptr_t, numResultSymbols::intptr_t)::MlirIntegerSet
+end
+
+"""
+    mlirIntegerSetIsCanonicalEmpty(set)
+
+Checks whether the given set is a canonical empty set, e.g., the set returned by [`mlirIntegerSetEmptyGet`](@ref).
+"""
+function mlirIntegerSetIsCanonicalEmpty(set)
+    @ccall mlir_c.mlirIntegerSetIsCanonicalEmpty(set::MlirIntegerSet)::Bool
+end
+
+"""
+    mlirIntegerSetGetNumDims(set)
+
+Returns the number of dimensions in the given set.
+"""
+function mlirIntegerSetGetNumDims(set)
+    @ccall mlir_c.mlirIntegerSetGetNumDims(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumSymbols(set)
+
+Returns the number of symbols in the given set.
+"""
+function mlirIntegerSetGetNumSymbols(set)
+    @ccall mlir_c.mlirIntegerSetGetNumSymbols(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumInputs(set)
+
+Returns the number of inputs (dimensions + symbols) in the given set.
+"""
+function mlirIntegerSetGetNumInputs(set)
+    @ccall mlir_c.mlirIntegerSetGetNumInputs(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumConstraints(set)
+
+Returns the number of constraints (equalities + inequalities) in the given set.
+"""
+function mlirIntegerSetGetNumConstraints(set)
+    @ccall mlir_c.mlirIntegerSetGetNumConstraints(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumEqualities(set)
+
+Returns the number of equalities in the given set.
+"""
+function mlirIntegerSetGetNumEqualities(set)
+    @ccall mlir_c.mlirIntegerSetGetNumEqualities(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumInequalities(set)
+
+Returns the number of inequalities in the given set.
+"""
+function mlirIntegerSetGetNumInequalities(set)
+    @ccall mlir_c.mlirIntegerSetGetNumInequalities(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetConstraint(set, pos)
+
+Returns `pos`-th constraint of the set.
+"""
+function mlirIntegerSetGetConstraint(set, pos)
+    @ccall mlir_c.mlirIntegerSetGetConstraint(set::MlirIntegerSet, pos::intptr_t)::MlirAffineExpr
+end
+
+"""
+    mlirIntegerSetIsConstraintEq(set, pos)
+
+Returns `true` of the `pos`-th constraint of the set is an equality constraint, `false` otherwise.
+"""
+function mlirIntegerSetIsConstraintEq(set, pos)
+    @ccall mlir_c.mlirIntegerSetIsConstraintEq(set::MlirIntegerSet, pos::intptr_t)::Bool
+end
+
 """
     mlirOperationImplementsInterface(operation, interfaceTypeID)
 

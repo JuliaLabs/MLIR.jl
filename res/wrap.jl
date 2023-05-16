@@ -34,14 +34,13 @@ for (llvm_version, julia_version) in ((v"14.0.5", v"1.9"),
             options["general"]["output_file_path"] = output_file_path
 
             include_dir = joinpath(destdir(prefix, platform), "include")
-            libclang_header_dir = joinpath(include_dir, "mlir-c")
+            libmlir_header_dir = joinpath(include_dir, "mlir-c")
             args = Generators.get_default_args()
             push!(args, "-I$include_dir")
             push!(args, "-x")
             push!(args, "c++")
 
-            headers = detect_headers(libclang_header_dir, args)
-            filter!(h->!endswith(h, "Python/Interop.h"), headers)
+            headers = detect_headers(libmlir_header_dir, args, Dict(), endswith("Python/Interop.h"))
             ctx = create_context(headers, args, options)
 
             # build without printing so we can do custom rewriting
