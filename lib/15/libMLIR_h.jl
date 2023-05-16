@@ -131,7 +131,6 @@ function mlirLogicalResultIsFailure(res)
     @ccall mlir_c.mlirLogicalResultIsFailure(res::MlirLogicalResult)::Bool
 end
 
-# no prototype is found for this function at Support.h:130:33, please use with caution
 """
     mlirLogicalResultSuccess()
 
@@ -141,7 +140,6 @@ function mlirLogicalResultSuccess()
     @ccall mlir_c.mlirLogicalResultSuccess()::MlirLogicalResult
 end
 
-# no prototype is found for this function at Support.h:136:33, please use with caution
 """
     mlirLogicalResultFailure()
 
@@ -187,7 +185,6 @@ function mlirTypeIDHashValue(typeID)
     @ccall mlir_c.mlirTypeIDHashValue(typeID::MlirTypeID)::Csize_t
 end
 
-# no prototype is found for this function at Support.h:163:40, please use with caution
 """
     mlirTypeIDAllocatorCreate()
 
@@ -283,7 +280,6 @@ struct MlirNamedAttribute
     attribute::MlirAttribute
 end
 
-# no prototype is found for this function at IR.h:85:32, please use with caution
 """
     mlirContextCreate()
 
@@ -473,7 +469,6 @@ function mlirDialectHandleLoadDialect(arg1, arg2)
     @ccall mlir_c.mlirDialectHandleLoadDialect(arg1::MlirDialectHandle, arg2::MlirContext)::MlirDialect
 end
 
-# no prototype is found for this function at IR.h:211:40, please use with caution
 """
     mlirDialectRegistryCreate()
 
@@ -720,7 +715,6 @@ function mlirOperationStateEnableResultTypeInference(state)
     @ccall mlir_c.mlirOperationStateEnableResultTypeInference(state::Ptr{MlirOperationState})::Cvoid
 end
 
-# no prototype is found for this function at IR.h:366:40, please use with caution
 """
     mlirOpPrintingFlagsCreate()
 
@@ -1074,7 +1068,6 @@ function mlirOperationMoveBefore(op, other)
     @ccall mlir_c.mlirOperationMoveBefore(op::MlirOperation, other::MlirOperation)::Cvoid
 end
 
-# no prototype is found for this function at IR.h:548:31, please use with caution
 """
     mlirRegionCreate()
 
@@ -1624,7 +1617,6 @@ function mlirIdentifierStr(ident)
     @ccall mlir_c.mlirIdentifierStr(ident::MlirIdentifier)::MlirStringRef
 end
 
-# no prototype is found for this function at IR.h:814:34, please use with caution
 """
     mlirSymbolTableGetSymbolAttributeName()
 
@@ -1634,7 +1626,6 @@ function mlirSymbolTableGetSymbolAttributeName()
     @ccall mlir_c.mlirSymbolTableGetSymbolAttributeName()::MlirStringRef
 end
 
-# no prototype is found for this function at IR.h:817:34, please use with caution
 """
     mlirSymbolTableGetVisibilityAttributeName()
 
@@ -2282,7 +2273,6 @@ function mlirAffineMapCompressUnusedSymbols(affineMaps, size, result, populateRe
     @ccall mlir_c.mlirAffineMapCompressUnusedSymbols(affineMaps::Ptr{MlirAffineMap}, size::intptr_t, result::Ptr{Cvoid}, populateResult::Ptr{Cvoid})::Cvoid
 end
 
-# no prototype is found for this function at BuiltinAttributes.h:26:34, please use with caution
 """
     mlirAttributeGetNull()
 
@@ -3354,7 +3344,6 @@ function mlirShapedTypeIsDynamicSize(size)
     @ccall mlir_c.mlirShapedTypeIsDynamicSize(size::Int64)::Bool
 end
 
-# no prototype is found for this function at BuiltinTypes.h:155:28, please use with caution
 """
     mlirShapedTypeGetDynamicSize()
 
@@ -3373,7 +3362,6 @@ function mlirShapedTypeIsDynamicStrideOrOffset(val)
     @ccall mlir_c.mlirShapedTypeIsDynamicStrideOrOffset(val::Int64)::Bool
 end
 
-# no prototype is found for this function at BuiltinTypes.h:164:28, please use with caution
 """
     mlirShapedTypeGetDynamicStrideOrOffset()
 
@@ -3888,547 +3876,438 @@ function mlirExternalPassSignalFailure(pass)
     @ccall mlir_c.mlirExternalPassSignalFailure(pass::MlirExternalPass)::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:11:25, please use with caution
 function mlirRegisterConversionPasses()
     @ccall mlir_c.mlirRegisterConversionPasses()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:15:29, please use with caution
 function mlirCreateConversionConvertAMDGPUToROCDL()
     @ccall mlir_c.mlirCreateConversionConvertAMDGPUToROCDL()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:16:25, please use with caution
 function mlirRegisterConversionConvertAMDGPUToROCDL()
     @ccall mlir_c.mlirRegisterConversionConvertAMDGPUToROCDL()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:20:29, please use with caution
 function mlirCreateConversionConvertAffineForToGPU()
     @ccall mlir_c.mlirCreateConversionConvertAffineForToGPU()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:21:25, please use with caution
 function mlirRegisterConversionConvertAffineForToGPU()
     @ccall mlir_c.mlirRegisterConversionConvertAffineForToGPU()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:25:29, please use with caution
 function mlirCreateConversionConvertAffineToStandard()
     @ccall mlir_c.mlirCreateConversionConvertAffineToStandard()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:26:25, please use with caution
 function mlirRegisterConversionConvertAffineToStandard()
     @ccall mlir_c.mlirRegisterConversionConvertAffineToStandard()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:30:29, please use with caution
 function mlirCreateConversionConvertArithmeticToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertArithmeticToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:31:25, please use with caution
 function mlirRegisterConversionConvertArithmeticToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertArithmeticToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:35:29, please use with caution
 function mlirCreateConversionConvertArithmeticToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertArithmeticToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:36:25, please use with caution
 function mlirRegisterConversionConvertArithmeticToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertArithmeticToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:40:29, please use with caution
 function mlirCreateConversionConvertArmNeon2dToIntr()
     @ccall mlir_c.mlirCreateConversionConvertArmNeon2dToIntr()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:41:25, please use with caution
 function mlirRegisterConversionConvertArmNeon2dToIntr()
     @ccall mlir_c.mlirRegisterConversionConvertArmNeon2dToIntr()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:45:29, please use with caution
 function mlirCreateConversionConvertAsyncToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertAsyncToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:46:25, please use with caution
 function mlirRegisterConversionConvertAsyncToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertAsyncToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:50:29, please use with caution
 function mlirCreateConversionConvertBufferizationToMemRef()
     @ccall mlir_c.mlirCreateConversionConvertBufferizationToMemRef()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:51:25, please use with caution
 function mlirRegisterConversionConvertBufferizationToMemRef()
     @ccall mlir_c.mlirRegisterConversionConvertBufferizationToMemRef()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:55:29, please use with caution
 function mlirCreateConversionConvertComplexToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertComplexToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:56:25, please use with caution
 function mlirRegisterConversionConvertComplexToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertComplexToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:60:29, please use with caution
 function mlirCreateConversionConvertComplexToLibm()
     @ccall mlir_c.mlirCreateConversionConvertComplexToLibm()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:61:25, please use with caution
 function mlirRegisterConversionConvertComplexToLibm()
     @ccall mlir_c.mlirRegisterConversionConvertComplexToLibm()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:65:29, please use with caution
 function mlirCreateConversionConvertComplexToStandard()
     @ccall mlir_c.mlirCreateConversionConvertComplexToStandard()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:66:25, please use with caution
 function mlirRegisterConversionConvertComplexToStandard()
     @ccall mlir_c.mlirRegisterConversionConvertComplexToStandard()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:70:29, please use with caution
 function mlirCreateConversionConvertControlFlowToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertControlFlowToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:71:25, please use with caution
 function mlirRegisterConversionConvertControlFlowToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertControlFlowToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:75:29, please use with caution
 function mlirCreateConversionConvertControlFlowToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertControlFlowToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:76:25, please use with caution
 function mlirRegisterConversionConvertControlFlowToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertControlFlowToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:80:29, please use with caution
 function mlirCreateConversionConvertFuncToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertFuncToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:81:25, please use with caution
 function mlirRegisterConversionConvertFuncToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertFuncToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:85:29, please use with caution
 function mlirCreateConversionConvertFuncToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertFuncToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:86:25, please use with caution
 function mlirRegisterConversionConvertFuncToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertFuncToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:90:29, please use with caution
 function mlirCreateConversionConvertGPUToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertGPUToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:91:25, please use with caution
 function mlirRegisterConversionConvertGPUToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertGPUToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:95:29, please use with caution
 function mlirCreateConversionConvertGpuLaunchFuncToVulkanLaunchFunc()
     @ccall mlir_c.mlirCreateConversionConvertGpuLaunchFuncToVulkanLaunchFunc()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:96:25, please use with caution
 function mlirRegisterConversionConvertGpuLaunchFuncToVulkanLaunchFunc()
     @ccall mlir_c.mlirRegisterConversionConvertGpuLaunchFuncToVulkanLaunchFunc()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:100:29, please use with caution
 function mlirCreateConversionConvertGpuOpsToNVVMOps()
     @ccall mlir_c.mlirCreateConversionConvertGpuOpsToNVVMOps()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:101:25, please use with caution
 function mlirRegisterConversionConvertGpuOpsToNVVMOps()
     @ccall mlir_c.mlirRegisterConversionConvertGpuOpsToNVVMOps()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:105:29, please use with caution
 function mlirCreateConversionConvertGpuOpsToROCDLOps()
     @ccall mlir_c.mlirCreateConversionConvertGpuOpsToROCDLOps()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:106:25, please use with caution
 function mlirRegisterConversionConvertGpuOpsToROCDLOps()
     @ccall mlir_c.mlirRegisterConversionConvertGpuOpsToROCDLOps()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:110:29, please use with caution
 function mlirCreateConversionConvertLinalgToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertLinalgToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:111:25, please use with caution
 function mlirRegisterConversionConvertLinalgToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertLinalgToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:115:29, please use with caution
 function mlirCreateConversionConvertLinalgToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertLinalgToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:116:25, please use with caution
 function mlirRegisterConversionConvertLinalgToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertLinalgToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:120:29, please use with caution
 function mlirCreateConversionConvertLinalgToStandard()
     @ccall mlir_c.mlirCreateConversionConvertLinalgToStandard()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:121:25, please use with caution
 function mlirRegisterConversionConvertLinalgToStandard()
     @ccall mlir_c.mlirRegisterConversionConvertLinalgToStandard()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:125:29, please use with caution
 function mlirCreateConversionConvertMathToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertMathToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:126:25, please use with caution
 function mlirRegisterConversionConvertMathToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertMathToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:130:29, please use with caution
 function mlirCreateConversionConvertMathToLibm()
     @ccall mlir_c.mlirCreateConversionConvertMathToLibm()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:131:25, please use with caution
 function mlirRegisterConversionConvertMathToLibm()
     @ccall mlir_c.mlirRegisterConversionConvertMathToLibm()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:135:29, please use with caution
 function mlirCreateConversionConvertMathToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertMathToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:136:25, please use with caution
 function mlirRegisterConversionConvertMathToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertMathToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:140:29, please use with caution
 function mlirCreateConversionConvertMemRefToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertMemRefToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:141:25, please use with caution
 function mlirRegisterConversionConvertMemRefToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertMemRefToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:145:29, please use with caution
 function mlirCreateConversionConvertMemRefToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertMemRefToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:146:25, please use with caution
 function mlirRegisterConversionConvertMemRefToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertMemRefToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:150:29, please use with caution
 function mlirCreateConversionConvertNVGPUToNVVM()
     @ccall mlir_c.mlirCreateConversionConvertNVGPUToNVVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:151:25, please use with caution
 function mlirRegisterConversionConvertNVGPUToNVVM()
     @ccall mlir_c.mlirRegisterConversionConvertNVGPUToNVVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:155:29, please use with caution
 function mlirCreateConversionConvertOpenACCToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertOpenACCToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:156:25, please use with caution
 function mlirRegisterConversionConvertOpenACCToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertOpenACCToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:160:29, please use with caution
 function mlirCreateConversionConvertOpenACCToSCF()
     @ccall mlir_c.mlirCreateConversionConvertOpenACCToSCF()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:161:25, please use with caution
 function mlirRegisterConversionConvertOpenACCToSCF()
     @ccall mlir_c.mlirRegisterConversionConvertOpenACCToSCF()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:165:29, please use with caution
 function mlirCreateConversionConvertOpenMPToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertOpenMPToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:166:25, please use with caution
 function mlirRegisterConversionConvertOpenMPToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertOpenMPToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:170:29, please use with caution
 function mlirCreateConversionConvertPDLToPDLInterp()
     @ccall mlir_c.mlirCreateConversionConvertPDLToPDLInterp()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:171:25, please use with caution
 function mlirRegisterConversionConvertPDLToPDLInterp()
     @ccall mlir_c.mlirRegisterConversionConvertPDLToPDLInterp()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:175:29, please use with caution
 function mlirCreateConversionConvertParallelLoopToGpu()
     @ccall mlir_c.mlirCreateConversionConvertParallelLoopToGpu()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:176:25, please use with caution
 function mlirRegisterConversionConvertParallelLoopToGpu()
     @ccall mlir_c.mlirRegisterConversionConvertParallelLoopToGpu()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:180:29, please use with caution
 function mlirCreateConversionConvertSCFToOpenMP()
     @ccall mlir_c.mlirCreateConversionConvertSCFToOpenMP()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:181:25, please use with caution
 function mlirRegisterConversionConvertSCFToOpenMP()
     @ccall mlir_c.mlirRegisterConversionConvertSCFToOpenMP()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:185:29, please use with caution
 function mlirCreateConversionConvertSPIRVToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertSPIRVToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:186:25, please use with caution
 function mlirRegisterConversionConvertSPIRVToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertSPIRVToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:190:29, please use with caution
 function mlirCreateConversionConvertShapeConstraints()
     @ccall mlir_c.mlirCreateConversionConvertShapeConstraints()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:191:25, please use with caution
 function mlirRegisterConversionConvertShapeConstraints()
     @ccall mlir_c.mlirRegisterConversionConvertShapeConstraints()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:195:29, please use with caution
 function mlirCreateConversionConvertShapeToStandard()
     @ccall mlir_c.mlirCreateConversionConvertShapeToStandard()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:196:25, please use with caution
 function mlirRegisterConversionConvertShapeToStandard()
     @ccall mlir_c.mlirRegisterConversionConvertShapeToStandard()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:200:29, please use with caution
 function mlirCreateConversionConvertTensorToLinalg()
     @ccall mlir_c.mlirCreateConversionConvertTensorToLinalg()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:201:25, please use with caution
 function mlirRegisterConversionConvertTensorToLinalg()
     @ccall mlir_c.mlirRegisterConversionConvertTensorToLinalg()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:205:29, please use with caution
 function mlirCreateConversionConvertTensorToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertTensorToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:206:25, please use with caution
 function mlirRegisterConversionConvertTensorToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertTensorToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:210:29, please use with caution
 function mlirCreateConversionConvertVectorToGPU()
     @ccall mlir_c.mlirCreateConversionConvertVectorToGPU()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:211:25, please use with caution
 function mlirRegisterConversionConvertVectorToGPU()
     @ccall mlir_c.mlirRegisterConversionConvertVectorToGPU()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:215:29, please use with caution
 function mlirCreateConversionConvertVectorToLLVM()
     @ccall mlir_c.mlirCreateConversionConvertVectorToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:216:25, please use with caution
 function mlirRegisterConversionConvertVectorToLLVM()
     @ccall mlir_c.mlirRegisterConversionConvertVectorToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:220:29, please use with caution
 function mlirCreateConversionConvertVectorToSCF()
     @ccall mlir_c.mlirCreateConversionConvertVectorToSCF()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:221:25, please use with caution
 function mlirRegisterConversionConvertVectorToSCF()
     @ccall mlir_c.mlirRegisterConversionConvertVectorToSCF()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:225:29, please use with caution
 function mlirCreateConversionConvertVectorToSPIRV()
     @ccall mlir_c.mlirCreateConversionConvertVectorToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:226:25, please use with caution
 function mlirRegisterConversionConvertVectorToSPIRV()
     @ccall mlir_c.mlirRegisterConversionConvertVectorToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:230:29, please use with caution
 function mlirCreateConversionConvertVulkanLaunchFuncToVulkanCalls()
     @ccall mlir_c.mlirCreateConversionConvertVulkanLaunchFuncToVulkanCalls()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:231:25, please use with caution
 function mlirRegisterConversionConvertVulkanLaunchFuncToVulkanCalls()
     @ccall mlir_c.mlirRegisterConversionConvertVulkanLaunchFuncToVulkanCalls()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:235:29, please use with caution
 function mlirCreateConversionGpuToLLVMConversionPass()
     @ccall mlir_c.mlirCreateConversionGpuToLLVMConversionPass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:236:25, please use with caution
 function mlirRegisterConversionGpuToLLVMConversionPass()
     @ccall mlir_c.mlirRegisterConversionGpuToLLVMConversionPass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:240:29, please use with caution
 function mlirCreateConversionLowerHostCodeToLLVM()
     @ccall mlir_c.mlirCreateConversionLowerHostCodeToLLVM()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:241:25, please use with caution
 function mlirRegisterConversionLowerHostCodeToLLVM()
     @ccall mlir_c.mlirRegisterConversionLowerHostCodeToLLVM()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:245:29, please use with caution
 function mlirCreateConversionReconcileUnrealizedCasts()
     @ccall mlir_c.mlirCreateConversionReconcileUnrealizedCasts()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:246:25, please use with caution
 function mlirRegisterConversionReconcileUnrealizedCasts()
     @ccall mlir_c.mlirRegisterConversionReconcileUnrealizedCasts()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:250:29, please use with caution
 function mlirCreateConversionSCFToControlFlow()
     @ccall mlir_c.mlirCreateConversionSCFToControlFlow()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:251:25, please use with caution
 function mlirRegisterConversionSCFToControlFlow()
     @ccall mlir_c.mlirRegisterConversionSCFToControlFlow()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:255:29, please use with caution
 function mlirCreateConversionSCFToSPIRV()
     @ccall mlir_c.mlirCreateConversionSCFToSPIRV()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:256:25, please use with caution
 function mlirRegisterConversionSCFToSPIRV()
     @ccall mlir_c.mlirRegisterConversionSCFToSPIRV()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:260:29, please use with caution
 function mlirCreateConversionTosaToArith()
     @ccall mlir_c.mlirCreateConversionTosaToArith()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:261:25, please use with caution
 function mlirRegisterConversionTosaToArith()
     @ccall mlir_c.mlirRegisterConversionTosaToArith()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:265:29, please use with caution
 function mlirCreateConversionTosaToLinalg()
     @ccall mlir_c.mlirCreateConversionTosaToLinalg()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:266:25, please use with caution
 function mlirRegisterConversionTosaToLinalg()
     @ccall mlir_c.mlirRegisterConversionTosaToLinalg()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:270:29, please use with caution
 function mlirCreateConversionTosaToLinalgNamed()
     @ccall mlir_c.mlirCreateConversionTosaToLinalgNamed()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:271:25, please use with caution
 function mlirRegisterConversionTosaToLinalgNamed()
     @ccall mlir_c.mlirRegisterConversionTosaToLinalgNamed()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:275:29, please use with caution
 function mlirCreateConversionTosaToSCF()
     @ccall mlir_c.mlirCreateConversionTosaToSCF()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:276:25, please use with caution
 function mlirRegisterConversionTosaToSCF()
     @ccall mlir_c.mlirRegisterConversionTosaToSCF()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:280:29, please use with caution
 function mlirCreateConversionTosaToTensor()
     @ccall mlir_c.mlirCreateConversionTosaToTensor()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:281:25, please use with caution
 function mlirRegisterConversionTosaToTensor()
     @ccall mlir_c.mlirRegisterConversionTosaToTensor()::Cvoid
 end
@@ -4442,7 +4321,6 @@ function mlirEnableGlobalDebug(enable)
     @ccall mlir_c.mlirEnableGlobalDebug(enable::Bool)::Cvoid
 end
 
-# no prototype is found for this function at Debug.h:22:25, please use with caution
 """
     mlirIsGlobalDebugEnabled()
 
@@ -4467,10 +4345,10 @@ end
 Severity of a diagnostic.
 """
 @cenum MlirDiagnosticSeverity::UInt32 begin
-    MlirDiagnosticError = 0
-    MlirDiagnosticWarning = 1
-    MlirDiagnosticNote = 2
-    MlirDiagnosticRemark = 3
+    MlirDiagnosticError = 0x0000000000000000
+    MlirDiagnosticWarning = 0x0000000000000001
+    MlirDiagnosticNote = 0x0000000000000002
+    MlirDiagnosticRemark = 0x0000000000000003
 end
 
 """
@@ -4556,127 +4434,102 @@ function mlirEmitError(location, message)
     @ccall mlir_c.mlirEmitError(location::MlirLocation, message::Cstring)::Cvoid
 end
 
-# no prototype is found for this function at Async.h:20:1, please use with caution
 function mlirGetDialectHandle__async__()
     @ccall mlir_c.mlirGetDialectHandle__async__()::MlirDialectHandle
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:11:25, please use with caution
 function mlirRegisterAsyncPasses()
     @ccall mlir_c.mlirRegisterAsyncPasses()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:15:29, please use with caution
 function mlirCreateAsyncAsyncParallelFor()
     @ccall mlir_c.mlirCreateAsyncAsyncParallelFor()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:16:25, please use with caution
 function mlirRegisterAsyncAsyncParallelFor()
     @ccall mlir_c.mlirRegisterAsyncAsyncParallelFor()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:20:29, please use with caution
 function mlirCreateAsyncAsyncRuntimePolicyBasedRefCounting()
     @ccall mlir_c.mlirCreateAsyncAsyncRuntimePolicyBasedRefCounting()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:21:25, please use with caution
 function mlirRegisterAsyncAsyncRuntimePolicyBasedRefCounting()
     @ccall mlir_c.mlirRegisterAsyncAsyncRuntimePolicyBasedRefCounting()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:25:29, please use with caution
 function mlirCreateAsyncAsyncRuntimeRefCounting()
     @ccall mlir_c.mlirCreateAsyncAsyncRuntimeRefCounting()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:26:25, please use with caution
 function mlirRegisterAsyncAsyncRuntimeRefCounting()
     @ccall mlir_c.mlirRegisterAsyncAsyncRuntimeRefCounting()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:30:29, please use with caution
 function mlirCreateAsyncAsyncRuntimeRefCountingOpt()
     @ccall mlir_c.mlirCreateAsyncAsyncRuntimeRefCountingOpt()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:31:25, please use with caution
 function mlirRegisterAsyncAsyncRuntimeRefCountingOpt()
     @ccall mlir_c.mlirRegisterAsyncAsyncRuntimeRefCountingOpt()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:35:29, please use with caution
 function mlirCreateAsyncAsyncToAsyncRuntime()
     @ccall mlir_c.mlirCreateAsyncAsyncToAsyncRuntime()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:36:25, please use with caution
 function mlirRegisterAsyncAsyncToAsyncRuntime()
     @ccall mlir_c.mlirRegisterAsyncAsyncToAsyncRuntime()::Cvoid
 end
 
-# no prototype is found for this function at ControlFlow.h:19:1, please use with caution
 function mlirGetDialectHandle__cf__()
     @ccall mlir_c.mlirGetDialectHandle__cf__()::MlirDialectHandle
 end
 
-# no prototype is found for this function at Func.h:27:1, please use with caution
 function mlirGetDialectHandle__func__()
     @ccall mlir_c.mlirGetDialectHandle__func__()::MlirDialectHandle
 end
 
-# no prototype is found for this function at GPU.h:20:1, please use with caution
 function mlirGetDialectHandle__gpu__()
     @ccall mlir_c.mlirGetDialectHandle__gpu__()::MlirDialectHandle
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:11:25, please use with caution
 function mlirRegisterGPUPasses()
     @ccall mlir_c.mlirRegisterGPUPasses()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:15:29, please use with caution
 function mlirCreateGPUGpuAsyncRegionPass()
     @ccall mlir_c.mlirCreateGPUGpuAsyncRegionPass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:16:25, please use with caution
 function mlirRegisterGPUGpuAsyncRegionPass()
     @ccall mlir_c.mlirRegisterGPUGpuAsyncRegionPass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:20:29, please use with caution
 function mlirCreateGPUGpuKernelOutlining()
     @ccall mlir_c.mlirCreateGPUGpuKernelOutlining()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:21:25, please use with caution
 function mlirRegisterGPUGpuKernelOutlining()
     @ccall mlir_c.mlirRegisterGPUGpuKernelOutlining()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:25:29, please use with caution
 function mlirCreateGPUGpuLaunchSinkIndexComputations()
     @ccall mlir_c.mlirCreateGPUGpuLaunchSinkIndexComputations()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:26:25, please use with caution
 function mlirRegisterGPUGpuLaunchSinkIndexComputations()
     @ccall mlir_c.mlirRegisterGPUGpuLaunchSinkIndexComputations()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:30:29, please use with caution
 function mlirCreateGPUGpuMapParallelLoopsPass()
     @ccall mlir_c.mlirCreateGPUGpuMapParallelLoopsPass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:31:25, please use with caution
 function mlirRegisterGPUGpuMapParallelLoopsPass()
     @ccall mlir_c.mlirRegisterGPUGpuMapParallelLoopsPass()::Cvoid
 end
 
-# no prototype is found for this function at LLVM.h:19:1, please use with caution
 function mlirGetDialectHandle__llvm__()
     @ccall mlir_c.mlirGetDialectHandle__llvm__()::MlirDialectHandle
 end
@@ -4735,257 +4588,206 @@ function mlirLinalgFillBuiltinNamedOpRegion(mlirOp)
     @ccall mlir_c.mlirLinalgFillBuiltinNamedOpRegion(mlirOp::MlirOperation)::Cvoid
 end
 
-# no prototype is found for this function at Linalg.h:25:1, please use with caution
 function mlirGetDialectHandle__linalg__()
     @ccall mlir_c.mlirGetDialectHandle__linalg__()::MlirDialectHandle
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:11:25, please use with caution
 function mlirRegisterLinalgPasses()
     @ccall mlir_c.mlirRegisterLinalgPasses()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:15:29, please use with caution
 function mlirCreateLinalgConvertElementwiseToLinalg()
     @ccall mlir_c.mlirCreateLinalgConvertElementwiseToLinalg()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:16:25, please use with caution
 function mlirRegisterLinalgConvertElementwiseToLinalg()
     @ccall mlir_c.mlirRegisterLinalgConvertElementwiseToLinalg()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:20:29, please use with caution
 function mlirCreateLinalgLinalgBufferize()
     @ccall mlir_c.mlirCreateLinalgLinalgBufferize()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:21:25, please use with caution
 function mlirRegisterLinalgLinalgBufferize()
     @ccall mlir_c.mlirRegisterLinalgLinalgBufferize()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:25:29, please use with caution
 function mlirCreateLinalgLinalgDetensorize()
     @ccall mlir_c.mlirCreateLinalgLinalgDetensorize()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:26:25, please use with caution
 function mlirRegisterLinalgLinalgDetensorize()
     @ccall mlir_c.mlirRegisterLinalgLinalgDetensorize()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:30:29, please use with caution
 function mlirCreateLinalgLinalgElementwiseOpFusion()
     @ccall mlir_c.mlirCreateLinalgLinalgElementwiseOpFusion()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:31:25, please use with caution
 function mlirRegisterLinalgLinalgElementwiseOpFusion()
     @ccall mlir_c.mlirRegisterLinalgLinalgElementwiseOpFusion()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:35:29, please use with caution
 function mlirCreateLinalgLinalgFoldUnitExtentDims()
     @ccall mlir_c.mlirCreateLinalgLinalgFoldUnitExtentDims()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:36:25, please use with caution
 function mlirRegisterLinalgLinalgFoldUnitExtentDims()
     @ccall mlir_c.mlirRegisterLinalgLinalgFoldUnitExtentDims()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:40:29, please use with caution
 function mlirCreateLinalgLinalgGeneralization()
     @ccall mlir_c.mlirCreateLinalgLinalgGeneralization()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:41:25, please use with caution
 function mlirRegisterLinalgLinalgGeneralization()
     @ccall mlir_c.mlirRegisterLinalgLinalgGeneralization()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:45:29, please use with caution
 function mlirCreateLinalgLinalgInitTensorToAllocTensor()
     @ccall mlir_c.mlirCreateLinalgLinalgInitTensorToAllocTensor()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:46:25, please use with caution
 function mlirRegisterLinalgLinalgInitTensorToAllocTensor()
     @ccall mlir_c.mlirRegisterLinalgLinalgInitTensorToAllocTensor()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:50:29, please use with caution
 function mlirCreateLinalgLinalgInlineScalarOperands()
     @ccall mlir_c.mlirCreateLinalgLinalgInlineScalarOperands()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:51:25, please use with caution
 function mlirRegisterLinalgLinalgInlineScalarOperands()
     @ccall mlir_c.mlirRegisterLinalgLinalgInlineScalarOperands()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:55:29, please use with caution
 function mlirCreateLinalgLinalgLowerToAffineLoops()
     @ccall mlir_c.mlirCreateLinalgLinalgLowerToAffineLoops()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:56:25, please use with caution
 function mlirRegisterLinalgLinalgLowerToAffineLoops()
     @ccall mlir_c.mlirRegisterLinalgLinalgLowerToAffineLoops()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:60:29, please use with caution
 function mlirCreateLinalgLinalgLowerToLoops()
     @ccall mlir_c.mlirCreateLinalgLinalgLowerToLoops()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:61:25, please use with caution
 function mlirRegisterLinalgLinalgLowerToLoops()
     @ccall mlir_c.mlirRegisterLinalgLinalgLowerToLoops()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:65:29, please use with caution
 function mlirCreateLinalgLinalgLowerToParallelLoops()
     @ccall mlir_c.mlirCreateLinalgLinalgLowerToParallelLoops()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:66:25, please use with caution
 function mlirRegisterLinalgLinalgLowerToParallelLoops()
     @ccall mlir_c.mlirRegisterLinalgLinalgLowerToParallelLoops()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:70:29, please use with caution
 function mlirCreateLinalgLinalgNamedOpConversion()
     @ccall mlir_c.mlirCreateLinalgLinalgNamedOpConversion()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:71:25, please use with caution
 function mlirRegisterLinalgLinalgNamedOpConversion()
     @ccall mlir_c.mlirRegisterLinalgLinalgNamedOpConversion()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:75:29, please use with caution
 function mlirCreateLinalgLinalgStrategyDecomposePass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyDecomposePass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:76:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyDecomposePass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyDecomposePass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:80:29, please use with caution
 function mlirCreateLinalgLinalgStrategyEnablePass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyEnablePass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:81:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyEnablePass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyEnablePass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:85:29, please use with caution
 function mlirCreateLinalgLinalgStrategyGeneralizePass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyGeneralizePass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:86:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyGeneralizePass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyGeneralizePass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:90:29, please use with caution
 function mlirCreateLinalgLinalgStrategyInterchangePass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyInterchangePass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:91:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyInterchangePass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyInterchangePass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:95:29, please use with caution
 function mlirCreateLinalgLinalgStrategyLowerVectorsPass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyLowerVectorsPass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:96:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyLowerVectorsPass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyLowerVectorsPass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:100:29, please use with caution
 function mlirCreateLinalgLinalgStrategyPadPass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyPadPass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:101:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyPadPass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyPadPass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:105:29, please use with caution
 function mlirCreateLinalgLinalgStrategyPeelPass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyPeelPass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:106:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyPeelPass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyPeelPass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:110:29, please use with caution
 function mlirCreateLinalgLinalgStrategyRemoveMarkersPass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyRemoveMarkersPass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:111:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyRemoveMarkersPass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyRemoveMarkersPass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:115:29, please use with caution
 function mlirCreateLinalgLinalgStrategyTileAndFusePass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyTileAndFusePass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:116:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyTileAndFusePass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyTileAndFusePass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:120:29, please use with caution
 function mlirCreateLinalgLinalgStrategyTilePass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyTilePass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:121:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyTilePass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyTilePass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:125:29, please use with caution
 function mlirCreateLinalgLinalgStrategyVectorizePass()
     @ccall mlir_c.mlirCreateLinalgLinalgStrategyVectorizePass()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:126:25, please use with caution
 function mlirRegisterLinalgLinalgStrategyVectorizePass()
     @ccall mlir_c.mlirRegisterLinalgLinalgStrategyVectorizePass()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:130:29, please use with caution
 function mlirCreateLinalgLinalgTiling()
     @ccall mlir_c.mlirCreateLinalgLinalgTiling()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:131:25, please use with caution
 function mlirRegisterLinalgLinalgTiling()
     @ccall mlir_c.mlirRegisterLinalgLinalgTiling()::Cvoid
 end
 
-# no prototype is found for this function at PDL.h:19:1, please use with caution
 function mlirGetDialectHandle__pdl__()
     @ccall mlir_c.mlirGetDialectHandle__pdl__()::MlirDialectHandle
 end
@@ -5038,7 +4840,6 @@ function mlirPDLValueTypeGet(ctx)
     @ccall mlir_c.mlirPDLValueTypeGet(ctx::MlirContext)::MlirType
 end
 
-# no prototype is found for this function at Quant.h:19:1, please use with caution
 function mlirGetDialectHandle__quant__()
     @ccall mlir_c.mlirGetDialectHandle__quant__()::MlirDialectHandle
 end
@@ -5052,7 +4853,6 @@ function mlirTypeIsAQuantizedType(type)
     @ccall mlir_c.mlirTypeIsAQuantizedType(type::MlirType)::Bool
 end
 
-# no prototype is found for this function at Quant.h:29:29, please use with caution
 """
     mlirQuantizedTypeGetSignedFlag()
 
@@ -5368,17 +5168,14 @@ function mlirCalibratedQuantizedTypeGetMax(type)
     @ccall mlir_c.mlirCalibratedQuantizedTypeGetMax(type::MlirType)::Cdouble
 end
 
-# no prototype is found for this function at SCF.h:19:1, please use with caution
 function mlirGetDialectHandle__scf__()
     @ccall mlir_c.mlirGetDialectHandle__scf__()::MlirDialectHandle
 end
 
-# no prototype is found for this function at Shape.h:19:1, please use with caution
 function mlirGetDialectHandle__shape__()
     @ccall mlir_c.mlirGetDialectHandle__shape__()::MlirDialectHandle
 end
 
-# no prototype is found for this function at SparseTensor.h:20:1, please use with caution
 function mlirGetDialectHandle__sparse_tensor__()
     @ccall mlir_c.mlirGetDialectHandle__sparse_tensor__()::MlirDialectHandle
 end
@@ -5391,9 +5188,9 @@ Dimension level types that define sparse tensors: - MLIR\\_SPARSE\\_TENSOR\\_DIM
 These correspond to SparseTensorEncodingAttr::DimLevelType in the C++ API. If updating, keep them in sync and update the static\\_assert in the impl file.
 """
 @cenum MlirSparseTensorDimLevelType::UInt32 begin
-    MLIR_SPARSE_TENSOR_DIM_LEVEL_DENSE = 0
-    MLIR_SPARSE_TENSOR_DIM_LEVEL_COMPRESSED = 1
-    MLIR_SPARSE_TENSOR_DIM_LEVEL_SINGLETON = 2
+    MLIR_SPARSE_TENSOR_DIM_LEVEL_DENSE = 0x0000000000000000
+    MLIR_SPARSE_TENSOR_DIM_LEVEL_COMPRESSED = 0x0000000000000001
+    MLIR_SPARSE_TENSOR_DIM_LEVEL_SINGLETON = 0x0000000000000002
 end
 
 """
@@ -5459,34 +5256,261 @@ function mlirSparseTensorEncodingAttrGetIndexBitWidth(attr)
     @ccall mlir_c.mlirSparseTensorEncodingAttrGetIndexBitWidth(attr::MlirAttribute)::Cint
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:11:25, please use with caution
 function mlirRegisterSparseTensorPasses()
     @ccall mlir_c.mlirRegisterSparseTensorPasses()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:15:29, please use with caution
 function mlirCreateSparseTensorSparseTensorConversion()
     @ccall mlir_c.mlirCreateSparseTensorSparseTensorConversion()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:16:25, please use with caution
 function mlirRegisterSparseTensorSparseTensorConversion()
     @ccall mlir_c.mlirRegisterSparseTensorSparseTensorConversion()::Cvoid
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:20:29, please use with caution
 function mlirCreateSparseTensorSparsification()
     @ccall mlir_c.mlirCreateSparseTensorSparsification()::MlirPass
 end
 
-# no prototype is found for this function at Passes.capi.h.inc:21:25, please use with caution
 function mlirRegisterSparseTensorSparsification()
     @ccall mlir_c.mlirRegisterSparseTensorSparsification()::Cvoid
 end
 
-# no prototype is found for this function at Tensor.h:19:1, please use with caution
 function mlirGetDialectHandle__tensor__()
     @ccall mlir_c.mlirGetDialectHandle__tensor__()::MlirDialectHandle
+end
+
+struct MlirExecutionEngine
+    ptr::Ptr{Cvoid}
+end
+
+"""
+    mlirExecutionEngineCreate(op, optLevel, numPaths, sharedLibPaths)
+
+Creates an ExecutionEngine for the provided ModuleOp. The ModuleOp is expected to be "translatable" to LLVM IR (only contains operations in dialects that implement the `LLVMTranslationDialectInterface`). The module ownership stays with the client and can be destroyed as soon as the call returns. `optLevel` is the optimization level to be used for transformation and code generation. LLVM passes at `optLevel` are run before code generation. The number and array of paths corresponding to shared libraries that will be loaded are specified via `numPaths` and `sharedLibPaths` respectively. TODO: figure out other options.
+"""
+function mlirExecutionEngineCreate(op, optLevel, numPaths, sharedLibPaths)
+    @ccall mlir_c.mlirExecutionEngineCreate(op::MlirModule, optLevel::Cint, numPaths::Cint, sharedLibPaths::Ptr{MlirStringRef})::MlirExecutionEngine
+end
+
+"""
+    mlirExecutionEngineDestroy(jit)
+
+Destroy an ExecutionEngine instance.
+"""
+function mlirExecutionEngineDestroy(jit)
+    @ccall mlir_c.mlirExecutionEngineDestroy(jit::MlirExecutionEngine)::Cvoid
+end
+
+"""
+    mlirExecutionEngineIsNull(jit)
+
+Checks whether an execution engine is null.
+"""
+function mlirExecutionEngineIsNull(jit)
+    @ccall mlir_c.mlirExecutionEngineIsNull(jit::MlirExecutionEngine)::Bool
+end
+
+"""
+    mlirExecutionEngineInvokePacked(jit, name, arguments)
+
+Invoke a native function in the execution engine by name with the arguments and result of the invoked function passed as an array of pointers. The function must have been tagged with the `llvm.emit\\_c\\_interface` attribute. Returns a failure if the execution fails for any reason (the function name can't be resolved for instance).
+"""
+function mlirExecutionEngineInvokePacked(jit, name, arguments)
+    @ccall mlir_c.mlirExecutionEngineInvokePacked(jit::MlirExecutionEngine, name::MlirStringRef, arguments::Ptr{Ptr{Cvoid}})::MlirLogicalResult
+end
+
+"""
+    mlirExecutionEngineLookupPacked(jit, name)
+
+Lookup the wrapper of the native function in the execution engine with the given name, returns nullptr if the function can't be looked-up.
+"""
+function mlirExecutionEngineLookupPacked(jit, name)
+    @ccall mlir_c.mlirExecutionEngineLookupPacked(jit::MlirExecutionEngine, name::MlirStringRef)::Ptr{Cvoid}
+end
+
+"""
+    mlirExecutionEngineLookup(jit, name)
+
+Lookup a native function in the execution engine by name, returns nullptr if the name can't be looked-up.
+"""
+function mlirExecutionEngineLookup(jit, name)
+    @ccall mlir_c.mlirExecutionEngineLookup(jit::MlirExecutionEngine, name::MlirStringRef)::Ptr{Cvoid}
+end
+
+"""
+    mlirExecutionEngineRegisterSymbol(jit, name, sym)
+
+Register a symbol with the jit: this symbol will be accessible to the jitted code.
+"""
+function mlirExecutionEngineRegisterSymbol(jit, name, sym)
+    @ccall mlir_c.mlirExecutionEngineRegisterSymbol(jit::MlirExecutionEngine, name::MlirStringRef, sym::Ptr{Cvoid})::Cvoid
+end
+
+"""
+    mlirExecutionEngineDumpToObjectFile(jit, fileName)
+
+Dump as an object in `fileName`.
+"""
+function mlirExecutionEngineDumpToObjectFile(jit, fileName)
+    @ccall mlir_c.mlirExecutionEngineDumpToObjectFile(jit::MlirExecutionEngine, fileName::MlirStringRef)::Cvoid
+end
+
+struct MlirIntegerSet
+    ptr::Ptr{Cvoid}
+end
+
+"""
+    mlirIntegerSetGetContext(set)
+
+Gets the context in which the given integer set lives.
+"""
+function mlirIntegerSetGetContext(set)
+    @ccall mlir_c.mlirIntegerSetGetContext(set::MlirIntegerSet)::MlirContext
+end
+
+"""
+    mlirIntegerSetIsNull(set)
+
+Checks whether an integer set is a null object.
+"""
+function mlirIntegerSetIsNull(set)
+    @ccall mlir_c.mlirIntegerSetIsNull(set::MlirIntegerSet)::Bool
+end
+
+"""
+    mlirIntegerSetEqual(s1, s2)
+
+Checks if two integer set objects are equal. This is a "shallow" comparison of two objects. Only the sets with some small number of constraints are uniqued and compare equal here. Set objects that represent the same integer set with different constraints may be considered non-equal by this check. Set difference followed by an (expensive) emptiness check should be used to check equivalence of the underlying integer sets.
+"""
+function mlirIntegerSetEqual(s1, s2)
+    @ccall mlir_c.mlirIntegerSetEqual(s1::MlirIntegerSet, s2::MlirIntegerSet)::Bool
+end
+
+"""
+    mlirIntegerSetPrint(set, callback, userData)
+
+Prints an integer set by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
+"""
+function mlirIntegerSetPrint(set, callback, userData)
+    @ccall mlir_c.mlirIntegerSetPrint(set::MlirIntegerSet, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
+end
+
+"""
+    mlirIntegerSetDump(set)
+
+Prints an integer set to the standard error stream.
+"""
+function mlirIntegerSetDump(set)
+    @ccall mlir_c.mlirIntegerSetDump(set::MlirIntegerSet)::Cvoid
+end
+
+"""
+    mlirIntegerSetEmptyGet(context, numDims, numSymbols)
+
+Gets or creates a new canonically empty integer set with the give number of dimensions and symbols in the given context.
+"""
+function mlirIntegerSetEmptyGet(context, numDims, numSymbols)
+    @ccall mlir_c.mlirIntegerSetEmptyGet(context::MlirContext, numDims::intptr_t, numSymbols::intptr_t)::MlirIntegerSet
+end
+
+"""
+    mlirIntegerSetGet(context, numDims, numSymbols, numConstraints, constraints, eqFlags)
+
+Gets or creates a new integer set in the given context. The set is defined by a list of affine constraints, with the given number of input dimensions and symbols, which are treated as either equalities (eqFlags is 1) or inequalities (eqFlags is 0). Both `constraints` and `eqFlags` are expected to point to at least `numConstraint` consecutive values.
+"""
+function mlirIntegerSetGet(context, numDims, numSymbols, numConstraints, constraints, eqFlags)
+    @ccall mlir_c.mlirIntegerSetGet(context::MlirContext, numDims::intptr_t, numSymbols::intptr_t, numConstraints::intptr_t, constraints::Ptr{MlirAffineExpr}, eqFlags::Ptr{Bool})::MlirIntegerSet
+end
+
+"""
+    mlirIntegerSetReplaceGet(set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols)
+
+Gets or creates a new integer set in which the values and dimensions of the given set are replaced with the given affine expressions. `dimReplacements` and `symbolReplacements` are expected to point to at least as many consecutive expressions as the given set has dimensions and symbols, respectively. The new set will have `numResultDims` and `numResultSymbols` dimensions and symbols, respectively.
+"""
+function mlirIntegerSetReplaceGet(set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols)
+    @ccall mlir_c.mlirIntegerSetReplaceGet(set::MlirIntegerSet, dimReplacements::Ptr{MlirAffineExpr}, symbolReplacements::Ptr{MlirAffineExpr}, numResultDims::intptr_t, numResultSymbols::intptr_t)::MlirIntegerSet
+end
+
+"""
+    mlirIntegerSetIsCanonicalEmpty(set)
+
+Checks whether the given set is a canonical empty set, e.g., the set returned by [`mlirIntegerSetEmptyGet`](@ref).
+"""
+function mlirIntegerSetIsCanonicalEmpty(set)
+    @ccall mlir_c.mlirIntegerSetIsCanonicalEmpty(set::MlirIntegerSet)::Bool
+end
+
+"""
+    mlirIntegerSetGetNumDims(set)
+
+Returns the number of dimensions in the given set.
+"""
+function mlirIntegerSetGetNumDims(set)
+    @ccall mlir_c.mlirIntegerSetGetNumDims(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumSymbols(set)
+
+Returns the number of symbols in the given set.
+"""
+function mlirIntegerSetGetNumSymbols(set)
+    @ccall mlir_c.mlirIntegerSetGetNumSymbols(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumInputs(set)
+
+Returns the number of inputs (dimensions + symbols) in the given set.
+"""
+function mlirIntegerSetGetNumInputs(set)
+    @ccall mlir_c.mlirIntegerSetGetNumInputs(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumConstraints(set)
+
+Returns the number of constraints (equalities + inequalities) in the given set.
+"""
+function mlirIntegerSetGetNumConstraints(set)
+    @ccall mlir_c.mlirIntegerSetGetNumConstraints(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumEqualities(set)
+
+Returns the number of equalities in the given set.
+"""
+function mlirIntegerSetGetNumEqualities(set)
+    @ccall mlir_c.mlirIntegerSetGetNumEqualities(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetNumInequalities(set)
+
+Returns the number of inequalities in the given set.
+"""
+function mlirIntegerSetGetNumInequalities(set)
+    @ccall mlir_c.mlirIntegerSetGetNumInequalities(set::MlirIntegerSet)::intptr_t
+end
+
+"""
+    mlirIntegerSetGetConstraint(set, pos)
+
+Returns `pos`-th constraint of the set.
+"""
+function mlirIntegerSetGetConstraint(set, pos)
+    @ccall mlir_c.mlirIntegerSetGetConstraint(set::MlirIntegerSet, pos::intptr_t)::MlirAffineExpr
+end
+
+"""
+    mlirIntegerSetIsConstraintEq(set, pos)
+
+Returns `true` of the `pos`-th constraint of the set is an equality constraint, `false` otherwise.
+"""
+function mlirIntegerSetIsConstraintEq(set, pos)
+    @ccall mlir_c.mlirIntegerSetIsConstraintEq(set::MlirIntegerSet, pos::intptr_t)::Bool
 end
 
 """
@@ -5507,7 +5531,6 @@ function mlirOperationImplementsInterfaceStatic(operationName, context, interfac
     @ccall mlir_c.mlirOperationImplementsInterfaceStatic(operationName::MlirStringRef, context::MlirContext, interfaceTypeID::MlirTypeID)::Bool
 end
 
-# no prototype is found for this function at Interfaces.h:45:31, please use with caution
 """
     mlirInferTypeOpInterfaceTypeID()
 
@@ -5550,7 +5573,6 @@ function mlirRegisterAllLLVMTranslations(context)
     @ccall mlir_c.mlirRegisterAllLLVMTranslations(context::MlirContext)::Cvoid
 end
 
-# no prototype is found for this function at RegisterEverything.h:32:25, please use with caution
 """
     mlirRegisterAllPasses()
 
@@ -5560,137 +5582,110 @@ function mlirRegisterAllPasses()
     @ccall mlir_c.mlirRegisterAllPasses()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:11:25, please use with caution
 function mlirRegisterTransformsPasses()
     @ccall mlir_c.mlirRegisterTransformsPasses()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:15:29, please use with caution
 function mlirCreateTransformsCSE()
     @ccall mlir_c.mlirCreateTransformsCSE()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:16:25, please use with caution
 function mlirRegisterTransformsCSE()
     @ccall mlir_c.mlirRegisterTransformsCSE()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:20:29, please use with caution
 function mlirCreateTransformsCanonicalizer()
     @ccall mlir_c.mlirCreateTransformsCanonicalizer()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:21:25, please use with caution
 function mlirRegisterTransformsCanonicalizer()
     @ccall mlir_c.mlirRegisterTransformsCanonicalizer()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:25:29, please use with caution
 function mlirCreateTransformsControlFlowSink()
     @ccall mlir_c.mlirCreateTransformsControlFlowSink()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:26:25, please use with caution
 function mlirRegisterTransformsControlFlowSink()
     @ccall mlir_c.mlirRegisterTransformsControlFlowSink()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:30:29, please use with caution
 function mlirCreateTransformsInliner()
     @ccall mlir_c.mlirCreateTransformsInliner()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:31:25, please use with caution
 function mlirRegisterTransformsInliner()
     @ccall mlir_c.mlirRegisterTransformsInliner()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:35:29, please use with caution
 function mlirCreateTransformsLocationSnapshot()
     @ccall mlir_c.mlirCreateTransformsLocationSnapshot()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:36:25, please use with caution
 function mlirRegisterTransformsLocationSnapshot()
     @ccall mlir_c.mlirRegisterTransformsLocationSnapshot()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:40:29, please use with caution
 function mlirCreateTransformsLoopInvariantCodeMotion()
     @ccall mlir_c.mlirCreateTransformsLoopInvariantCodeMotion()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:41:25, please use with caution
 function mlirRegisterTransformsLoopInvariantCodeMotion()
     @ccall mlir_c.mlirRegisterTransformsLoopInvariantCodeMotion()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:45:29, please use with caution
 function mlirCreateTransformsPrintOpStats()
     @ccall mlir_c.mlirCreateTransformsPrintOpStats()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:46:25, please use with caution
 function mlirRegisterTransformsPrintOpStats()
     @ccall mlir_c.mlirRegisterTransformsPrintOpStats()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:50:29, please use with caution
 function mlirCreateTransformsSCCP()
     @ccall mlir_c.mlirCreateTransformsSCCP()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:51:25, please use with caution
 function mlirRegisterTransformsSCCP()
     @ccall mlir_c.mlirRegisterTransformsSCCP()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:55:29, please use with caution
 function mlirCreateTransformsStripDebugInfo()
     @ccall mlir_c.mlirCreateTransformsStripDebugInfo()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:56:25, please use with caution
 function mlirRegisterTransformsStripDebugInfo()
     @ccall mlir_c.mlirRegisterTransformsStripDebugInfo()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:60:29, please use with caution
 function mlirCreateTransformsSymbolDCE()
     @ccall mlir_c.mlirCreateTransformsSymbolDCE()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:61:25, please use with caution
 function mlirRegisterTransformsSymbolDCE()
     @ccall mlir_c.mlirRegisterTransformsSymbolDCE()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:65:29, please use with caution
 function mlirCreateTransformsSymbolPrivatize()
     @ccall mlir_c.mlirCreateTransformsSymbolPrivatize()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:66:25, please use with caution
 function mlirRegisterTransformsSymbolPrivatize()
     @ccall mlir_c.mlirRegisterTransformsSymbolPrivatize()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:70:29, please use with caution
 function mlirCreateTransformsTopologicalSort()
     @ccall mlir_c.mlirCreateTransformsTopologicalSort()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:71:25, please use with caution
 function mlirRegisterTransformsTopologicalSort()
     @ccall mlir_c.mlirRegisterTransformsTopologicalSort()::Cvoid
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:75:29, please use with caution
 function mlirCreateTransformsViewOpGraph()
     @ccall mlir_c.mlirCreateTransformsViewOpGraph()::MlirPass
 end
 
-# no prototype is found for this function at Transforms.capi.h.inc:76:25, please use with caution
 function mlirRegisterTransformsViewOpGraph()
     @ccall mlir_c.mlirRegisterTransformsViewOpGraph()::Cvoid
 end
