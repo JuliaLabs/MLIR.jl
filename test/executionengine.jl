@@ -20,9 +20,9 @@ end
 function lowerModuleToLLVM(ctx, mod)
     pm = MLIR.API.mlirPassManagerCreate(ctx)
     if LLVM.version() >= v"15"
-        op = MLIR.API.mlirStringRefCreateFromCString("func.func")
+        op = "func.func"
     else
-        op = MLIR.API.mlirStringRefCreateFromCString("builtin.func")
+        op = "builtin.func"
     end
     opm = MLIR.API.mlirPassManagerGetNestedUnder(pm, op)
     if LLVM.version() >= v"15"
@@ -49,8 +49,7 @@ ctx = MLIR.API.mlirContextCreate()
 registerAllUpstreamDialects!(ctx)
 
 if LLVM.version() >= v"15"
-    ir = MLIR.API.mlirStringRefCreateFromCString(
-        """
+    ir = """
         module {
             func.func @add(%arg0 : i32) -> i32 attributes { llvm.emit_c_interface } {
                 %res = arith.addi %arg0, %arg0 : i32
@@ -58,10 +57,8 @@ if LLVM.version() >= v"15"
             }
         }
         """
-    )
 else
-    ir = MLIR.API.mlirStringRefCreateFromCString(
-        """
+    ir = """
         module {
             func @add(%arg0 : i32) -> i32 attributes { llvm.emit_c_interface } {
                 %res = arith.addi %arg0, %arg0 : i32
@@ -69,7 +66,6 @@ else
             }
         }
         """
-    )
 end
 mod = MLIR.API.mlirModuleCreateParse(ctx, ir)
 lowerModuleToLLVM(ctx, mod)
@@ -85,8 +81,7 @@ if jit == C_NULL
     error("Execution engine creation failed")
 end
 
-addr = MLIR.API.mlirExecutionEngineLookup(jit,
-    MLIR.API.mlirStringRefCreateFromCString("add"))
+addr = MLIR.API.mlirExecutionEngineLookup(jit, "add")
 
 if addr == C_NULL
     error("Lookup failed")
