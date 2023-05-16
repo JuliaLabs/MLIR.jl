@@ -53,13 +53,6 @@ function print_callback(str::MlirStringRef, userdata)
     return Cvoid()
 end
 
-### String Ref
-
-String(strref::MlirStringRef) =
-    Base.unsafe_string(Base.convert(Ptr{Cchar}, strref.data), strref.length)
-Base.convert(::Type{MlirStringRef}, s::String) =
-    MlirStringRef(Base.unsafe_convert(Cstring, s), sizeof(s))
-
 ### Identifier
 
 String(ident::MlirIdentifier) = String(API.mlirIdentifierStr(ident))
@@ -173,7 +166,7 @@ function Base.show(io::IO, location::Location)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
     print(io, "Location(#= ")
-    GC.@preserve ref API.mlirLocationPrint(location, c_print_callback, ref)
+    API.mlirLocationPrint(location, c_print_callback, ref)
     print(io, " =#)")
 end
 
@@ -268,7 +261,7 @@ function Base.show(io::IO, type::MType)
     print(io, "MType(#= ")
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref API.mlirTypePrint(type, c_print_callback, ref)
+    API.mlirTypePrint(type, c_print_callback, ref)
     print(io, " =#)")
 end
 
@@ -443,7 +436,7 @@ function Base.show(io::IO, attribute::Attribute)
     print(io, "Attribute(#= ")
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref API.mlirAttributePrint(attribute, c_print_callback, ref)
+    API.mlirAttributePrint(attribute, c_print_callback, ref)
     print(io, " =#)")
 end
 
@@ -484,7 +477,7 @@ Base.ndims(value::Value) = Base.ndims(get_type(value))
 function Base.show(io::IO, value::Value)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref API.mlirValuePrint(value, c_print_callback, ref)
+    API.mlirValuePrint(value, c_print_callback, ref)
 end
 
 is_a_op_result(value) = API.mlirValueIsAOpResult(value)
@@ -642,7 +635,7 @@ function Base.show(io::IO, operation::Operation)
     ref = Ref(io)
     flags = API.mlirOpPrintingFlagsCreate()
     get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true, true)
-    GC.@preserve ref API.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
+    API.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
     println(io)
 end
 
@@ -711,7 +704,7 @@ end
 function Base.show(io::IO, block::Block)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref API.mlirBlockPrint(block, c_print_callback, ref)
+    API.mlirBlockPrint(block, c_print_callback, ref)
 end
 
 ### Region
@@ -896,7 +889,7 @@ function Base.show(io::IO, op_pass::OpPassManager)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
     println(io, "OpPassManager(\"\"\"")
-    GC.@preserve ref API.mlirPrintPassPipeline(op_pass, c_print_callback, ref)
+    API.mlirPrintPassPipeline(op_pass, c_print_callback, ref)
     println(io)
     print(io, "\"\"\")")
 end
