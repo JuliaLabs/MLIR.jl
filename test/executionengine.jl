@@ -1,4 +1,6 @@
 using MLIR
+using Test
+
 import LLVM
 
 function registerAllUpstreamDialects!(ctx)
@@ -50,7 +52,24 @@ lowerModuleToLLVM(ctx, mod)
 
 MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
 
-# TODO: We are missing the mlirExecutionEngine or translateModuleToLLVMIR
+# TODO add C-API for translateModuleToLLVMIR
 
+jit = MLIR.API.mlirExecutionEngineCreate(
+    mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
+
+if jit == C_NULL
+    error("Execution engine creation failed")
+end
+
+addr = MLIR.API.mlirExecutionEngineLookup(jit,
+    MLIR.API.mlirStringRefCreateFromCString("add"))
+
+if addr == C_NULL
+    error("Lookup failed")
+end
+
+@test ccall(addr, Cint, (Cint,), 42) == 84
+
+MLIR.API.mlirExecutionEngineDestroy(jit)
 MLIR.API.mlirModuleDestroy(mod)
 MLIR.API.mlirContextDestroy(ctx)
