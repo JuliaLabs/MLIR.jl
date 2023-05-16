@@ -510,33 +510,30 @@ end
 ### OperationState
 
 struct OperationState
-    opstate::MlirOperationState
+    opstate::Base.RefValue{MlirOperationState}
 end
 
-OperationState(name, location) = OperationState(API.mlirOperationStateGet(name, location))
+OperationState(name, location) = OperationState(Ref(API.mlirOperationStateGet(name, location)))
 
 add_results!(state, results) =
-    API.mlirOperationStateAddResults(state, length(results), results)
+    API.mlirOperationStateAddResults(state.opstate, length(results), results)
 add_operands!(state, operands) =
-    API.mlirOperationStateAddOperands(state, length(operands), operands)
+    API.mlirOperationStateAddOperands(state.opstate, length(operands), operands)
 function add_owned_regions!(state, regions)
     mlir_regions = Base.convert.(MlirRegion, regions)
     lose_ownership!.(regions)
-    API.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
+    API.mlirOperationStateAddOwnedRegions(state.opstate, length(mlir_regions), mlir_regions)
 end
 add_attributes!(state, attributes) =
-    API.mlirOperationStateAddAttributes(state, length(attributes), attributes)
+    API.mlirOperationStateAddAttributes(state.opstate, length(attributes), attributes)
 add_successors!(state, successors) =
     API.mlirOperationStateAddSuccessors(
-        state, length(successors),
+        state.opstate, length(successors),
         convert(Vector{API.MlirBlock}, successors),
     )
 
 enable_type_inference!(state) =
-    API.mlirOperationStateEnableResultTypeInference(state)
-
-Base.unsafe_convert(::Type{Ptr{MlirOperationState}}, state::OperationState) =
-    Base.unsafe_convert(Ptr{MlirOperationState}, Base.pointer_from_objref(state.opstate))
+    API.mlirOperationStateEnableResultTypeInference(state.opstate)
 
 ### Operation
 
@@ -554,7 +551,7 @@ mutable struct Operation
     end
 end
 
-Operation(state::OperationState) = Operation(API.mlirOperationCreate(state), true)
+Operation(state::OperationState) = Operation(API.mlirOperationCreate(state.opstate), true)
 
 Base.copy(operation::Operation) = Operation(API.mlirOperationClone(operation))
 
