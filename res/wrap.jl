@@ -1,7 +1,5 @@
 # generate LLVM wrappers
 
-using LLVM_full_jll
-
 using Clang.Generators
 
 cd(@__DIR__)
