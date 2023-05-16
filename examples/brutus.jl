@@ -1,9 +1,9 @@
 module Brutus
 
+import LLVM
 using MLIR.IR
-using MLIR.Dialects: arith, func, cf
+using MLIR.Dialects: arith, func, cf, std
 using Core: PhiNode, GotoNode, GotoIfNot, SSAValue, Argument, ReturnNode, PiNode
-
 
 const BrutusScalar = Union{Bool,Int64,Int32,Float32,Float64}
 
@@ -24,7 +24,6 @@ const intrinsics_to_mlir = Dict([
     Base.:(===) =>  single_op_wrapper(cmpi_pred(arith.Predicates.eq)),
     Base.mul_int => single_op_wrapper(arith.muli),
     Base.mul_float => single_op_wrapper(arith.mulf),
-    # TODO: i don't know how to do a bitwise negation in any other way
     Base.not_int => function(ctx, block, args; loc=Location(ctx))
         arg = only(args)
         ones = push!(block, arith.constant(ctx, -1, IR.get_type(arg); loc)) |> IR.get_result
@@ -84,9 +83,8 @@ function code_mlir(f, types; ctx=Context())
     @assert first(ir.argtypes) isa Core.Const
 
     values = Vector{Value}(undef, length(ir.stmts))
-    @show length(ir.stmts) length(values)
 
-    for dialect in ("func", "cf")
+    for dialect in (LLVM.version() >= v"15" ? ("func", "cf") : ("std",))
         IR.get_or_load_dialect!(ctx, dialect)
     end
 
@@ -107,7 +105,7 @@ function code_mlir(f, types; ctx=Context())
             values[x.id]
         elseif x isa Core.Argument
             IR.get_argument(entry_block, x.n - 1)
-        elseif x isa Number
+        elseif x isa BrutusScalar
             IR.get_result(push!(current_block, arith.constant(ctx, x)))
         else
             error("could not use value $x inside MLIR")
@@ -149,7 +147,8 @@ function code_mlir(f, types; ctx=Context())
             elseif inst isa GotoNode
                 args = get_value.(collect_value_arguments(ir, block_id, inst.label))
                 dest = blocks[inst.label]
-                push!(current_block, cf.br(ctx, dest, args; loc=Location(ctx, line)))
+                brop = LLVM.version() >= v"15" ? cf.br : std.br
+                push!(current_block, brop(ctx, dest, args; loc=Location(ctx, line)))
             elseif inst isa GotoIfNot
                 false_args = get_value.(collect_value_arguments(ir, block_id, inst.dest))
                 cond = get_value(inst.cond)
@@ -159,11 +158,13 @@ function code_mlir(f, types; ctx=Context())
                 other_dest = blocks[other_dest]
                 dest = blocks[inst.dest]
 
-                cond_br = cf.cond_br(ctx, cond, other_dest, dest, true_args, false_args; loc=Location(ctx, line))
+                cond_brop = LLVM.version() >= v"15" ? cf.cond_br : std.cond_br
+                cond_br = cond_brop(ctx, cond, other_dest, dest, true_args, false_args; loc=Location(ctx, line))
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
                 line = ir.linetable[stmt[:line]]
-                push!(current_block, func.return_(ctx, [get_value(inst.val)]; loc=Location(ctx, line)))
+                retop = LLVM.version() >= v"15" ? func.return_ : std.return_
+                push!(current_block, retop(ctx, [get_value(inst.val)]; loc=Location(ctx, line)))
             else
                 error("unhandled ir $(inst)")
             end
@@ -177,7 +178,8 @@ function code_mlir(f, types; ctx=Context())
         push!(region, b)
     end
 
-    state = OperationState("func.func", Location(ctx))
+    LLVM15 = LLVM.version() >= v"15"
+    state = OperationState(LLVM15 ? "func.func" : "builtin.func", Location(ctx))
 
     input_types = MType[
         IR.get_type(IR.get_argument(entry_block, i))
@@ -188,7 +190,7 @@ function code_mlir(f, types; ctx=Context())
     ftype = MType(ctx, input_types => result_types)
     IR.add_attributes!(state, [
         NamedAttribute(ctx, "sym_name", IR.Attribute(ctx, string(func_name))),
-        NamedAttribute(ctx, "function_type", IR.Attribute(ftype)),
+        NamedAttribute(ctx, LLVM15 ? "function_type" : "type", IR.Attribute(ftype)),
     ])
     IR.add_owned_regions!(state, Region[region])
 
@@ -239,38 +241,33 @@ end
 
 # ---
 
+using Test
 using MLIR.IR, MLIR
 
 ctx = Context()
+# IR.enable_multithreading!(ctx, false)
 
-MLIR.API.mlirContextEnableMultithreading(ctx, false)
-MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
-MLIR.API.mlirRegisterAllPasses()
-
-op = Brutus.code_mlir(pow, Tuple{Float64, Int})
+op = Brutus.code_mlir(pow, Tuple{Int, Int}; ctx)
 
 mod = MModule(ctx, Location(ctx))
 body = IR.get_body(mod)
 push!(body, op)
 
 pm = IR.PassManager(ctx)
-opm = IR.OpPassManager(pm, "builtin.module")
+opm = IR.OpPassManager(pm)
 
-# TODO: make high-level API for these
-MLIR.API.mlirPassManagerEnableIRPrinting(pm)
-MLIR.API.mlirPassManagerEnableVerifier(pm, true)
+# IR.enable_ir_printing!(pm)
+IR.enable_verifier!(pm, true)
 
-# MLIR.API.mlirOpPassManagerAddOwnedPass(opm, MLIR.API.mlirCreateConversionConvertArithmeticToLLVM())
-# MLIR.API.mlirOpPassManagerAddOwnedPass(opm, MLIR.API.mlirCreateConversionConvertControlFlowToLLVM())
-# MLIR.API.mlirPassManagerAddOwnedPass(pm, MLIR.API.mlirCreateConversionConvertFuncToLLVM())
+MLIR.API.mlirRegisterAllPasses()
+MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
+IR.add_pipeline!(opm, Brutus.LLVM.version() >= v"15" ? "convert-arith-to-llvm,convert-func-to-llvm" : "convert-std-to-llvm")
 
-# MLIR.API.mlirRegisterConversionConvertFuncToLLVM()
-# MLIR.API.mlirPassManagerAddOwnedPass(pm, MLIR.API.mlirCreateTransformsCanonicalizer())
-# MLIR.API.mlirPassManagerAddOwnedPass(pm, MLIR.API.mlirCreateTransformsControlFlowSink())
-MLIR.API.mlirPassManagerAddOwnedPass(pm, MLIR.API.mlirCreateTransformsTopologicalSort())
+IR.run!(pm, mod)
 
-IR.add_pipeline!(opm, "convert-func-to-llvm")
+jit = MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
+fptr = MLIR.API.mlirExecutionEngineLookup(jit, "pow")
 
-IR.run(pm, mod)
+x, y = 3, 4
 
-mod
+@test ccall(fptr, Int, (Int, Int), x, y) == pow(x, y)

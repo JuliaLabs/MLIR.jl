@@ -1,6 +1,6 @@
 module IR
 
-import ..API: API as LibMLIR
+import ..API: API
 
 export
     Operation,
@@ -23,7 +23,7 @@ export
 
 
 import Base: ==, String
-using .LibMLIR:
+using .API:
     MlirDialectRegistry,
     MlirDialectHandle,
     MlirAttribute,
@@ -62,7 +62,7 @@ Base.convert(::Type{MlirStringRef}, s::String) =
 
 ### Identifier
 
-String(ident::MlirIdentifier) = String(LibMLIR.mlirIdentifierStr(ident))
+String(ident::MlirIdentifier) = String(API.mlirIdentifierStr(ident))
 
 ### Dialect
 
@@ -77,18 +77,18 @@ end
 
 Base.convert(::Type{MlirDialect}, dialect::Dialect) = dialect.dialect
 function Base.show(io::IO, dialect::Dialect)
-    print(io, "Dialect(\"", String(LibMLIR.mlirDialectGetNamespace(dialect)), "\")")
+    print(io, "Dialect(\"", String(API.mlirDialectGetNamespace(dialect)), "\")")
 end
 
 ### DialectHandle
 
 struct DialectHandle
-    handle::LibMLIR.MlirDialectHandle
+    handle::API.MlirDialectHandle
 end
 
 function DialectHandle(s::Symbol)
     s = Symbol("mlirGetDialectHandle__", s, "__")
-    DialectHandle(getproperty(LibMLIR, s)())
+    DialectHandle(getproperty(API, s)())
 end
 
 Base.convert(::Type{MlirDialectHandle}, handle::DialectHandle) = handle.handle
@@ -99,15 +99,15 @@ mutable struct DialectRegistry
     registry::MlirDialectRegistry
 end
 function DialectRegistry()
-    registry = LibMLIR.mlirDialectRegistryCreate()
+    registry = API.mlirDialectRegistryCreate()
     @assert !mlirIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
     finalizer(DialectRegistry(registry)) do registry
-        LibMLIR.mlirDialectRegistryDestroy(registry.registry)
+        API.mlirDialectRegistryDestroy(registry.registry)
     end
 end
 
 function Base.insert!(registry::DialectRegistry, handle::DialectHandle)
-    LibMLIR.mlirDialectHandleInsertDialect(registry, handle)
+    API.mlirDialectHandleInsertDialect(registry, handle)
 end
 
 ### Context
@@ -116,18 +116,18 @@ mutable struct Context
     context::MlirContext
 end
 function Context()
-    context = LibMLIR.mlirContextCreate()
+    context = API.mlirContextCreate()
     @assert !mlirIsNull(context) "cannot create Context with null MlirContext"
     finalizer(Context(context)) do context
-        LibMLIR.mlirContextDestroy(context.context)
+        API.mlirContextDestroy(context.context)
     end
 end
 
 Base.convert(::Type{MlirContext}, c::Context) = c.context
 
-num_loaded_dialects(context) = LibMLIR.mlirContextGetNumLoadedDialects(context)
+num_loaded_dialects(context) = API.mlirContextGetNumLoadedDialects(context)
 function get_or_load_dialect!(context, handle::DialectHandle)
-    mlir_dialect = LibMLIR.mlirDialectHandleLoadDialect(handle, context)
+    mlir_dialect = API.mlirDialectHandleLoadDialect(handle, context)
     if mlirIsNull(mlir_dialect)
         error("could not load dialect from handle $handle")
     else
@@ -138,7 +138,12 @@ function get_or_load_dialect!(context, dialect::String)
     get_or_load_dialect!(context, DialectHandle(Symbol(dialect)))
 end
 
-is_registered_operation(context, opname) = LibMLIR.mlirContextIsRegisteredOperation(context, opname)
+function enable_multithreading!(context, enable=true)
+    API.mlirContextEnableMultithreading(context, enable)
+    context
+end
+
+is_registered_operation(context, opname) = API.mlirContextIsRegisteredOperation(context, opname)
 
 ### Location
 
@@ -151,9 +156,9 @@ struct Location
     end
 end
 
-Location(context::Context) = Location(LibMLIR.mlirLocationUnknownGet(context))
+Location(context::Context) = Location(API.mlirLocationUnknownGet(context))
 Location(context::Context, filename, line, column=0) =
-    Location(LibMLIR.mlirLocationFileLineColGet(context, filename, line, column))
+    Location(API.mlirLocationFileLineColGet(context, filename, line, column))
 Location(context::Context, lin::Core.LineInfoNode) =
     Location(context, string(lin.file), lin.line)
 Location(context::Context, lin::LineNumberNode) =
@@ -168,7 +173,7 @@ function Base.show(io::IO, location::Location)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
     print(io, "Location(#= ")
-    GC.@preserve ref LibMLIR.mlirLocationPrint(location, c_print_callback, ref)
+    GC.@preserve ref API.mlirLocationPrint(location, c_print_callback, ref)
     print(io, " =#)")
 end
 
@@ -185,29 +190,29 @@ end
 
 MType(t::MType) = t
 MType(context::Context, T::Type{<:Signed}) =
-    MType(LibMLIR.mlirIntegerTypeGet(context, sizeof(T) * 8))
+    MType(API.mlirIntegerTypeGet(context, sizeof(T) * 8))
 MType(context::Context, T::Type{<:Unsigned}) =
-    MType(LibMLIR.mlirIntegerTypeGet(context, sizeof(T) * 8))
+    MType(API.mlirIntegerTypeGet(context, sizeof(T) * 8))
 MType(context::Context, ::Type{Bool}) =
-    MType(LibMLIR.mlirIntegerTypeGet(context, 1))
+    MType(API.mlirIntegerTypeGet(context, 1))
 MType(context::Context, ::Type{Float32}) =
-    MType(LibMLIR.mlirF32TypeGet(context))
+    MType(API.mlirF32TypeGet(context))
 MType(context::Context, ::Type{Float64}) =
-    MType(LibMLIR.mlirF64TypeGet(context))
+    MType(API.mlirF64TypeGet(context))
 MType(context::Context, ft::Pair) =
-    MType(LibMLIR.mlirFunctionTypeGet(context,
+    MType(API.mlirFunctionTypeGet(context,
         length(ft.first), [MType(t) for t in ft.first],
         length(ft.second), [MType(t) for t in ft.second]))
 MType(context, a::AbstractArray{T}) where {T} = MType(context, MType(context, T), size(a))
 MType(context, ::Type{<:AbstractArray{T,N}}, dims) where {T,N} =
-    MType(LibMLIR.mlirRankedTensorTypeGetChecked(
+    MType(API.mlirRankedTensorTypeGetChecked(
         Location(context),
         N, collect(dims),
         MType(context, T),
         Attribute(),
     ))
 MType(context, element_type::MType, dims) =
-    MType(LibMLIR.mlirRankedTensorTypeGetChecked(
+    MType(API.mlirRankedTensorTypeGetChecked(
         Location(context),
         length(dims), collect(dims),
         element_type,
@@ -216,24 +221,24 @@ MType(context, element_type::MType, dims) =
 MType(context, ::T) where {T<:Real} = MType(context, T)
 MType(_, type::MType) = type
 
-IndexType(context) = MType(LibMLIR.mlirIndexTypeGet(context))
+IndexType(context) = MType(API.mlirIndexTypeGet(context))
 
 Base.convert(::Type{MlirType}, mtype::MType) = mtype.type
 
 function Base.eltype(type::MType)
-    if LibMLIR.mlirTypeIsAShaped(type)
-        MType(LibMLIR.mlirShapedTypeGetElementType(type))
+    if API.mlirTypeIsAShaped(type)
+        MType(API.mlirShapedTypeGetElementType(type))
     else
         type
     end
 end
 
 function show_inner(io::IO, type::MType)
-    if LibMLIR.mlirTypeIsAInteger(type)
-        is_signless = LibMLIR.mlirIntegerTypeIsSignless(type)
-        is_signed = LibMLIR.mlirIntegerTypeIsSigned(type)
+    if API.mlirTypeIsAInteger(type)
+        is_signless = API.mlirIntegerTypeIsSignless(type)
+        is_signed = API.mlirIntegerTypeIsSigned(type)
 
-        width = LibMLIR.mlirIntegerTypeGetWidth(type)
+        width = API.mlirIntegerTypeGetWidth(type)
         t = if is_signed
             "si"
         elseif is_signless
@@ -242,17 +247,17 @@ function show_inner(io::IO, type::MType)
             "u"
         end
         print(io, t, width)
-    elseif LibMLIR.mlirTypeIsAF64(type)
+    elseif API.mlirTypeIsAF64(type)
         print(io, "f64")
-    elseif LibMLIR.mlirTypeIsAF32(type)
+    elseif API.mlirTypeIsAF32(type)
         print(io, "f32")
-    elseif LibMLIR.mlirTypeIsARankedTensor(type)
+    elseif API.mlirTypeIsARankedTensor(type)
         print(io, "tensor<")
         s = size(type)
         print(io, join(s, "x"), "x")
         show_inner(io, eltype(type))
         print(io, ">")
-    elseif LibMLIR.mlirTypeIsAIndex(type)
+    elseif API.mlirTypeIsAIndex(type)
         print(io, "index")
     else
         print(io, "unknown")
@@ -263,7 +268,7 @@ function Base.show(io::IO, type::MType)
     print(io, "MType(#= ")
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref LibMLIR.mlirTypePrint(type, c_print_callback, ref)
+    GC.@preserve ref API.mlirTypePrint(type, c_print_callback, ref)
     print(io, " =#)")
 end
 
@@ -275,10 +280,10 @@ function inttype(size, issigned)
 end
 
 function julia_type(type::MType)
-    if LibMLIR.mlirTypeIsAInteger(type)
-        is_signed = LibMLIR.mlirIntegerTypeIsSigned(type) ||
-                    LibMLIR.mlirIntegerTypeIsSignless(type)
-        width = LibMLIR.mlirIntegerTypeGetWidth(type)
+    if API.mlirTypeIsAInteger(type)
+        is_signed = API.mlirIntegerTypeIsSigned(type) ||
+                    API.mlirIntegerTypeIsSignless(type)
+        width = API.mlirIntegerTypeGetWidth(type)
 
         try
             inttype(width, is_signed)
@@ -286,9 +291,9 @@ function julia_type(type::MType)
             t = is_signed ? "i" : "u"
             throw("could not convert type $(t)$(width) to julia")
         end
-    elseif LibMLIR.mlirTypeIsAF32(type)
+    elseif API.mlirTypeIsAF32(type)
         Float32
-    elseif LibMLIR.mlirTypeIsAF64(type)
+    elseif API.mlirTypeIsAF64(type)
         Float64
     else
         throw("could not convert type $type to julia")
@@ -296,41 +301,41 @@ function julia_type(type::MType)
 end
 
 Base.ndims(type::MType) =
-    if LibMLIR.mlirTypeIsAShaped(type) && LibMLIR.mlirShapedTypeHasRank(type)
-        LibMLIR.mlirShapedTypeGetRank(type)
+    if API.mlirTypeIsAShaped(type) && API.mlirShapedTypeHasRank(type)
+        API.mlirShapedTypeGetRank(type)
     else
         0
     end
 
-Base.size(type::MType, i::Int) = LibMLIR.mlirShapedTypeGetDimSize(type, i - 1)
+Base.size(type::MType, i::Int) = API.mlirShapedTypeGetDimSize(type, i - 1)
 Base.size(type::MType) = Tuple(size(type, i) for i in 1:ndims(type))
 
 function is_tensor(type::MType)
-    LibMLIR.mlirTypeIsAShaped(type)
+    API.mlirTypeIsAShaped(type)
 end
 
 function is_integer(type::MType)
-    LibMLIR.mlirTypeIsAInteger(type)
+    API.mlirTypeIsAInteger(type)
 end
 
-is_function_type(mtype) = LibMLIR.mlirTypeIsAFunction(mtype)
+is_function_type(mtype) = API.mlirTypeIsAFunction(mtype)
 
 function get_num_inputs(ftype)
     @assert is_function_type(ftype) "cannot get the number of inputs on type $(ftype), expected a function type"
-    LibMLIR.mlirFunctionTypeGetNumInputs(ftype)
+    API.mlirFunctionTypeGetNumInputs(ftype)
 end
 function get_num_results(ftype)
     @assert is_function_type(ftype) "cannot get the number of results on type $(ftype), expected a function type"
-    LibMLIR.mlirFunctionTypeGetNumResults(ftype)
+    API.mlirFunctionTypeGetNumResults(ftype)
 end
 
 function get_input(ftype::MType, pos)
     @assert is_function_type(ftype) "cannot get input on type $(ftype), expected a function type"
-    MType(LibMLIR.mlirFunctionTypeGetInput(ftype, pos - 1))
+    MType(API.mlirFunctionTypeGetInput(ftype, pos - 1))
 end
 function get_result(ftype::MType, pos=1)
     @assert is_function_type(ftype) "cannot get result on type $(ftype), expected a function type"
-    MType(LibMLIR.mlirFunctionTypeGetResult(ftype, pos - 1))
+    MType(API.mlirFunctionTypeGetResult(ftype, pos - 1))
 end
 
 ### Attribute
@@ -339,106 +344,106 @@ struct Attribute
     attribute::MlirAttribute
 end
 
-Attribute() = Attribute(LibMLIR.mlirAttributeGetNull())
-Attribute(context, s::AbstractString) = Attribute(LibMLIR.mlirStringAttrGet(context, s))
-Attribute(type::MType) = Attribute(LibMLIR.mlirTypeAttrGet(type))
+Attribute() = Attribute(API.mlirAttributeGetNull())
+Attribute(context, s::AbstractString) = Attribute(API.mlirStringAttrGet(context, s))
+Attribute(type::MType) = Attribute(API.mlirTypeAttrGet(type))
 Attribute(context, f::F, type=MType(context, F)) where {F<:AbstractFloat} = Attribute(
-    LibMLIR.mlirFloatAttrDoubleGet(context, type, Float64(f))
+    API.mlirFloatAttrDoubleGet(context, type, Float64(f))
 )
 Attribute(context, i::T) where {T<:Integer} = Attribute(
-    LibMLIR.mlirIntegerAttrGet(MType(context, T), Int64(i))
+    API.mlirIntegerAttrGet(MType(context, T), Int64(i))
 )
 function Attribute(context, values::T) where {T<:AbstractArray{Int32}}
     type = MType(context, T, size(values))
     Attribute(
-        LibMLIR.mlirDenseElementsAttrInt32Get(type, length(values), values)
+        API.mlirDenseElementsAttrInt32Get(type, length(values), values)
     )
 end
 function Attribute(context, values::T) where {T<:AbstractArray{Int64}}
     type = MType(context, T, size(values))
     Attribute(
-        LibMLIR.mlirDenseElementsAttrInt64Get(type, length(values), values)
+        API.mlirDenseElementsAttrInt64Get(type, length(values), values)
     )
 end
 function Attribute(context, values::T) where {T<:AbstractArray{Float64}}
     type = MType(context, T, size(values))
     Attribute(
-        LibMLIR.mlirDenseElementsAttrDoubleGet(type, length(values), values)
+        API.mlirDenseElementsAttrDoubleGet(type, length(values), values)
     )
 end
 function Attribute(context, values::T) where {T<:AbstractArray{Float32}}
     type = MType(context, T, size(values))
     Attribute(
-        LibMLIR.mlirDenseElementsAttrFloatGet(type, length(values), values)
+        API.mlirDenseElementsAttrFloatGet(type, length(values), values)
     )
 end
 function Attribute(context, values::AbstractArray{Int32}, type)
     Attribute(
-        LibMLIR.mlirDenseElementsAttrInt32Get(type, length(values), values)
+        API.mlirDenseElementsAttrInt32Get(type, length(values), values)
     )
 end
 function Attribute(context, values::AbstractArray{Int}, type)
     Attribute(
-        LibMLIR.mlirDenseElementsAttrInt64Get(type, length(values), values)
+        API.mlirDenseElementsAttrInt64Get(type, length(values), values)
     )
 end
 function Attribute(context, values::AbstractArray{Float32}, type)
     Attribute(
-        LibMLIR.mlirDenseElementsAttrFloatGet(type, length(values), values)
+        API.mlirDenseElementsAttrFloatGet(type, length(values), values)
     )
 end
 function ArrayAttribute(context, values::AbstractVector{Int})
     elements = Attribute.((context,), values)
     Attribute(
-        LibMLIR.mlirArrayAttrGet(context, length(elements), elements)
+        API.mlirArrayAttrGet(context, length(elements), elements)
     )
 end
 function ArrayAttribute(context, attributes::Vector{Attribute})
     Attribute(
-        LibMLIR.mlirArrayAttrGet(context, length(attributes), attributes),
+        API.mlirArrayAttrGet(context, length(attributes), attributes),
     )
 end
 function DenseArrayAttribute(context, values::AbstractVector{Int})
     Attribute(
-        LibMLIR.mlirDenseI64ArrayGet(context, length(values), collect(values))
+        API.mlirDenseI64ArrayGet(context, length(values), collect(values))
     )
 end
 function Attribute(context, value::Int, type::MType)
     Attribute(
-        LibMLIR.mlirIntegerAttrGet(type, value)
+        API.mlirIntegerAttrGet(type, value)
     )
 end
 function Attribute(context, value::Bool, ::MType=nothing)
     Attribute(
-        LibMLIR.mlirBoolAttrGet(context, value)
+        API.mlirBoolAttrGet(context, value)
     )
 end
 
 Base.convert(::Type{MlirAttribute}, attribute::Attribute) = attribute.attribute
 Base.parse(::Type{Attribute}, context, s) =
-    Attribute(LibMLIR.mlirAttributeParseGet(context, s))
+    Attribute(API.mlirAttributeParseGet(context, s))
 
 function get_type(attribute::Attribute)
-    MType(LibMLIR.mlirAttributeGetType(attribute))
+    MType(API.mlirAttributeGetType(attribute))
 end
 function get_type_value(attribute)
-    @assert LibMLIR.mlirAttributeIsAType(attribute) "attribute $(attribute) is not a type"
-    MType(LibMLIR.mlirTypeAttrGetValue(attribute))
+    @assert API.mlirAttributeIsAType(attribute) "attribute $(attribute) is not a type"
+    MType(API.mlirTypeAttrGetValue(attribute))
 end
 function get_bool_value(attribute)
-    @assert LibMLIR.mlirAttributeIsABool(attribute) "attribute $(attribute) is not a boolean"
-    LibMLIR.mlirBoolAttrGetValue(attribute)
+    @assert API.mlirAttributeIsABool(attribute) "attribute $(attribute) is not a boolean"
+    API.mlirBoolAttrGetValue(attribute)
 end
 function get_string_value(attribute)
-    @assert LibMLIR.mlirAttributeIsAString(attribute) "attribute $(attribute) is not a string attribute"
-    String(LibMLIR.mlirStringAttrGetValue(attribute))
+    @assert API.mlirAttributeIsAString(attribute) "attribute $(attribute) is not a string attribute"
+    String(API.mlirStringAttrGetValue(attribute))
 end
 
 function Base.show(io::IO, attribute::Attribute)
     print(io, "Attribute(#= ")
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref LibMLIR.mlirAttributePrint(attribute, c_print_callback, ref)
+    GC.@preserve ref API.mlirAttributePrint(attribute, c_print_callback, ref)
     print(io, " =#)")
 end
 
@@ -450,8 +455,8 @@ end
 
 function NamedAttribute(context, name, attribute)
     @assert !mlirIsNull(attribute.attribute)
-    NamedAttribute(LibMLIR.mlirNamedAttributeGet(
-        LibMLIR.mlirIdentifierGet(context, name),
+    NamedAttribute(API.mlirNamedAttributeGet(
+        API.mlirIdentifierGet(context, name),
         attribute
     ))
 end
@@ -470,7 +475,7 @@ struct Value
     end
 end
 
-get_type(value) = MType(LibMLIR.mlirValueGetType(value))
+get_type(value) = MType(API.mlirValueGetType(value))
 
 Base.convert(::Type{MlirValue}, value::Value) = value.value
 Base.size(value::Value) = Base.size(get_type(value))
@@ -479,21 +484,21 @@ Base.ndims(value::Value) = Base.ndims(get_type(value))
 function Base.show(io::IO, value::Value)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref LibMLIR.mlirValuePrint(value, c_print_callback, ref)
+    GC.@preserve ref API.mlirValuePrint(value, c_print_callback, ref)
 end
 
-is_a_op_result(value) = LibMLIR.mlirValueIsAOpResult(value)
-is_a_block_argument(value) = LibMLIR.mlirValueIsABlockArgument(value)
+is_a_op_result(value) = API.mlirValueIsAOpResult(value)
+is_a_block_argument(value) = API.mlirValueIsABlockArgument(value)
 
 function set_type!(value, type)
     @assert is_a_block_argument(value) "could not set type, value is not a block argument"
-    LibMLIR.mlirBlockArgumentSetType(value, type)
+    API.mlirBlockArgumentSetType(value, type)
     value
 end
 
 function get_owner(value::Value)
     if is_a_block_argument(value)
-        raw_block = LibMLIR.mlirBlockArgumentGetOwner(value)
+        raw_block = API.mlirBlockArgumentGetOwner(value)
         if mlirIsNull(raw_block)
             return nothing
         end
@@ -501,7 +506,7 @@ function get_owner(value::Value)
         return Block(raw_block, false)
     end
 
-    raw_op = LibMLIR.mlirOpResultGetOwner(value)
+    raw_op = API.mlirOpResultGetOwner(value)
     if mlirIsNull(raw_op)
         return nothing
     end
@@ -515,27 +520,27 @@ struct OperationState
     opstate::MlirOperationState
 end
 
-OperationState(name, location) = OperationState(LibMLIR.mlirOperationStateGet(name, location))
+OperationState(name, location) = OperationState(API.mlirOperationStateGet(name, location))
 
 add_results!(state, results) =
-    LibMLIR.mlirOperationStateAddResults(state, length(results), results)
+    API.mlirOperationStateAddResults(state, length(results), results)
 add_operands!(state, operands) =
-    LibMLIR.mlirOperationStateAddOperands(state, length(operands), operands)
+    API.mlirOperationStateAddOperands(state, length(operands), operands)
 function add_owned_regions!(state, regions)
     mlir_regions = Base.convert.(MlirRegion, regions)
     lose_ownership!.(regions)
-    LibMLIR.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
+    API.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
 end
 add_attributes!(state, attributes) =
-    LibMLIR.mlirOperationStateAddAttributes(state, length(attributes), attributes)
+    API.mlirOperationStateAddAttributes(state, length(attributes), attributes)
 add_successors!(state, successors) =
-    LibMLIR.mlirOperationStateAddSuccessors(
+    API.mlirOperationStateAddSuccessors(
         state, length(successors),
-        convert(Vector{LibMLIR.MlirBlock}, successors),
+        convert(Vector{API.MlirBlock}, successors),
     )
 
 enable_type_inference!(state) =
-    LibMLIR.mlirOperationStateEnableResultTypeInference(state)
+    API.mlirOperationStateEnableResultTypeInference(state)
 
 Base.unsafe_convert(::Type{Ptr{MlirOperationState}}, state::OperationState) =
     Base.unsafe_convert(Ptr{MlirOperationState}, Base.pointer_from_objref(state.opstate))
@@ -550,57 +555,57 @@ mutable struct Operation
         @assert !mlirIsNull(operation) "cannot create Operation with null MlirOperation"
         finalizer(new(operation, owned)) do op
             if op.owned
-                LibMLIR.mlirOperationDestroy(op.operation)
+                API.mlirOperationDestroy(op.operation)
             end
         end
     end
 end
 
-Operation(state::OperationState) = Operation(LibMLIR.mlirOperationCreate(state), true)
+Operation(state::OperationState) = Operation(API.mlirOperationCreate(state), true)
 
-Base.copy(operation::Operation) = Operation(LibMLIR.mlirOperationClone(operation))
+Base.copy(operation::Operation) = Operation(API.mlirOperationClone(operation))
 
-num_regions(operation) = LibMLIR.mlirOperationGetNumRegions(operation)
+num_regions(operation) = API.mlirOperationGetNumRegions(operation)
 function get_region(operation, i)
     i ∈ 1:num_regions(operation) && throw(BoundsError(operation, i))
-    Region(LibMLIR.mlirOperationGetRegion(operation, i - 1), false)
+    Region(API.mlirOperationGetRegion(operation, i - 1), false)
 end
-num_results(operation) = LibMLIR.mlirOperationGetNumResults(operation)
+num_results(operation) = API.mlirOperationGetNumResults(operation)
 get_results(operation) = [
     get_result(operation, i)
     for i in 1:num_results(operation)
 ]
 function get_result(operation::Operation, i=1)
     i ∉ 1:num_results(operation) && throw(BoundsError(operation, i))
-    Value(LibMLIR.mlirOperationGetResult(operation, i - 1))
+    Value(API.mlirOperationGetResult(operation, i - 1))
 end
-num_operands(operation) = LibMLIR.mlirOperationGetNumOperands(operation)
+num_operands(operation) = API.mlirOperationGetNumOperands(operation)
 function get_operand(operation, i=1)
     i ∉ 1:num_operands(operation) && throw(BoundsError(operation, i))
-    Value(LibMLIR.mlirOperationGetOperand(operation, i - 1))
+    Value(API.mlirOperationGetOperand(operation, i - 1))
 end
 function set_operand!(operation, i, value)
     i ∉ 1:num_operands(operation) && throw(BoundsError(operation, i))
-    LibMLIR.mlirOperationSetOperand(operation, i - 1, value)
+    API.mlirOperationSetOperand(operation, i - 1, value)
     value
 end
 
 function get_attribute_by_name(operation, name)
-    raw_attr = LibMLIR.mlirOperationGetAttributeByName(operation, name)
+    raw_attr = API.mlirOperationGetAttributeByName(operation, name)
     if mlirIsNull(raw_attr)
         return nothing
     end
     Attribute(raw_attr)
 end
 function set_attribute_by_name!(operation, name, attribute)
-    LibMLIR.mlirOperationSetAttributeByName(operation, name, attribute)
+    API.mlirOperationSetAttributeByName(operation, name, attribute)
     operation
 end
 
-get_location(operation) = Location(LibMLIR.mlirOperationGetLocation(operation))
-get_name(operation) = String(LibMLIR.mlirOperationGetName(operation))
-get_block(operation) = Block(LibMLIR.mlirOperationGetBlock(operation), false)
-get_parent_operation(operation) = Operation(LibMLIR.mlirOperationGetParentOperation(operation), false)
+get_location(operation) = Location(API.mlirOperationGetLocation(operation))
+get_name(operation) = String(API.mlirOperationGetName(operation))
+get_block(operation) = Block(API.mlirOperationGetBlock(operation), false)
+get_parent_operation(operation) = Operation(API.mlirOperationGetParentOperation(operation), false)
 get_dialect(operation) = first(split(get_name(operation), '.')) |> Symbol
 
 function get_first_region(op::Operation)
@@ -622,7 +627,7 @@ function get_first_child_op(op::Operation)
     first(cop)
 end
 
-op::Operation == other::Operation = LibMLIR.mlirOperationEqual(op, other)
+op::Operation == other::Operation = API.mlirOperationEqual(op, other)
 
 Base.convert(::Type{MlirOperation}, op::Operation) = op.operation
 
@@ -635,13 +640,13 @@ end
 function Base.show(io::IO, operation::Operation)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    flags = LibMLIR.mlirOpPrintingFlagsCreate()
-    get(io, :debug, false) && LibMLIR.mlirOpPrintingFlagsEnableDebugInfo(flags, true, true)
-    GC.@preserve ref LibMLIR.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
+    flags = API.mlirOpPrintingFlagsCreate()
+    get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true, true)
+    GC.@preserve ref API.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
     println(io)
 end
 
-verify(operation::Operation) = LibMLIR.mlirOperationVerify(operation)
+verify(operation::Operation) = API.mlirOperationVerify(operation)
 
 ### Block
 
@@ -653,7 +658,7 @@ mutable struct Block
         @assert !mlirIsNull(block) "cannot create Block with null MlirBlock"
         finalizer(new(block, owned)) do block
             if block.owned
-                LibMLIR.mlirBlockDestroy(block.block)
+                API.mlirBlockDestroy(block.block)
             end
         end
     end
@@ -662,15 +667,15 @@ end
 Block() = Block(MType[], Location[])
 function Block(args::Vector{MType}, locs::Vector{Location})
     @assert length(args) == length(locs) "there should be one args for each locs (got $(length(args)) & $(length(locs)))"
-    Block(LibMLIR.mlirBlockCreate(length(args), args, locs))
+    Block(API.mlirBlockCreate(length(args), args, locs))
 end
 
 function Base.push!(block::Block, op::Operation)
-    LibMLIR.mlirBlockAppendOwnedOperation(block, lose_ownership!(op))
+    API.mlirBlockAppendOwnedOperation(block, lose_ownership!(op))
     op
 end
 function Base.insert!(block::Block, pos, op::Operation)
-    LibMLIR.mlirBlockInsertOwnedOperation(block, pos - 1, lose_ownership!(op))
+    API.mlirBlockInsertOwnedOperation(block, pos - 1, lose_ownership!(op))
     op
 end
 function Base.pushfirst!(block::Block, op::Operation)
@@ -678,22 +683,22 @@ function Base.pushfirst!(block::Block, op::Operation)
     op
 end
 function insert_after!(block::Block, reference::Operation, op::Operation)
-    LibMLIR.mlirBlockInsertOwnedOperationAfter(block, reference, lose_ownership!(op))
+    API.mlirBlockInsertOwnedOperationAfter(block, reference, lose_ownership!(op))
     op
 end
 function insert_before!(block::Block, reference::Operation, op::Operation)
-    LibMLIR.mlirBlockInsertOwnedOperationBefore(block, reference, lose_ownership!(op))
+    API.mlirBlockInsertOwnedOperationBefore(block, reference, lose_ownership!(op))
     op
 end
 
 num_arguments(block::Block) =
-    LibMLIR.mlirBlockGetNumArguments(block)
+    API.mlirBlockGetNumArguments(block)
 function get_argument(block::Block, i)
     i ∉ 1:num_arguments(block) && throw(BoundsError(block, i))
-    Value(LibMLIR.mlirBlockGetArgument(block, i - 1))
+    Value(API.mlirBlockGetArgument(block, i - 1))
 end
 push_argument!(block::Block, type, loc) =
-    Value(LibMLIR.mlirBlockAddArgument(block, type, loc))
+    Value(API.mlirBlockAddArgument(block, type, loc))
 
 Base.convert(::Type{MlirBlock}, block::Block) = block.block
 
@@ -706,33 +711,33 @@ end
 function Base.show(io::IO, block::Block)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
-    GC.@preserve ref LibMLIR.mlirBlockPrint(block, c_print_callback, ref)
+    GC.@preserve ref API.mlirBlockPrint(block, c_print_callback, ref)
 end
 
 ### Region
 
 mutable struct Region
     region::MlirRegion
-    @atomic owned::Bool # TODO: make atomic?
+    @atomic owned::Bool
 
     Region(region, owned=true) = begin
         @assert !mlirIsNull(region)
         finalizer(new(region, owned)) do region
             if region.owned
-                LibMLIR.mlirRegionDestroy(region.region)
+                API.mlirRegionDestroy(region.region)
             end
         end
     end
 end
 
-Region() = Region(LibMLIR.mlirRegionCreate())
+Region() = Region(API.mlirRegionCreate())
 
 function Base.push!(region::Region, block::Block)
-    LibMLIR.mlirRegionAppendOwnedBlock(region, lose_ownership!(block))
+    API.mlirRegionAppendOwnedBlock(region, lose_ownership!(block))
     block
 end
 function Base.insert!(region::Region, pos, block::Block)
-    LibMLIR.mlirRegionInsertOwnedBlock(region, pos - 1, lose_ownership!(block))
+    API.mlirRegionInsertOwnedBlock(region, pos - 1, lose_ownership!(block))
     block
 end
 function Base.pushfirst!(region::Region, block)
@@ -740,9 +745,9 @@ function Base.pushfirst!(region::Region, block)
     block
 end
 insert_after!(region::Region, reference::Block, block::Block) =
-    LibMLIR.mlirRegionInsertOwnedBlockAfter(region, reference, lose_ownership!(block))
+    API.mlirRegionInsertOwnedBlockAfter(region, reference, lose_ownership!(block))
 insert_before!(region::Region, reference::Block, block::Block) =
-    LibMLIR.mlirRegionInsertOwnedBlockBefore(region, reference, lose_ownership!(block))
+    API.mlirRegionInsertOwnedBlockBefore(region, reference, lose_ownership!(block))
 
 function get_first_block(region::Region)
     block = iterate(BlockIterator(region))
@@ -766,18 +771,18 @@ mutable struct MModule
 
     MModule(module_, context) = begin
         @assert !mlirIsNull(module_) "cannot create MModule with null MlirModule"
-        finalizer(LibMLIR.mlirModuleDestroy, new(module_, context))
+        finalizer(API.mlirModuleDestroy, new(module_, context))
     end
 end
 
 MModule(context::Context, loc=Location(context)) =
-    MModule(LibMLIR.mlirModuleCreateEmpty(loc), context)
-get_operation(module_) = Operation(LibMLIR.mlirModuleGetOperation(module_), false)
-get_body(module_) = Block(LibMLIR.mlirModuleGetBody(module_), false)
+    MModule(API.mlirModuleCreateEmpty(loc), context)
+get_operation(module_) = Operation(API.mlirModuleGetOperation(module_), false)
+get_body(module_) = Block(API.mlirModuleGetBody(module_), false)
 get_first_child_op(mod::MModule) = get_first_child_op(get_operation(mod))
 
 Base.convert(::Type{MlirModule}, module_::MModule) = module_.module_
-Base.parse(::Type{MModule}, context, module_) = MModule(LibMLIR.mlirModuleCreateParse(context, module_), context)
+Base.parse(::Type{MModule}, context, module_) = MModule(API.mlirModuleCreateParse(context, module_), context)
 
 macro mlir_str(code)
     quote
@@ -794,29 +799,29 @@ end
 ### TypeID
 
 struct TypeID
-    typeid::LibMLIR.MlirTypeID
+    typeid::API.MlirTypeID
 end
 
-Base.hash(typeid::TypeID) = LibMLIR.mlirTypeIDHashValue(typeid.typeid)
-Base.convert(::Type{LibMLIR.MlirTypeID}, typeid::TypeID) = typeid.typeid
+Base.hash(typeid::TypeID) = API.mlirTypeIDHashValue(typeid.typeid)
+Base.convert(::Type{API.MlirTypeID}, typeid::TypeID) = typeid.typeid
 
-@static if isdefined(LibMLIR, :MlirTypeIDAllocator)
+@static if isdefined(API, :MlirTypeIDAllocator)
 
 ### TypeIDAllocator
 
 mutable struct TypeIDAllocator
-    allocator::LibMLIR.MlirTypeIDAllocator
+    allocator::API.MlirTypeIDAllocator
 
     function TypeIDAllocator()
-        ptr = LibMLIR.mlirTypeIDAllocatorCreate()
+        ptr = API.mlirTypeIDAllocatorCreate()
         @assert ptr != C_NULL "cannot create TypeIDAllocator"
-        finalizer(LibMLIR.mlirTypeIDAllocatorDestroy, new(ptr))
+        finalizer(API.mlirTypeIDAllocatorDestroy, new(ptr))
     end
 end
 
-Base.convert(::Type{LibMLIR.MlirTypeIDAllocator}, allocator::TypeIDAllocator) = allocator.allocator
+Base.convert(::Type{API.MlirTypeIDAllocator}, allocator::TypeIDAllocator) = allocator.allocator
 
-TypeID(allocator::TypeIDAllocator) = TypeID(LibMLIR.mlirTypeIDCreate(allocator))
+TypeID(allocator::TypeIDAllocator) = TypeID(API.mlirTypeIDCreate(allocator))
 
 else
 
@@ -842,21 +847,25 @@ mutable struct PassManager
     PassManager(pm::MlirPassManager, context) = begin
         @assert !mlirIsNull(pm) "cannot create PassManager with null MlirPassManager"
         finalizer(new(pm, context, TypeIDAllocator(), Dict{TypeID,ExternalPassHandle}())) do pm
-            LibMLIR.mlirPassManagerDestroy(pm.pass)
+            API.mlirPassManagerDestroy(pm.pass)
         end
     end
 end
 
-function enable_verifier!(pm)
-    LibMLIR.mlirPassManagerEnableVerifier(pm)
+function enable_ir_printing!(pm)
+    API.mlirPassManagerEnableIRPrinting(pm)
+    pm
+end
+function enable_verifier!(pm, enable=true)
+    API.mlirPassManagerEnableVerifier(pm, enable)
     pm
 end
 
 PassManager(context) =
-    PassManager(LibMLIR.mlirPassManagerCreate(context), context)
+    PassManager(API.mlirPassManagerCreate(context), context)
 
-function run(pm::PassManager, module_)
-    status = LibMLIR.mlirPassManagerRun(pm, module_)
+function run!(pm::PassManager, module_)
+    status = API.mlirPassManagerRun(pm, module_)
     if mlirLogicalResultIsFailure(status)
         throw("failed to run pass manager on module")
     end
@@ -877,9 +886,9 @@ struct OpPassManager
     end
 end
 
-OpPassManager(pm::PassManager) = OpPassManager(LibMLIR.mlirPassManagerGetAsOpPassManager(pm), pm)
-OpPassManager(pm::PassManager, opname) = OpPassManager(LibMLIR.mlirPassManagerGetNestedUnder(pm, opname), pm)
-OpPassManager(opm::OpPassManager, opname) = OpPassManager(LibMLIR.mlirOpPassManagerGetNestedUnder(opm, opname), opm.pass)
+OpPassManager(pm::PassManager) = OpPassManager(API.mlirPassManagerGetAsOpPassManager(pm), pm)
+OpPassManager(pm::PassManager, opname) = OpPassManager(API.mlirPassManagerGetNestedUnder(pm, opname), pm)
+OpPassManager(opm::OpPassManager, opname) = OpPassManager(API.mlirOpPassManagerGetNestedUnder(opm, opname), opm.pass)
 
 Base.convert(::Type{MlirOpPassManager}, op_pass::OpPassManager) = op_pass.op_pass
 
@@ -887,7 +896,7 @@ function Base.show(io::IO, op_pass::OpPassManager)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
     println(io, "OpPassManager(\"\"\"")
-    GC.@preserve ref LibMLIR.mlirPrintPassPipeline(op_pass, c_print_callback, ref)
+    GC.@preserve ref API.mlirPrintPassPipeline(op_pass, c_print_callback, ref)
     println(io)
     print(io, "\"\"\")")
 end
@@ -904,24 +913,35 @@ end
 mlirLogicalResultIsFailure(result) = result.value == 0
 
 function add_pipeline!(op_pass::OpPassManager, pipeline)
-    @static if isdefined(LibMLIR, :mlirOpPassManagerAddPipeline)
+    @static if isdefined(API, :mlirOpPassManagerAddPipeline)
         io = IOBuffer()
         c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
-        result = GC.@preserve io LibMLIR.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, io)
-        if LibMLIR.mlirLogicalResultIsFailure(result)
+        result = GC.@preserve io API.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, io)
+        if API.mlirLogicalResultIsFailure(result)
             exc = AddPipelineException(String(take!(io)))
             throw(exc)
         end
     else
-        result = LibMLIR.mlirParsePassPipeline(op_pass, pipeline)
+        result = API.mlirParsePassPipeline(op_pass, pipeline)
         if mlirLogicalResultIsFailure(result)
             throw(AddPipelineException(" " * pipeline))
         end
     end
     op_pass
 end
+ 
+function add_owned_pass!(pm::PassManager, pass)
+    API.mlirPassManagerAddOwnedPass(pm, pass)
+    pm
+end
 
-@static if isdefined(LibMLIR, :mlirCreateExternalPass)
+function add_owned_pass!(opm::OpPassManager, pass)
+    API.mlirOpPassManagerAddOwnedPass(opm, pass)
+    opm
+end
+
+
+@static if isdefined(API, :mlirCreateExternalPass)
 
 ### Pass
 
@@ -942,9 +962,9 @@ end
 function _pass_initialize(ctx, handle::ExternalPassHandle)
     try
         handle.ctx = Context(ctx)
-        LibMLIR.mlirLogicalResultSuccess()
+        API.mlirLogicalResultSuccess()
     catch
-        LibMLIR.mlirLogicalResultFailure()
+        API.mlirLogicalResultFailure()
     end
 end
 
@@ -958,7 +978,7 @@ function _pass_run(rawop, external_pass, handle::ExternalPassHandle)
         pass_run(handle.ctx, handle.pass, op)
     catch ex
         @error "Something went wrong running pass" exception=(ex,catch_backtrace())
-        LibMLIR.mlirExternalPassSignalFailure(external_pass)
+        API.mlirExternalPassSignalFailure(external_pass)
     end
     nothing
 end
@@ -970,29 +990,19 @@ function create_external_pass!(manager, pass, name, argument,
                                description, opname=get_opname(pass),
                                dependent_dialects=MlirDialectHandle[])
     passid = TypeID(manager.allocator)
-    callbacks = LibMLIR.MlirExternalPassCallbacks(
+    callbacks = API.MlirExternalPassCallbacks(
             @cfunction(_pass_construct, Cvoid, (Any,)),
             @cfunction(_pass_destruct, Cvoid, (Any,)),
-            @cfunction(_pass_initialize, LibMLIR.MlirLogicalResult, (MlirContext, Any,)),
+            @cfunction(_pass_initialize, API.MlirLogicalResult, (MlirContext, Any,)),
             @cfunction(_pass_clone, Any, (Any,)),
-            @cfunction(_pass_run, Cvoid, (MlirOperation, LibMLIR.MlirExternalPass, Any))
+            @cfunction(_pass_run, Cvoid, (MlirOperation, API.MlirExternalPass, Any))
     )
     pass_handle = manager.passes[passid] = ExternalPassHandle(nothing, pass)
     userdata = Base.pointer_from_objref(pass_handle)
-    mlir_pass = LibMLIR.mlirCreateExternalPass(passid, name, argument, description, opname,
+    mlir_pass = API.mlirCreateExternalPass(passid, name, argument, description, opname,
                                                length(dependent_dialects), dependent_dialects,
                                                callbacks, userdata)
     mlir_pass
-end
-
-function add_owned_pass!(pm::PassManager, pass)
-    LibMLIR.mlirPassManagerAddOwnedPass(pm, pass)
-    pm
-end
-
-function add_owned_pass!(opm::OpPassManager, pass)
-    LibMLIR.mlirOpPassManagerAddOwnedPass(opm, pass)
-    opm
 end
 
 end
@@ -1010,7 +1020,7 @@ end
 
 function Base.iterate(it::BlockIterator)
     reg = it.region
-    raw_block = LibMLIR.mlirRegionGetFirstBlock(reg)
+    raw_block = API.mlirRegionGetFirstBlock(reg)
     if mlirIsNull(raw_block)
         nothing
     else
@@ -1020,7 +1030,7 @@ function Base.iterate(it::BlockIterator)
 end
 
 function Base.iterate(it::BlockIterator, block)
-    raw_block = LibMLIR.mlirBlockGetNextInRegion(block)
+    raw_block = API.mlirBlockGetNextInRegion(block)
     if mlirIsNull(raw_block)
         nothing
     else
@@ -1039,7 +1049,7 @@ struct OperationIterator
 end
 
 function Base.iterate(it::OperationIterator)
-    raw_op = LibMLIR.mlirBlockGetFirstOperation(it.block)
+    raw_op = API.mlirBlockGetFirstOperation(it.block)
     if mlirIsNull(raw_op)
         nothing
     else
@@ -1049,7 +1059,7 @@ function Base.iterate(it::OperationIterator)
 end
 
 function Base.iterate(it::OperationIterator, op)
-    raw_op = LibMLIR.mlirOperationGetNextInBlock(op)
+    raw_op = API.mlirOperationGetNextInBlock(op)
     if mlirIsNull(raw_op)
         nothing
     else
@@ -1068,7 +1078,7 @@ struct RegionIterator
 end
 
 function Base.iterate(it::RegionIterator)
-    raw_region = LibMLIR.mlirOperationGetFirstRegion(it.op)
+    raw_region = API.mlirOperationGetFirstRegion(it.op)
     if mlirIsNull(raw_region)
         nothing
     else
@@ -1078,7 +1088,7 @@ function Base.iterate(it::RegionIterator)
 end
 
 function Base.iterate(it::RegionIterator, region)
-    raw_region = LibMLIR.mlirRegionGetNextInOperation(region)
+    raw_region = API.mlirRegionGetNextInOperation(region)
     if mlirIsNull(raw_region)
         nothing
     else
@@ -1113,31 +1123,5 @@ function verifyall(operation::Operation; debug=false)
     end
 end
 verifyall(module_::MModule) = get_operation(module_) |> verifyall
-
-function get_dialects!(dialects::Set{Symbol}, op::Operation)
-    push!(dialects, get_dialect(op))
-
-    visit(op) do op
-        get_dialects!(dialects, op)
-    end
-
-    dialects
-end
-
-function get_input_type(module_)
-    dialects = Set{Symbol}()
-
-    op = get_operation(module_)
-    get_dialects!(dialects, op)
-
-    if :mhlo ∈ dialects
-        # :tosa ∉ dialects || throw("cannot have both tosa and mhlo operations")
-        :mhlo
-    elseif :tosa ∈ dialects
-        :tosa
-    else
-        :none
-    end
-end
 
 end # module IR
