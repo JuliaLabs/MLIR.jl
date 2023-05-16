@@ -165,6 +165,8 @@ function code_mlir(f, types; ctx=Context())
                 line = ir.linetable[stmt[:line]]
                 retop = LLVM.version() >= v"15" ? func.return_ : std.return_
                 push!(current_block, retop(ctx, [get_value(inst.val)]; loc=Location(ctx, line)))
+            elseif Meta.isexpr(inst, :code_coverage_effect)
+                # Skip
             else
                 error("unhandled ir $(inst)")
             end
