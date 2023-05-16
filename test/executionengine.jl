@@ -19,11 +19,21 @@ end
 # TODO: Fix for LLVM 15
 function lowerModuleToLLVM(ctx, mod)
     pm = MLIR.API.mlirPassManagerCreate(ctx)
-    opm = MLIR.API.mlirPassManagerGetNestedUnder(
-        pm, MLIR.API.mlirStringRefCreateFromCString("builtin.func"))
-    MLIR.API.mlirPassManagerAddOwnedPass(pm,
-        MLIR.API.mlirCreateConversionConvertStandardToLLVM()
-    )
+    if LLVM.version() >= v"15"
+        op = MLIR.API.mlirStringRefCreateFromCString("func.func")
+    else
+        op = MLIR.API.mlirStringRefCreateFromCString("builtin.func")
+    end
+    opm = MLIR.API.mlirPassManagerGetNestedUnder(pm, op)
+    if LLVM.version() >= v"15"
+                MLIR.API.mlirPassManagerAddOwnedPass(pm,
+            MLIR.API.mlirCreateConversionConvertFuncToLLVM()
+        )
+    else
+        MLIR.API.mlirPassManagerAddOwnedPass(pm,
+            MLIR.API.mlirCreateConversionConvertStandardToLLVM()
+        )
+    end
     MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
         MLIR.API.mlirCreateConversionConvertArithmeticToLLVM()
     )
@@ -32,21 +42,35 @@ function lowerModuleToLLVM(ctx, mod)
     if status.value == 0
         error("Unexpected failure running pass failure")
     end
+    MLIR.API.mlirPassManagerDestroy(pm)
 end
 
 ctx = MLIR.API.mlirContextCreate()
 registerAllUpstreamDialects!(ctx)
 
-ir = MLIR.API.mlirStringRefCreateFromCString(
-    """
-    module {
-        func @add(%arg0 : i32) -> i32 attributes { llvm.emit_c_interface } {
-            %res = arith.addi %arg0, %arg0 : i32
-            return %res : i32
+if LLVM.version() >= v"15"
+    ir = MLIR.API.mlirStringRefCreateFromCString(
+        """
+        module {
+            func.func @add(%arg0 : i32) -> i32 attributes { llvm.emit_c_interface } {
+                %res = arith.addi %arg0, %arg0 : i32
+                return %res : i32
+            }
         }
-    }
-    """
-)
+        """
+    )
+else
+    ir = MLIR.API.mlirStringRefCreateFromCString(
+        """
+        module {
+            func @add(%arg0 : i32) -> i32 attributes { llvm.emit_c_interface } {
+                %res = arith.addi %arg0, %arg0 : i32
+                return %res : i32
+            }
+        }
+        """
+    )
+end
 mod = MLIR.API.mlirModuleCreateParse(ctx, ir)
 lowerModuleToLLVM(ctx, mod)
 
