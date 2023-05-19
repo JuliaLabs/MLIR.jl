@@ -41,7 +41,7 @@ function prepare_block(ctx, ir, bb)
         inst isa Core.PhiNode || continue
 
         type = stmt[:type]
-        IR.push_argument!(b, MType(ctx, type), Location(ctx))
+        IR.push_argument!(b, MLIRType(ctx, type), Location(ctx))
     end
 
     return b
@@ -96,7 +96,7 @@ function code_mlir(f, types; ctx=Context())
     current_block = entry_block = blocks[begin]
 
     for argtype in types.parameters
-        IR.push_argument!(entry_block, MType(ctx, argtype), Location(ctx))
+        IR.push_argument!(entry_block, MLIRType(ctx, argtype), Location(ctx))
     end
 
     function get_value(x)::Value
@@ -122,12 +122,11 @@ function code_mlir(f, types; ctx=Context())
             line = ir.linetable[stmt[:line]]
 
             if Meta.isexpr(inst, :call)
-                line = ir.linetable[stmt[:line]]
                 val_type = stmt[:type]
                 if !(val_type <: BrutusScalar)
                     error("type $val_type is not supported")
                 end
-                out_type = MType(ctx, val_type)
+                out_type = MLIRType(ctx, val_type)
 
                 called_func = first(inst.args)
                 if called_func isa GlobalRef # TODO: should probably use something else here
@@ -137,7 +136,8 @@ function code_mlir(f, types; ctx=Context())
                 fop! = intrinsics_to_mlir[called_func]
                 args = get_value.(@view inst.args[begin+1:end])
 
-                res = IR.get_result(fop!(ctx, current_block, args; loc=Location(ctx, line)))
+                loc = Location(ctx, string(line.file), line.line, 0)
+                res = IR.get_result(fop!(ctx, current_block, args; loc))
 
                 values[sidx] = res
             elseif inst isa PhiNode
@@ -147,8 +147,9 @@ function code_mlir(f, types; ctx=Context())
             elseif inst isa GotoNode
                 args = get_value.(collect_value_arguments(ir, block_id, inst.label))
                 dest = blocks[inst.label]
+                loc = Location(ctx, string(line.file), line.line, 0)
                 brop = LLVM.version() >= v"15" ? cf.br : std.br
-                push!(current_block, brop(ctx, dest, args; loc=Location(ctx, line)))
+                push!(current_block, brop(ctx, dest, args; loc))
             elseif inst isa GotoIfNot
                 false_args = get_value.(collect_value_arguments(ir, block_id, inst.dest))
                 cond = get_value(inst.cond)
@@ -158,13 +159,15 @@ function code_mlir(f, types; ctx=Context())
                 other_dest = blocks[other_dest]
                 dest = blocks[inst.dest]
 
+                loc = Location(ctx, string(line.file), line.line, 0)
                 cond_brop = LLVM.version() >= v"15" ? cf.cond_br : std.cond_br
-                cond_br = cond_brop(ctx, cond, other_dest, dest, true_args, false_args; loc=Location(ctx, line))
+                cond_br = cond_brop(ctx, cond, other_dest, dest, true_args, false_args; loc)
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
                 line = ir.linetable[stmt[:line]]
                 retop = LLVM.version() >= v"15" ? func.return_ : std.return_
-                push!(current_block, retop(ctx, [get_value(inst.val)]; loc=Location(ctx, line)))
+                loc = Location(ctx, string(line.file), line.line, 0)
+                push!(current_block, retop(ctx, [get_value(inst.val)]; loc))
             elseif Meta.isexpr(inst, :code_coverage_effect)
                 # Skip
             else
@@ -181,22 +184,24 @@ function code_mlir(f, types; ctx=Context())
     end
 
     LLVM15 = LLVM.version() >= v"15"
-    state = OperationState(LLVM15 ? "func.func" : "builtin.func", Location(ctx))
 
-    input_types = MType[
+    input_types = MLIRType[
         IR.get_type(IR.get_argument(entry_block, i))
         for i in 1:IR.num_arguments(entry_block)
     ]
-    result_types = [MType(ctx, ret)]
+    result_types = [MLIRType(ctx, ret)]
 
-    ftype = MType(ctx, input_types => result_types)
-    IR.add_attributes!(state, [
-        NamedAttribute(ctx, "sym_name", IR.Attribute(ctx, string(func_name))),
-        NamedAttribute(ctx, LLVM15 ? "function_type" : "type", IR.Attribute(ftype)),
-    ])
-    IR.add_owned_regions!(state, Region[region])
-
-    op = Operation(state)
+    ftype = MLIRType(ctx, input_types => result_types)
+    op = IR.create_operation(
+        LLVM15 ? "func.func" : "builtin.func",
+        Location(ctx);
+        attributes = [
+            NamedAttribute(ctx, "sym_name", IR.Attribute(ctx, string(func_name))),
+            NamedAttribute(ctx, LLVM15 ? "function_type" : "type", IR.Attribute(ftype)),
+        ],
+        owned_regions = Region[region],
+        result_inference=false,
+    )
 
     IR.verifyall(op)
 

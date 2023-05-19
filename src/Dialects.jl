@@ -10,19 +10,13 @@ for (f, t) in Iterators.product(
 )
     fname = Symbol(f, t)
     @eval function $fname(context, operands, type=IR.get_type(first(operands)); loc=Location(context))
-        state = OperationState($(string("arith.", fname)), loc)
-        IR.add_operands!(state, operands)
-        IR.add_results!(state, [type])
-        Operation(state)
+        IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
     end
 end
 
 for fname in (:xori, :andi, :ori)
     @eval function $fname(context, operands, type=IR.get_type(first(operands)); loc=Location(context))
-        state = OperationState($(string("arith.", fname)), loc)
-        IR.add_operands!(state, operands)
-        IR.add_results!(state, [type])
-        Operation(state)
+        IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
     end
 end
 
@@ -32,67 +26,38 @@ for (f, t) in Iterators.product(
 )
     fname = Symbol(f, t)
     @eval function $fname(context, operands, type=IR.get_type(first(operands)); loc=Location(context))
-        state = OperationState($(string("arith.", fname)), loc)
-        IR.add_operands!(state, operands)
-        IR.add_results!(state, [type])
-        Operation(state)
+        IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
     end
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithindex_cast-mlirarithindexcastop
 for f in (:index_cast, :index_castui)
     @eval function $f(context, operand; loc=Location(context))
-        state = OperationState($(string("arith.", f)), loc)
-        add_operands!(state, [operand])
-        add_results!(state, [IR.IndexType(context)])
-        Operation(state)
+        IR.create_operation(
+            $(string("arith.", f)),
+            loc;
+            operands=[operand],
+            results=[IR.IndexType(context)],
+        )
     end
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithextf-mlirarithextfop
 function extf(context, operand, type; loc=Location(context))
-    state = OperationState("arith.exf", loc)
-    IR.add_results!(state, [type])
-    IR.add_operands!(state, [operand])
-    Operation(state)
+    IR.create_operation("arith.exf", loc; operands=[operand], results=[type])
 end
-
-# https://mlir.llvm.org/docs/Dialects/ArithOps/#arithsitofp-mlirarithsitofpop
-function sitofp(context, operand, ftype=float(julia_type(eltype(get_type(operand)))); loc=Location(context))
-    state = OperationState("arith.sitofp", loc)
-    type = get_type(operand)
-    IR.add_results!(state, [
-        IR.is_tensor(type) ?
-        MType(context, ftype isa MType ? eltype(ftype) : MType(context, ftype), size(type)) :
-        MType(context, ftype)
-    ])
-    IR.add_operands!(state, [operand])
-    Operation(state)
-end
-
-# https://mlir.llvm.org/docs/Dialects/ArithOps/#arithfptosi-mlirarithfptosiop
-function fptosi(context, operand, itype; loc=Location(context))
-    state = OperationState("arith.fptosi", loc)
-    type = get_type(operand)
-    IR.add_results!(state, [
-        IR.is_tensor(type) ?
-        MType(context, itype isa MType ? itype : MType(context, itype), size(type)) :
-        MType(context, itype)
-    ])
-    IR.add_operands!(state, [operand])
-    Operation(state)
-end
-
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithconstant-mlirarithconstantop
-function constant(context, value, type=MType(context, typeof(value)); loc=Location(context))
-    state = OperationState("arith.constant", loc)
-    IR.add_results!(state, [type])
-    IR.add_attributes!(state, [
-        IR.NamedAttribute(context, "value",
-            Attribute(context, value, type)),
-    ])
-    Operation(state)
+function constant(context, value, type=MLIRType(context, typeof(value)); loc=Location(context))
+    IR.create_operation(
+      "arith.constant",
+      loc;
+      results=[type],
+      attributes=[
+          IR.NamedAttribute(context, "value",
+              Attribute(context, value, type)),
+      ],
+    )
 end
 
 module Predicates
@@ -109,14 +74,16 @@ module Predicates
 end
 
 function cmpi(context, predicate, operands; loc=Location(context))
-    state = OperationState("arith.cmpi", loc)
-    IR.add_operands!(state, operands)
-    IR.add_attributes!(state, [
-        IR.NamedAttribute(context, "predicate",
-            Attribute(context, predicate))
-    ])
-    IR.add_results!(state, [MType(context, Bool)])
-    Operation(state)
+    IR.create_operation(
+        "arith.cmpi",
+        loc;
+        operands,
+        results=[MLIRType(context, Bool)],
+        attributes=[
+            IR.NamedAttribute(context, "predicate",
+                Attribute(context, predicate))
+        ],
+    )
 end
 
 end # module arith
@@ -127,16 +94,11 @@ module std
 using ...IR
 
 function return_(context, operands; loc=Location(context))
-    state = OperationState("std.return", loc)
-    IR.add_operands!(state, operands)
-    Operation(state)
+    IR.create_operation("std.return", loc; operands, result_inference=false)
 end
 
 function br(context, dest, operands; loc=Location(context))
-    state = OperationState("std.br", loc)
-    IR.add_successors!(state, [dest])
-    IR.add_operands!(state, operands)
-    Operation(state)
+    IR.create_operation("std.br", loc; operands, successors=[dest], result_inference=false)
 end
 
 function cond_br(
@@ -146,14 +108,17 @@ function cond_br(
     false_dest_operands;
     loc=Location(context),
 )
-    state = OperationState("std.cond_br", loc)
-    IR.add_successors!(state, [true_dest, false_dest])
-    IR.add_operands!(state, [cond, true_dest_operands..., false_dest_operands...])
-    IR.add_attributes!(state, [
-        IR.NamedAttribute(context, "operand_segment_sizes",
-            IR.Attribute(context, Int32[1, length(true_dest_operands), length(false_dest_operands)]))
-    ])
-    Operation(state)
+    IR.create_operation(
+        "std.cond_br",
+        loc;
+        successors=[true_dest, false_dest],
+        operands=[cond, true_dest_operands..., false_dest_operands...],
+        attributes=[
+            IR.NamedAttribute(context, "operand_segment_sizes",
+                IR.Attribute(context, Int32[1, length(true_dest_operands), length(false_dest_operands)]))
+        ],
+        result_inference=false,
+    )
 end
 
 end # module std
@@ -164,9 +129,7 @@ module func
 using ...IR
 
 function return_(context, operands; loc=Location(context))
-    state = OperationState("func.return", loc)
-    IR.add_operands!(state, operands)
-    Operation(state)
+    IR.create_operation("func.return", loc; operands, result_inference=false)
 end
 
 end # module func
@@ -176,10 +139,7 @@ module cf
 using ...IR
 
 function br(context, dest, operands; loc=Location(context))
-    state = OperationState("cf.br", loc)
-    IR.add_successors!(state, [dest])
-    IR.add_operands!(state, operands)
-    Operation(state)
+    IR.create_operation("cf.br", loc; operands, successors=[dest], result_inference=false)
 end
 
 function cond_br(
@@ -189,14 +149,16 @@ function cond_br(
     false_dest_operands;
     loc=Location(context),
 )
-    state = OperationState("cf.cond_br", loc)
-    IR.add_successors!(state, [true_dest, false_dest])
-    IR.add_operands!(state, [cond, true_dest_operands..., false_dest_operands...])
-    IR.add_attributes!(state, [
-        IR.NamedAttribute(context, "operand_segment_sizes",
-            IR.Attribute(context, Int32[1, length(true_dest_operands), length(false_dest_operands)]))
-    ])
-    Operation(state)
+    IR.create_operation(
+        "cf.cond_br", loc; 
+        operands=[cond, true_dest_operands..., false_dest_operands...],
+        successors=[true_dest, false_dest],
+        attributes=[
+            IR.NamedAttribute(context, "operand_segment_sizes",
+                IR.Attribute(context, Int32[1, length(true_dest_operands), length(false_dest_operands)]))
+        ],
+        result_inference=false,
+    )
 end
 
 end # module cf

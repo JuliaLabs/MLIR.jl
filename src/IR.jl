@@ -9,18 +9,11 @@ export
     Context,
     MModule,
     Value,
-    MType,
+    MLIRType,
     Region,
     Block,
     Attribute,
     NamedAttribute
-
-export
-    add_results!,
-    add_attributes!,
-    add_owned_regions!,
-    add_successors!
-
 
 import Base: ==, String
 using .API:
@@ -150,15 +143,8 @@ struct Location
 end
 
 Location(context::Context) = Location(API.mlirLocationUnknownGet(context))
-Location(context::Context, filename, line, column=0) =
+Location(context::Context, filename, line, column) =
     Location(API.mlirLocationFileLineColGet(context, filename, line, column))
-Location(context::Context, lin::Core.LineInfoNode) =
-    Location(context, string(lin.file), lin.line)
-Location(context::Context, lin::LineNumberNode) =
-    isnothing(lin.file) ?
-    Location(context) :
-    Location(context, string(lin.file), lin.line)
-Location(context::Context, ::Nothing) = Location(context)
 
 Base.convert(::Type{MlirLocation}, location::Location) = location.location
 
@@ -172,61 +158,61 @@ end
 
 ### Type
 
-struct MType
+struct MLIRType
     type::MlirType
 
-    MType(type) = begin
+    MLIRType(type) = begin
         @assert !mlirIsNull(type)
         new(type)
     end
 end
 
-MType(t::MType) = t
-MType(context::Context, T::Type{<:Signed}) =
-    MType(API.mlirIntegerTypeGet(context, sizeof(T) * 8))
-MType(context::Context, T::Type{<:Unsigned}) =
-    MType(API.mlirIntegerTypeGet(context, sizeof(T) * 8))
-MType(context::Context, ::Type{Bool}) =
-    MType(API.mlirIntegerTypeGet(context, 1))
-MType(context::Context, ::Type{Float32}) =
-    MType(API.mlirF32TypeGet(context))
-MType(context::Context, ::Type{Float64}) =
-    MType(API.mlirF64TypeGet(context))
-MType(context::Context, ft::Pair) =
-    MType(API.mlirFunctionTypeGet(context,
-        length(ft.first), [MType(t) for t in ft.first],
-        length(ft.second), [MType(t) for t in ft.second]))
-MType(context, a::AbstractArray{T}) where {T} = MType(context, MType(context, T), size(a))
-MType(context, ::Type{<:AbstractArray{T,N}}, dims) where {T,N} =
-    MType(API.mlirRankedTensorTypeGetChecked(
+MLIRType(t::MLIRType) = t
+MLIRType(context::Context, T::Type{<:Signed}) =
+    MLIRType(API.mlirIntegerTypeGet(context, sizeof(T) * 8))
+MLIRType(context::Context, T::Type{<:Unsigned}) =
+    MLIRType(API.mlirIntegerTypeGet(context, sizeof(T) * 8))
+MLIRType(context::Context, ::Type{Bool}) =
+    MLIRType(API.mlirIntegerTypeGet(context, 1))
+MLIRType(context::Context, ::Type{Float32}) =
+    MLIRType(API.mlirF32TypeGet(context))
+MLIRType(context::Context, ::Type{Float64}) =
+    MLIRType(API.mlirF64TypeGet(context))
+MLIRType(context::Context, ft::Pair) =
+    MLIRType(API.mlirFunctionTypeGet(context,
+        length(ft.first), [MLIRType(t) for t in ft.first],
+        length(ft.second), [MLIRType(t) for t in ft.second]))
+MLIRType(context, a::AbstractArray{T}) where {T} = MLIRType(context, MLIRType(context, T), size(a))
+MLIRType(context, ::Type{<:AbstractArray{T,N}}, dims) where {T,N} =
+    MLIRType(API.mlirRankedTensorTypeGetChecked(
         Location(context),
         N, collect(dims),
-        MType(context, T),
+        MLIRType(context, T),
         Attribute(),
     ))
-MType(context, element_type::MType, dims) =
-    MType(API.mlirRankedTensorTypeGetChecked(
+MLIRType(context, element_type::MLIRType, dims) =
+    MLIRType(API.mlirRankedTensorTypeGetChecked(
         Location(context),
         length(dims), collect(dims),
         element_type,
         Attribute(),
     ))
-MType(context, ::T) where {T<:Real} = MType(context, T)
-MType(_, type::MType) = type
+MLIRType(context, ::T) where {T<:Real} = MLIRType(context, T)
+MLIRType(_, type::MLIRType) = type
 
-IndexType(context) = MType(API.mlirIndexTypeGet(context))
+IndexType(context) = MLIRType(API.mlirIndexTypeGet(context))
 
-Base.convert(::Type{MlirType}, mtype::MType) = mtype.type
+Base.convert(::Type{MlirType}, mtype::MLIRType) = mtype.type
 
-function Base.eltype(type::MType)
+function Base.eltype(type::MLIRType)
     if API.mlirTypeIsAShaped(type)
-        MType(API.mlirShapedTypeGetElementType(type))
+        MLIRType(API.mlirShapedTypeGetElementType(type))
     else
         type
     end
 end
 
-function show_inner(io::IO, type::MType)
+function show_inner(io::IO, type::MLIRType)
     if API.mlirTypeIsAInteger(type)
         is_signless = API.mlirIntegerTypeIsSignless(type)
         is_signed = API.mlirIntegerTypeIsSigned(type)
@@ -257,8 +243,8 @@ function show_inner(io::IO, type::MType)
     end
 end
 
-function Base.show(io::IO, type::MType)
-    print(io, "MType(#= ")
+function Base.show(io::IO, type::MLIRType)
+    print(io, "MLIRType(#= ")
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
     ref = Ref(io)
     API.mlirTypePrint(type, c_print_callback, ref)
@@ -272,7 +258,7 @@ function inttype(size, issigned)
    issigned ? IT : unsigned(IT)
 end
 
-function julia_type(type::MType)
+function julia_type(type::MLIRType)
     if API.mlirTypeIsAInteger(type)
         is_signed = API.mlirIntegerTypeIsSigned(type) ||
                     API.mlirIntegerTypeIsSignless(type)
@@ -293,42 +279,42 @@ function julia_type(type::MType)
     end
 end
 
-Base.ndims(type::MType) =
+Base.ndims(type::MLIRType) =
     if API.mlirTypeIsAShaped(type) && API.mlirShapedTypeHasRank(type)
         API.mlirShapedTypeGetRank(type)
     else
         0
     end
 
-Base.size(type::MType, i::Int) = API.mlirShapedTypeGetDimSize(type, i - 1)
-Base.size(type::MType) = Tuple(size(type, i) for i in 1:ndims(type))
+Base.size(type::MLIRType, i::Int) = API.mlirShapedTypeGetDimSize(type, i - 1)
+Base.size(type::MLIRType) = Tuple(size(type, i) for i in 1:ndims(type))
 
-function is_tensor(type::MType)
+function is_tensor(type::MLIRType)
     API.mlirTypeIsAShaped(type)
 end
 
-function is_integer(type::MType)
+function is_integer(type::MLIRType)
     API.mlirTypeIsAInteger(type)
 end
 
 is_function_type(mtype) = API.mlirTypeIsAFunction(mtype)
 
-function get_num_inputs(ftype)
+function num_inputs(ftype::MLIRType)
     @assert is_function_type(ftype) "cannot get the number of inputs on type $(ftype), expected a function type"
     API.mlirFunctionTypeGetNumInputs(ftype)
 end
-function get_num_results(ftype)
+function num_results(ftype::MLIRType)
     @assert is_function_type(ftype) "cannot get the number of results on type $(ftype), expected a function type"
     API.mlirFunctionTypeGetNumResults(ftype)
 end
 
-function get_input(ftype::MType, pos)
+function get_input(ftype::MLIRType, pos)
     @assert is_function_type(ftype) "cannot get input on type $(ftype), expected a function type"
-    MType(API.mlirFunctionTypeGetInput(ftype, pos - 1))
+    MLIRType(API.mlirFunctionTypeGetInput(ftype, pos - 1))
 end
-function get_result(ftype::MType, pos=1)
+function get_result(ftype::MLIRType, pos=1)
     @assert is_function_type(ftype) "cannot get result on type $(ftype), expected a function type"
-    MType(API.mlirFunctionTypeGetResult(ftype, pos - 1))
+    MLIRType(API.mlirFunctionTypeGetResult(ftype, pos - 1))
 end
 
 ### Attribute
@@ -339,33 +325,33 @@ end
 
 Attribute() = Attribute(API.mlirAttributeGetNull())
 Attribute(context, s::AbstractString) = Attribute(API.mlirStringAttrGet(context, s))
-Attribute(type::MType) = Attribute(API.mlirTypeAttrGet(type))
-Attribute(context, f::F, type=MType(context, F)) where {F<:AbstractFloat} = Attribute(
+Attribute(type::MLIRType) = Attribute(API.mlirTypeAttrGet(type))
+Attribute(context, f::F, type=MLIRType(context, F)) where {F<:AbstractFloat} = Attribute(
     API.mlirFloatAttrDoubleGet(context, type, Float64(f))
 )
 Attribute(context, i::T) where {T<:Integer} = Attribute(
-    API.mlirIntegerAttrGet(MType(context, T), Int64(i))
+    API.mlirIntegerAttrGet(MLIRType(context, T), Int64(i))
 )
 function Attribute(context, values::T) where {T<:AbstractArray{Int32}}
-    type = MType(context, T, size(values))
+    type = MLIRType(context, T, size(values))
     Attribute(
         API.mlirDenseElementsAttrInt32Get(type, length(values), values)
     )
 end
 function Attribute(context, values::T) where {T<:AbstractArray{Int64}}
-    type = MType(context, T, size(values))
+    type = MLIRType(context, T, size(values))
     Attribute(
         API.mlirDenseElementsAttrInt64Get(type, length(values), values)
     )
 end
 function Attribute(context, values::T) where {T<:AbstractArray{Float64}}
-    type = MType(context, T, size(values))
+    type = MLIRType(context, T, size(values))
     Attribute(
         API.mlirDenseElementsAttrDoubleGet(type, length(values), values)
     )
 end
 function Attribute(context, values::T) where {T<:AbstractArray{Float32}}
-    type = MType(context, T, size(values))
+    type = MLIRType(context, T, size(values))
     Attribute(
         API.mlirDenseElementsAttrFloatGet(type, length(values), values)
     )
@@ -401,12 +387,12 @@ function DenseArrayAttribute(context, values::AbstractVector{Int})
         API.mlirDenseI64ArrayGet(context, length(values), collect(values))
     )
 end
-function Attribute(context, value::Int, type::MType)
+function Attribute(context, value::Int, type::MLIRType)
     Attribute(
         API.mlirIntegerAttrGet(type, value)
     )
 end
-function Attribute(context, value::Bool, ::MType=nothing)
+function Attribute(context, value::Bool, ::MLIRType=nothing)
     Attribute(
         API.mlirBoolAttrGet(context, value)
     )
@@ -417,17 +403,17 @@ Base.parse(::Type{Attribute}, context, s) =
     Attribute(API.mlirAttributeParseGet(context, s))
 
 function get_type(attribute::Attribute)
-    MType(API.mlirAttributeGetType(attribute))
+    MLIRType(API.mlirAttributeGetType(attribute))
 end
-function get_type_value(attribute)
+function type_value(attribute)
     @assert API.mlirAttributeIsAType(attribute) "attribute $(attribute) is not a type"
-    MType(API.mlirTypeAttrGetValue(attribute))
+    MLIRType(API.mlirTypeAttrGetValue(attribute))
 end
-function get_bool_value(attribute)
+function bool_value(attribute)
     @assert API.mlirAttributeIsABool(attribute) "attribute $(attribute) is not a boolean"
     API.mlirBoolAttrGetValue(attribute)
 end
-function get_string_value(attribute)
+function string_value(attribute)
     @assert API.mlirAttributeIsAString(attribute) "attribute $(attribute) is not a string attribute"
     String(API.mlirStringAttrGetValue(attribute))
 end
@@ -468,7 +454,7 @@ struct Value
     end
 end
 
-get_type(value) = MType(API.mlirValueGetType(value))
+get_type(value) = MLIRType(API.mlirValueGetType(value))
 
 Base.convert(::Type{MlirValue}, value::Value) = value.value
 Base.size(value::Value) = Base.size(get_type(value))
@@ -507,34 +493,6 @@ function get_owner(value::Value)
     return Operation(raw_op, false)
 end
 
-### OperationState
-
-struct OperationState
-    opstate::Base.RefValue{MlirOperationState}
-end
-
-OperationState(name, location) = OperationState(Ref(API.mlirOperationStateGet(name, location)))
-
-add_results!(state, results) =
-    API.mlirOperationStateAddResults(state.opstate, length(results), results)
-add_operands!(state, operands) =
-    API.mlirOperationStateAddOperands(state.opstate, length(operands), operands)
-function add_owned_regions!(state, regions)
-    mlir_regions = Base.convert.(MlirRegion, regions)
-    lose_ownership!.(regions)
-    API.mlirOperationStateAddOwnedRegions(state.opstate, length(mlir_regions), mlir_regions)
-end
-add_attributes!(state, attributes) =
-    API.mlirOperationStateAddAttributes(state.opstate, length(attributes), attributes)
-add_successors!(state, successors) =
-    API.mlirOperationStateAddSuccessors(
-        state.opstate, length(successors),
-        convert(Vector{API.MlirBlock}, successors),
-    )
-
-enable_type_inference!(state) =
-    API.mlirOperationStateEnableResultTypeInference(state.opstate)
-
 ### Operation
 
 mutable struct Operation
@@ -551,7 +509,56 @@ mutable struct Operation
     end
 end
 
-Operation(state::OperationState) = Operation(API.mlirOperationCreate(state.opstate), true)
+function create_operation(
+    name, loc;
+    results=nothing,
+    operands=nothing,
+    owned_regions=nothing,
+    successors=nothing,
+    attributes=nothing,
+    result_inference=isnothing(results),
+)
+    GC.@preserve name loc begin
+        state = Ref(API.mlirOperationStateGet(name, loc))
+        if !isnothing(results)
+            if result_inference
+                error("Result inference and provided results conflict")
+            end
+            API.mlirOperationStateAddResults(state, length(results), results)
+        end
+        if !isnothing(operands)
+            API.mlirOperationStateAddOperands(state, length(operands), operands)
+        end
+        if !isnothing(owned_regions)
+            lose_ownership!.(owned_regions)
+            GC.@preserve owned_regions begin
+                mlir_regions = Base.unsafe_convert.(MlirRegion, owned_regions)
+                API.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
+            end
+        end
+        if !isnothing(successors)
+            GC.@preserve successors begin
+                mlir_blocks = Base.unsafe_convert.(MlirBlock, successors)
+                API.mlirOperationStateAddSuccessors(
+                  state,
+                  length(mlir_blocks),
+                  mlir_blocks,
+                )
+            end
+        end
+        if !isnothing(attributes)
+            API.mlirOperationStateAddAttributes(state, length(attributes), attributes)
+        end
+        if result_inference
+            API.mlirOperationStateEnableResultTypeInference(state)
+        end
+        op = API.mlirOperationCreate(state)
+        if mlirIsNull(op)
+            error("Create Operation failed")
+        end
+        Operation(op, true)
+    end
+end
 
 Base.copy(operation::Operation) = Operation(API.mlirOperationClone(operation))
 
@@ -560,7 +567,7 @@ function get_region(operation, i)
     i ∈ 1:num_regions(operation) && throw(BoundsError(operation, i))
     Region(API.mlirOperationGetRegion(operation, i - 1), false)
 end
-num_results(operation) = API.mlirOperationGetNumResults(operation)
+num_results(operation::Operation) = API.mlirOperationGetNumResults(operation)
 get_results(operation) = [
     get_result(operation, i)
     for i in 1:num_results(operation)
@@ -592,11 +599,11 @@ function set_attribute_by_name!(operation, name, attribute)
     operation
 end
 
-get_location(operation) = Location(API.mlirOperationGetLocation(operation))
-get_name(operation) = String(API.mlirOperationGetName(operation))
-get_block(operation) = Block(API.mlirOperationGetBlock(operation), false)
-get_parent_operation(operation) = Operation(API.mlirOperationGetParentOperation(operation), false)
-get_dialect(operation) = first(split(get_name(operation), '.')) |> Symbol
+location(operation) = Location(API.mlirOperationGetLocation(operation))
+name(operation) = String(API.mlirOperationGetName(operation))
+block(operation) = Block(API.mlirOperationGetBlock(operation), false)
+parent_operation(operation) = Operation(API.mlirOperationGetParentOperation(operation), false)
+dialect(operation) = first(split(get_name(operation), '.')) |> Symbol
 
 function get_first_region(op::Operation)
     reg = iterate(RegionIterator(op))
@@ -619,7 +626,8 @@ end
 
 op::Operation == other::Operation = API.mlirOperationEqual(op, other)
 
-Base.convert(::Type{MlirOperation}, op::Operation) = op.operation
+Base.cconvert(::Type{MlirOperation}, operation::Operation) = operation
+Base.unsafe_convert(::Type{MlirOperation}, operation::Operation) = operation.operation
 
 function lose_ownership!(operation::Operation)
     @assert operation.owned
@@ -654,8 +662,8 @@ mutable struct Block
     end
 end
 
-Block() = Block(MType[], Location[])
-function Block(args::Vector{MType}, locs::Vector{Location})
+Block() = Block(MLIRType[], Location[])
+function Block(args::Vector{MLIRType}, locs::Vector{Location})
     @assert length(args) == length(locs) "there should be one args for each locs (got $(length(args)) & $(length(locs)))"
     Block(API.mlirBlockCreate(length(args), args, locs))
 end
@@ -690,7 +698,8 @@ end
 push_argument!(block::Block, type, loc) =
     Value(API.mlirBlockAddArgument(block, type, loc))
 
-Base.convert(::Type{MlirBlock}, block::Block) = block.block
+Base.cconvert(::Type{MlirBlock}, block::Block) = block
+Base.unsafe_convert(::Type{MlirBlock}, block::Block) = block.block
 
 function lose_ownership!(block::Block)
     @assert block.owned
@@ -751,7 +760,8 @@ function lose_ownership!(region::Region)
     region
 end
 
-Base.convert(::Type{MlirRegion}, region::Region) = region.region
+Base.cconvert(::Type{MlirRegion}, region::Region) = region
+Base.unsafe_convert(::Type{MlirRegion}, region::Region) = region.region
 
 ### Module
 
@@ -936,7 +946,7 @@ end
 ### Pass
 
 # AbstractPass interface:
-get_opname(::AbstractPass) = ""
+opname(::AbstractPass) = ""
 function pass_run(::Context, ::P, op) where {P<:AbstractPass}
     error("pass $P does not implement `MLIR.pass_run`")
 end
@@ -977,7 +987,7 @@ function create_external_pass!(oppass::OpPassManager, args...)
     create_external_pass!(oppass.pass, args...)
 end
 function create_external_pass!(manager, pass, name, argument,
-                               description, opname=get_opname(pass),
+                               description, opname=opname(pass),
                                dependent_dialects=MlirDialectHandle[])
     passid = TypeID(manager.allocator)
     callbacks = API.MlirExternalPassCallbacks(
