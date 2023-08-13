@@ -203,7 +203,9 @@ MLIRType(_, type::MLIRType) = type
 IndexType(context) = MLIRType(API.mlirIndexTypeGet(context))
 
 Base.convert(::Type{MlirType}, mtype::MLIRType) = mtype.type
-
+Base.parse(::Type{MLIRType}, context, s) =
+    MLIRType(API.mlirTypeParseGet(context, s))
+    
 function Base.eltype(type::MLIRType)
     if API.mlirTypeIsAShaped(type)
         MLIRType(API.mlirShapedTypeGetElementType(type))
