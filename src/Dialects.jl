@@ -9,13 +9,13 @@ for (f, t) in Iterators.product(
     (:i, :f),
 )
     fname = Symbol(f, t)
-    @eval function $fname(context, operands, type=IR.get_type(first(operands)); loc=Location(context))
+    @eval function $fname(operands, type=IR.get_type(first(operands)); loc=Location())
         IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
     end
 end
 
 for fname in (:xori, :andi, :ori)
-    @eval function $fname(context, operands, type=IR.get_type(first(operands)); loc=Location(context))
+    @eval function $fname(operands, type=IR.get_type(first(operands)); loc=Location())
         IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
     end
 end
@@ -25,37 +25,37 @@ for (f, t) in Iterators.product(
     (:si, :ui, :f),
 )
     fname = Symbol(f, t)
-    @eval function $fname(context, operands, type=IR.get_type(first(operands)); loc=Location(context))
+    @eval function $fname(operands, type=IR.get_type(first(operands)); loc=Location())
         IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
     end
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithindex_cast-mlirarithindexcastop
 for f in (:index_cast, :index_castui)
-    @eval function $f(context, operand; loc=Location(context))
+    @eval function $f(operand; loc=Location())
         IR.create_operation(
             $(string("arith.", f)),
             loc;
             operands=[operand],
-            results=[IR.IndexType(context)],
+            results=[IR.IndexType()],
         )
     end
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithextf-mlirarithextfop
-function extf(context, operand, type; loc=Location(context))
+function extf(operand, type; loc=Location())
     IR.create_operation("arith.exf", loc; operands=[operand], results=[type])
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithconstant-mlirarithconstantop
-function constant(context, value, type=MLIRType(context, typeof(value)); loc=Location(context))
+function constant(value, type=MLIRType(typeof(value)); loc=Location())
     IR.create_operation(
       "arith.constant",
       loc;
       results=[type],
       attributes=[
-          IR.NamedAttribute(context, "value",
-              Attribute(context, value, type)),
+          IR.NamedAttribute("value",
+              Attribute(value, type)),
       ],
     )
 end
@@ -73,15 +73,15 @@ module Predicates
     const uge = 9
 end
 
-function cmpi(context, predicate, operands; loc=Location(context))
+function cmpi(predicate, operands; loc=Location())
     IR.create_operation(
         "arith.cmpi",
         loc;
         operands,
-        results=[MLIRType(context, Bool)],
+        results=[MLIRType(Bool)],
         attributes=[
-            IR.NamedAttribute(context, "predicate",
-                Attribute(context, predicate))
+            IR.NamedAttribute("predicate",
+                Attribute(predicate))
         ],
     )
 end
@@ -93,20 +93,20 @@ module std
 
 using ...IR
 
-function return_(context, operands; loc=Location(context))
+function return_(operands; loc=Location())
     IR.create_operation("std.return", loc; operands, result_inference=false)
 end
 
-function br(context, dest, operands; loc=Location(context))
+function br(dest, operands; loc=Location())
     IR.create_operation("std.br", loc; operands, successors=[dest], result_inference=false)
 end
 
 function cond_br(
-    context, cond,
+    cond,
     true_dest, false_dest,
     true_dest_operands,
     false_dest_operands;
-    loc=Location(context),
+    loc=Location(),
 )
     IR.create_operation(
         "std.cond_br",
@@ -114,8 +114,8 @@ function cond_br(
         successors=[true_dest, false_dest],
         operands=[cond, true_dest_operands..., false_dest_operands...],
         attributes=[
-            IR.NamedAttribute(context, "operand_segment_sizes",
-                IR.Attribute(context, Int32[1, length(true_dest_operands), length(false_dest_operands)]))
+            IR.NamedAttribute("operand_segment_sizes",
+                IR.Attribute(Int32[1, length(true_dest_operands), length(false_dest_operands)]))
         ],
         result_inference=false,
     )
@@ -128,7 +128,7 @@ module func
 
 using ...IR
 
-function return_(context, operands; loc=Location(context))
+function return_(operands; loc=Location())
     IR.create_operation("func.return", loc; operands, result_inference=false)
 end
 
@@ -138,24 +138,24 @@ module cf
 
 using ...IR
 
-function br(context, dest, operands; loc=Location(context))
+function br(dest, operands; loc=Location())
     IR.create_operation("cf.br", loc; operands, successors=[dest], result_inference=false)
 end
 
 function cond_br(
-    context, cond,
+    cond,
     true_dest, false_dest,
     true_dest_operands,
     false_dest_operands;
-    loc=Location(context),
+    loc=Location(),
 )
     IR.create_operation(
         "cf.cond_br", loc; 
         operands=[cond, true_dest_operands..., false_dest_operands...],
         successors=[true_dest, false_dest],
         attributes=[
-            IR.NamedAttribute(context, "operand_segment_sizes",
-                IR.Attribute(context, Int32[1, length(true_dest_operands), length(false_dest_operands)]))
+            IR.NamedAttribute("operand_segment_sizes",
+                IR.Attribute(Int32[1, length(true_dest_operands), length(false_dest_operands)]))
         ],
         result_inference=false,
     )

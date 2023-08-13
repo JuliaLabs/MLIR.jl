@@ -9,13 +9,12 @@ end
 
 mutable struct PassManager
     pass::MlirPassManager
-    context::Context
     allocator::TypeIDAllocator
     passes::Dict{TypeID,ExternalPassHandle}
 
-    PassManager(pm::MlirPassManager, context) = begin
+    PassManager(pm::MlirPassManager) = begin
         @assert !mlirIsNull(pm) "cannot create PassManager with null MlirPassManager"
-        finalizer(new(pm, context, TypeIDAllocator(), Dict{TypeID,ExternalPassHandle}())) do pm
+        finalizer(new(pm, TypeIDAllocator(), Dict{TypeID,ExternalPassHandle}())) do pm
             API.mlirPassManagerDestroy(pm.pass)
         end
     end
@@ -30,8 +29,8 @@ function enable_verifier!(pm, enable=true)
     pm
 end
 
-PassManager(context) =
-    PassManager(API.mlirPassManagerCreate(context), context)
+PassManager() =
+    PassManager(API.mlirPassManagerCreate(context()))
 
 function run!(pm::PassManager, module_)
     status = API.mlirPassManagerRun(pm, module_)
@@ -96,7 +95,7 @@ function add_pipeline!(op_pass::OpPassManager, pipeline)
     end
     op_pass
 end
- 
+
 function add_owned_pass!(pm::PassManager, pass)
     API.mlirPassManagerAddOwnedPass(pm, pass)
     pm
@@ -110,67 +109,66 @@ end
 
 @static if isdefined(API, :mlirCreateExternalPass)
 
-### Pass
+    ### Pass
 
-# AbstractPass interface:
-opname(::AbstractPass) = ""
-function pass_run(::Context, ::P, op) where {P<:AbstractPass}
-    error("pass $P does not implement `MLIR.pass_run`")
-end
-
-function _pass_construct(ptr::ExternalPassHandle)
-    nothing
-end
-
-function _pass_destruct(ptr::ExternalPassHandle)
-    nothing
-end
-
-function _pass_initialize(ctx, handle::ExternalPassHandle)
-    try
-        handle.ctx = Context(ctx)
-        mlirLogicalResultSuccess()
-    catch
-        mlirLogicalResultFailure()
+    # AbstractPass interface:
+    opname(::AbstractPass) = ""
+    function pass_run(::Context, ::P, op) where {P<:AbstractPass}
+        error("pass $P does not implement `MLIR.pass_run`")
     end
-end
 
-function _pass_clone(handle::ExternalPassHandle)
-    ExternalPassHandle(handle.ctx, deepcopy(handle.pass))
-end
-
-function _pass_run(rawop, external_pass, handle::ExternalPassHandle)
-    op = Operation(rawop, false)
-    try
-        pass_run(handle.ctx, handle.pass, op)
-    catch ex
-        @error "Something went wrong running pass" exception=(ex,catch_backtrace())
-        API.mlirExternalPassSignalFailure(external_pass)
+    function _pass_construct(ptr::ExternalPassHandle)
+        nothing
     end
-    nothing
-end
 
-function create_external_pass!(oppass::OpPassManager, args...)
-    create_external_pass!(oppass.pass, args...)
-end
-function create_external_pass!(manager, pass, name, argument,
-                               description, opname=opname(pass),
-                               dependent_dialects=MlirDialectHandle[])
-    passid = TypeID(manager.allocator)
-    callbacks = API.MlirExternalPassCallbacks(
+    function _pass_destruct(ptr::ExternalPassHandle)
+        nothing
+    end
+
+    function _pass_initialize(ctx, handle::ExternalPassHandle)
+        try
+            handle.ctx = Context(ctx)
+            mlirLogicalResultSuccess()
+        catch
+            mlirLogicalResultFailure()
+        end
+    end
+
+    function _pass_clone(handle::ExternalPassHandle)
+        ExternalPassHandle(handle.ctx, deepcopy(handle.pass))
+    end
+
+    function _pass_run(rawop, external_pass, handle::ExternalPassHandle)
+        op = Operation(rawop, false)
+        try
+            pass_run(handle.ctx, handle.pass, op)
+        catch ex
+            @error "Something went wrong running pass" exception = (ex, catch_backtrace())
+            API.mlirExternalPassSignalFailure(external_pass)
+        end
+        nothing
+    end
+
+    function create_external_pass!(oppass::OpPassManager, args...)
+        create_external_pass!(oppass.pass, args...)
+    end
+    function create_external_pass!(manager, pass, name, argument,
+        description, opname=opname(pass),
+        dependent_dialects=MlirDialectHandle[])
+        passid = TypeID(manager.allocator)
+        callbacks = API.MlirExternalPassCallbacks(
             @cfunction(_pass_construct, Cvoid, (Any,)),
             @cfunction(_pass_destruct, Cvoid, (Any,)),
             @cfunction(_pass_initialize, API.MlirLogicalResult, (MlirContext, Any,)),
             @cfunction(_pass_clone, Any, (Any,)),
             @cfunction(_pass_run, Cvoid, (MlirOperation, API.MlirExternalPass, Any))
-    )
-    pass_handle = manager.passes[passid] = ExternalPassHandle(nothing, pass)
-    userdata = Base.pointer_from_objref(pass_handle)
-    mlir_pass = API.mlirCreateExternalPass(passid, name, argument, description, opname,
-                                               length(dependent_dialects), dependent_dialects,
-                                               callbacks, userdata)
-    mlir_pass
-end
+        )
+        pass_handle = manager.passes[passid] = ExternalPassHandle(nothing, pass)
+        userdata = Base.pointer_from_objref(pass_handle)
+        mlir_pass = API.mlirCreateExternalPass(passid, name, argument, description, opname,
+            length(dependent_dialects), dependent_dialects,
+            callbacks, userdata)
+        mlir_pass
+    end
 
 end
-
