@@ -564,7 +564,7 @@ Base.copy(operation::Operation) = Operation(API.mlirOperationClone(operation))
 
 num_regions(operation) = API.mlirOperationGetNumRegions(operation)
 function get_region(operation, i)
-    i ∈ 1:num_regions(operation) && throw(BoundsError(operation, i))
+    i ∉ 1:num_regions(operation) && throw(BoundsError(operation, i))
     Region(API.mlirOperationGetRegion(operation, i - 1), false)
 end
 num_results(operation::Operation) = API.mlirOperationGetNumResults(operation)
