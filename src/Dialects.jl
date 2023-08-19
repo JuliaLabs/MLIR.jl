@@ -1,8 +1,9 @@
 module Dialects
 
-module arith
+module Arith
 
 using ...IR
+using ...Builder: blockbuilder, _has_blockbuilder
 
 for (f, t) in Iterators.product(
     (:add, :sub, :mul),
@@ -10,13 +11,17 @@ for (f, t) in Iterators.product(
 )
     fname = Symbol(f, t)
     @eval function $fname(operands, type=IR.get_type(first(operands)); loc=Location())
-        IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
+        op = IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
+        push!(blockbuilder().block, op)
+        return IR.get_result(op, 1)
     end
 end
 
 for fname in (:xori, :andi, :ori)
     @eval function $fname(operands, type=IR.get_type(first(operands)); loc=Location())
-        IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
+        op = IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
+        push!(blockbuilder().block, op)
+        return IR.get_result(op, 1)
     end
 end
 
@@ -26,30 +31,36 @@ for (f, t) in Iterators.product(
 )
     fname = Symbol(f, t)
     @eval function $fname(operands, type=IR.get_type(first(operands)); loc=Location())
-        IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
+        op = IR.create_operation($(string("arith.", fname)), loc; operands, results=[type])
+        push!(blockbuilder().block, op)
+        return IR.get_result(op, 1)
     end
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithindex_cast-mlirarithindexcastop
 for f in (:index_cast, :index_castui)
     @eval function $f(operand; loc=Location())
-        IR.create_operation(
+        op = IR.create_operation(
             $(string("arith.", f)),
             loc;
             operands=[operand],
             results=[IR.IndexType()],
         )
+        push!(blockbuilder().block, op)
+        return IR.get_result(op, 1)
     end
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithextf-mlirarithextfop
 function extf(operand, type; loc=Location())
-    IR.create_operation("arith.exf", loc; operands=[operand], results=[type])
+    op = IR.create_operation("arith.exf", loc; operands=[operand], results=[type])
+    push!(blockbuilder().block, op)
+    return IR.get_result(op , 1)
 end
 
 # https://mlir.llvm.org/docs/Dialects/ArithOps/#arithconstant-mlirarithconstantop
 function constant(value, type=MLIRType(typeof(value)); loc=Location())
-    IR.create_operation(
+    op = IR.create_operation(
       "arith.constant",
       loc;
       results=[type],
@@ -58,6 +69,8 @@ function constant(value, type=MLIRType(typeof(value)); loc=Location())
               Attribute(value, type)),
       ],
     )
+    push!(blockbuilder().block, op)
+    return IR.get_result(op, 1)
 end
 
 module Predicates
@@ -74,7 +87,7 @@ module Predicates
 end
 
 function cmpi(predicate, operands; loc=Location())
-    IR.create_operation(
+    op = IR.create_operation(
         "arith.cmpi",
         loc;
         operands,
@@ -84,11 +97,13 @@ function cmpi(predicate, operands; loc=Location())
                 Attribute(predicate))
         ],
     )
+    push!(blockbuilder().block, op)
+    return get_result(op, 1)
 end
 
 end # module arith
 
-module std
+module STD
 # for llvm 14
 
 using ...IR
@@ -123,7 +138,7 @@ end
 
 end # module std
 
-module func
+module Func
 # https://mlir.llvm.org/docs/Dialects/Func/
 
 using ...IR
@@ -134,22 +149,25 @@ end
 
 end # module func
 
-module cf
+module CF
 
 using ...IR
+using ...Builder
 
-function br(dest, operands; loc=Location())
-    IR.create_operation("cf.br", loc; operands, successors=[dest], result_inference=false)
+function br(dest, operands=[]; loc=Location())
+    op = IR.create_operation("cf.br", loc; operands, successors=[dest], result_inference=false)
+    push!(Builder.blockbuilder().block, op)
+    return op # no value so returning operation itself (?)
 end
 
 function cond_br(
     cond,
     true_dest, false_dest,
-    true_dest_operands,
-    false_dest_operands;
+    true_dest_operands=[],
+    false_dest_operands=[];
     loc=Location(),
 )
-    IR.create_operation(
+    op = IR.create_operation(
         "cf.cond_br", loc; 
         operands=[cond, true_dest_operands..., false_dest_operands...],
         successors=[true_dest, false_dest],
@@ -159,6 +177,8 @@ function cond_br(
         ],
         result_inference=false,
     )
+    push!(blockbuilder().block, op)
+    return op
 end
 
 end # module cf

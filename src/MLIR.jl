@@ -42,6 +42,7 @@ module IR
     include("./IR/state.jl")
 end # module IR
 
+include("./highlevel.jl")
 include("./Dialects.jl")
 
 
