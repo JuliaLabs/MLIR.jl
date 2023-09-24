@@ -377,7 +377,7 @@ function Attribute(values::AbstractArray{Float32}, type)
     )
 end
 function ArrayAttribute(values::AbstractVector{Int})
-    elements = Attribute.((context(),), values)
+    elements = Attribute.(values)
     Attribute(
         API.mlirArrayAttrGet(context(), length(elements), elements)
     )
