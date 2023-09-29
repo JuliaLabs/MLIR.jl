@@ -206,8 +206,8 @@ MLIRType(_, type::MLIRType) = type
 IndexType() = MLIRType(API.mlirIndexTypeGet(context()))
 
 Base.convert(::Type{MlirType}, mtype::MLIRType) = mtype.type
-Base.parse(::Type{MLIRType}, context, s) =
-    MLIRType(API.mlirTypeParseGet(context, s))
+Base.parse(::Type{MLIRType}, s) =
+    MLIRType(API.mlirTypeParseGet(context(), s))
     
 function Base.eltype(type::MLIRType)
     if API.mlirTypeIsAShaped(type)
@@ -791,7 +791,7 @@ Base.parse(::Type{MModule}, module_) = MModule(API.mlirModuleCreateParse(context
 macro mlir_str(code)
     quote
         ctx = Context()
-        parse(MModule, ctx, code)
+        parse(MModule, code)
     end
 end
 
