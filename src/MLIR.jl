@@ -35,4 +35,7 @@ function Base.unsafe_convert(::Type{API.MlirStringRef}, s::Union{Symbol, String,
     return API.MlirStringRef(p, length(s))
 end
 
-end # module
+include("./IR/IR.jl")
+include("./Dialects.jl")
+
+end # module MLIR
