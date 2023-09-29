@@ -8,13 +8,13 @@ using Core: PhiNode, GotoNode, GotoIfNot, SSAValue, Argument, ReturnNode, PiNode
 const BrutusScalar = Union{Bool,Int64,Int32,Float32,Float64}
 
 function cmpi_pred(predicate)
-    function(ctx, ops; loc=Location(ctx))
-        arith.cmpi(ctx, predicate, ops; loc)
+    function(ops; loc=Location())
+        arith.cmpi(predicate, ops; loc)
     end
 end
 
 function single_op_wrapper(fop)
-    (ctx::Context, block::Block, args::Vector{Value}; loc=Location(ctx)) -> push!(block, fop(ctx, args; loc))
+    (block::Block, args::Vector{Value}; loc=Location()) -> push!(block, fop(args; loc))
 end
 
 const intrinsics_to_mlir = Dict([
@@ -24,15 +24,15 @@ const intrinsics_to_mlir = Dict([
     Base.:(===) =>  single_op_wrapper(cmpi_pred(arith.Predicates.eq)),
     Base.mul_int => single_op_wrapper(arith.muli),
     Base.mul_float => single_op_wrapper(arith.mulf),
-    Base.not_int => function(ctx, block, args; loc=Location(ctx))
+    Base.not_int => function(block, args; loc=Location())
         arg = only(args)
-        ones = push!(block, arith.constant(ctx, -1, IR.get_type(arg); loc)) |> IR.get_result
-        push!(block, arith.xori(ctx, Value[arg, ones]; loc))
+        ones = push!(block, arith.constant(-1, IR.get_type(arg); loc)) |> IR.get_result
+        push!(block, arith.xori(Value[arg, ones]; loc))
     end,
 ])
 
 "Generates a block argument for each phi node present in the block."
-function prepare_block(ctx, ir, bb)
+function prepare_block(ir, bb)
     b = Block()
 
     for sidx in bb.stmts
@@ -41,7 +41,7 @@ function prepare_block(ctx, ir, bb)
         inst isa Core.PhiNode || continue
 
         type = stmt[:type]
-        IR.push_argument!(b, MLIRType(ctx, type), Location(ctx))
+        IR.push_argument!(b, MLIRType(type), Location())
     end
 
     return b
@@ -68,7 +68,7 @@ function collect_value_arguments(ir, from, to)
 end
 
 """
-    code_mlir(f, types::Type{Tuple}; ctx=Context()) -> IR.Operation
+    code_mlir(f, types::Type{Tuple}) -> IR.Operation
 
 Returns a `func.func` operation corresponding to the ircode of the provided method.
 This only supports a few Julia Core primitives and scalar types of type $BrutusScalar.
@@ -78,25 +78,26 @@ This only supports a few Julia Core primitives and scalar types of type $BrutusS
     handful of primitives. A better to perform this conversion would to create a dialect
     representing Julia IR and progressively lower it to base MLIR dialects.
 """
-function code_mlir(f, types; ctx=Context())
+function code_mlir(f, types)
+    ctx = context()
     ir, ret = Core.Compiler.code_ircode(f, types) |> only
     @assert first(ir.argtypes) isa Core.Const
 
     values = Vector{Value}(undef, length(ir.stmts))
 
     for dialect in (LLVM.version() >= v"15" ? ("func", "cf") : ("std",))
-        IR.get_or_load_dialect!(ctx, dialect)
+        IR.get_or_load_dialect!(dialect)
     end
 
     blocks = [
-        prepare_block(ctx, ir, bb)
+        prepare_block(ir, bb)
         for bb in ir.cfg.blocks
     ]
 
     current_block = entry_block = blocks[begin]
 
     for argtype in types.parameters
-        IR.push_argument!(entry_block, MLIRType(ctx, argtype), Location(ctx))
+        IR.push_argument!(entry_block, MLIRType(argtype), Location())
     end
 
     function get_value(x)::Value
@@ -106,7 +107,7 @@ function code_mlir(f, types; ctx=Context())
         elseif x isa Core.Argument
             IR.get_argument(entry_block, x.n - 1)
         elseif x isa BrutusScalar
-            IR.get_result(push!(current_block, arith.constant(ctx, x)))
+            IR.get_result(push!(current_block, arith.constant(x)))
         else
             error("could not use value $x inside MLIR")
         end
@@ -126,7 +127,7 @@ function code_mlir(f, types; ctx=Context())
                 if !(val_type <: BrutusScalar)
                     error("type $val_type is not supported")
                 end
-                out_type = MLIRType(ctx, val_type)
+                out_type = MLIRType(val_type)
 
                 called_func = first(inst.args)
                 if called_func isa GlobalRef # TODO: should probably use something else here
@@ -136,8 +137,8 @@ function code_mlir(f, types; ctx=Context())
                 fop! = intrinsics_to_mlir[called_func]
                 args = get_value.(@view inst.args[begin+1:end])
 
-                loc = Location(ctx, string(line.file), line.line, 0)
-                res = IR.get_result(fop!(ctx, current_block, args; loc))
+                loc = Location(string(line.file), line.line, 0)
+                res = IR.get_result(fop!(current_block, args; loc))
 
                 values[sidx] = res
             elseif inst isa PhiNode
@@ -147,9 +148,9 @@ function code_mlir(f, types; ctx=Context())
             elseif inst isa GotoNode
                 args = get_value.(collect_value_arguments(ir, block_id, inst.label))
                 dest = blocks[inst.label]
-                loc = Location(ctx, string(line.file), line.line, 0)
+                loc = Location(string(line.file), line.line, 0)
                 brop = LLVM.version() >= v"15" ? cf.br : std.br
-                push!(current_block, brop(ctx, dest, args; loc))
+                push!(current_block, brop(dest, args; loc))
             elseif inst isa GotoIfNot
                 false_args = get_value.(collect_value_arguments(ir, block_id, inst.dest))
                 cond = get_value(inst.cond)
@@ -159,15 +160,15 @@ function code_mlir(f, types; ctx=Context())
                 other_dest = blocks[other_dest]
                 dest = blocks[inst.dest]
 
-                loc = Location(ctx, string(line.file), line.line, 0)
+                loc = Location(string(line.file), line.line, 0)
                 cond_brop = LLVM.version() >= v"15" ? cf.cond_br : std.cond_br
-                cond_br = cond_brop(ctx, cond, other_dest, dest, true_args, false_args; loc)
+                cond_br = cond_brop(cond, other_dest, dest, true_args, false_args; loc)
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
                 line = ir.linetable[stmt[:line]]
                 retop = LLVM.version() >= v"15" ? func.return_ : std.return_
-                loc = Location(ctx, string(line.file), line.line, 0)
-                push!(current_block, retop(ctx, [get_value(inst.val)]; loc))
+                loc = Location(string(line.file), line.line, 0)
+                push!(current_block, retop([get_value(inst.val)]; loc))
             elseif Meta.isexpr(inst, :code_coverage_effect)
                 # Skip
             else
@@ -189,15 +190,15 @@ function code_mlir(f, types; ctx=Context())
         IR.get_type(IR.get_argument(entry_block, i))
         for i in 1:IR.num_arguments(entry_block)
     ]
-    result_types = [MLIRType(ctx, ret)]
+    result_types = [MLIRType(ret)]
 
-    ftype = MLIRType(ctx, input_types => result_types)
+    ftype = MLIRType(input_types => result_types)
     op = IR.create_operation(
         LLVM15 ? "func.func" : "builtin.func",
-        Location(ctx);
+        Location();
         attributes = [
-            NamedAttribute(ctx, "sym_name", IR.Attribute(ctx, string(func_name))),
-            NamedAttribute(ctx, LLVM15 ? "function_type" : "type", IR.Attribute(ftype)),
+            NamedAttribute("sym_name", IR.Attribute(string(func_name))),
+            NamedAttribute(LLVM15 ? "function_type" : "type", IR.Attribute(ftype)),
         ],
         owned_regions = Region[region],
         result_inference=false,
@@ -254,13 +255,13 @@ using MLIR.IR, MLIR
 ctx = Context()
 # IR.enable_multithreading!(ctx, false)
 
-op = Brutus.code_mlir(pow, Tuple{Int, Int}; ctx)
+op = Brutus.code_mlir(pow, Tuple{Int, Int})
 
-mod = MModule(ctx, Location(ctx))
+mod = MModule(Location())
 body = IR.get_body(mod)
 push!(body, op)
 
-pm = IR.PassManager(ctx)
+pm = IR.PassManager()
 opm = IR.OpPassManager(pm)
 
 # IR.enable_ir_printing!(pm)
