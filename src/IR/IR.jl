@@ -100,7 +100,7 @@ end
 
 function dispose(ctx::Context)
     deactivate(ctx)
-    API.mlirContextDestroy(context.context)
+    API.mlirContextDestroy(ctx.context)
 end
 
 function Context(f::Core.Function)
