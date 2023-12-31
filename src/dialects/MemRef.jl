@@ -880,7 +880,7 @@ function get_global(; result::MLIRType, name::Union{Attribute, NamedAttribute}, 
 end
 
 """
-global
+global_
 
 The `memref.global` operation declares or defines a named global memref
 variable. The backing memory for the variable is allocated statically and is
@@ -917,7 +917,7 @@ memref.global @z : memref<3xf16> = uninitialized
 memref.global constant @c : memref<2xi32> = dense<1, 4>
 ```
 """
-function global(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, type::Union{Attribute, NamedAttribute}, initial_value=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, constant=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function global_(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, type::Union{Attribute, NamedAttribute}, initial_value=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, constant=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
