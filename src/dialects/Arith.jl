@@ -13,7 +13,7 @@ these is required to be the same type. This type may be a floating point
 scalar type, a vector whose element type is a floating point type, or a
 floating point tensor.
 
-Example:
+# Example
 
 ```mlir
 // Scalar addition.
@@ -28,7 +28,6 @@ Example:
 
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
-  
 """
 function addf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -40,12 +39,9 @@ function addf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.addf", location,
+        "arith.addf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -58,7 +54,7 @@ these is required to be the same type. This type may be an integer scalar
 type, a vector whose element type is integer, or a tensor of integers. It
 has no standard attributes.
 
-Example:
+# Example
 
 ```mlir
 // Scalar addition.
@@ -70,7 +66,6 @@ Example:
 // Tensor element-wise addition.
 %x = arith.addi %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function addi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -81,12 +76,9 @@ function addi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.addi", location,
+        "arith.addi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -99,7 +91,7 @@ the N-bit sum (same type as both operands), and the overflow bit
 (boolean-like), where`1` indicates unsigned addition overflow, while `0`
 indicates no overflow.
 
-Example:
+# Example
 
 ```mlir
 // Scalar addition.
@@ -111,7 +103,6 @@ Example:
 // Tensor element-wise addition.
 %x:2 = arith.addui_extended %y, %z : tensor<4x?xi8>, tensor<4x?xi1>
 ```
-  
 """
 function addui_extended(lhs::Value, rhs::Value; sum::MLIRType, overflow::MLIRType, location=Location())
     results = MLIRType[sum, overflow, ]
@@ -121,12 +112,9 @@ function addui_extended(lhs::Value, rhs::Value; sum::MLIRType, overflow::MLIRTyp
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.addui_extended", location,
+        "arith.addui_extended", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -139,7 +127,7 @@ these is required to be the same type. This type may be an integer scalar
 type, a vector whose element type is integer, or a tensor of integers. It
 has no standard attributes.
 
-Example:
+# Example
 
 ```mlir
 // Scalar integer bitwise and.
@@ -151,7 +139,6 @@ Example:
 // Tensor element-wise bitwise integer and.
 %x = arith.andi %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function andi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -162,12 +149,9 @@ function andi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.andi", location,
+        "arith.andi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -189,7 +173,6 @@ floating point and integer register files. For targets that have a different
 endianness for the source and target types (e.g. float is big-endian and
 integer is little-endian) a proper lowering would add operations to swap the
 order of words in addition to the bitcast.
-  
 """
 function bitcast(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -199,12 +182,9 @@ function bitcast(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.bitcast", location,
+        "arith.bitcast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -217,13 +197,12 @@ Signed integer division. Rounds towards positive infinity, i.e. `7 / -2 = -3`.
 Note: the semantics of division by zero or signed division overflow (minimum
 value divided by -1) is TBD; do NOT assume any specific behavior.
 
-Example:
+# Example
 
 ```mlir
 // Scalar signed integer division.
 %a = arith.ceildivsi %b, %c : i64
 ```
-  
 """
 function ceildivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -234,12 +213,9 @@ function ceildivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTy
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.ceildivsi", location,
+        "arith.ceildivsi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -254,13 +230,12 @@ representation, `6 / -2 = 6 / (2^16 - 2) = 1`.
 Note: the semantics of division by zero is TBD; do NOT assume any specific
 behavior.
 
-Example:
+# Example
 
 ```mlir
 // Scalar unsigned integer division.
 %a = arith.ceildivui %b, %c : i64
 ```
-  
 """
 function ceildivui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -271,12 +246,9 @@ function ceildivui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTy
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.ceildivui", location,
+        "arith.ceildivui", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -300,14 +272,13 @@ e.g., \"one\" means \"ordered not equal\".  The string representation of the
 attribute is merely a syntactic sugar and is converted to an integer
 attribute by the parser.
 
-Example:
+# Example
 
 ```mlir
 %r1 = arith.cmpf oeq, %0, %1 : f32
 %r2 = arith.cmpf ult, %0, %1 : tensor<42x42xf64>
 %r3 = \"arith.cmpf\"(%0, %1) {predicate: 0} : (f8, f8) -> i1
 ```
-  
 """
 function cmpf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, predicate::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -318,12 +289,9 @@ function cmpf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.cmpf", location,
+        "arith.cmpf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -376,7 +344,7 @@ to interpret values with the foremost bit being set: negatives in two\'s
 complement or large positives
 ([rationale](../Rationale/Rationale.md#specifying-sign-in-integer-comparison-operations)).
 
-Example:
+# Example
 
 ```mlir
 // Custom form of scalar \"signed less than\" comparison.
@@ -392,7 +360,6 @@ Example:
 %x = \"arith.cmpi\"(%lhs, %rhs) {predicate = 0 : i64}
     : (vector<4xi64>, vector<4xi64>) -> vector<4xi1>
 ```
-  
 """
 function cmpi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, predicate::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -403,12 +370,9 @@ function cmpi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.cmpi", location,
+        "arith.cmpi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -420,7 +384,7 @@ The `constant` operation produces an SSA value equal to some integer or
 floating-point constant specified by an attribute. This is the way MLIR
 forms simple integer and floating point constants.
 
-Example:
+# Example
 
 ```
 // Integer constant
@@ -429,7 +393,6 @@ Example:
 // Equivalent generic form
 %1 = \"arith.constant\"() {value = 42 : i32} : () -> i32
 ```
-  
 """
 function constant(; result=nothing::Union{Nothing, MLIRType}, value::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -440,12 +403,9 @@ function constant(; result=nothing::Union{Nothing, MLIRType}, value::Union{Attri
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.constant", location,
+        "arith.constant", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -464,12 +424,9 @@ function divf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.divf", location,
+        "arith.divf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -483,7 +440,7 @@ sign, i.e. `6 / -2 = -3`.
 Note: the semantics of division by zero or signed division overflow (minimum
 value divided by -1) is TBD; do NOT assume any specific behavior.
 
-Example:
+# Example
 
 ```mlir
 // Scalar signed integer division.
@@ -495,7 +452,6 @@ Example:
 // Tensor element-wise integer division.
 %x = arith.divsi %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function divsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -506,12 +462,9 @@ function divsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.divsi", location,
+        "arith.divsi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -526,7 +479,7 @@ the most significant, i.e. for `i16` given two\'s complement representation,
 Note: the semantics of division by zero is TBD; do NOT assume any specific
 behavior.
 
-Example:
+# Example
 
 ```mlir
 // Scalar unsigned integer division.
@@ -538,7 +491,6 @@ Example:
 // Tensor element-wise integer division.
 %x = arith.divui %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function divui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -549,12 +501,9 @@ function divui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.divui", location,
+        "arith.divui", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -565,7 +514,6 @@ extf
 Cast a floating-point value to a larger floating-point-typed value.
 The destination type must to be strictly wider than the source type.
 When operating on vectors, casts elementwise.
-  
 """
 function extf(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -575,12 +523,9 @@ function extf(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.extf", location,
+        "arith.extf", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -594,7 +539,7 @@ bit-width must be larger than the input bit-width (N > M).
 The top-most (N - M) bits of the output are filled with copies
 of the most-significant bit of the input.
 
-Example:
+# Example
 
 ```mlir
 %1 = arith.constant 5 : i3      // %1 is 0b101
@@ -604,7 +549,6 @@ Example:
 
 %5 = arith.extsi %0 : vector<2 x i32> to vector<2 x i64>
 ```
-  
 """
 function extsi(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -614,12 +558,9 @@ function extsi(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.extsi", location,
+        "arith.extsi", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -632,7 +573,7 @@ width M and an integer destination type of width N. The destination
 bit-width must be larger than the input bit-width (N > M).
 The top-most (N - M) bits of the output are filled with zeros.
 
-Example:
+# Example
 
 ```mlir
   %1 = arith.constant 5 : i3      // %1 is 0b101
@@ -642,7 +583,6 @@ Example:
 
   %5 = arith.extui %0 : vector<2 x i32> to vector<2 x i64>
 ```
-  
 """
 function extui(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -652,12 +592,9 @@ function extui(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.extui", location,
+        "arith.extui", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -668,7 +605,6 @@ fptosi
 Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) signed integer value. When operating on vectors, casts
 elementwise.
-  
 """
 function fptosi(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -678,12 +614,9 @@ function fptosi(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.fptosi", location,
+        "arith.fptosi", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -694,7 +627,6 @@ fptoui
 Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) unsigned integer value. When operating on vectors, casts
 elementwise.
-  
 """
 function fptoui(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -704,12 +636,9 @@ function fptoui(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.fptoui", location,
+        "arith.fptoui", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -722,14 +651,13 @@ Signed integer division. Rounds towards negative infinity, i.e. `5 / -2 = -3`.
 Note: the semantics of division by zero or signed division overflow (minimum
 value divided by -1) is TBD; do NOT assume any specific behavior.
 
-Example:
+# Example
 
 ```mlir
 // Scalar signed integer division.
 %a = arith.floordivsi %b, %c : i64
 
 ```
-  
 """
 function floordivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -740,12 +668,9 @@ function floordivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRT
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.floordivsi", location,
+        "arith.floordivsi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -757,7 +682,6 @@ Casts between scalar or vector integers and corresponding \'index\' scalar or
 vectors. Index is an integer of platform-specific bit width. If casting to
 a wider integer, the value is sign-extended. If casting to a narrower
 integer, the value is truncated.
-  
 """
 function index_cast(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -767,12 +691,9 @@ function index_cast(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.index_cast", location,
+        "arith.index_cast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -784,7 +705,6 @@ Casts between scalar or vector integers and corresponding \'index\' scalar or
 vectors. Index is an integer of platform-specific bit width. If casting to
 a wider integer, the value is zero-extended. If casting to a narrower
 integer, the value is truncated.
-  
 """
 function index_castui(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -794,12 +714,9 @@ function index_castui(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.index_castui", location,
+        "arith.index_castui", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -807,7 +724,7 @@ end
 """
 maxf
 
-Syntax:
+# Syntax
 
 ```
 operation ::= ssa-id `=` `arith.maxf` ssa-use `,` ssa-use `:` type
@@ -816,13 +733,12 @@ operation ::= ssa-id `=` `arith.maxf` ssa-use `,` ssa-use `:` type
 Returns the maximum of the two arguments, treating -0.0 as less than +0.0.
 If one of the arguments is NaN, then the result is also NaN.
 
-Example:
+# Example
 
 ```mlir
 // Scalar floating-point maximum.
 %a = arith.maxf %b, %c : f64
 ```
-  
 """
 function maxf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -834,12 +750,9 @@ function maxf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.maxf", location,
+        "arith.maxf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -857,12 +770,9 @@ function maxsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.maxsi", location,
+        "arith.maxsi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -880,12 +790,9 @@ function maxui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.maxui", location,
+        "arith.maxui", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -893,7 +800,7 @@ end
 """
 minf
 
-Syntax:
+# Syntax
 
 ```
 operation ::= ssa-id `=` `arith.minf` ssa-use `,` ssa-use `:` type
@@ -902,13 +809,12 @@ operation ::= ssa-id `=` `arith.minf` ssa-use `,` ssa-use `:` type
 Returns the minimum of the two arguments, treating -0.0 as less than +0.0.
 If one of the arguments is NaN, then the result is also NaN.
 
-Example:
+# Example
 
 ```mlir
 // Scalar floating-point minimum.
 %a = arith.minf %b, %c : f64
 ```
-  
 """
 function minf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -920,12 +826,9 @@ function minf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.minf", location,
+        "arith.minf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -943,12 +846,9 @@ function minsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.minsi", location,
+        "arith.minsi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -966,12 +866,9 @@ function minui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.minui", location,
+        "arith.minui", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -984,7 +881,7 @@ these is required to be the same type. This type may be a floating point
 scalar type, a vector whose element type is a floating point type, or a
 floating point tensor.
 
-Example:
+# Example
 
 ```mlir
 // Scalar multiplication.
@@ -999,7 +896,6 @@ Example:
 
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
-  
 """
 function mulf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -1011,12 +907,9 @@ function mulf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.mulf", location,
+        "arith.mulf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1034,12 +927,9 @@ function muli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.muli", location,
+        "arith.muli", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1052,7 +942,7 @@ N-bit results: the low and the high halves of the product. The low half has
 the same value as the result of regular multiplication `arith.muli` with
 the same operands.
 
-Example:
+# Example
 
 ```mlir
 // Scalar multiplication.
@@ -1064,7 +954,6 @@ Example:
 // Tensor element-wise multiplication.
 %x:2 = arith.mulsi_extended %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function mulsi_extended(lhs::Value, rhs::Value; low=nothing::Union{Nothing, MLIRType}, high=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1076,12 +965,9 @@ function mulsi_extended(lhs::Value, rhs::Value; low=nothing::Union{Nothing, MLIR
     (high != nothing) && push!(results, high)
     
     create_operation(
-        "arith.mulsi_extended", location,
+        "arith.mulsi_extended", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1094,7 +980,7 @@ N-bit results: the low and the high halves of the product. The low half has
 the same value as the result of regular multiplication `arith.muli` with
 the same operands.
 
-Example:
+# Example
 
 ```mlir
 // Scalar multiplication.
@@ -1106,7 +992,6 @@ Example:
 // Tensor element-wise multiplication.
 %x:2 = arith.mului_extended %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function mului_extended(lhs::Value, rhs::Value; low=nothing::Union{Nothing, MLIRType}, high=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1118,12 +1003,9 @@ function mului_extended(lhs::Value, rhs::Value; low=nothing::Union{Nothing, MLIR
     (high != nothing) && push!(results, high)
     
     create_operation(
-        "arith.mului_extended", location,
+        "arith.mului_extended", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1136,7 +1018,7 @@ operand and returns one result of the same type. This type may be a float
 scalar type, a vector whose element type is float, or a tensor of floats.
 It has no standard attributes.
 
-Example:
+# Example
 
 ```mlir
 // Scalar negation value.
@@ -1148,7 +1030,6 @@ Example:
 // Tensor element-wise negation value.
 %x = arith.negf %y : tensor<4x?xf8>
 ```
-  
 """
 function negf(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -1160,12 +1041,9 @@ function negf(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.negf", location,
+        "arith.negf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1178,7 +1056,7 @@ is required to be the same type. This type may be an integer scalar type, a
 vector whose element type is integer, or a tensor of integers. It has no
 standard attributes.
 
-Example:
+# Example
 
 ```mlir
 // Scalar integer bitwise or.
@@ -1190,7 +1068,6 @@ Example:
 // Tensor element-wise bitwise integer or.
 %x = arith.ori %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function ori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1201,12 +1078,9 @@ function ori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.ori", location,
+        "arith.ori", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1225,12 +1099,9 @@ function remf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.remf", location,
+        "arith.remf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1244,7 +1115,7 @@ Signed integer division remainder. Treats the leading bit as sign, i.e. `6 %
 Note: the semantics of division by zero is TBD; do NOT assume any specific
 behavior.
 
-Example:
+# Example
 
 ```mlir
 // Scalar signed integer division remainder.
@@ -1256,7 +1127,6 @@ Example:
 // Tensor element-wise integer division remainder.
 %x = arith.remsi %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function remsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1267,12 +1137,9 @@ function remsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.remsi", location,
+        "arith.remsi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1286,7 +1153,7 @@ significant, i.e. for `i16`, `6 % -2 = 6 % (2^16 - 2) = 6`.
 Note: the semantics of division by zero is TBD; do NOT assume any specific
 behavior.
 
-Example:
+# Example
 
 ```mlir
 // Scalar unsigned integer division remainder.
@@ -1298,7 +1165,6 @@ Example:
 // Tensor element-wise integer division remainder.
 %x = arith.remui %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function remui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1309,12 +1175,9 @@ function remui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.remui", location,
+        "arith.remui", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1326,7 +1189,6 @@ Cast from a value interpreted as a signed integer to the corresponding
 floating-point value. If the value cannot be exactly represented, it is
 rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
-  
 """
 function sitofp(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -1336,12 +1198,9 @@ function sitofp(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.sitofp", location,
+        "arith.sitofp", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1352,14 +1211,13 @@ shli
 The `shli` operation shifts an integer value to the left by a variable
 amount. The low order bits are filled with zeros.
 
-Example:
+# Example
 
 ```mlir
 %1 = arith.constant 5 : i8                 // %1 is 0b00000101
 %2 = arith.constant 3 : i8
 %3 = arith.shli %1, %2 : (i8, i8) -> i8    // %3 is 0b00101000
 ```
-  
 """
 function shli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1370,12 +1228,9 @@ function shli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.shli", location,
+        "arith.shli", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1388,7 +1243,7 @@ amount. The integer is interpreted as signed. The high order bits in the
 output are filled with copies of the most-significant bit of the shifted
 value (which means that the sign of the value is preserved).
 
-Example:
+# Example
 
 ```mlir
 %1 = arith.constant 160 : i8               // %1 is 0b10100000
@@ -1397,7 +1252,6 @@ Example:
 %4 = arith.constant 96 : i8                   // %4 is 0b01100000
 %5 = arith.shrsi %4, %2 : (i8, i8) -> i8   // %5 is 0b00001100
 ```
-  
 """
 function shrsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1408,12 +1262,9 @@ function shrsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.shrsi", location,
+        "arith.shrsi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1425,14 +1276,13 @@ The `shrui` operation shifts an integer value to the right by a variable
 amount. The integer is interpreted as unsigned. The high order bits are
 always filled with zeros.
 
-Example:
+# Example
 
 ```mlir
 %1 = arith.constant 160 : i8               // %1 is 0b10100000
 %2 = arith.constant 3 : i8
 %3 = arith.shrui %1, %2 : (i8, i8) -> i8   // %3 is 0b00010100
 ```
-  
 """
 function shrui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1443,12 +1293,9 @@ function shrui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.shrui", location,
+        "arith.shrui", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1461,7 +1308,7 @@ these is required to be the same type. This type may be a floating point
 scalar type, a vector whose element type is a floating point type, or a
 floating point tensor.
 
-Example:
+# Example
 
 ```mlir
 // Scalar subtraction.
@@ -1476,7 +1323,6 @@ Example:
 
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
-  
 """
 function subf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -1488,12 +1334,9 @@ function subf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (fastmath != nothing) && push!(attributes, namedattribute("fastmath", fastmath))
     
     create_operation(
-        "arith.subf", location,
+        "arith.subf", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1511,12 +1354,9 @@ function subi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.subi", location,
+        "arith.subi", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1528,7 +1368,6 @@ Truncate a floating-point value to a smaller floating-point-typed value.
 The destination type must be strictly narrower than the source type.
 If the value cannot be exactly represented, it is rounded using the default
 rounding mode. When operating on vectors, casts elementwise.
-  
 """
 function truncf(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -1538,12 +1377,9 @@ function truncf(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.truncf", location,
+        "arith.truncf", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1556,7 +1392,7 @@ width M and an integer destination type of width N. The destination
 bit-width must be smaller than the input bit-width (N < M).
 The top-most (N - M) bits of the input are discarded.
 
-Example:
+# Example
 
 ```mlir
   %1 = arith.constant 21 : i5     // %1 is 0b10101
@@ -1565,7 +1401,6 @@ Example:
 
   %5 = arith.trunci %0 : vector<2 x i32> to vector<2 x i16>
 ```
-  
 """
 function trunci(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -1575,12 +1410,9 @@ function trunci(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.trunci", location,
+        "arith.trunci", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1592,7 +1424,6 @@ Cast from a value interpreted as unsigned integer to the corresponding
 floating-point value. If the value cannot be exactly represented, it is
 rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
-  
 """
 function uitofp(in::Value; out::MLIRType, location=Location())
     results = MLIRType[out, ]
@@ -1602,12 +1433,9 @@ function uitofp(in::Value; out::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "arith.uitofp", location,
+        "arith.uitofp", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1620,7 +1448,7 @@ these is required to be the same type. This type may be an integer scalar
 type, a vector whose element type is integer, or a tensor of integers. It
 has no standard attributes.
 
-Example:
+# Example
 
 ```mlir
 // Scalar integer bitwise xor.
@@ -1632,7 +1460,6 @@ Example:
 // Tensor element-wise bitwise integer xor.
 %x = arith.xori %y, %z : tensor<4x?xi8>
 ```
-  
 """
 function xori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1643,12 +1470,9 @@ function xori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.xori", location,
+        "arith.xori", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1667,7 +1491,7 @@ individually based on the value at the same position as the element in the
 condition operand. If an i1 is provided as the condition, the entire vector
 or tensor is chosen.
 
-Example:
+# Example
 
 ```mlir
 // Custom form of scalar selection.
@@ -1682,7 +1506,6 @@ Example:
 // Full vector selection.
 %vx = arith.select %cond, %vtrue, %vfalse : vector<42xf32>
 ```
-  
 """
 function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1693,12 +1516,9 @@ function select(condition::Value, true_value::Value, false_value::Value; result=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "arith.select", location,
+        "arith.select", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end

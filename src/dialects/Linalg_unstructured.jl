@@ -13,7 +13,7 @@ enclosing linalg structured operation for the iteration dimension `dim`. The
 `dim` attribute specifies the position of the accessed dimension in the
 indexing map domain.
 
-Example:
+# Example
 
 ```mlir
 #map = affine_map<(i, j) -> (i, j)>
@@ -41,7 +41,6 @@ scf.for %i = %c0 to %0 step %c1 {
   }
 }
 ```
-  
 """
 function index(; result=nothing::Union{Nothing, MLIRType}, dim::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -52,12 +51,9 @@ function index(; result=nothing::Union{Nothing, MLIRType}, dim::Union{Attribute,
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "linalg.index", location,
+        "linalg.index", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -81,7 +77,6 @@ check that the provided dimensions make sense. This is the responsability
 of the transformation calling the tiling to ensure that the provided
 sizes for each dimension make sense with respect to the semantic of
 softmax.
-  
 """
 function softmax(input::Value, output::Value; result::Vector{MLIRType}, dimension::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result..., ]
@@ -91,12 +86,9 @@ function softmax(input::Value, output::Value; result::Vector{MLIRType}, dimensio
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
     
     create_operation(
-        "linalg.softmax", location,
+        "linalg.softmax", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -108,12 +100,11 @@ yield
 in `linalg` generic ops. It returns values to the immediately enclosing
 `linalg` generic op.
 
-Example:
+# Example
 
 ```mlir
 linalg.yield %f0, %f1 : f32, f32
 ```
-  
 """
 function yield(values::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -123,12 +114,9 @@ function yield(values::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "linalg.yield", location,
+        "linalg.yield", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

@@ -10,12 +10,11 @@ abs
 
 The `abs` op takes a single complex number and computes its absolute value.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.abs %b : complex<f32>
 ```
-  
 """
 function abs(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -26,12 +25,9 @@ function abs(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.abs", location,
+        "complex.abs", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -41,12 +37,11 @@ add
 
 The `add` operation takes two complex numbers and returns their sum.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.add %b, %c : complex<f32>
 ```
-  
 """
 function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -57,12 +52,9 @@ function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.add", location,
+        "complex.add", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -72,12 +64,11 @@ angle
 
 The `angle` op takes a single complex number and computes its argument value with a branch cut along the negative real axis.
 
-Example:
+# Example
 
 ```mlir
      %a = complex.angle %b : complex<f32>
 ```
-  
 """
 function angle(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -88,12 +79,9 @@ function angle(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.angle", location,
+        "complex.angle", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -104,12 +92,11 @@ atan2
 For complex numbers it is expressed using complex logarithm
 atan2(y, x) = -i * log((x + i * y) / sqrt(x**2 + y**2))
 
-Example:
+# Example
 
 ```mlir
 %a = complex.atan2 %b, %c : complex<f32>
 ```
-  
 """
 function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -120,12 +107,9 @@ function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.atan2", location,
+        "complex.atan2", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -134,12 +118,11 @@ end
 bitcast
 
 
-Example:
+# Example
 
 ```mlir
      %a = complex.bitcast %b : complex<f32> -> i64
 ```
-  
 """
 function bitcast(operand::Value; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -149,12 +132,9 @@ function bitcast(operand::Value; result::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "complex.bitcast", location,
+        "complex.bitcast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -165,12 +145,11 @@ conj
 The `conj` op takes a single complex number and computes the
 complex conjugate.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.conj %b: complex<f32>
 ```
-  
 """
 function conj(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -181,12 +160,9 @@ function conj(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.conj", location,
+        "complex.conj", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -197,12 +173,11 @@ constant
 The `complex.constant` operation creates a constant complex number from an
 attribute containing the real and imaginary parts.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.constant [0.1, -1.0] : complex<f64>
 ```
-  
 """
 function constant(; complex::MLIRType, value::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[complex, ]
@@ -212,12 +187,9 @@ function constant(; complex::MLIRType, value::Union{Attribute, NamedAttribute}, 
     attributes = NamedAttribute[namedattribute("value", value), ]
     
     create_operation(
-        "complex.constant", location,
+        "complex.constant", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -228,12 +200,11 @@ cos
 The `cos` op takes a single complex number and computes the cosine of
 it, i.e. `cos(x)`, where `x` is the input value.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.cos %b : complex<f32>
 ```
-  
 """
 function cos(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -244,12 +215,9 @@ function cos(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.cos", location,
+        "complex.cos", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -260,12 +228,11 @@ create
 The `complex.create` operation creates a complex number from two
 floating-point operands, the real and the imaginary part.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.create %b, %c : complex<f32>
 ```
-  
 """
 function create(real::Value, imaginary::Value; complex::MLIRType, location=Location())
     results = MLIRType[complex, ]
@@ -275,12 +242,9 @@ function create(real::Value, imaginary::Value; complex::MLIRType, location=Locat
     attributes = NamedAttribute[]
     
     create_operation(
-        "complex.create", location,
+        "complex.create", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -294,7 +258,6 @@ division:
 ```mlir
 %a = complex.div %b, %c : complex<f32>
 ```
-  
 """
 function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -305,12 +268,9 @@ function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.div", location,
+        "complex.div", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -320,12 +280,11 @@ eq
 
 The `eq` op takes two complex numbers and returns whether they are equal.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.eq %b, %c : complex<f32>
 ```
-  
 """
 function eq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -336,12 +295,9 @@ function eq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, lo
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.eq", location,
+        "complex.eq", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -353,12 +309,11 @@ The `exp` op takes a single complex number and computes the exponential of
 it, i.e. `exp(x)` or `e^(x)`, where `x` is the input value.
 `e` denotes Euler\'s number and is approximately equal to 2.718281.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.exp %b : complex<f32>
 ```
-  
 """
 function exp(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -369,12 +324,9 @@ function exp(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.exp", location,
+        "complex.exp", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -382,7 +334,7 @@ end
 """
 expm1
 
-Syntax:
+# Syntax
 
 ```
 operation ::= ssa-id `=` `complex.expm1` ssa-use `:` type
@@ -390,12 +342,11 @@ operation ::= ssa-id `=` `complex.expm1` ssa-use `:` type
 
 complex.expm1(x) := complex.exp(x) - 1
 
-Example:
+# Example
 
 ```mlir
 %a = complex.expm1 %b : complex<f32>
 ```
-  
 """
 function expm1(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -406,12 +357,9 @@ function expm1(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.expm1", location,
+        "complex.expm1", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -421,12 +369,11 @@ im
 
 The `im` op takes a single complex number and extracts the imaginary part.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.im %b : complex<f32>
 ```
-  
 """
 function im(complex::Value; imaginary=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -437,12 +384,9 @@ function im(complex::Value; imaginary=nothing::Union{Nothing, MLIRType}, locatio
     (imaginary != nothing) && push!(results, imaginary)
     
     create_operation(
-        "complex.im", location,
+        "complex.im", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -455,12 +399,11 @@ logarithm of one plus the given value, i.e. `log(1 + x)` or `log_e(1 + x)`,
 where `x` is the input value. `e` denotes Euler\'s number and is
 approximately equal to 2.718281.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.log1p %b : complex<f32>
 ```
-  
 """
 function log1p(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -471,12 +414,9 @@ function log1p(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.log1p", location,
+        "complex.log1p", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -488,12 +428,11 @@ The `log` op takes a single complex number and computes the natural
 logarithm of it, i.e. `log(x)` or `log_e(x)`, where `x` is the input value.
 `e` denotes Euler\'s number and is approximately equal to 2.718281.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.log %b : complex<f32>
 ```
-  
 """
 function log(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -504,12 +443,9 @@ function log(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.log", location,
+        "complex.log", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -522,7 +458,6 @@ The `mul` operation takes two complex numbers and returns their product:
 ```mlir
 %a = complex.mul %b, %c : complex<f32>
 ```
-  
 """
 function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -533,12 +468,9 @@ function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.mul", location,
+        "complex.mul", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -548,12 +480,11 @@ neg
 
 The `neg` op takes a single complex number `complex` and returns `-complex`.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.neg %b : complex<f32>
 ```
-  
 """
 function neg(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -564,12 +495,9 @@ function neg(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.neg", location,
+        "complex.neg", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -580,12 +508,11 @@ neq
 The `neq` op takes two complex numbers and returns whether they are not
 equal.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.neq %b, %c : complex<f32>
 ```
-  
 """
 function neq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -596,12 +523,9 @@ function neq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.neq", location,
+        "complex.neq", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -612,12 +536,11 @@ pow
 The `sqrt` operation takes a complex number raises it to the given complex
 exponent.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.pow %b, %c : complex<f32>
 ```
-  
 """
 function pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -628,12 +551,9 @@ function pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.pow", location,
+        "complex.pow", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -643,12 +563,11 @@ re
 
 The `re` op takes a single complex number and extracts the real part.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.re %b : complex<f32>
 ```
-  
 """
 function re(complex::Value; real=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -659,12 +578,9 @@ function re(complex::Value; real=nothing::Union{Nothing, MLIRType}, location=Loc
     (real != nothing) && push!(results, real)
     
     create_operation(
-        "complex.re", location,
+        "complex.re", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -674,12 +590,11 @@ rsqrt
 
 The `rsqrt` operation computes reciprocal of square root.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.rsqrt %b : complex<f32>
 ```
-  
 """
 function rsqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -690,12 +605,9 @@ function rsqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.rsqrt", location,
+        "complex.rsqrt", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -706,12 +618,11 @@ sign
 The `sign` op takes a single complex number and computes the sign of
 it, i.e. `y = sign(x) = x / |x|` if `x != 0`, otherwise `y = 0`.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.sign %b : complex<f32>
 ```
-  
 """
 function sign(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -722,12 +633,9 @@ function sign(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.sign", location,
+        "complex.sign", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -738,12 +646,11 @@ sin
 The `sin` op takes a single complex number and computes the sine of
 it, i.e. `sin(x)`, where `x` is the input value.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.sin %b : complex<f32>
 ```
-  
 """
 function sin(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -754,12 +661,9 @@ function sin(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.sin", location,
+        "complex.sin", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -769,12 +673,11 @@ sqrt
 
 The `sqrt` operation takes a complex number and returns its square root.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.sqrt %b : complex<f32>
 ```
-  
 """
 function sqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -785,12 +688,9 @@ function sqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.sqrt", location,
+        "complex.sqrt", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -800,12 +700,11 @@ sub
 
 The `sub` operation takes two complex numbers and returns their difference.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.sub %b, %c : complex<f32>
 ```
-  
 """
 function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -816,12 +715,9 @@ function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.sub", location,
+        "complex.sub", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -832,12 +728,11 @@ tan
 The `tan` op takes a single complex number and computes the tangent of
 it, i.e. `tan(x)`, where `x` is the input value.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.tan %b : complex<f32>
 ```
-  
 """
 function tan(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -848,12 +743,9 @@ function tan(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.tan", location,
+        "complex.tan", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -864,12 +756,11 @@ tanh
 The `tanh` operation takes a complex number and returns its hyperbolic
 tangent.
 
-Example:
+# Example
 
 ```mlir
 %a = complex.tanh %b : complex<f32>
 ```
-  
 """
 function tanh(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -880,12 +771,9 @@ function tanh(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "complex.tanh", location,
+        "complex.tanh", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end

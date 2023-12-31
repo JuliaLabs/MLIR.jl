@@ -13,12 +13,11 @@ If the argument is `true` this operation has no effect. Otherwise, the
 program execution will abort. The provided error message may be used by a
 runtime to propagate the error to the user.
 
-Example:
+# Example
 
 ```mlir
 assert %b, \"Expected ... to be true\"
 ```
-  
 """
 function assert(arg::Value; msg::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -28,12 +27,9 @@ function assert(arg::Value; msg::Union{Attribute, NamedAttribute}, location=Loca
     attributes = NamedAttribute[namedattribute("msg", msg), ]
     
     create_operation(
-        "cf.assert", location,
+        "cf.assert", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -46,7 +42,7 @@ block. The operands of this operation are forwarded to the successor block,
 and the number and type of the operands must match the arguments of the
 target block.
 
-Example:
+# Example
 
 ```mlir
 ^bb2:
@@ -54,7 +50,6 @@ Example:
   cf.br ^bb3(%2 : tensor<*xf32>)
 ^bb3(%3: tensor<*xf32>):
 ```
-  
 """
 function br(destOperands::Vector{Value}; dest::Block, location=Location())
     results = MLIRType[]
@@ -64,12 +59,9 @@ function br(destOperands::Vector{Value}; dest::Block, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "cf.br", location,
+        "cf.br", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -90,7 +82,7 @@ are allowed to be the same.
 The following example illustrates a function with a conditional branch
 operation that targets the same block.
 
-Example:
+# Example
 
 ```mlir
 func.func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
@@ -101,7 +93,6 @@ func.func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
   return %x : i32
 }
 ```
-  
 """
 function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; trueDest::Block, falseDest::Block, location=Location())
     results = MLIRType[]
@@ -112,12 +103,9 @@ function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOpe
     push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands), ]))
     
     create_operation(
-        "cf.cond_br", location,
+        "cf.cond_br", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -131,7 +119,7 @@ corresponding destination is jumped to. If the flag does not match any of
 the cases, the default destination is jumped to. The count and types of
 operands must align with the arguments in the corresponding target blocks.
 
-Example:
+# Example
 
 ```mlir
 switch %flag : i32, [
@@ -140,7 +128,6 @@ switch %flag : i32, [
   43: ^bb3(%c : i32)
 ]
 ```
-  
 """
 function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, case_operand_segments::Union{Attribute, NamedAttribute}, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = MLIRType[]
@@ -152,12 +139,9 @@ function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vecto
     (case_values != nothing) && push!(attributes, namedattribute("case_values", case_values))
     
     create_operation(
-        "cf.switch", location,
+        "cf.switch", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

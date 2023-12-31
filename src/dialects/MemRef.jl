@@ -14,7 +14,6 @@ the buffer isn\'t aligned to the given alignment, the behavior is undefined.
 
 This operation doesn\'t affect the semantics of a correct program. It\'s for
 optimization only, and the optimization is best-effort.
-  
 """
 function assume_alignment(memref::Value; alignment::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -24,12 +23,9 @@ function assume_alignment(memref::Value; alignment::Union{Attribute, NamedAttrib
     attributes = NamedAttribute[namedattribute("alignment", alignment), ]
     
     create_operation(
-        "memref.assume_alignment", location,
+        "memref.assume_alignment", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -45,12 +41,11 @@ that the read and write will be performed against, as accessed by the
 specified indices. The arity of the indices is the rank of the memref. The
 result represents the latest value that was stored.
 
-Example:
+# Example
 
 ```mlir
 %x = memref.atomic_rmw \"addf\" %value, %I[%i] : (f32, memref<10xf32>) -> f32
 ```
-  
 """
 function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, kind::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -61,12 +56,9 @@ function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result=
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "memref.atomic_rmw", location,
+        "memref.atomic_rmw", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -76,7 +68,6 @@ atomic_yield
 
 \"memref.atomic_yield\" yields an SSA value from a
 GenericAtomicRMWOp region.
-  
 """
 function atomic_yield(result::Value; location=Location())
     results = MLIRType[]
@@ -86,12 +77,9 @@ function atomic_yield(result::Value; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.atomic_yield", location,
+        "memref.atomic_yield", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -109,7 +97,6 @@ memref.copy %arg0, %arg1 : memref<?xf32> to memref<?xf32>
 
 Source and destination are expected to have the same element type and shape.
 Otherwise, the result is undefined. They may have different layouts.
-  
 """
 function copy(source::Value, target::Value; location=Location())
     results = MLIRType[]
@@ -119,12 +106,9 @@ function copy(source::Value, target::Value; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.copy", location,
+        "memref.copy", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -142,7 +126,7 @@ a single argument that represents the value stored in `memref[indices]`
 before the write is performed. No side-effecting ops are allowed in the
 body of `GenericAtomicRMWOp`.
 
-Example:
+# Example
 
 ```mlir
 %x = memref.generic_atomic_rmw %I[%i] : memref<10xf32> {
@@ -152,7 +136,6 @@ Example:
     memref.atomic_yield %inc : f32
 }
 ```
-  
 """
 function generic_atomic_rmw(memref::Value, indices::Vector{Value}; result::MLIRType, atomic_body::Region, location=Location())
     results = MLIRType[result, ]
@@ -162,12 +145,9 @@ function generic_atomic_rmw(memref::Value, indices::Vector{Value}; result::MLIRT
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.generic_atomic_rmw", location,
+        "memref.generic_atomic_rmw", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -189,7 +169,7 @@ constant operations, or the result of an
 aforementioned SSA values or the recursively result of such an
 `affine.apply` operation.
 
-Example:
+# Example
 
 ```mlir
 %1 = affine.apply affine_map<(d0, d1) -> (3*d0)> (%i, %j)
@@ -209,7 +189,6 @@ operations) to precisely analyze references at compile-time using polyhedral
 techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
-  
 """
 function load(memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, nontemporal=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -221,12 +200,9 @@ function load(memref::Value, indices::Vector{Value}; result=nothing::Union{Nothi
     (nontemporal != nothing) && push!(attributes, namedattribute("nontemporal", nontemporal))
     
     create_operation(
-        "memref.load", location,
+        "memref.load", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -237,7 +213,7 @@ alloc
 The `alloc` operation allocates a region of memory, as specified by its
 memref type.
 
-Example:
+# Example
 
 ```mlir
 %0 = memref.alloc() : memref<8x64xf32, 1>
@@ -271,7 +247,6 @@ boundary.
 %0 = memref.alloc()[%s] {alignment = 8} :
   memref<8x64xf32, affine_map<(d0, d1)[s0] -> ((d0 + s0), d1)>, 1>
 ```
-  
 """
 function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[memref, ]
@@ -283,12 +258,9 @@ function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memre
     (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
-        "memref.alloc", location,
+        "memref.alloc", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -329,7 +301,6 @@ by subsequent load and store operations. An optional alignment attribute, if
 specified, guarantees alignment at least to that boundary. If not specified,
 an alignment on any convenient boundary compatible with the type will be
 chosen.
-  
 """
 function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[memref, ]
@@ -341,12 +312,9 @@ function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memr
     (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
-        "memref.alloca", location,
+        "memref.alloca", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -384,7 +352,6 @@ operation:
 
 If `memref.alloca_scope` returns no value, the `memref.alloca_scope.return ` can
 be left out, and will be inserted implicitly.
-  
 """
 function alloca_scope(; results::Vector{MLIRType}, bodyRegion::Region, location=Location())
     results = MLIRType[results..., ]
@@ -394,12 +361,9 @@ function alloca_scope(; results::Vector{MLIRType}, bodyRegion::Region, location=
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.alloca_scope", location,
+        "memref.alloca_scope", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -415,7 +379,6 @@ to indicate which values are going to be returned. For example:
 ```mlir
 memref.alloca_scope.return %value
 ```
-  
 """
 function alloca_scope_return(results::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -425,12 +388,9 @@ function alloca_scope_return(results::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.alloca_scope.return", location,
+        "memref.alloca_scope.return", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -438,7 +398,7 @@ end
 """
 cast
 
-Syntax:
+# Syntax
 
 ```
 operation ::= ssa-id `=` `memref.cast` ssa-use `:` type `to` type
@@ -459,7 +419,7 @@ If the cast converts any dimensions from an unknown to a known size, then it
 acts as an assertion that fails at runtime if the dynamic dimensions
 disagree with resultant destination size.
 
-Example:
+# Example
 
 ```mlir
 // Assert that the input dynamic shape matches the destination static shape.
@@ -481,7 +441,7 @@ Example:
 b. Either or both memref types are unranked with the same element type, and
 address space.
 
-Example:
+# Example
 
 ```mlir
 Cast to concrete shape.
@@ -490,7 +450,6 @@ Cast to concrete shape.
 Erase rank information.
     %5 = memref.cast %1 : memref<4x?xf32> to memref<*xf32>
 ```
-  
 """
 function cast(source::Value; dest::MLIRType, location=Location())
     results = MLIRType[dest, ]
@@ -500,12 +459,9 @@ function cast(source::Value; dest::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.cast", location,
+        "memref.cast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -552,7 +508,6 @@ only if the corresponding start dimension in the source type is dynamic.
 
 Note: This op currently assumes that the inner strides are of the
 source/result layout map are the faster-varying ones.
-  
 """
 function collapse_shape(src::Value; result::MLIRType, reassociation::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result, ]
@@ -562,12 +517,9 @@ function collapse_shape(src::Value; result::MLIRType, reassociation::Union{Attri
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
     
     create_operation(
-        "memref.collapse_shape", location,
+        "memref.collapse_shape", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -580,13 +532,12 @@ which was originally created by the `alloc` operation.
 The `dealloc` operation should not be called on memrefs which alias an
 alloc\'d memref (e.g. memrefs returned by `view` operations).
 
-Example:
+# Example
 
 ```mlir
 %0 = memref.alloc() : memref<8x64xf32, affine_map<(d0, d1) -> (d0, d1), 1>>
 memref.dealloc %0 : memref<8x64xf32,  affine_map<(d0, d1) -> (d0, d1), 1>>
 ```
-  
 """
 function dealloc(memref::Value; location=Location())
     results = MLIRType[]
@@ -596,12 +547,9 @@ function dealloc(memref::Value; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.dealloc", location,
+        "memref.dealloc", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -615,7 +563,7 @@ If the dimension index is out of bounds the behavior is undefined.
 
 The specified memref type is that of the first operand.
 
-Example:
+# Example
 
 ```mlir
 // Always returns 4, can be constant folded:
@@ -630,7 +578,6 @@ Example:
 %x = \"memref.dim\"(%A, %c0) : (memref<4 x ? x f32>, index) -> index
 %y = \"memref.dim\"(%A, %c1) : (memref<4 x ? x f32>, index) -> index
 ```
-  
 """
 function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -641,12 +588,9 @@ function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRTyp
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "memref.dim", location,
+        "memref.dim", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -697,7 +641,6 @@ dma_start %src[%i, %j], %dst[%k, %l], %num_elements, %tag[%idx], %stride,
 TODO: add additional operands to allow source and destination striding, and
 multiple stride levels.
 TODO: Consider replacing src/dst memref indices with view memrefs.
-  
 """
 function dma_start(operands::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -707,12 +650,9 @@ function dma_start(operands::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.dma_start", location,
+        "memref.dma_start", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -725,7 +665,7 @@ tag element \'%tag[%index]\'. %tag is a memref, and %index has to be an index
 with the same restrictions as any load/store index. %num_elements is the
 number of elements associated with the DMA operation.
 
-Example:
+# Example
 
 ```mlir
  dma_start %src[%i, %j], %dst[%k, %l], %num_elements, %tag[%index] :
@@ -736,7 +676,6 @@ Example:
  ...
  dma_wait %tag[%index], %num_elements : memref<1 x i32, affine_map<(d0) -> (d0)>, 2>
  ```
-  
 """
 function dma_wait(tagMemRef::Value, tagIndices::Vector{Value}, numElements::Value; location=Location())
     results = MLIRType[]
@@ -746,12 +685,9 @@ function dma_wait(tagMemRef::Value, tagIndices::Vector{Value}, numElements::Valu
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.dma_wait", location,
+        "memref.dma_wait", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -768,7 +704,7 @@ or copies.
 A reassociation is defined as a grouping of dimensions and is represented
 with an array of DenseI64ArrayAttr attributes.
 
-Example:
+# Example
 
 ```mlir
 %r = memref.expand_shape %0 [[0, 1], [2]]
@@ -797,7 +733,6 @@ group. Same for strides.
 
 Note: This op currently assumes that the inner strides are of the
 source/result layout map are the faster-varying ones.
-  
 """
 function expand_shape(src::Value; result::MLIRType, reassociation::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result, ]
@@ -807,12 +742,9 @@ function expand_shape(src::Value; result::MLIRType, reassociation::Union{Attribu
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
     
     create_operation(
-        "memref.expand_shape", location,
+        "memref.expand_shape", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -830,7 +762,7 @@ This operation is intended solely as step during lowering, it has no side
 effects. A reverse operation that creates a memref from an index interpreted
 as a pointer is explicitly discouraged.
 
-Example:
+# Example
 
 ```
   %0 = memref.extract_aligned_pointer_as_index %arg : memref<4x4xf32> -> index
@@ -838,7 +770,6 @@ Example:
   %2 = llvm.inttoptr %1 : i64 to !llvm.ptr<f32>
   call @foo(%2) : (!llvm.ptr<f32>) ->()
 ```
-  
 """
 function extract_aligned_pointer_as_index(source::Value; aligned_pointer=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -849,12 +780,9 @@ function extract_aligned_pointer_as_index(source::Value; aligned_pointer=nothing
     (aligned_pointer != nothing) && push!(results, aligned_pointer)
     
     create_operation(
-        "memref.extract_aligned_pointer_as_index", location,
+        "memref.extract_aligned_pointer_as_index", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -887,7 +815,7 @@ This makes lowering more progressive and brings the following benefits:
     a performance perspective, it is unnecessarily opaque and inefficient to
     send unkempt IR to LLVM.
 
-Example:
+# Example
 
 ```mlir
   %base, %offset, %sizes:2, %strides:2 =
@@ -902,7 +830,6 @@ Example:
       strides: [%strides#0, %strides#1]
     : memref<f32> to memref<?x?xf32, offset: ?, strides: [?, ?]>
 ```
-  
 """
 function extract_strided_metadata(source::Value; base_buffer=nothing::Union{Nothing, MLIRType}, offset=nothing::Union{Nothing, MLIRType}, sizes=nothing::Union{Nothing, Vector{MLIRType}}, strides=nothing::Union{Nothing, Vector{MLIRType}}, location=Location())
     results = MLIRType[]
@@ -916,12 +843,9 @@ function extract_strided_metadata(source::Value; base_buffer=nothing::Union{Noth
     (strides != nothing) && push!(results, strides...)
     
     create_operation(
-        "memref.extract_strided_metadata", location,
+        "memref.extract_strided_metadata", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -934,12 +858,11 @@ named global variable. If the global variable is marked constant, writing
 to the result memref (such as through a `memref.store` operation) is
 undefined.
 
-Example:
+# Example
 
 ```mlir
 %x = memref.get_global @foo : memref<2xf32>
 ```
-  
 """
 function get_global(; result::MLIRType, name::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result, ]
@@ -949,12 +872,9 @@ function get_global(; result::MLIRType, name::Union{Attribute, NamedAttribute}, 
     attributes = NamedAttribute[namedattribute("name", name), ]
     
     create_operation(
-        "memref.get_global", location,
+        "memref.get_global", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -978,7 +898,7 @@ retrieve the memref for the global variable. Note that the memref
 for such global variable itself is immutable (i.e., memref.get_global for a
 given global variable will always return the same memref descriptor).
 
-Example:
+# Example
 
 ```mlir
 // Private variable with an initial value.
@@ -996,7 +916,6 @@ memref.global @z : memref<3xf16> = uninitialized
 // Externally visible constant variable.
 memref.global constant @c : memref<2xi32> = dense<1, 4>
 ```
-  
 """
 function global(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, type::Union{Attribute, NamedAttribute}, initial_value=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, constant=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -1010,12 +929,9 @@ function global(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=not
     (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
-        "memref.global", location,
+        "memref.global", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1033,7 +949,7 @@ The input and result must have the same shape, element type, rank, and layout.
 
 If the source and target address spaces are the same, this operation is a noop.
 
-Example:
+# Example
 
 ```mlir
 // Cast a GPU private memory attribution into a generic pointer
@@ -1044,7 +960,6 @@ Example:
 %6 = memref.memory_space_cast %5
   : memref<*xmemref<?xf32>, 5> to memref<*xmemref<?xf32>, 3>
 ```
-  
 """
 function memory_space_cast(source::Value; dest::MLIRType, location=Location())
     results = MLIRType[dest, ]
@@ -1054,12 +969,9 @@ function memory_space_cast(source::Value; dest::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.memory_space_cast", location,
+        "memref.memory_space_cast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1081,7 +993,6 @@ ranges from locality<0> (no locality) to locality<3> (extremely local keep
 in cache). The cache type specifier is either \'data\' or \'instr\'
 and specifies whether the prefetch is performed on data cache or on
 instruction cache.
-  
 """
 function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribute, NamedAttribute}, localityHint::Union{Attribute, NamedAttribute}, isDataCache::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -1091,12 +1002,9 @@ function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribut
     attributes = NamedAttribute[namedattribute("isWrite", isWrite), namedattribute("localityHint", localityHint), namedattribute("isDataCache", isDataCache), ]
     
     create_operation(
-        "memref.prefetch", location,
+        "memref.prefetch", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1106,13 +1014,12 @@ rank
 
 The `memref.rank` operation takes a memref operand and returns its rank.
 
-Example:
+# Example
 
 ```mlir
 %0 = memref.rank %arg0 : memref<*xf32>
 %1 = memref.rank %arg1 : memref<?x?xf32>
 ```
-  
 """
 function rank(memref::Value; result_0=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1123,12 +1030,9 @@ function rank(memref::Value; result_0=nothing::Union{Nothing, MLIRType}, locatio
     (result_0 != nothing) && push!(results, result_0)
     
     create_operation(
-        "memref.rank", location,
+        "memref.rank", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1149,7 +1053,7 @@ is undefined. This is consistent with the ISO C realloc.
 
 The operation returns an SSA value for the memref.
 
-Example:
+# Example
 
 ```mlir
 %0 = memref.realloc %src : memref<64xf32> to memref<124xf32>
@@ -1190,7 +1094,6 @@ behavior.
 %4 = memref.load %new[%index]   // ok
 %5 = memref.load %old[%index]   // undefined behavior
 ```
-  
 """
 function realloc(source::Value, dynamicResultSize=nothing::Union{Nothing, Value}; result_0::MLIRType, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[result_0, ]
@@ -1202,12 +1105,9 @@ function realloc(source::Value, dynamicResultSize=nothing::Union{Nothing, Value}
     (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
-        "memref.realloc", location,
+        "memref.realloc", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1217,7 +1117,7 @@ reinterpret_cast
 
 Modify offset, sizes and strides of an unranked/ranked memref.
 
-Example:
+# Example
 ```mlir
 memref.reinterpret_cast %ranked to
   offset: [0],
@@ -1249,7 +1149,6 @@ means that `%dst`\'s descriptor will be:
 %dst.sizes = %sizes
 %dst.strides = %strides
 ```
-  
 """
 function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets::Union{Attribute, NamedAttribute}, static_sizes::Union{Attribute, NamedAttribute}, static_strides::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result, ]
@@ -1260,12 +1159,9 @@ function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{V
     push!(attributes, operandsegmentsizes([1, length(offsets), length(sizes), length(strides), ]))
     
     create_operation(
-        "memref.reinterpret_cast", location,
+        "memref.reinterpret_cast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1304,7 +1200,6 @@ Result type is unranked.
 %dst = memref.reshape %src(%shape)
          : (memref<*xf32>, memref<?xi32>) to memref<*xf32>
 ```
-  
 """
 function reshape(source::Value, shape::Value; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -1314,12 +1209,9 @@ function reshape(source::Value, shape::Value; result::MLIRType, location=Locatio
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.reshape", location,
+        "memref.reshape", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1339,7 +1231,7 @@ bound to surrounding loop induction variables,
 turn take as arguments all of the aforementioned SSA values or the
 recursively result of such an `affine.apply` operation.
 
-Example:
+# Example
 
 ```mlir
 memref.store %100, %A[%1, 1023] : memref<4x?xf32, #layout, memspace0>
@@ -1353,7 +1245,6 @@ operations) to precisely analyze references at compile-time using polyhedral
 techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
-  
 """
 function store(value::Value, memref::Value, indices::Vector{Value}; nontemporal=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -1364,12 +1255,9 @@ function store(value::Value, memref::Value, indices::Vector{Value}; nontemporal=
     (nontemporal != nothing) && push!(attributes, namedattribute("nontemporal", nontemporal))
     
     create_operation(
-        "memref.store", location,
+        "memref.store", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1381,12 +1269,11 @@ The `transpose` op produces a strided memref whose sizes and strides
 are a permutation of the original `in` memref. This is purely a metadata
 transformation.
 
-Example:
+# Example
 
 ```mlir
 %1 = memref.transpose %0 (i, j) -> (j, i) : memref<?x?xf32> to memref<?x?xf32, affine_map<(d0, d1)[s0] -> (d1 * s0 + d0)>>
 ```
-  
 """
 function transpose(in::Value; result_0::MLIRType, permutation::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result_0, ]
@@ -1396,12 +1283,9 @@ function transpose(in::Value; result_0::MLIRType, permutation::Union{Attribute, 
     attributes = NamedAttribute[namedattribute("permutation", permutation), ]
     
     create_operation(
-        "memref.transpose", location,
+        "memref.transpose", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1430,7 +1314,7 @@ For now, a \"view\" op:
    attribute may be added to support the folded case).
 3. Returns a contiguous memref with 0 offset and empty layout.
 
-Example:
+# Example
 
 ```mlir
 // Allocate a flat 1D/i8 memref.
@@ -1443,7 +1327,6 @@ Example:
 %2 = memref.view %0[%offset_1024][%size0, %size1] :
   memref<2048xi8> to memref<?x4x?xf32>
 ```
-  
 """
 function view(source::Value, byte_shift::Value, sizes::Vector{Value}; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
@@ -1453,12 +1336,9 @@ function view(source::Value, byte_shift::Value, sizes::Vector{Value}; result_0::
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.view", location,
+        "memref.view", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1595,7 +1475,6 @@ Example 5:
 %3 = memref.subview %2[3, 4, 2][1, 6, 3][1, 1, 1] :
   memref<8x16x4xf32> to memref<6x3xf32, strided<[4, 1], offset: 210>>
 ```
-  
 """
 function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets::Union{Attribute, NamedAttribute}, static_sizes::Union{Attribute, NamedAttribute}, static_strides::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result, ]
@@ -1606,12 +1485,9 @@ function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, st
     push!(attributes, operandsegmentsizes([1, length(offsets), length(sizes), length(strides), ]))
     
     create_operation(
-        "memref.subview", location,
+        "memref.subview", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1623,14 +1499,13 @@ Stores the contents of a tensor into a memref. The first operand is a value
 of tensor type, the second operand is a value of memref type. The shapes and
 element types of these must match, and are specified by the memref type.
 
-Example:
+# Example
 
 ```mlir
 %9 = dim %8, 1 : tensor<4x?xf32>
 %10 = memref.alloc(%9) : memref<4x?xf32, #layout, memspace0>
 memref.tensor_store %8, %10 : memref<4x?xf32, #layout, memspace0>
 ```
-  
 """
 function tensor_store(tensor::Value, memref::Value; location=Location())
     results = MLIRType[]
@@ -1640,12 +1515,9 @@ function tensor_store(tensor::Value, memref::Value; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "memref.tensor_store", location,
+        "memref.tensor_store", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

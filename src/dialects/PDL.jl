@@ -12,13 +12,12 @@ apply_native_constraint
 has been registered externally with the consumer of PDL, to a given set of
 entities.
 
-Example:
+# Example
 
 ```mlir
 // Apply `myConstraint` to the entities defined by `input`, `attr`, and `op`.
 pdl.apply_native_constraint \"myConstraint\"(%input, %attr, %op : !pdl.value, !pdl.attribute, !pdl.operation)
 ```
-  
 """
 function apply_native_constraint(args::Vector{Value}; name::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -28,12 +27,9 @@ function apply_native_constraint(args::Vector{Value}; name::Union{Attribute, Nam
     attributes = NamedAttribute[namedattribute("name", name), ]
     
     create_operation(
-        "pdl.apply_native_constraint", location,
+        "pdl.apply_native_constraint", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -47,7 +43,7 @@ and optionally return a number of values. The native function may accept any
 number of arguments. This operation is used within a pdl.rewrite region to enable
 the interleaving of native rewrite methods with other pdl constructs.
 
-Example:
+# Example
 
 ```mlir
 // Apply a native rewrite method that returns an attribute.
@@ -65,7 +61,6 @@ void registerNativeRewrite(PDLPatternModule &pdlModule) {
   pdlModule.registerRewriteFunction(\"myNativeFunc\", myNativeFunc);
 }
 ```
-  
 """
 function apply_native_rewrite(args::Vector{Value}; results::Vector{MLIRType}, name::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[results..., ]
@@ -75,12 +70,9 @@ function apply_native_rewrite(args::Vector{Value}; results::Vector{MLIRType}, na
     attributes = NamedAttribute[namedattribute("name", name), ]
     
     create_operation(
-        "pdl.apply_native_rewrite", location,
+        "pdl.apply_native_rewrite", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -96,7 +88,7 @@ a constant value for the attribute (via `val`). Only one of these may be set
 for a given input, as the type of the constant value provides the type. When
 defined within a `pdl.rewrite` region, the constant value must be specified.
 
-Example:
+# Example
 
 ```mlir
 // Define an attribute:
@@ -109,7 +101,6 @@ Example:
 // Define an attribute with a constant value:
 %attr = pdl.attribute = \"hello\"
 ```
-  
 """
 function attribute(valueType=nothing::Union{Nothing, Value}; attr::MLIRType, value=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[attr, ]
@@ -121,12 +112,9 @@ function attribute(valueType=nothing::Union{Nothing, Value}; attr::MLIRType, val
     (value != nothing) && push!(attributes, namedattribute("value", value))
     
     create_operation(
-        "pdl.attribute", location,
+        "pdl.attribute", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -138,12 +126,11 @@ erase
 an input operation should be marked as erased. The semantics of this
 operation correspond with the `eraseOp` method on a `PatternRewriter`.
 
-Example:
+# Example
 
 ```mlir
 pdl.erase %root
 ```
-  
 """
 function erase(opValue::Value; location=Location())
     results = MLIRType[]
@@ -153,12 +140,9 @@ function erase(opValue::Value; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "pdl.erase", location,
+        "pdl.erase", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -173,7 +157,7 @@ operations define individual operands of a given operation. A `pdl.operand`
 may partially constrain an operand by specifying an expected value type
 (via a `pdl.type` operation).
 
-Example:
+# Example
 
 ```mlir
 // Define an external operand:
@@ -183,7 +167,6 @@ Example:
 %type = pdl.type : i32
 %operand = pdl.operand : %type
 ```
-  
 """
 function operand(valueType=nothing::Union{Nothing, Value}; value::MLIRType, location=Location())
     results = MLIRType[value, ]
@@ -194,12 +177,9 @@ function operand(valueType=nothing::Union{Nothing, Value}; value::MLIRType, loca
     (valueType != nothing) && push!(operands, valueType)
     
     create_operation(
-        "pdl.operand", location,
+        "pdl.operand", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -214,7 +194,7 @@ otherwise specified within the pattern (i.e. via `pdl.result` or
 given operation. A `pdl.operands` may partially constrain a set of input
 operands by specifying expected value types (via `pdl.types` operations).
 
-Example:
+# Example
 
 ```mlir
 // Define a range of input operands:
@@ -224,7 +204,6 @@ Example:
 %types = pdl.types : [i32, i64, i32]
 %typed_operands = pdl.operands : %types
 ```
-  
 """
 function operands(valueType=nothing::Union{Nothing, Value}; value::MLIRType, location=Location())
     results = MLIRType[value, ]
@@ -235,12 +214,9 @@ function operands(valueType=nothing::Union{Nothing, Value}; value::MLIRType, loc
     (valueType != nothing) && push!(operands, valueType)
     
     create_operation(
-        "pdl.operands", location,
+        "pdl.operands", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -261,7 +237,7 @@ constructed instance of that operation. The results of a `pdl.operation` are
 a handle to the operation itself. Handles to the results of the operation
 can be extracted via `pdl.result`.
 
-Example:
+# Example
 
 ```mlir
 // Define an instance of a `foo.op` operation.
@@ -341,7 +317,6 @@ def MyOp {
 %otherResults = pdl.types
 %op = pdl.operation \"foo.op\" -> (%result, %otherResults : !pdl.type, !pdl.range<type>)
 ```
-  
 """
 function operation(operandValues::Vector{Value}, attributeValues::Vector{Value}, typeValues::Vector{Value}; op::MLIRType, opName=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, attributeValueNames::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[op, ]
@@ -353,12 +328,9 @@ function operation(operandValues::Vector{Value}, attributeValues::Vector{Value},
     (opName != nothing) && push!(attributes, namedattribute("opName", opName))
     
     create_operation(
-        "pdl.operation", location,
+        "pdl.operation", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -372,7 +344,7 @@ metadata on a `RewritePattern`, such as the benefit. The match section of
 the pattern is specified within the region body, with the rewrite provided
 by a terminating `pdl.rewrite`.
 
-Example:
+# Example
 
 ```mlir
 // Provide a pattern matching \"foo.op\" that replaces the root with its
@@ -386,7 +358,6 @@ pdl.pattern : benefit(1) {
   }
 }
 ```
-  
 """
 function pattern(; benefit::Union{Attribute, NamedAttribute}, sym_name=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, bodyRegion::Region, location=Location())
     results = MLIRType[]
@@ -397,12 +368,9 @@ function pattern(; benefit::Union{Attribute, NamedAttribute}, sym_name=nothing::
     (sym_name != nothing) && push!(attributes, namedattribute("sym_name", sym_name))
     
     create_operation(
-        "pdl.pattern", location,
+        "pdl.pattern", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -415,7 +383,7 @@ which all share the same underlying element type. For example, a
 `!pdl.range<value>` may be constructed from a list of `!pdl.value`
 or `!pdl.range<value>` entities.
 
-Example:
+# Example
 
 ```mlir
 // Construct a range of values.
@@ -433,7 +401,6 @@ be extended to constraints under certain circustances; i.e., if we can
 determine how to extract the underlying elements. If we can\'t, e.g. if
 there are multiple sub ranges used for construction, we won\'t be able
 to determine their sizes during constraint time.
-  
 """
 function range(arguments::Vector{Value}; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -443,12 +410,9 @@ function range(arguments::Vector{Value}; result::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "pdl.range", location,
+        "pdl.range", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -465,7 +429,7 @@ set of replacement values can be either:
 * a set of `Value`s (`replValues` should be populated)
   - The operation will be replaced with these values.
 
-Example:
+# Example
 
 ```mlir
 // Replace root node with 2 values:
@@ -477,7 +441,6 @@ pdl.replace %root with (%vals : !pdl.range<value>)
 // Replace root with another operation:
 pdl.replace %root with %otherOp
 ```
-  
 """
 function replace(opValue::Value, replOperation=nothing::Union{Nothing, Value}, replValues::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -489,12 +452,9 @@ function replace(opValue::Value, replOperation=nothing::Union{Nothing, Value}, r
     push!(attributes, operandsegmentsizes([1, (replOperation==nothing) ? 0 : 1length(replValues), ]))
     
     create_operation(
-        "pdl.replace", location,
+        "pdl.replace", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -507,7 +467,7 @@ a pattern or rewrite region. The provided index is zero-based, and
 represents the concrete result to extract, i.e. this is not the result index
 as defined by the ODS definition of the operation.
 
-Example:
+# Example
 
 ```mlir
 // Extract a result:
@@ -520,7 +480,6 @@ Example:
 // If the example pattern snippet above were matching against `foo.op` in
 // the IR snippet, `%pdl_result` would correspond to `%result_1`.
 ```
-  
 """
 function result(parent::Value; val::MLIRType, index::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[val, ]
@@ -530,12 +489,9 @@ function result(parent::Value; val::MLIRType, index::Union{Attribute, NamedAttri
     attributes = NamedAttribute[namedattribute("index", index), ]
     
     create_operation(
-        "pdl.result", location,
+        "pdl.result", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -551,7 +507,7 @@ a `pdl.range<value>`, depending on the constraint of the result in ODS. If
 no index is provided, this operation extracts the full result range of the
 operation.
 
-Example:
+# Example
 
 ```mlir
 // Extract all of the results of an operation:
@@ -568,7 +524,6 @@ Example:
 %operation = pdl.operation ...
 %results = pdl.results 1 of %operation -> !pdl.value
 ```
-  
 """
 function results(parent::Value; val::MLIRType, index=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[val, ]
@@ -579,12 +534,9 @@ function results(parent::Value; val::MLIRType, index=nothing::Union{Nothing, Uni
     (index != nothing) && push!(attributes, namedattribute("index", index))
     
     create_operation(
-        "pdl.results", location,
+        "pdl.results", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -607,7 +559,7 @@ from this node downward (towards the defining operation) or upward
 If the root is omitted, the pdl_interp lowering will automatically select
 the best root of the pdl.rewrite among all the operations in the pattern.
 
-Example:
+# Example
 
 ```mlir
 // Specify an external rewrite function:
@@ -627,7 +579,6 @@ pdl.rewrite {
   pdl.replace %root2 with %op2
 }
 ```
-  
 """
 function rewrite(root=nothing::Union{Nothing, Value}, externalArgs::Vector{Value}; name=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, bodyRegion::Region, location=Location())
     results = MLIRType[]
@@ -640,12 +591,9 @@ function rewrite(root=nothing::Union{Nothing, Value}, externalArgs::Vector{Value
     (name != nothing) && push!(attributes, namedattribute("name", name))
     
     create_operation(
-        "pdl.rewrite", location,
+        "pdl.rewrite", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -658,7 +606,7 @@ type
 partially constrain, results types of a given entity. A `pdl.type` may
 partially constrain the result by specifying a constant `Type`.
 
-Example:
+# Example
 
 ```mlir
 // Define a type:
@@ -667,7 +615,6 @@ Example:
 // Define a type with a constant value:
 %type = pdl.type : i32
 ```
-  
 """
 function type(; result::MLIRType, constantType=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[result, ]
@@ -678,12 +625,9 @@ function type(; result::MLIRType, constantType=nothing::Union{Nothing, Union{Att
     (constantType != nothing) && push!(attributes, namedattribute("constantType", constantType))
     
     create_operation(
-        "pdl.type", location,
+        "pdl.type", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -696,7 +640,7 @@ types
 entity. A `pdl.types` may partially constrain the results by specifying
 an array of `Type`s.
 
-Example:
+# Example
 
 ```mlir
 // Define a range of types:
@@ -705,7 +649,6 @@ Example:
 // Define a range of types with a range of constant values:
 %types = pdl.types : [i32, i64, i32]
 ```
-  
 """
 function types(; result::MLIRType, constantTypes=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[result, ]
@@ -716,12 +659,9 @@ function types(; result::MLIRType, constantTypes=nothing::Union{Nothing, Union{A
     (constantTypes != nothing) && push!(attributes, namedattribute("constantTypes", constantTypes))
     
     create_operation(
-        "pdl.types", location,
+        "pdl.types", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

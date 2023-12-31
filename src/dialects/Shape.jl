@@ -14,7 +14,6 @@ at least one of the operands can hold an error, i.e. if it is of type
 `size`, the result must be of type `size`. If error propagation is not
 possible because both operands are of type `index` then the result may be
 of type `size` or `index`.
-  
 """
 function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -25,12 +24,9 @@ function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.add", location,
+        "shape.add", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -45,12 +41,11 @@ below.
 The result is undefined, but still side-effect free, in cases where the
 inputs have differing ranks or differ in extents of shared dimensions.
 
-Example:
+# Example
 ```mlir
 %s0 = shape.any [2,?], [?,3] // [2,3]
 %s1 = shape.any [?,?], [1,2] // [1,2]
 ```
-  
 """
 function any(inputs::Vector{Value}; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -60,12 +55,9 @@ function any(inputs::Vector{Value}; result::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.any", location,
+        "shape.any", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -81,7 +73,7 @@ compiler, information for dependent code to rely on (by assuming), and
 nothing else. They should not exist after a program is fully lowered and
 ready to execute.
 
-Example:
+# Example
 ```mlir
 %w0 = shape.cstr_broadcastable [2,2], [3,1,2] // Passing
 %w1 = shape.cstr_broadcastable [2,2], [3,2] // Failure
@@ -89,7 +81,6 @@ Example:
 %wf = shape.assuming_all %w0, %w1 // Failure
 %wt = shape.assuming_all %w0, %w2 // Passing
 ```
-  
 """
 function assuming_all(inputs::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -100,12 +91,9 @@ function assuming_all(inputs::Vector{Value}; result=nothing::Union{Nothing, MLIR
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.assuming_all", location,
+        "shape.assuming_all", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -119,7 +107,6 @@ Executes the region assuming all witnesses are true.
 compiler, information for dependent code to rely on (by assuming), and
 nothing else. They should not exist after a program is fully lowered and
 ready to execute.
-  
 """
 function assuming(witness::Value; results::Vector{MLIRType}, doRegion::Region, location=Location())
     results = MLIRType[results..., ]
@@ -129,12 +116,9 @@ function assuming(witness::Value; results::Vector{MLIRType}, doRegion::Region, l
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.assuming", location,
+        "shape.assuming", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -146,7 +130,6 @@ This yield operation represents a return operation within the
 `shape.assuming` operation region. The operation takes variable number of
 operands and produces no results. The operand number and types must match
 the number and types of parent `shape.assuming` results.
-  
 """
 function assuming_yield(operands::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -156,12 +139,9 @@ function assuming_yield(operands::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.assuming_yield", location,
+        "shape.assuming_yield", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -188,7 +168,6 @@ Likewise error values are propagated if any of the operands holds an error
 value. If the result type is an extent tensor (and can therefore not hold
 the error value) the behavior may be undefined. The optional string
 attribute can be used to describe the error case.
-  
 """
 function broadcast(shapes::Vector{Value}; result::MLIRType, error=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[result, ]
@@ -199,12 +178,9 @@ function broadcast(shapes::Vector{Value}; result::MLIRType, error=nothing::Union
     (error != nothing) && push!(attributes, namedattribute("error", error))
     
     create_operation(
-        "shape.broadcast", location,
+        "shape.broadcast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -215,11 +191,10 @@ concat
 Creates a shape whose dimensions consist of first the dimensions from `lhs`
 followed by the dimensions of `rhs`.
 
-Example:
+# Example
 concat([2,3], [4,5]) -> [2,3,4,5]
 concat([], []) -> []
 concat([], [4,5,6]) -> [4,5,6]
-  
 """
 function concat(lhs::Value, rhs::Value; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -229,12 +204,9 @@ function concat(lhs::Value, rhs::Value; result::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.concat", location,
+        "shape.concat", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -251,7 +223,6 @@ rank.
 %1 = shape.const_shape [1, 2, 3] : !shape.shape
 %2 = shape.const_shape [4, 5, 6] : tensor<3xindex>
 ```
-  
 """
 function const_shape(; result=nothing::Union{Nothing, MLIRType}, shape::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -262,12 +233,9 @@ function const_shape(; result=nothing::Union{Nothing, MLIRType}, shape::Union{At
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.const_shape", location,
+        "shape.const_shape", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -280,7 +248,6 @@ Creates a `shape.size` type representing the constant size given by `value`.
 ```mlir
 %x = shape.const_size 10
 ```
-  
 """
 function const_size(; result=nothing::Union{Nothing, MLIRType}, value::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -291,12 +258,9 @@ function const_size(; result=nothing::Union{Nothing, MLIRType}, value::Union{Att
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.const_size", location,
+        "shape.const_size", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -315,7 +279,6 @@ pass.
 %w1 = shape.const_witness true
 %w2 = shape.assuming_all(%w0, %w2) // Can be folded to \"const_witness true\"
 ```
-
 """
 function const_witness(; result=nothing::Union{Nothing, MLIRType}, passing::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -326,12 +289,9 @@ function const_witness(; result=nothing::Union{Nothing, MLIRType}, passing::Unio
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.const_witness", location,
+        "shape.const_witness", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -345,12 +305,11 @@ shape.broadcast documents.
 
 \"cstr\" operations represent runtime assertions.
 
-Example:
+# Example
 ```mlir
 %w0 = shape.cstr_broadcastable [2,2], [3,1,2] // Passing
 %w1 = shape.cstr_broadcastable [2,2], [3,2] // Failure
 ```
-  
 """
 function cstr_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -361,12 +320,9 @@ function cstr_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.cstr_broadcastable", location,
+        "shape.cstr_broadcastable", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -378,12 +334,11 @@ Given 1 or more input shapes, determine if all shapes are the exact same.
 
 \"cstr\" operations represent runtime assertions.
 
-Example:
+# Example
 ```mlir
 %w0 = shape.cstr_eq [1,2], [1,2], [1,2] // Passing
 %w1 = shape.cstr_eq [2,2], [1,2] // Failure
 ```
-  
 """
 function cstr_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -394,12 +349,9 @@ function cstr_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType}
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.cstr_eq", location,
+        "shape.cstr_eq", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -413,7 +365,7 @@ Represents a runtime assertion that an i1 is true. It returns a
 For simplicity, prefer using other cstr_* ops if they are available for a
 given constraint.
 
-Example:
+# Example
 ```mlir
 %bool = ...
 %w0 = shape.cstr_require %bool, \"msg\" // Passing if `%bool` is true.
@@ -422,7 +374,6 @@ Example:
 Since this op can be used to express many different possible assertions
 (depending on whatever computation calculated `pred`), the `msg`
 should clarify the nature of the assertion for users.
-  
 """
 function cstr_require(pred::Value; result=nothing::Union{Nothing, MLIRType}, msg::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -433,12 +384,9 @@ function cstr_require(pred::Value; result=nothing::Union{Nothing, MLIRType}, msg
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.cstr_require", location,
+        "shape.cstr_require", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -449,7 +397,6 @@ debug_print
 Prints the input dim or shape and passes through input.
 
 Note: This is intended for testing and debugging only.
-  
 """
 function debug_print(input::Value; output::MLIRType, location=Location())
     results = MLIRType[output, ]
@@ -459,12 +406,9 @@ function debug_print(input::Value; output::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.debug_print", location,
+        "shape.debug_print", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -478,7 +422,6 @@ return type carries error information else the behavior is undefined.
 
 This is a convenience op that performs the equivalent of getting the extent
 of a shape (e.g., `dim(x, i) == get_extent(shape_of(x), i)`).
-  
 """
 function dim(value::Value, index::Value; extent=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -489,12 +432,9 @@ function dim(value::Value, index::Value; extent=nothing::Union{Nothing, MLIRType
     (extent != nothing) && push!(results, extent)
     
     create_operation(
-        "shape.dim", location,
+        "shape.dim", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -515,7 +455,6 @@ toward negative infinity, i.e. floor(lhs / rhs), such that
 
 always holds. If any of the values is of type `size`, the behavior for
 negative value is undefined.
-  
 """
 function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -526,12 +465,9 @@ function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.div", location,
+        "shape.div", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -542,7 +478,6 @@ from_extent_tensor
 Creates a shape from a 1D integral tensor of extents. The rank of the
 resulting shape equals the number of elements in the tensor, and the
 extents match the values of the elements.
-  
 """
 function from_extent_tensor(input::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -553,12 +488,9 @@ function from_extent_tensor(input::Value; result=nothing::Union{Nothing, MLIRTyp
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.from_extent_tensor", location,
+        "shape.from_extent_tensor", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -575,7 +507,6 @@ the shape.
 // Rank 0 shape.
 %s1 = shape.from_extents
 ```
-  
 """
 function from_extents(extents::Vector{Value}; shape=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -586,12 +517,9 @@ function from_extents(extents::Vector{Value}; shape=nothing::Union{Nothing, MLIR
     (shape != nothing) && push!(results, shape)
     
     create_operation(
-        "shape.from_extents", location,
+        "shape.from_extents", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -602,7 +530,6 @@ func
 An operation with a name containing a single `SSACFG` region which
 represents a shape transfer function or helper function for shape transfer
 function.
-  
 """
 function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union{Attribute, NamedAttribute}, arg_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, res_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, body::Region, location=Location())
     results = MLIRType[]
@@ -615,12 +542,9 @@ function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union
     (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
-        "shape.func", location,
+        "shape.func", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -631,7 +555,7 @@ function_library
 Represents a list of shape functions and the ops whose shape transfer
 functions they represent.
 
-Example:
+# Example
 
 ```mlir
 shape.function_library {
@@ -643,7 +567,6 @@ shape.function_library {
   std.atan = @same_result_shape
 }
 ```
-  
 """
 function function_library(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, mapping::Union{Attribute, NamedAttribute}, body::Region, location=Location())
     results = MLIRType[]
@@ -654,12 +577,9 @@ function function_library(; sym_name::Union{Attribute, NamedAttribute}, sym_visi
     (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
-        "shape.function_library", location,
+        "shape.function_library", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -669,7 +589,6 @@ get_extent
 
 Gets the extent indexed by `dim` from the `shape` operand. If the shape is
 an error then it returns an invalid size.
-  
 """
 function get_extent(shape::Value, dim::Value; extent=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -680,12 +599,9 @@ function get_extent(shape::Value, dim::Value; extent=nothing::Union{Nothing, MLI
     (extent != nothing) && push!(results, extent)
     
     create_operation(
-        "shape.get_extent", location,
+        "shape.get_extent", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -698,7 +614,6 @@ inverse, `size_to_index`, facilitate index conversion between the standard
 and the shape dialect.
 
 The behavior is undefined for negative indices.
-  
 """
 function index_to_size(arg::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -709,12 +624,9 @@ function index_to_size(arg::Value; result=nothing::Union{Nothing, MLIRType}, loc
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.index_to_size", location,
+        "shape.index_to_size", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -731,12 +643,11 @@ shape.broadcast will not give an error, and shape.cstr_broadcastable will
 not result in an assertion failure. Similarly, false implies an error or
 assertion failure.
 
-Example:
+# Example
 ```mlir
 %true = shape.is_broadcastable [2,2], [3,1,2]
 %false = shape.is_broadcastable [2,2], [3,2]
 ```
-  
 """
 function is_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -747,12 +658,9 @@ function is_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing, 
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.is_broadcastable", location,
+        "shape.is_broadcastable", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -764,7 +672,6 @@ Computes the elementwise maximum of two sizes or shapes with equal ranks.
 If either operand is an error, then an error will be propagated to the
 result. If the input types mismatch or the ranks do not match, then the
 result is an error.
-  
 """
 function max(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -775,12 +682,9 @@ function max(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.max", location,
+        "shape.max", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -811,7 +715,6 @@ used to return an error to the user upon mismatch of dimensions.
 ```mlir
 %c = shape.meet %a, %b, error=\"<reason>\" : !shape.shape, !shape.shape -> !shape.shape
 ```
-  
 """
 function meet(arg0::Value, arg1::Value; result=nothing::Union{Nothing, MLIRType}, error=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -823,12 +726,9 @@ function meet(arg0::Value, arg1::Value; result=nothing::Union{Nothing, MLIRType}
     (error != nothing) && push!(attributes, namedattribute("error", error))
     
     create_operation(
-        "shape.meet", location,
+        "shape.meet", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -840,7 +740,6 @@ Computes the elementwise minimum of two sizes or shapes with equal ranks.
 If either operand is an error, then an error will be propagated to the
 result. If the input types mismatch or the ranks do not match, then the
 result is an error.
-  
 """
 function min(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -851,12 +750,9 @@ function min(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.min", location,
+        "shape.min", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -870,7 +766,6 @@ at least one of the operands can hold an error, i.e. if it is of type
 `size`, the result must be of type `size`. If error propagation is not
 possible because both operands are of type `index` then the result may be
 of type `size` or `index`.
-  
 """
 function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -881,12 +776,9 @@ function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.mul", location,
+        "shape.mul", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -899,7 +791,6 @@ its extents. If the argument is of type `shape` then the result will be of
 type `size` and potential errors will be propagated. Otherwise, if the
 argument is and extent tensor `tensor<?xindex>` then the result will be of
 type `index`.
-  
 """
 function num_elements(shape::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -910,12 +801,9 @@ function num_elements(shape::Value; result=nothing::Union{Nothing, MLIRType}, lo
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.num_elements", location,
+        "shape.num_elements", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -924,7 +812,6 @@ end
 rank
 
 Returns the rank of the shape or extent tensor, i.e. the number of extents.
-  
 """
 function rank(shape::Value; rank=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -935,12 +822,9 @@ function rank(shape::Value; rank=nothing::Union{Nothing, MLIRType}, location=Loc
     (rank != nothing) && push!(results, rank)
     
     create_operation(
-        "shape.rank", location,
+        "shape.rank", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -978,7 +862,6 @@ func.func @reduce(%shape : !shape.shape, %init : !shape.size) ->
   return %num_elements : !shape.size
 }
 ```
-  
 """
 function reduce(shape::Value, initVals::Vector{Value}; result::Vector{MLIRType}, region::Region, location=Location())
     results = MLIRType[result..., ]
@@ -988,12 +871,9 @@ function reduce(shape::Value, initVals::Vector{Value}; result::Vector{MLIRType},
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.reduce", location,
+        "shape.reduce", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1004,7 +884,6 @@ return_
 The `shape.return` operation represents a return operation within a
 function.  The operation takes variable number of operands and produces no
 results.
-  
 """
 function return_(operands::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -1014,12 +893,9 @@ function return_(operands::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.return", location,
+        "shape.return", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1032,7 +908,6 @@ they are equal. When extent tensors are compared to shapes they are
 regarded as their equivalent non-error shapes. Error shapes can be tested
 for equality like any other shape value, meaning that the error value is
 equal to itself.
-  
 """
 function shape_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1043,12 +918,9 @@ function shape_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.shape_eq", location,
+        "shape.shape_eq", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1058,7 +930,6 @@ shape_of
 
 The operation takes a value or a shaped operand as an argument and it
 returns a shape or extent tensor.
-  
 """
 function shape_of(arg::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1069,12 +940,9 @@ function shape_of(arg::Value; result=nothing::Union{Nothing, MLIRType}, location
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.shape_of", location,
+        "shape.shape_of", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1086,7 +954,6 @@ Converts a `shape.size` to a standard index. This operation and its
 inverse, `index_to_size`, facilitate index conversion between the standard
 and the shape dialect. The behavior is undefined for unknown and invalid
 arguments.
-  
 """
 function size_to_index(arg::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1097,12 +964,9 @@ function size_to_index(arg::Value; result=nothing::Union{Nothing, MLIRType}, loc
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.size_to_index", location,
+        "shape.size_to_index", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1130,7 +994,6 @@ Examples:
 
 Requires:
 - `index` is in the range [-rank(operand),rank(operand)]
-  
 """
 function split_at(operand::Value, index::Value; head::MLIRType, tail::MLIRType, location=Location())
     results = MLIRType[head, tail, ]
@@ -1140,12 +1003,9 @@ function split_at(operand::Value, index::Value; head::MLIRType, tail::MLIRType, 
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.split_at", location,
+        "shape.split_at", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1158,7 +1018,6 @@ in the tensor equals the rank of the shape, and the elements equal the
 extents of the shape.
 
 If the shape represents an error, this op\'s behavior is undefined.
-  
 """
 function to_extent_tensor(input::Value; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -1168,12 +1027,9 @@ function to_extent_tensor(input::Value; result::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.to_extent_tensor", location,
+        "shape.to_extent_tensor", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1195,7 +1051,6 @@ E.g.,
 ```
 
 This operation is the complement of `shape_of` wrt ValueShape values.
-  
 """
 function value_as_shape(arg::Value; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -1205,12 +1060,9 @@ function value_as_shape(arg::Value; result::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.value_as_shape", location,
+        "shape.value_as_shape", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1221,7 +1073,6 @@ value_of
 The operation takes !shape.value_shape, a.k.a. (value, shape) tuple as an
 argument, and returns its value. The behavior is undefined for unknown and
 invalid arguments.
-  
 """
 function value_of(arg::Value; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -1231,12 +1082,9 @@ function value_of(arg::Value; result::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.value_of", location,
+        "shape.value_of", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -1275,7 +1123,6 @@ ValueShape\'s value and shape are conformant and so too for the output, but
 the result may be less specified than `operand`\'s shape as `shape` is
 merely used to construct the new ValueShape. If join behavior is desired
 then a join op should be used.
-  
 """
 function with_shape(operand::Value, shape::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
@@ -1286,12 +1133,9 @@ function with_shape(operand::Value, shape::Value; result=nothing::Union{Nothing,
     (result != nothing) && push!(results, result)
     
     create_operation(
-        "shape.with_shape", location,
+        "shape.with_shape", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=(length(results) == 0 ? true : false)
     )
 end
@@ -1308,12 +1152,9 @@ function yield(operands::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "shape.yield", location,
+        "shape.yield", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

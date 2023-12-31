@@ -18,7 +18,6 @@ where the computation must be carried out in the expressed type.
 Especially early in transformation, it is common to have `dcast`s on
 all operands to ops that must operate with the expressed type (typically
 math ops prior to lowering to target-specific, quantized kernels).
-  
 """
 function dcast(arg::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
@@ -28,12 +27,9 @@ function dcast(arg::Value; res::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "quant.dcast", location,
+        "quant.dcast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -61,7 +57,6 @@ required. In addition, it is also common to have an identity `qcast`
 (where the operand and result type are not quantized) at all points where
 it is legal to use a quantized representation (but is not known to be
 acceptable).
-  
 """
 function qcast(arg::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
@@ -71,12 +66,9 @@ function qcast(arg::Value; res::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "quant.qcast", location,
+        "quant.qcast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -101,7 +93,6 @@ tensor<4xi8> -> tensor<4x!quant<\"uniform[i8:f32]{1.0}\">>
 ```
 vector<4xi8> -> vector<4x!quant<\"uniform[i8:f32]{1.0}\">>
 ```
-  
 """
 function scast(arg::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
@@ -111,12 +102,9 @@ function scast(arg::Value; res::MLIRType, location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "quant.scast", location,
+        "quant.scast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

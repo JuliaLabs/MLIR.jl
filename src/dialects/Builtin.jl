@@ -16,14 +16,13 @@ i.e. Modules are [IsolatedFromAbove](../Traits.md#isolatedfromabove). Modules ha
 an optional [symbol name](../SymbolsAndSymbolTables.md) which can be used to refer
 to them in operations.
 
-Example:
+# Example
 
 ```mlir
 module {
   func.func @foo()
 }
 ```
-  
 """
 function module_(; sym_name=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, bodyRegion::Region, location=Location())
     results = MLIRType[]
@@ -35,12 +34,9 @@ function module_(; sym_name=nothing::Union{Nothing, Union{Attribute, NamedAttrib
     (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
-        "builtin.module", location,
+        "builtin.module", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -58,7 +54,7 @@ type systems during the conversion of one type system to another.
 This operation may produce results of arity 1-N, and accept as input
 operands of arity 0-N.
 
-Example:
+# Example
 
 ```mlir
 // An unrealized 0-1 conversion. These types of conversions are useful in
@@ -78,7 +74,6 @@ Example:
 // An unrealized N-1 conversion.
 %result3 = unrealized_conversion_cast %operand, %operand : !foo.type, !foo.type to !bar.tuple_type<!foo.type, !foo.type>
 ```
-  
 """
 function unrealized_conversion_cast(inputs::Vector{Value}; outputs::Vector{MLIRType}, location=Location())
     results = MLIRType[outputs..., ]
@@ -88,12 +83,9 @@ function unrealized_conversion_cast(inputs::Vector{Value}; outputs::Vector{MLIRT
     attributes = NamedAttribute[]
     
     create_operation(
-        "builtin.unrealized_conversion_cast", location,
+        "builtin.unrealized_conversion_cast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

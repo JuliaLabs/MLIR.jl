@@ -16,7 +16,7 @@ the affine mapping has to be one-dimensional, and so the `affine.apply`
 operation always returns one value. The input operands and result must all
 have ‘index’ type.
 
-Example:
+# Example
 
 ```mlir
 #map10 = affine_map<(d0, d1) -> (d0 floordiv 8 + d1 floordiv 128)>
@@ -26,7 +26,6 @@ Example:
 // Inline example.
 %2 = affine.apply affine_map<(i)[s0] -> (i+s0)> (%42)[%n]
 ```
-  
 """
 function apply(mapOperands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result_0, ]
@@ -36,12 +35,9 @@ function apply(mapOperands::Vector{Value}; result_0::MLIRType, map::Union{Attrib
     attributes = NamedAttribute[namedattribute("map", map), ]
     
     create_operation(
-        "affine.apply", location,
+        "affine.apply", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -52,7 +48,7 @@ delinearize_index
 The `affine.delinearize_index` operation takes a single index value and
 calculates the multi-index according to the given basis.
 
-Example:
+# Example
 
 ```
 %indices:3 = affine.delinearize_index %linear_index into (%c16, %c224, %c224) : index, index, index
@@ -68,7 +64,6 @@ In the above example, `%indices:3` conceptually holds the following:
 %indices_1 = affine.apply #map1()[%linear_index]
 %indices_2 = affine.apply #map2()[%linear_index]
 ```
-  
 """
 function delinearize_index(linear_index::Value, basis::Vector{Value}; multi_index::Vector{MLIRType}, location=Location())
     results = MLIRType[multi_index..., ]
@@ -78,12 +73,9 @@ function delinearize_index(linear_index::Value, basis::Vector{Value}; multi_inde
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.delinearize_index", location,
+        "affine.delinearize_index", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -91,7 +83,7 @@ end
 """
 for_
 
-Syntax:
+# Syntax
 
 ```
 operation   ::= `affine.for` ssa-id `=` lower-bound `to` upper-bound
@@ -194,7 +186,6 @@ func.func @reduce(%buffer: memref<1024xf32>) -> (f32) {
 If the `affine.for` defines any values, a yield terminator must be
 explicitly present. The number and types of the \"affine.for\" results must
 match the initial values in the `iter_args` binding and the yield operands.
-  
 """
 function for_(operand_0::Vector{Value}; results::Vector{MLIRType}, region::Region, location=Location())
     results = MLIRType[results..., ]
@@ -204,12 +195,9 @@ function for_(operand_0::Vector{Value}; results::Vector{MLIRType}, region::Regio
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.for", location,
+        "affine.for", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -217,7 +205,7 @@ end
 """
 if_
 
-Syntax:
+# Syntax
 
 ```
 operation  ::= `affine.if` if-op-cond `{` op* `}` (`else` `{` op* `}`)?
@@ -244,7 +232,7 @@ the `affine.yield` can be left out, and will be inserted implicitly.
 Otherwise, it must be explicit.  If no values are defined, the else block
 may be empty (i.e. contain no blocks).
 
-Example:
+# Example
 
 ```mlir
 #set = affine_set<(d0, d1)[s0]: (d0 - 10 >= 0, s0 - d0 - 9 >= 0,
@@ -283,7 +271,6 @@ func.func @pad_edges(%I : memref<10x10xf32>) -> (memref<12x12xf32) {
   return %O
 }
 ```
-  
 """
 function if_(operand_0::Vector{Value}; results::Vector{MLIRType}, thenRegion::Region, elseRegion::Region, location=Location())
     results = MLIRType[results..., ]
@@ -293,12 +280,9 @@ function if_(operand_0::Vector{Value}; results::Vector{MLIRType}, thenRegion::Re
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.if", location,
+        "affine.if", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -306,7 +290,7 @@ end
 """
 load
 
-Syntax:
+# Syntax
 
 ```
 operation ::= ssa-id `=` `affine.load` ssa-use `[` multi-dim-affine-map-of-ssa-ids `]` `:` memref-type
@@ -330,7 +314,6 @@ Example 2: Uses `symbol` keyword for symbols `%n` and `%m`.
 ```mlir
 %1 = affine.load %0[%i0 + symbol(%n), %i1 + symbol(%m)] : memref<100x100xf32>
 ```
-  
 """
 function load(memref::Value, indices::Vector{Value}; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -340,12 +323,9 @@ function load(memref::Value, indices::Vector{Value}; result::MLIRType, location=
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.load", location,
+        "affine.load", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -356,12 +336,11 @@ max
 The `affine.max` operation computes the maximum value result from a multi-result
 affine map.
 
-Example:
+# Example
 
 ```mlir
 %0 = affine.max (d0) -> (1000, d0 + 512) (%i0) : index
 ```
-  
 """
 function max(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result_0, ]
@@ -371,12 +350,9 @@ function max(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, 
     attributes = NamedAttribute[namedattribute("map", map), ]
     
     create_operation(
-        "affine.max", location,
+        "affine.max", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -384,7 +360,7 @@ end
 """
 min
 
-Syntax:
+# Syntax
 
 ```
 operation ::= ssa-id `=` `affine.min` affine-map-attribute dim-and-symbol-use-list
@@ -397,12 +373,11 @@ must be equal to the respective number of dimensional and symbolic inputs to
 the affine mapping; the `affine.min` operation always returns one value. The
 input operands and result must all have \'index\' type.
 
-Example:
+# Example
 
 ```mlir
 %0 = affine.min affine_map<(d0)[s0] -> (1000, d0 + 512, s0)> (%arg0)[%arg1]
 ```
-  
 """
 function min(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result_0, ]
@@ -412,12 +387,9 @@ function min(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, 
     attributes = NamedAttribute[namedattribute("map", map), ]
     
     create_operation(
-        "affine.min", location,
+        "affine.min", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -486,7 +458,6 @@ affine.parallel (%ii, %jj) = (0, 0) to (%N, %M) step (32, 32) {
   }
 }
 ```
-  
 """
 function parallel(mapOperands::Vector{Value}; results::Vector{MLIRType}, reductions::Union{Attribute, NamedAttribute}, lowerBoundsMap::Union{Attribute, NamedAttribute}, lowerBoundsGroups::Union{Attribute, NamedAttribute}, upperBoundsMap::Union{Attribute, NamedAttribute}, upperBoundsGroups::Union{Attribute, NamedAttribute}, steps::Union{Attribute, NamedAttribute}, region::Region, location=Location())
     results = MLIRType[results..., ]
@@ -496,12 +467,9 @@ function parallel(mapOperands::Vector{Value}; results::Vector{MLIRType}, reducti
     attributes = NamedAttribute[namedattribute("reductions", reductions), namedattribute("lowerBoundsMap", lowerBoundsMap), namedattribute("lowerBoundsGroups", lowerBoundsGroups), namedattribute("upperBoundsMap", upperBoundsMap), namedattribute("upperBoundsGroups", upperBoundsGroups), namedattribute("steps", steps), ]
     
     create_operation(
-        "affine.parallel", location,
+        "affine.parallel", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -523,7 +491,6 @@ specifier ranges from locality<0> (no locality) to locality<3> (extremely
 local keep in cache). The cache type specifier is either \'data\' or \'instr\'
 and specifies whether the prefetch is performed on data cache or on
 instruction cache.
-  
 """
 function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribute, NamedAttribute}, localityHint::Union{Attribute, NamedAttribute}, isDataCache::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[]
@@ -533,12 +500,9 @@ function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribut
     attributes = NamedAttribute[namedattribute("isWrite", isWrite), namedattribute("localityHint", localityHint), namedattribute("isDataCache", isDataCache), ]
     
     create_operation(
-        "affine.prefetch", location,
+        "affine.prefetch", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -546,7 +510,7 @@ end
 """
 store
 
-Syntax:
+# Syntax
 
 ```
 operation ::= `affine.store` ssa-use, ssa-use `[` multi-dim-affine-map-of-ssa-ids `]` `:` memref-type
@@ -570,7 +534,6 @@ Example 2: Uses `symbol` keyword for symbols `%n` and `%m`.
 ```mlir
 affine.store %v0, %0[%i0 + symbol(%n), %i1 + symbol(%m)] : memref<100x100xf32>
 ```
-  
 """
 function store(value::Value, memref::Value, indices::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -580,12 +543,9 @@ function store(value::Value, memref::Value, indices::Vector{Value}; location=Loc
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.store", location,
+        "affine.store", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -628,7 +588,6 @@ TODOs:
 * Add support for strided vector loads.
 * Consider adding a permutation map to permute the slice that is read from memory
 (see [vector.transfer_read](../Vector/#vectortransfer_read-mlirvectortransferreadop)).
-  
 """
 function vector_load(memref::Value, indices::Vector{Value}; result::MLIRType, location=Location())
     results = MLIRType[result, ]
@@ -638,12 +597,9 @@ function vector_load(memref::Value, indices::Vector{Value}; result::MLIRType, lo
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.vector_load", location,
+        "affine.vector_load", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -688,7 +644,6 @@ TODOs:
 * Add support for strided vector stores.
 * Consider adding a permutation map to permute the slice that is written to memory
 (see [vector.transfer_write](../Vector/#vectortransfer_write-mlirvectortransferwriteop)).
-  
 """
 function vector_store(value::Value, memref::Value, indices::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -698,12 +653,9 @@ function vector_store(value::Value, memref::Value, indices::Vector{Value}; locat
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.vector_store", location,
+        "affine.vector_store", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -720,7 +672,6 @@ If the parent operation defines no values, then the `affine.yield` may be
 left out in the custom syntax and the builders will insert one implicitly.
 Otherwise, it has to be present in the syntax to indicate which values are
 yielded.
-  
 """
 function yield(operands::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -730,12 +681,9 @@ function yield(operands::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "affine.yield", location,
+        "affine.yield", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

@@ -113,6 +113,12 @@ namespace
       description = std::regex_replace(description, std::regex("\n" + leading_spaces_str), "\n");
     }
     description = std::regex_replace(description, std::regex("(['\"$])"), "\\$1");
+    description = std::regex_replace(description, std::regex("(^|\n)(Example|Syntax):"), "$1# $2");
+
+    // remove trailing whitespaces and newlines
+    while (std::isspace(description.back())) {
+      description.pop_back();
+    }
     return description;
   }
 
@@ -146,12 +152,9 @@ end
     attributes = NamedAttribute[{4}]
     {5}
     create_operation(
-        "{6}", location,
+        "{6}", location;
+        operands, owned_regions, successors, attributes,
         results={7},
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference={8}
     ))"; // 0: results, 1: operands, 2: owned_regions, 3: successors, 4: attributes, 5: optionals, 6: opname, 7: results expression, 8: result_inference
 

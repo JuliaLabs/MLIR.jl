@@ -15,13 +15,12 @@ specified function type.
 Function values can be created with the
 [`func.constant` operation](#funcconstant-constantop).
 
-Example:
+# Example
 
 ```mlir
 %func = func.constant @my_func : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 %result = func.call_indirect %func(%0, %1) : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
-  
 """
 function call_indirect(callee::Value, callee_operands::Vector{Value}; results::Vector{MLIRType}, location=Location())
     results = MLIRType[results..., ]
@@ -31,12 +30,9 @@ function call_indirect(callee::Value, callee_operands::Vector{Value}; results::V
     attributes = NamedAttribute[]
     
     create_operation(
-        "func.call_indirect", location,
+        "func.call_indirect", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -49,12 +45,11 @@ within the same symbol scope as the call. The operands and result types of
 the call must match the specified function type. The callee is encoded as a
 symbol reference attribute named \"callee\".
 
-Example:
+# Example
 
 ```mlir
 %2 = func.call @my_add(%0, %1) : (f32, f32) -> f32
 ```
-  
 """
 function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result_0..., ]
@@ -64,12 +59,9 @@ function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee::Union
     attributes = NamedAttribute[namedattribute("callee", callee), ]
     
     create_operation(
-        "func.call", location,
+        "func.call", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -80,7 +72,7 @@ constant
 The `func.constant` operation produces an SSA value from a symbol reference
 to a `func.func` operation
 
-Example:
+# Example
 
 ```mlir
 // Reference to function @myfn.
@@ -94,7 +86,6 @@ MLIR does not allow direct references to functions in SSA operands because
 the compiler is multithreaded, and disallowing SSA values to directly
 reference a function simplifies this
 ([rationale](../Rationale/Rationale.md#multithreading-the-compiler)).
-  
 """
 function constant(; result_0::MLIRType, value::Union{Attribute, NamedAttribute}, location=Location())
     results = MLIRType[result_0, ]
@@ -104,12 +95,9 @@ function constant(; result_0::MLIRType, value::Union{Attribute, NamedAttribute},
     attributes = NamedAttribute[namedattribute("value", value), ]
     
     create_operation(
-        "func.constant", location,
+        "func.constant", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -130,7 +118,7 @@ the region.
 Only dialect attribute names may be specified in the attribute dictionaries
 for function arguments, results, or the function itself.
 
-Example:
+# Example
 
 ```mlir
 // External function definitions.
@@ -152,7 +140,6 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
 // A function with an attribute
 func.func @example_fn_attr() attributes {dialectName.attrName = false}
 ```
-  
 """
 function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, arg_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, res_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, body::Region, location=Location())
     results = MLIRType[]
@@ -165,12 +152,9 @@ function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union
     (res_attrs != nothing) && push!(attributes, namedattribute("res_attrs", res_attrs))
     
     create_operation(
-        "func.func", location,
+        "func.func", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -183,7 +167,7 @@ The operation takes variable number of operands and produces no results.
 The operand number and types must match the signature of the function
 that contains the operation.
 
-Example:
+# Example
 
 ```mlir
 func.func @foo() : (i32, f8) {
@@ -191,7 +175,6 @@ func.func @foo() : (i32, f8) {
   return %0, %1 : i32, f8
 }
 ```
-  
 """
 function return_(operands::Vector{Value}; location=Location())
     results = MLIRType[]
@@ -201,12 +184,9 @@ function return_(operands::Vector{Value}; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "func.return", location,
+        "func.return", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end

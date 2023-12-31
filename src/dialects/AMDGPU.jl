@@ -19,7 +19,6 @@ Note that `lds_barrier` does **not** force reads to or from global memory
 to complete before execution continues. Therefore, it should be used when
 operations on global memory can be issued far in advance of when their results
 are used (for example, by writing them to LDS).
-  
 """
 function lds_barrier(; location=Location())
     results = MLIRType[]
@@ -29,12 +28,9 @@ function lds_barrier(; location=Location())
     attributes = NamedAttribute[]
     
     create_operation(
-        "amdgpu.lds_barrier", location,
+        "amdgpu.lds_barrier", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -67,7 +63,6 @@ order (that is, v[0] will go to arg[7:0], v[1] to arg[15:8] and so on).
 
 The negateA, negateB, and negateC flags are only supported for double-precision
 operations on gfx940+.
-  
 """
 function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, m::Union{Attribute, NamedAttribute}, n::Union{Attribute, NamedAttribute}, k::Union{Attribute, NamedAttribute}, blocks::Union{Attribute, NamedAttribute}, cbsz=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, abid=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, blgp=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, reducePrecision=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, negateA=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, negateB=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, negateC=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[destD, ]
@@ -84,12 +79,9 @@ function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, m::
     (negateC != nothing) && push!(attributes, namedattribute("negateC", negateC))
     
     create_operation(
-        "amdgpu.mfma", location,
+        "amdgpu.mfma", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -112,7 +104,6 @@ Out of bounds atomic operations are ignored in hardware.
 
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
-  
 """
 function raw_buffer_atomic_cmpswap(src::Value, cmp::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; value::MLIRType, boundsCheck=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, indexOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[value, ]
@@ -126,12 +117,9 @@ function raw_buffer_atomic_cmpswap(src::Value, cmp::Value, memref::Value, indice
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
-        "amdgpu.raw_buffer_atomic_cmpswap", location,
+        "amdgpu.raw_buffer_atomic_cmpswap", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -155,7 +143,6 @@ Out of bounds atomic operations are ignored in hardware.
 
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
-  
 """
 function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, indexOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -169,12 +156,9 @@ function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Val
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
-        "amdgpu.raw_buffer_atomic_fadd", location,
+        "amdgpu.raw_buffer_atomic_fadd", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -197,7 +181,6 @@ Out of bounds atomic operations are ignored in hardware.
 
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
-  
 """
 function raw_buffer_atomic_fmax(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, indexOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -211,12 +194,9 @@ function raw_buffer_atomic_fmax(value::Value, memref::Value, indices::Vector{Val
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
-        "amdgpu.raw_buffer_atomic_fmax", location,
+        "amdgpu.raw_buffer_atomic_fmax", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -239,7 +219,6 @@ Out of bounds atomic operations are ignored in hardware.
 
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
-  
 """
 function raw_buffer_atomic_smax(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, indexOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -253,12 +232,9 @@ function raw_buffer_atomic_smax(value::Value, memref::Value, indices::Vector{Val
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
-        "amdgpu.raw_buffer_atomic_smax", location,
+        "amdgpu.raw_buffer_atomic_smax", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -281,7 +257,6 @@ Out of bounds atomic operations are ignored in hardware.
 
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
-  
 """
 function raw_buffer_atomic_umin(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, indexOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -295,12 +270,9 @@ function raw_buffer_atomic_umin(value::Value, memref::Value, indices::Vector{Val
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
-        "amdgpu.raw_buffer_atomic_umin", location,
+        "amdgpu.raw_buffer_atomic_umin", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -336,7 +308,6 @@ are translated to intrinsic arguments as follows:
 - If `boundsCheck` is false and the target chipset is RDNA, OOB_SELECT is set
   to 2 to disable bounds checks, otherwise it is 3
 - The cache coherency bits are off
-  
 """
 function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; value::MLIRType, boundsCheck=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, indexOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[value, ]
@@ -350,12 +321,9 @@ function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothi
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
-        "amdgpu.raw_buffer_load", location,
+        "amdgpu.raw_buffer_load", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -379,7 +347,6 @@ components is partically completed is chipset-dependent.
 
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
-  
 """
 function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, indexOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[]
@@ -393,12 +360,9 @@ function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, s
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
-        "amdgpu.raw_buffer_store", location,
+        "amdgpu.raw_buffer_store", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
@@ -419,7 +383,6 @@ containing only 8 valid values:
 
 The `clamp` flag is used to saturate the output of type T to numeric_limits<T>::max()
 in case of overflow.
-  
 """
 function wmma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, subwordOffset=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, unsignedA=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, unsignedB=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, clamp=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
     results = MLIRType[destD, ]
@@ -433,12 +396,9 @@ function wmma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, sub
     (clamp != nothing) && push!(attributes, namedattribute("clamp", clamp))
     
     create_operation(
-        "amdgpu.wmma", location,
+        "amdgpu.wmma", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        operands=operands,
-        owned_regions=owned_regions,
-        successors=successors,
-        attributes=attributes,
         result_inference=false
     )
 end
