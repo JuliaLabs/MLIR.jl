@@ -397,7 +397,7 @@ function Attribute(value::Int, type::MLIRType)
         API.mlirIntegerAttrGet(type, value)
     )
 end
-function Attribute(value::Bool, ::MLIRType=nothing)
+function Attribute(value::Bool)
     Attribute(
         API.mlirBoolAttrGet(context(), value)
     )
