@@ -649,7 +649,7 @@ function Base.show(io::IO, operation::Operation)
     flags = API.mlirOpPrintingFlagsCreate()
     get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true, true)
     API.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
-    flags = API.mlirOpPrintingFlagsDestroy(flags)
+    API.mlirOpPrintingFlagsDestroy(flags)
 
     write(io, rstrip(String(take!(buffer))))
 end
