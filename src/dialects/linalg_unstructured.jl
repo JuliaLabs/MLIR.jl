@@ -1,4 +1,4 @@
-module Linalg
+module linalg
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-index
+`index`
 
 The `linalg.index` operation returns the iteration index of the immediately
 enclosing linalg structured operation for the iteration dimension `dim`. The
@@ -59,7 +59,7 @@ function index(; result=nothing::Union{Nothing, MLIRType}, dim::Union{Attribute,
 end
 
 """
-softmax
+`softmax`
 
 linalg.softmax computes a numerically stable version of softmax.
 
@@ -94,7 +94,7 @@ function softmax(input::Value, output::Value; result::Vector{MLIRType}, dimensio
 end
 
 """
-yield
+`yield`
 
 `linalg.yield` is a special terminator operation for blocks inside regions
 in `linalg` generic ops. It returns values to the immediately enclosing
@@ -121,4 +121,4 @@ function yield(values::Vector{Value}; location=Location())
     )
 end
 
-end # Linalg
+end # linalg

@@ -1,4 +1,4 @@
-module Arith
+module arith
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-addf
+`addf`
 
 The `addf` operation takes two operands and returns one result, each of
 these is required to be the same type. This type may be a floating point
@@ -47,7 +47,7 @@ function addf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-addi
+`addi`
 
 The `addi` operation takes two operands and returns one result, each of
 these is required to be the same type. This type may be an integer scalar
@@ -84,7 +84,7 @@ function addi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-addui_extended
+`addui_extended`
 
 Performs (N+1)-bit addition on zero-extended operands. Returns two results:
 the N-bit sum (same type as both operands), and the overflow bit
@@ -120,7 +120,7 @@ function addui_extended(lhs::Value, rhs::Value; sum::MLIRType, overflow::MLIRTyp
 end
 
 """
-andi
+`andi`
 
 The `andi` operation takes two operands and returns one result, each of
 these is required to be the same type. This type may be an integer scalar
@@ -157,7 +157,7 @@ function andi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-bitcast
+`bitcast`
 
 Bitcast an integer or floating point value to an integer or floating point
 value of equal bit width. When operating on vectors, casts elementwise.
@@ -190,7 +190,7 @@ function bitcast(in::Value; out::MLIRType, location=Location())
 end
 
 """
-ceildivsi
+`ceildivsi`
 
 Signed integer division. Rounds towards positive infinity, i.e. `7 / -2 = -3`.
 
@@ -221,7 +221,7 @@ function ceildivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTy
 end
 
 """
-ceildivui
+`ceildivui`
 
 Unsigned integer division. Rounds towards positive infinity. Treats the
 leading bit as the most significant, i.e. for `i16` given two\'s complement
@@ -254,7 +254,7 @@ function ceildivui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTy
 end
 
 """
-cmpf
+`cmpf`
 
 The `cmpf` operation compares its two operands according to the float
 comparison rules and the predicate specified by the respective attribute.
@@ -297,7 +297,7 @@ function cmpf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-cmpi
+`cmpi`
 
 The `cmpi` operation is a generic comparison for integer-like types. Its two
 arguments can be integers, vectors or tensors thereof as long as their types
@@ -378,7 +378,7 @@ function cmpi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-constant
+`constant`
 
 The `constant` operation produces an SSA value equal to some integer or
 floating-point constant specified by an attribute. This is the way MLIR
@@ -411,7 +411,7 @@ function constant(; result=nothing::Union{Nothing, MLIRType}, value::Union{Attri
 end
 
 """
-divf
+`divf`
 
 """
 function divf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -432,7 +432,7 @@ function divf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-divsi
+`divsi`
 
 Signed integer division. Rounds towards zero. Treats the leading bit as
 sign, i.e. `6 / -2 = -3`.
@@ -470,7 +470,7 @@ function divsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-divui
+`divui`
 
 Unsigned integer division. Rounds towards zero. Treats the leading bit as
 the most significant, i.e. for `i16` given two\'s complement representation,
@@ -509,7 +509,7 @@ function divui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-extf
+`extf`
 
 Cast a floating-point value to a larger floating-point-typed value.
 The destination type must to be strictly wider than the source type.
@@ -531,7 +531,7 @@ function extf(in::Value; out::MLIRType, location=Location())
 end
 
 """
-extsi
+`extsi`
 
 The integer sign extension operation takes an integer input of
 width M and an integer destination type of width N. The destination
@@ -566,7 +566,7 @@ function extsi(in::Value; out::MLIRType, location=Location())
 end
 
 """
-extui
+`extui`
 
 The integer zero extension operation takes an integer input of
 width M and an integer destination type of width N. The destination
@@ -600,7 +600,7 @@ function extui(in::Value; out::MLIRType, location=Location())
 end
 
 """
-fptosi
+`fptosi`
 
 Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) signed integer value. When operating on vectors, casts
@@ -622,7 +622,7 @@ function fptosi(in::Value; out::MLIRType, location=Location())
 end
 
 """
-fptoui
+`fptoui`
 
 Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) unsigned integer value. When operating on vectors, casts
@@ -644,7 +644,7 @@ function fptoui(in::Value; out::MLIRType, location=Location())
 end
 
 """
-floordivsi
+`floordivsi`
 
 Signed integer division. Rounds towards negative infinity, i.e. `5 / -2 = -3`.
 
@@ -676,7 +676,7 @@ function floordivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRT
 end
 
 """
-index_cast
+`index_cast`
 
 Casts between scalar or vector integers and corresponding \'index\' scalar or
 vectors. Index is an integer of platform-specific bit width. If casting to
@@ -699,7 +699,7 @@ function index_cast(in::Value; out::MLIRType, location=Location())
 end
 
 """
-index_castui
+`index_castui`
 
 Casts between scalar or vector integers and corresponding \'index\' scalar or
 vectors. Index is an integer of platform-specific bit width. If casting to
@@ -722,7 +722,7 @@ function index_castui(in::Value; out::MLIRType, location=Location())
 end
 
 """
-maxf
+`maxf`
 
 # Syntax
 
@@ -758,7 +758,7 @@ function maxf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-maxsi
+`maxsi`
 
 """
 function maxsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -778,7 +778,7 @@ function maxsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-maxui
+`maxui`
 
 """
 function maxui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -798,7 +798,7 @@ function maxui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-minf
+`minf`
 
 # Syntax
 
@@ -834,7 +834,7 @@ function minf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-minsi
+`minsi`
 
 """
 function minsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -854,7 +854,7 @@ function minsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-minui
+`minui`
 
 """
 function minui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -874,7 +874,7 @@ function minui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-mulf
+`mulf`
 
 The `mulf` operation takes two operands and returns one result, each of
 these is required to be the same type. This type may be a floating point
@@ -915,7 +915,7 @@ function mulf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-muli
+`muli`
 
 """
 function muli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -935,7 +935,7 @@ function muli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-mulsi_extended
+`mulsi_extended`
 
 Performs (2*N)-bit multiplication on sign-extended operands. Returns two
 N-bit results: the low and the high halves of the product. The low half has
@@ -973,7 +973,7 @@ function mulsi_extended(lhs::Value, rhs::Value; low=nothing::Union{Nothing, MLIR
 end
 
 """
-mului_extended
+`mului_extended`
 
 Performs (2*N)-bit multiplication on zero-extended operands. Returns two
 N-bit results: the low and the high halves of the product. The low half has
@@ -1011,7 +1011,7 @@ function mului_extended(lhs::Value, rhs::Value; low=nothing::Union{Nothing, MLIR
 end
 
 """
-negf
+`negf`
 
 The `negf` operation computes the negation of a given value. It takes one
 operand and returns one result of the same type. This type may be a float
@@ -1049,7 +1049,7 @@ function negf(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath
 end
 
 """
-ori
+`ori`
 
 The `ori` operation takes two operands and returns one result, each of these
 is required to be the same type. This type may be an integer scalar type, a
@@ -1086,7 +1086,7 @@ function ori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-remf
+`remf`
 
 """
 function remf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -1107,7 +1107,7 @@ function remf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-remsi
+`remsi`
 
 Signed integer division remainder. Treats the leading bit as sign, i.e. `6 %
 -2 = 0`.
@@ -1145,7 +1145,7 @@ function remsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-remui
+`remui`
 
 Unsigned integer division remainder. Treats the leading bit as the most
 significant, i.e. for `i16`, `6 % -2 = 6 % (2^16 - 2) = 6`.
@@ -1183,7 +1183,7 @@ function remui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-sitofp
+`sitofp`
 
 Cast from a value interpreted as a signed integer to the corresponding
 floating-point value. If the value cannot be exactly represented, it is
@@ -1206,7 +1206,7 @@ function sitofp(in::Value; out::MLIRType, location=Location())
 end
 
 """
-shli
+`shli`
 
 The `shli` operation shifts an integer value to the left by a variable
 amount. The low order bits are filled with zeros.
@@ -1236,7 +1236,7 @@ function shli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-shrsi
+`shrsi`
 
 The `shrsi` operation shifts an integer value to the right by a variable
 amount. The integer is interpreted as signed. The high order bits in the
@@ -1270,7 +1270,7 @@ function shrsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-shrui
+`shrui`
 
 The `shrui` operation shifts an integer value to the right by a variable
 amount. The integer is interpreted as unsigned. The high order bits are
@@ -1301,7 +1301,7 @@ function shrui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-subf
+`subf`
 
 The `subf` operation takes two operands and returns one result, each of
 these is required to be the same type. This type may be a floating point
@@ -1342,7 +1342,7 @@ function subf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-subi
+`subi`
 
 """
 function subi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1362,7 +1362,7 @@ function subi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-truncf
+`truncf`
 
 Truncate a floating-point value to a smaller floating-point-typed value.
 The destination type must be strictly narrower than the source type.
@@ -1385,7 +1385,7 @@ function truncf(in::Value; out::MLIRType, location=Location())
 end
 
 """
-trunci
+`trunci`
 
 The integer truncation operation takes an integer input of
 width M and an integer destination type of width N. The destination
@@ -1418,7 +1418,7 @@ function trunci(in::Value; out::MLIRType, location=Location())
 end
 
 """
-uitofp
+`uitofp`
 
 Cast from a value interpreted as unsigned integer to the corresponding
 floating-point value. If the value cannot be exactly represented, it is
@@ -1441,7 +1441,7 @@ function uitofp(in::Value; out::MLIRType, location=Location())
 end
 
 """
-xori
+`xori`
 
 The `xori` operation takes two operands and returns one result, each of
 these is required to be the same type. This type may be an integer scalar
@@ -1478,7 +1478,7 @@ function xori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
 end
 
 """
-select
+`select`
 
 The `arith.select` operation chooses one value based on a binary condition
 supplied as its first operand. If the value of the first operand is `1`,
@@ -1523,4 +1523,4 @@ function select(condition::Value, true_value::Value, false_value::Value; result=
     )
 end
 
-end # Arith
+end # arith

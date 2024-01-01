@@ -1,4 +1,4 @@
-module ControlFlow
+module cf
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-assert
+`assert`
 
 Assert operation with single boolean operand and an error message attribute.
 If the argument is `true` this operation has no effect. Otherwise, the
@@ -35,7 +35,7 @@ function assert(arg::Value; msg::Union{Attribute, NamedAttribute}, location=Loca
 end
 
 """
-br
+`br`
 
 The `cf.br` operation represents a direct branch operation to a given
 block. The operands of this operation are forwarded to the successor block,
@@ -67,7 +67,7 @@ function br(destOperands::Vector{Value}; dest::Block, location=Location())
 end
 
 """
-cond_br
+`cond_br`
 
 The `cond_br` terminator operation represents a conditional branch on a
 boolean (1-bit integer) value. If the bit is set, then the first destination
@@ -111,7 +111,7 @@ function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOpe
 end
 
 """
-switch
+`switch`
 
 The `switch` terminator operation represents a switch on a signless integer
 value. If the flag matches one of the specified cases, then the
@@ -146,4 +146,4 @@ function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vecto
     )
 end
 
-end # ControlFlow
+end # cf

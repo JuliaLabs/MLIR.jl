@@ -51,14 +51,9 @@ namespace
   llvm::cl::opt<bool> ExplainMissing(
       "explain-missing",
       llvm::cl::desc("Print the reason for skipping operations from output"));
-
-  // llvm::cl::opt<std::string> StripOpPrefix(
-  //     "strip-prefix", llvm::cl::desc("Prefix to strip from def names"),
-  //     llvm::cl::value_desc("prefix"));
-
-  // llvm::cl::opt<std::string> DialectName(
-  //     "dialect-name", llvm::cl::desc("Override the inferred dialect name"),
-  //     llvm::cl::value_desc("dialect"));
+  llvm::cl::opt<std::string> DialectName(
+    "dialect-name", llvm::cl::desc("Override the inferred dialect name, used as the name for the generated Julia module."),
+    llvm::cl::value_desc("dialect"));
 
   using namespace mlir;
   using namespace mlir::tblgen;
@@ -122,6 +117,22 @@ namespace
     return description;
   }
 
+  std::string getDialectName(llvm::ArrayRef<llvm::Record*> op_defs) {
+    mlir::tblgen::Operator any_op(op_defs.front());
+    assert(
+        std::all_of(op_defs.begin(), op_defs.end(), [&any_op](llvm::Record* op) {
+          return mlir::tblgen::Operator(op).getDialectName() ==
+                any_op.getDialectName();
+        }));
+    std::string dialect_name;
+    if (DialectName.empty()) {
+      dialect_name = any_op.getDialectName().str();
+    } else {
+      dialect_name = DialectName;
+    }
+    return dialect_name;
+  }
+
 } // namespace
 
 bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
@@ -160,6 +171,14 @@ end
 
   std::string modulecontents = "";
 
+  std::string modulename;
+  if (!DialectName.empty())
+  {
+    modulename = DialectName;
+  } else {
+    modulename = getDialectName(opdefs);
+  }
+
   for (const auto *def : opdefs)
   {
     mlir::tblgen::Operator op(*def);
@@ -171,7 +190,7 @@ end
     auto opname = op.getOperationName();
     auto functionname = opname.substr(op.getDialectName().str().length() + 1); // get rid of "dialect." prefix.
     // check if functionname colides with Julia keywords (for, return, if, continue, break, ...):
-    std::vector<std::string> reservedKeywords = {"for", "return", "if", "continue", "break", "module", "global"};
+    std::vector<std::string> reservedKeywords = {modulename, "for", "return", "if", "continue", "break", "module", "global"};
     if (std::find(reservedKeywords.begin(), reservedKeywords.end(), functionname) != reservedKeywords.end())
     {
       functionname = functionname + "_";
@@ -185,7 +204,7 @@ end
     std::string description = "";
     if (op.hasDescription())
     {
-      description = "\"\"\"\n"+functionname+"\n"+formatDescription(op)+"\n\"\"\"";
+      description = "\"\"\"\n`"+functionname+"`\n"+formatDescription(op)+"\n\"\"\"";
     }
     bool inferrable = canInferType(op);
 
@@ -374,20 +393,6 @@ end
     std::string functionbody = llvm::formatv(functionbodytemplate, resultcontainer, operandcontainer, regioncontainer, successorcontainer, attributecontainer, optionals, opname, resultsexpression, resultinference);
 
     modulecontents += llvm::formatv(functiontemplate, functionname, arguments, functionbody, description);
-  }
-
-  std::vector<llvm::Record *> dialects = recordKeeper.getAllDerivedDefinitionsIfDefined("Dialect");
-  llvm::StringRef modulename;
-  if (dialects.empty())
-  {
-    modulename = "Builtin";
-  }
-  else
-  {
-    modulename = dialects[0]->getName();
-    modulename = modulename.ends_with_insensitive("dialect") ? modulename.drop_back(7) : modulename;
-    modulename = modulename.ends_with_insensitive("_") ? modulename.drop_back(1) : modulename;
-    modulename.str()[0] = std::toupper(modulename.str()[0]);
   }
 
   os << llvm::formatv(moduleTemplate, modulename, modulecontents);

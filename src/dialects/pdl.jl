@@ -1,4 +1,4 @@
-module PDL
+module pdl
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-apply_native_constraint
+`apply_native_constraint`
 
 `pdl.apply_native_constraint` operations apply a native C++ constraint, that
 has been registered externally with the consumer of PDL, to a given set of
@@ -35,7 +35,7 @@ function apply_native_constraint(args::Vector{Value}; name::Union{Attribute, Nam
 end
 
 """
-apply_native_rewrite
+`apply_native_rewrite`
 
 `pdl.apply_native_rewrite` operations apply a native C++ function, that has
 been registered externally with the consumer of PDL, to perform a rewrite
@@ -78,7 +78,7 @@ function apply_native_rewrite(args::Vector{Value}; results::Vector{MLIRType}, na
 end
 
 """
-attribute
+`attribute`
 
 `pdl.attribute` operations capture named attribute edges into an operation.
 Instances of this operation define, and partially constrain, attributes of a
@@ -120,7 +120,7 @@ function attribute(valueType=nothing::Union{Nothing, Value}; attr::MLIRType, val
 end
 
 """
-erase
+`erase`
 
 `pdl.erase` operations are used within `pdl.rewrite` regions to specify that
 an input operation should be marked as erased. The semantics of this
@@ -148,7 +148,7 @@ function erase(opValue::Value; location=Location())
 end
 
 """
-operand
+`operand`
 
 `pdl.operand` operations capture external operand edges into an operation
 node that originate from operations or block arguments not otherwise
@@ -185,7 +185,7 @@ function operand(valueType=nothing::Union{Nothing, Value}; value::MLIRType, loca
 end
 
 """
-operands
+`operands`
 
 `pdl.operands` operations capture external operand range edges into an
 operation node that originate from operations or block arguments not
@@ -222,7 +222,7 @@ function operands(valueType=nothing::Union{Nothing, Value}; value::MLIRType, loc
 end
 
 """
-operation
+`operation`
 
 `pdl.operation` operations define operation nodes within a pattern. Within
 a match sequence, i.e. when directly nested within a `pdl.pattern`, these
@@ -336,7 +336,7 @@ function operation(operandValues::Vector{Value}, attributeValues::Vector{Value},
 end
 
 """
-pattern
+`pattern`
 
 `pdl.pattern` operations provide a transformable representation for a
 `RewritePattern`. The attributes on this operation correspond to the various
@@ -376,7 +376,7 @@ function pattern(; benefit::Union{Attribute, NamedAttribute}, sym_name=nothing::
 end
 
 """
-range
+`range`
 
 `pdl.range` operations construct a range from a given set of PDL entities,
 which all share the same underlying element type. For example, a
@@ -418,7 +418,7 @@ function range(arguments::Vector{Value}; result::MLIRType, location=Location())
 end
 
 """
-replace
+`replace`
 
 `pdl.replace` operations are used within `pdl.rewrite` regions to specify
 that an input operation should be marked as replaced. The semantics of this
@@ -460,7 +460,7 @@ function replace(opValue::Value, replOperation=nothing::Union{Nothing, Value}, r
 end
 
 """
-result
+`result`
 
 `pdl.result` operations extract result edges from an operation node within
 a pattern or rewrite region. The provided index is zero-based, and
@@ -497,7 +497,7 @@ function result(parent::Value; val::MLIRType, index::Union{Attribute, NamedAttri
 end
 
 """
-results
+`results`
 
 `pdl.results` operations extract a result group from an operation within a
 pattern or rewrite region. If an index is provided, this operation extracts
@@ -542,7 +542,7 @@ function results(parent::Value; val::MLIRType, index=nothing::Union{Nothing, Uni
 end
 
 """
-rewrite
+`rewrite`
 
 `pdl.rewrite` operations terminate the region of a `pdl.pattern` and specify
 the main rewrite of a `pdl.pattern`, on the optional root operation. The
@@ -599,7 +599,7 @@ function rewrite(root=nothing::Union{Nothing, Value}, externalArgs::Vector{Value
 end
 
 """
-type
+`type`
 
 `pdl.type` operations capture result type constraints of `Attributes`,
 `Values`, and `Operations`. Instances of this operation define, and
@@ -633,7 +633,7 @@ function type(; result::MLIRType, constantType=nothing::Union{Nothing, Union{Att
 end
 
 """
-types
+`types`
 
 `pdl.types` operations capture result type constraints of `Value`s, and
 `Operation`s. Instances of this operation define results types of a given
@@ -666,4 +666,4 @@ function types(; result::MLIRType, constantTypes=nothing::Union{Nothing, Union{A
     )
 end
 
-end # PDL
+end # pdl

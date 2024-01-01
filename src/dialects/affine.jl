@@ -1,4 +1,4 @@
-module Affine
+module affine
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-apply
+`apply`
 
 The `affine.apply` operation applies an [affine mapping](#affine-maps)
 to a list of SSA values, yielding a single SSA value. The number of
@@ -43,7 +43,7 @@ function apply(mapOperands::Vector{Value}; result_0::MLIRType, map::Union{Attrib
 end
 
 """
-delinearize_index
+`delinearize_index`
 
 The `affine.delinearize_index` operation takes a single index value and
 calculates the multi-index according to the given basis.
@@ -81,7 +81,7 @@ function delinearize_index(linear_index::Value, basis::Vector{Value}; multi_inde
 end
 
 """
-for_
+`for_`
 
 # Syntax
 
@@ -203,7 +203,7 @@ function for_(operand_0::Vector{Value}; results::Vector{MLIRType}, region::Regio
 end
 
 """
-if_
+`if_`
 
 # Syntax
 
@@ -288,7 +288,7 @@ function if_(operand_0::Vector{Value}; results::Vector{MLIRType}, thenRegion::Re
 end
 
 """
-load
+`load`
 
 # Syntax
 
@@ -331,7 +331,7 @@ function load(memref::Value, indices::Vector{Value}; result::MLIRType, location=
 end
 
 """
-max
+`max`
 
 The `affine.max` operation computes the maximum value result from a multi-result
 affine map.
@@ -358,7 +358,7 @@ function max(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, 
 end
 
 """
-min
+`min`
 
 # Syntax
 
@@ -395,7 +395,7 @@ function min(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, 
 end
 
 """
-parallel
+`parallel`
 
 The `affine.parallel` operation represents a hyper-rectangular affine
 parallel band, defining zero or more SSA values for its induction variables.
@@ -475,7 +475,7 @@ function parallel(mapOperands::Vector{Value}; results::Vector{MLIRType}, reducti
 end
 
 """
-prefetch
+`prefetch`
 
 The `affine.prefetch` op prefetches data from a memref location described
 with an affine subscript similar to affine.load, and has three attributes:
@@ -508,7 +508,7 @@ function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribut
 end
 
 """
-store
+`store`
 
 # Syntax
 
@@ -551,7 +551,7 @@ function store(value::Value, memref::Value, indices::Vector{Value}; location=Loc
 end
 
 """
-vector_load
+`vector_load`
 
 The `affine.vector_load` is the vector counterpart of
 [affine.load](#affineload-mliraffineloadop). It reads a slice from a
@@ -605,7 +605,7 @@ function vector_load(memref::Value, indices::Vector{Value}; result::MLIRType, lo
 end
 
 """
-vector_store
+`vector_store`
 
 The `affine.vector_store` is the vector counterpart of
 [affine.store](#affinestore-mliraffinestoreop). It writes a
@@ -661,7 +661,7 @@ function vector_store(value::Value, memref::Value, indices::Vector{Value}; locat
 end
 
 """
-yield
+`yield`
 
 The `affine.yield` yields zero or more SSA values from an affine op region and
 terminates the region. The semantics of how the values yielded are used
@@ -688,4 +688,4 @@ function yield(operands::Vector{Value}; location=Location())
     )
 end
 
-end # Affine
+end # affine

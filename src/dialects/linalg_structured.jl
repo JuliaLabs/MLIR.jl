@@ -1,4 +1,4 @@
-module Linalg
+module linalg
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-abs
+`abs`
 
 No numeric casting is performed on the input operand.
 """
@@ -27,7 +27,7 @@ function abs(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-add
+`add`
 
 The shapes and element types must be identical. The appropriate casts,
 broadcasts and reductions should be done previously to calling this op.
@@ -54,7 +54,7 @@ function add(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-batch_matmul
+`batch_matmul`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -76,7 +76,7 @@ function batch_matmul(inputs::Vector{Value}, outputs::Vector{Value}; result_tens
 end
 
 """
-batch_matmul_transpose_a
+`batch_matmul_transpose_a`
 
 has its non-batch dimensions transposed.
 
@@ -100,7 +100,7 @@ function batch_matmul_transpose_a(inputs::Vector{Value}, outputs::Vector{Value};
 end
 
 """
-batch_matmul_transpose_b
+`batch_matmul_transpose_b`
 
 has its non-batch dimensions transposed.
 
@@ -124,7 +124,7 @@ function batch_matmul_transpose_b(inputs::Vector{Value}, outputs::Vector{Value};
 end
 
 """
-batch_matvec
+`batch_matvec`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -146,7 +146,7 @@ function batch_matvec(inputs::Vector{Value}, outputs::Vector{Value}; result_tens
 end
 
 """
-batch_reduce_matmul
+`batch_reduce_matmul`
 
 The partial multiplication results are reduced into a 2D output.
 
@@ -170,7 +170,7 @@ function batch_reduce_matmul(inputs::Vector{Value}, outputs::Vector{Value}; resu
 end
 
 """
-broadcast
+`broadcast`
 
 Broadcast the input into the given shape by adding `dimensions`.
 
@@ -198,7 +198,7 @@ function broadcast(input::Value, init::Value; result::Vector{MLIRType}, dimensio
 end
 
 """
-ceil
+`ceil`
 
 No numeric casting is performed on the input operand.
 """
@@ -219,7 +219,7 @@ function ceil(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vec
 end
 
 """
-conv_1d_ncw_fcw
+`conv_1d_ncw_fcw`
 
 Layout:
   * Input: NCW.
@@ -247,7 +247,7 @@ function conv_1d_ncw_fcw(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-conv_1d_nwc_wcf
+`conv_1d_nwc_wcf`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -271,7 +271,7 @@ function conv_1d_nwc_wcf(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-conv_1d
+`conv_1d`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -293,7 +293,7 @@ function conv_1d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
 end
 
 """
-conv_2d_nchw_fchw
+`conv_2d_nchw_fchw`
 
 Layout:
   * Input: NCHW.
@@ -321,7 +321,7 @@ function conv_2d_nchw_fchw(inputs::Vector{Value}, outputs::Vector{Value}; result
 end
 
 """
-conv_2d_ngchw_fgchw
+`conv_2d_ngchw_fgchw`
 
 Layout:
   * Input: NGCHW.
@@ -349,7 +349,7 @@ function conv_2d_ngchw_fgchw(inputs::Vector{Value}, outputs::Vector{Value}; resu
 end
 
 """
-conv_2d_nhwc_fhwc
+`conv_2d_nhwc_fhwc`
 
 Layout:
   * Input: NHWC.
@@ -377,7 +377,7 @@ function conv_2d_nhwc_fhwc(inputs::Vector{Value}, outputs::Vector{Value}; result
 end
 
 """
-conv_2d_nhwc_hwcf
+`conv_2d_nhwc_hwcf`
 
 Layout:
   * Input: NHWC.
@@ -405,7 +405,7 @@ function conv_2d_nhwc_hwcf(inputs::Vector{Value}, outputs::Vector{Value}; result
 end
 
 """
-conv_2d_nhwc_hwcf_q
+`conv_2d_nhwc_hwcf_q`
 
 Layout:
   * Input: NHWC.
@@ -434,7 +434,7 @@ function conv_2d_nhwc_hwcf_q(inputs::Vector{Value}, outputs::Vector{Value}; resu
 end
 
 """
-conv_2d
+`conv_2d`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -456,7 +456,7 @@ function conv_2d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
 end
 
 """
-conv_3d_ncdhw_fcdhw
+`conv_3d_ncdhw_fcdhw`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -480,7 +480,7 @@ function conv_3d_ncdhw_fcdhw(inputs::Vector{Value}, outputs::Vector{Value}; resu
 end
 
 """
-conv_3d_ndhwc_dhwcf
+`conv_3d_ndhwc_dhwcf`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -504,7 +504,7 @@ function conv_3d_ndhwc_dhwcf(inputs::Vector{Value}, outputs::Vector{Value}; resu
 end
 
 """
-conv_3d_ndhwc_dhwcf_q
+`conv_3d_ndhwc_dhwcf_q`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. This includes the zero
@@ -529,7 +529,7 @@ function conv_3d_ndhwc_dhwcf_q(inputs::Vector{Value}, outputs::Vector{Value}; re
 end
 
 """
-conv_3d
+`conv_3d`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -551,7 +551,7 @@ function conv_3d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
 end
 
 """
-copy
+`copy`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -574,7 +574,7 @@ function copy(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vec
 end
 
 """
-depthwise_conv_1d_ncw_cw
+`depthwise_conv_1d_ncw_cw`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. Multiplier is set to 1
@@ -599,7 +599,7 @@ function depthwise_conv_1d_ncw_cw(inputs::Vector{Value}, outputs::Vector{Value};
 end
 
 """
-depthwise_conv_1d_nwc_wc
+`depthwise_conv_1d_nwc_wc`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. Multiplier is set to 1
@@ -624,7 +624,7 @@ function depthwise_conv_1d_nwc_wc(inputs::Vector{Value}, outputs::Vector{Value};
 end
 
 """
-depthwise_conv_1d_nwc_wcm
+`depthwise_conv_1d_nwc_wcm`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -648,7 +648,7 @@ function depthwise_conv_1d_nwc_wcm(inputs::Vector{Value}, outputs::Vector{Value}
 end
 
 """
-depthwise_conv_2d_nchw_chw
+`depthwise_conv_2d_nchw_chw`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. Multiplier is set to 1
@@ -673,7 +673,7 @@ function depthwise_conv_2d_nchw_chw(inputs::Vector{Value}, outputs::Vector{Value
 end
 
 """
-depthwise_conv_2d_nhwc_hwc
+`depthwise_conv_2d_nhwc_hwc`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. Multiplier is set to 1
@@ -698,7 +698,7 @@ function depthwise_conv_2d_nhwc_hwc(inputs::Vector{Value}, outputs::Vector{Value
 end
 
 """
-depthwise_conv_2d_nhwc_hwc_q
+`depthwise_conv_2d_nhwc_hwc_q`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -722,7 +722,7 @@ function depthwise_conv_2d_nhwc_hwc_q(inputs::Vector{Value}, outputs::Vector{Val
 end
 
 """
-depthwise_conv_2d_nhwc_hwcm
+`depthwise_conv_2d_nhwc_hwcm`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -746,7 +746,7 @@ function depthwise_conv_2d_nhwc_hwcm(inputs::Vector{Value}, outputs::Vector{Valu
 end
 
 """
-depthwise_conv_2d_nhwc_hwcm_q
+`depthwise_conv_2d_nhwc_hwcm_q`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -770,7 +770,7 @@ function depthwise_conv_2d_nhwc_hwcm_q(inputs::Vector{Value}, outputs::Vector{Va
 end
 
 """
-depthwise_conv_3d_ncdhw_cdhw
+`depthwise_conv_3d_ncdhw_cdhw`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. Multiplier is set to 1
@@ -795,7 +795,7 @@ function depthwise_conv_3d_ncdhw_cdhw(inputs::Vector{Value}, outputs::Vector{Val
 end
 
 """
-depthwise_conv_3d_ndhwc_dhwc
+`depthwise_conv_3d_ndhwc_dhwc`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. Multiplier is set to 1
@@ -820,7 +820,7 @@ function depthwise_conv_3d_ndhwc_dhwc(inputs::Vector{Value}, outputs::Vector{Val
 end
 
 """
-depthwise_conv_3d_ndhwc_dhwcm
+`depthwise_conv_3d_ndhwc_dhwcm`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -844,7 +844,7 @@ function depthwise_conv_3d_ndhwc_dhwcm(inputs::Vector{Value}, outputs::Vector{Va
 end
 
 """
-div
+`div`
 
 types, performs a signed division.
 
@@ -873,7 +873,7 @@ function div(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-div_unsigned
+`div_unsigned`
 
 types, performs an unsigned division.
 
@@ -902,7 +902,7 @@ function div_unsigned(inputs::Vector{Value}, outputs::Vector{Value}; result_tens
 end
 
 """
-dot
+`dot`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -924,7 +924,7 @@ function dot(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-elemwise_binary
+`elemwise_binary`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -948,7 +948,7 @@ function elemwise_binary(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-elemwise_unary
+`elemwise_unary`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -972,7 +972,7 @@ function elemwise_unary(inputs::Vector{Value}, outputs::Vector{Value}; result_te
 end
 
 """
-exp
+`exp`
 
 No numeric casting is performed on the input operand.
 """
@@ -993,7 +993,7 @@ function exp(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-fill
+`fill`
 
 Works for arbitrary ranked output tensors since the operation performs scalar
 accesses only and is thus rank polymorphic. Numeric casting is performed on
@@ -1016,7 +1016,7 @@ function fill(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vec
 end
 
 """
-fill_rng_2d
+`fill_rng_2d`
 
 The operation generations pseudo random numbers using a linear congruential
 generator. It provides no guarantees regarding the distribution of the
@@ -1043,7 +1043,7 @@ function fill_rng_2d(inputs::Vector{Value}, outputs::Vector{Value}; result_tenso
 end
 
 """
-floor
+`floor`
 
 No numeric casting is performed on the input operand.
 """
@@ -1064,7 +1064,7 @@ function floor(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Ve
 end
 
 """
-generic
+`generic`
 
 Generic Linalg op form where the key properties of the computation are
 specified as attributes. In pretty form, a `linalg.generic` op is written
@@ -1181,7 +1181,7 @@ function generic(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
 end
 
 """
-log
+`log`
 
 No numeric casting is performed on the input operand.
 """
@@ -1202,7 +1202,7 @@ function log(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-map
+`map`
 
 Models elementwise operations on tensors in terms of arithmetic operations
 on the corresponding elements.
@@ -1244,7 +1244,7 @@ function map(inputs::Vector{Value}, init::Value; result::Vector{MLIRType}, mappe
 end
 
 """
-matmul
+`matmul`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -1267,7 +1267,7 @@ function matmul(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::V
 end
 
 """
-matmul_transpose_a
+`matmul_transpose_a`
 
 transposed.
 
@@ -1292,7 +1292,7 @@ function matmul_transpose_a(inputs::Vector{Value}, outputs::Vector{Value}; resul
 end
 
 """
-matmul_transpose_b
+`matmul_transpose_b`
 
 transposed.
 
@@ -1317,7 +1317,7 @@ function matmul_transpose_b(inputs::Vector{Value}, outputs::Vector{Value}; resul
 end
 
 """
-matmul_unsigned
+`matmul_unsigned`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -1339,7 +1339,7 @@ function matmul_unsigned(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-matvec
+`matvec`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -1361,7 +1361,7 @@ function matvec(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::V
 end
 
 """
-max
+`max`
 
 The shapes and element types must be identical. The appropriate casts,
 broadcasts and reductions should be done previously to calling this op.
@@ -1388,7 +1388,7 @@ function max(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-mmt4d
+`mmt4d`
 
 Differences from linalg.matmul:
 * The right hand side is transposed, whence the \'t\' in \'mmt\'.
@@ -1415,7 +1415,7 @@ function mmt4d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Ve
 end
 
 """
-mul
+`mul`
 
 The shapes and element types must be identical. The appropriate casts,
 broadcasts and reductions should be done previously to calling this op.
@@ -1442,7 +1442,7 @@ function mul(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-negf
+`negf`
 
 No numeric casting is performed on the input operand.
 """
@@ -1463,7 +1463,7 @@ function negf(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vec
 end
 
 """
-pooling_nchw_max
+`pooling_nchw_max`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1487,7 +1487,7 @@ function pooling_nchw_max(inputs::Vector{Value}, outputs::Vector{Value}; result_
 end
 
 """
-pooling_nchw_sum
+`pooling_nchw_sum`
 
 Layout:
   * Input: NCHW.
@@ -1515,7 +1515,7 @@ function pooling_nchw_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_
 end
 
 """
-pooling_ncw_max
+`pooling_ncw_max`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1539,7 +1539,7 @@ function pooling_ncw_max(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-pooling_ncw_sum
+`pooling_ncw_sum`
 
 Layout:
   * Input: NCW.
@@ -1567,7 +1567,7 @@ function pooling_ncw_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-pooling_ndhwc_max
+`pooling_ndhwc_max`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1591,7 +1591,7 @@ function pooling_ndhwc_max(inputs::Vector{Value}, outputs::Vector{Value}; result
 end
 
 """
-pooling_ndhwc_min
+`pooling_ndhwc_min`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1615,7 +1615,7 @@ function pooling_ndhwc_min(inputs::Vector{Value}, outputs::Vector{Value}; result
 end
 
 """
-pooling_ndhwc_sum
+`pooling_ndhwc_sum`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1639,7 +1639,7 @@ function pooling_ndhwc_sum(inputs::Vector{Value}, outputs::Vector{Value}; result
 end
 
 """
-pooling_nhwc_max
+`pooling_nhwc_max`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1663,7 +1663,7 @@ function pooling_nhwc_max(inputs::Vector{Value}, outputs::Vector{Value}; result_
 end
 
 """
-pooling_nhwc_max_unsigned
+`pooling_nhwc_max_unsigned`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1687,7 +1687,7 @@ function pooling_nhwc_max_unsigned(inputs::Vector{Value}, outputs::Vector{Value}
 end
 
 """
-pooling_nhwc_min
+`pooling_nhwc_min`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1711,7 +1711,7 @@ function pooling_nhwc_min(inputs::Vector{Value}, outputs::Vector{Value}; result_
 end
 
 """
-pooling_nhwc_min_unsigned
+`pooling_nhwc_min_unsigned`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1735,7 +1735,7 @@ function pooling_nhwc_min_unsigned(inputs::Vector{Value}, outputs::Vector{Value}
 end
 
 """
-pooling_nhwc_sum
+`pooling_nhwc_sum`
 
 Layout:
   * Input: NHWC.
@@ -1763,7 +1763,7 @@ function pooling_nhwc_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_
 end
 
 """
-pooling_nwc_max
+`pooling_nwc_max`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1787,7 +1787,7 @@ function pooling_nwc_max(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-pooling_nwc_max_unsigned
+`pooling_nwc_max_unsigned`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1811,7 +1811,7 @@ function pooling_nwc_max_unsigned(inputs::Vector{Value}, outputs::Vector{Value};
 end
 
 """
-pooling_nwc_min
+`pooling_nwc_min`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1835,7 +1835,7 @@ function pooling_nwc_min(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-pooling_nwc_min_unsigned
+`pooling_nwc_min_unsigned`
 
 Numeric casting is performed on the input operand, promoting it to the same
 data type as the accumulator/output.
@@ -1859,7 +1859,7 @@ function pooling_nwc_min_unsigned(inputs::Vector{Value}, outputs::Vector{Value};
 end
 
 """
-pooling_nwc_sum
+`pooling_nwc_sum`
 
 Layout:
   * Input: NWC.
@@ -1887,7 +1887,7 @@ function pooling_nwc_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_t
 end
 
 """
-quantized_batch_matmul
+`quantized_batch_matmul`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. The quantized variant
@@ -1911,7 +1911,7 @@ function quantized_batch_matmul(inputs::Vector{Value}, outputs::Vector{Value}; r
 end
 
 """
-quantized_matmul
+`quantized_matmul`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output. The quantized variant
@@ -1935,7 +1935,7 @@ function quantized_matmul(inputs::Vector{Value}, outputs::Vector{Value}; result_
 end
 
 """
-reduce
+`reduce`
 
 Executes `combiner` on the `dimensions` of `inputs` and returns the
 reduced result. The `dimensions` attribute needs to list the reduction
@@ -1981,7 +1981,7 @@ function reduce(inputs::Vector{Value}, inits::Vector{Value}; result_0::Vector{ML
 end
 
 """
-sub
+`sub`
 
 The shapes and element types must be identical. The appropriate casts,
 broadcasts and reductions should be done previously to calling this op.
@@ -2008,7 +2008,7 @@ function sub(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
 end
 
 """
-transpose
+`transpose`
 
 Permutes the dimensions of `input` according to the given `permutation`.
   `dim(result, i) = dim(input, permutation[i])`
@@ -2040,7 +2040,7 @@ function transpose(input::Value, init::Value; result::Vector{MLIRType}, permutat
 end
 
 """
-vecmat
+`vecmat`
 
 Numeric casting is performed on the operands to the inner multiply, promoting
 them to the same data type as the accumulator/output.
@@ -2061,4 +2061,4 @@ function vecmat(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::V
     )
 end
 
-end # Linalg
+end # linalg

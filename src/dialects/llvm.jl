@@ -1,4 +1,4 @@
-module LLVM
+module llvm
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-ashr
+`ashr`
 
 """
 function ashr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -26,7 +26,7 @@ function ashr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-add
+`add`
 
 """
 function add(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -46,7 +46,7 @@ function add(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
 end
 
 """
-addrspacecast
+`addrspacecast`
 
 """
 function addrspacecast(arg::Value; res::MLIRType, location=Location())
@@ -65,7 +65,7 @@ function addrspacecast(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-mlir_addressof
+`mlir_addressof`
 
 Creates an SSA value containing a pointer to a global variable or constant
 defined by `llvm.mlir.global`. The global value can be defined after its
@@ -109,7 +109,7 @@ function mlir_addressof(; res::MLIRType, global_name::Union{Attribute, NamedAttr
 end
 
 """
-alloca
+`alloca`
 
 """
 function alloca(arraySize::Value; res::MLIRType, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, elem_type=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, inalloca=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -131,7 +131,7 @@ function alloca(arraySize::Value; res::MLIRType, alignment=nothing::Union{Nothin
 end
 
 """
-and
+`and`
 
 """
 function and(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -151,7 +151,7 @@ function and(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
 end
 
 """
-cmpxchg
+`cmpxchg`
 
 """
 function cmpxchg(ptr::Value, cmp::Value, val::Value; res=nothing::Union{Nothing, MLIRType}, success_ordering::Union{Attribute, NamedAttribute}, failure_ordering::Union{Attribute, NamedAttribute}, syncscope=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, weak=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, volatile_=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, access_groups=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alias_scopes=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, noalias_scopes=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, tbaa=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -179,7 +179,7 @@ function cmpxchg(ptr::Value, cmp::Value, val::Value; res=nothing::Union{Nothing,
 end
 
 """
-atomicrmw
+`atomicrmw`
 
 """
 function atomicrmw(ptr::Value, val::Value; res=nothing::Union{Nothing, MLIRType}, bin_op::Union{Attribute, NamedAttribute}, ordering::Union{Attribute, NamedAttribute}, syncscope=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, volatile_=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, access_groups=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alias_scopes=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, noalias_scopes=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, tbaa=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -206,7 +206,7 @@ function atomicrmw(ptr::Value, val::Value; res=nothing::Union{Nothing, MLIRType}
 end
 
 """
-bitcast
+`bitcast`
 
 """
 function bitcast(arg::Value; res::MLIRType, location=Location())
@@ -225,7 +225,7 @@ function bitcast(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-br
+`br`
 
 """
 function br(destOperands::Vector{Value}; loop_annotation=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, dest::Block, location=Location())
@@ -245,7 +245,7 @@ function br(destOperands::Vector{Value}; loop_annotation=nothing::Union{Nothing,
 end
 
 """
-call
+`call`
 
 In LLVM IR, functions may return either 0 or 1 value. LLVM IR dialect
 implements this behavior by providing a variadic `call` operation for 0- and
@@ -297,7 +297,7 @@ function call(operand_0::Vector{Value}; result=nothing::Union{Nothing, MLIRType}
 end
 
 """
-comdat
+`comdat`
 
 Provides access to object file COMDAT section/group functionality.
 
@@ -325,7 +325,7 @@ function comdat(; sym_name::Union{Attribute, NamedAttribute}, body::Region, loca
 end
 
 """
-comdat_selector
+`comdat_selector`
 
 Provides access to object file COMDAT section/group functionality.
 
@@ -353,7 +353,7 @@ function comdat_selector(; sym_name::Union{Attribute, NamedAttribute}, comdat::U
 end
 
 """
-cond_br
+`cond_br`
 
 """
 function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; branch_weights=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, loop_annotation=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, trueDest::Block, falseDest::Block, location=Location())
@@ -375,7 +375,7 @@ function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOpe
 end
 
 """
-mlir_constant
+`mlir_constant`
 
 Unlike LLVM IR, MLIR does not have first-class constant values. Therefore,
 all constants must be created as SSA values before being used in other
@@ -420,7 +420,7 @@ function mlir_constant(; res::MLIRType, value::Union{Attribute, NamedAttribute},
 end
 
 """
-extractelement
+`extractelement`
 
 """
 function extractelement(vector::Value, position::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -440,7 +440,7 @@ function extractelement(vector::Value, position::Value; res=nothing::Union{Nothi
 end
 
 """
-extractvalue
+`extractvalue`
 
 """
 function extractvalue(container::Value; res::MLIRType, position::Union{Attribute, NamedAttribute}, location=Location())
@@ -459,7 +459,7 @@ function extractvalue(container::Value; res::MLIRType, position::Union{Attribute
 end
 
 """
-fadd
+`fadd`
 
 """
 function fadd(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -480,7 +480,7 @@ function fadd(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
 end
 
 """
-fcmp
+`fcmp`
 
 """
 function fcmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, predicate::Union{Attribute, NamedAttribute}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -501,7 +501,7 @@ function fcmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, pre
 end
 
 """
-fdiv
+`fdiv`
 
 """
 function fdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -522,7 +522,7 @@ function fdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
 end
 
 """
-fmul
+`fmul`
 
 """
 function fmul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -543,7 +543,7 @@ function fmul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
 end
 
 """
-fneg
+`fneg`
 
 """
 function fneg(operand::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -564,7 +564,7 @@ function fneg(operand::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFla
 end
 
 """
-fpext
+`fpext`
 
 """
 function fpext(arg::Value; res::MLIRType, location=Location())
@@ -583,7 +583,7 @@ function fpext(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-fptosi
+`fptosi`
 
 """
 function fptosi(arg::Value; res::MLIRType, location=Location())
@@ -602,7 +602,7 @@ function fptosi(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-fptoui
+`fptoui`
 
 """
 function fptoui(arg::Value; res::MLIRType, location=Location())
@@ -621,7 +621,7 @@ function fptoui(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-fptrunc
+`fptrunc`
 
 """
 function fptrunc(arg::Value; res::MLIRType, location=Location())
@@ -640,7 +640,7 @@ function fptrunc(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-frem
+`frem`
 
 """
 function frem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -661,7 +661,7 @@ function frem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
 end
 
 """
-fsub
+`fsub`
 
 """
 function fsub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -682,7 +682,7 @@ function fsub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
 end
 
 """
-fence
+`fence`
 
 """
 function fence(; ordering::Union{Attribute, NamedAttribute}, syncscope=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -702,7 +702,7 @@ function fence(; ordering::Union{Attribute, NamedAttribute}, syncscope=nothing::
 end
 
 """
-freeze
+`freeze`
 
 """
 function freeze(val::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -722,7 +722,7 @@ function freeze(val::Value; res=nothing::Union{Nothing, MLIRType}, location=Loca
 end
 
 """
-getelementptr
+`getelementptr`
 
 This operation mirrors LLVM IRs \'getelementptr\' operation that is used to
 perform pointer arithmetic.
@@ -766,7 +766,7 @@ function getelementptr(base::Value, dynamicIndices::Vector{Value}; res::MLIRType
 end
 
 """
-mlir_global_ctors
+`mlir_global_ctors`
 
 Specifies a list of constructor functions and priorities. The functions
 referenced by this array will be called in ascending order of priority (i.e.
@@ -803,7 +803,7 @@ function mlir_global_ctors(; ctors::Union{Attribute, NamedAttribute}, priorities
 end
 
 """
-mlir_global_dtors
+`mlir_global_dtors`
 
 Specifies a list of destructor functions and priorities. The functions
 referenced by this array will be called in descending order of priority (i.e.
@@ -837,7 +837,7 @@ function mlir_global_dtors(; dtors::Union{Attribute, NamedAttribute}, priorities
 end
 
 """
-mlir_global
+`mlir_global`
 
 Since MLIR allows for arbitrary operations to be present at the top level,
 global variables are defined using the `llvm.mlir.global` operation. Both
@@ -959,7 +959,7 @@ function mlir_global(; global_type::Union{Attribute, NamedAttribute}, constant=n
 end
 
 """
-icmp
+`icmp`
 
 """
 function icmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, predicate::Union{Attribute, NamedAttribute}, location=Location())
@@ -979,7 +979,7 @@ function icmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, pre
 end
 
 """
-inline_asm
+`inline_asm`
 
 The InlineAsmOp mirrors the underlying LLVM semantics with a notable
 exception: the embedded `asm_string` is not allowed to define or reference
@@ -1009,7 +1009,7 @@ function inline_asm(operands::Vector{Value}; res=nothing::Union{Nothing, MLIRTyp
 end
 
 """
-insertelement
+`insertelement`
 
 """
 function insertelement(vector::Value, value::Value, position::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1029,7 +1029,7 @@ function insertelement(vector::Value, value::Value, position::Value; res=nothing
 end
 
 """
-insertvalue
+`insertvalue`
 
 """
 function insertvalue(container::Value, value::Value; res=nothing::Union{Nothing, MLIRType}, position::Union{Attribute, NamedAttribute}, location=Location())
@@ -1049,7 +1049,7 @@ function insertvalue(container::Value, value::Value; res=nothing::Union{Nothing,
 end
 
 """
-inttoptr
+`inttoptr`
 
 """
 function inttoptr(arg::Value; res::MLIRType, location=Location())
@@ -1068,7 +1068,7 @@ function inttoptr(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-invoke
+`invoke`
 
 """
 function invoke(callee_operands::Vector{Value}, normalDestOperands::Vector{Value}, unwindDestOperands::Vector{Value}; result_0::Vector{MLIRType}, callee=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, branch_weights=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, normalDest::Block, unwindDest::Block, location=Location())
@@ -1090,7 +1090,7 @@ function invoke(callee_operands::Vector{Value}, normalDestOperands::Vector{Value
 end
 
 """
-func
+`func`
 
 MLIR functions are defined by an operation that is not built into the IR
 itself. The LLVM dialect provides an `llvm.func` operation to define
@@ -1151,7 +1151,7 @@ function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union
 end
 
 """
-lshr
+`lshr`
 
 """
 function lshr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1171,7 +1171,7 @@ function lshr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-landingpad
+`landingpad`
 
 """
 function landingpad(operand_0::Vector{Value}; res::MLIRType, cleanup=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -1191,7 +1191,7 @@ function landingpad(operand_0::Vector{Value}; res::MLIRType, cleanup=nothing::Un
 end
 
 """
-load
+`load`
 
 The `load` operation is used to read from memory. A load may be marked as
 atomic, volatile, and/or nontemporal, and takes a number of optional
@@ -1241,7 +1241,7 @@ function load(addr::Value; res::MLIRType, alignment=nothing::Union{Nothing, Unio
 end
 
 """
-metadata
+`metadata`
 
 llvm.metadata op defines one or more metadata nodes.
 
@@ -1269,7 +1269,7 @@ function metadata(; sym_name::Union{Attribute, NamedAttribute}, body::Region, lo
 end
 
 """
-mul
+`mul`
 
 """
 function mul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1289,7 +1289,7 @@ function mul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
 end
 
 """
-mlir_null
+`mlir_null`
 
 Unlike LLVM IR, MLIR does not have first-class null pointers. They must be
 explicitly created as SSA values using `llvm.mlir.null`. This operation has
@@ -1322,7 +1322,7 @@ function mlir_null(; res::MLIRType, location=Location())
 end
 
 """
-or
+`or`
 
 """
 function or(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1342,7 +1342,7 @@ function or(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, locat
 end
 
 """
-mlir_poison
+`mlir_poison`
 
 Unlike LLVM IR, MLIR does not have first-class poison values. Such values
 must be created as SSA values using `llvm.mlir.poison`. This operation has
@@ -1373,7 +1373,7 @@ function mlir_poison(; res::MLIRType, location=Location())
 end
 
 """
-ptrtoint
+`ptrtoint`
 
 """
 function ptrtoint(arg::Value; res::MLIRType, location=Location())
@@ -1392,7 +1392,7 @@ function ptrtoint(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-resume
+`resume`
 
 """
 function resume(value::Value; location=Location())
@@ -1411,7 +1411,7 @@ function resume(value::Value; location=Location())
 end
 
 """
-return_
+`return_`
 
 """
 function return_(arg=nothing::Union{Nothing, Value}; location=Location())
@@ -1431,7 +1431,7 @@ function return_(arg=nothing::Union{Nothing, Value}; location=Location())
 end
 
 """
-sdiv
+`sdiv`
 
 """
 function sdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1451,7 +1451,7 @@ function sdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-sext
+`sext`
 
 """
 function sext(arg::Value; res::MLIRType, location=Location())
@@ -1470,7 +1470,7 @@ function sext(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-sitofp
+`sitofp`
 
 """
 function sitofp(arg::Value; res::MLIRType, location=Location())
@@ -1489,7 +1489,7 @@ function sitofp(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-srem
+`srem`
 
 """
 function srem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1509,7 +1509,7 @@ function srem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-select
+`select`
 
 """
 function select(condition::Value, trueValue::Value, falseValue::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
@@ -1530,7 +1530,7 @@ function select(condition::Value, trueValue::Value, falseValue::Value; res=nothi
 end
 
 """
-shl
+`shl`
 
 """
 function shl(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1550,7 +1550,7 @@ function shl(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
 end
 
 """
-shufflevector
+`shufflevector`
 
 """
 function shufflevector(v1::Value, v2::Value; res::MLIRType, mask::Union{Attribute, NamedAttribute}, location=Location())
@@ -1569,7 +1569,7 @@ function shufflevector(v1::Value, v2::Value; res::MLIRType, mask::Union{Attribut
 end
 
 """
-store
+`store`
 
 The `store` operation is used to write to memory. A store may be marked as
 atomic, volatile, and/or nontemporal, and takes a number of optional
@@ -1619,7 +1619,7 @@ function store(value::Value, addr::Value; alignment=nothing::Union{Nothing, Unio
 end
 
 """
-sub
+`sub`
 
 """
 function sub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1639,7 +1639,7 @@ function sub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
 end
 
 """
-switch
+`switch`
 
 """
 function switch(value::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, case_operand_segments::Union{Attribute, NamedAttribute}, branch_weights=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
@@ -1661,7 +1661,7 @@ function switch(value::Value, defaultOperands::Vector{Value}, caseOperands::Vect
 end
 
 """
-trunc
+`trunc`
 
 """
 function trunc(arg::Value; res::MLIRType, location=Location())
@@ -1680,7 +1680,7 @@ function trunc(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-udiv
+`udiv`
 
 """
 function udiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1700,7 +1700,7 @@ function udiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-uitofp
+`uitofp`
 
 """
 function uitofp(arg::Value; res::MLIRType, location=Location())
@@ -1719,7 +1719,7 @@ function uitofp(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-urem
+`urem`
 
 """
 function urem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1739,7 +1739,7 @@ function urem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-mlir_undef
+`mlir_undef`
 
 Unlike LLVM IR, MLIR does not have first-class undefined values. Such values
 must be created as SSA values using `llvm.mlir.undef`. This operation has no
@@ -1769,7 +1769,7 @@ function mlir_undef(; res::MLIRType, location=Location())
 end
 
 """
-unreachable
+`unreachable`
 
 """
 function unreachable(; location=Location())
@@ -1788,7 +1788,7 @@ function unreachable(; location=Location())
 end
 
 """
-xor
+`xor`
 
 """
 function xor(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
@@ -1808,7 +1808,7 @@ function xor(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
 end
 
 """
-zext
+`zext`
 
 """
 function zext(arg::Value; res::MLIRType, location=Location())
@@ -1826,4 +1826,4 @@ function zext(arg::Value; res::MLIRType, location=Location())
     )
 end
 
-end # LLVM
+end # llvm

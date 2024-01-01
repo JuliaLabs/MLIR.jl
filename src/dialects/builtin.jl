@@ -1,4 +1,4 @@
-module Builtin
+module builtin
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-module_
+`module_`
 
 A `module` represents a top-level container operation. It contains a single
 [graph region](../LangRef.md#control-flow-and-ssacfg-regions) containing a single block
@@ -42,7 +42,7 @@ function module_(; sym_name=nothing::Union{Nothing, Union{Attribute, NamedAttrib
 end
 
 """
-unrealized_conversion_cast
+`unrealized_conversion_cast`
 
 An `unrealized_conversion_cast` operation represents an unrealized
 conversion from one set of types to another, that is used to enable the
@@ -90,4 +90,4 @@ function unrealized_conversion_cast(inputs::Vector{Value}; outputs::Vector{MLIRT
     )
 end
 
-end # Builtin
+end # builtin

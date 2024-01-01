@@ -1,4 +1,4 @@
-module Complex
+module complex
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-abs
+`abs`
 
 The `abs` op takes a single complex number and computes its absolute value.
 
@@ -33,7 +33,7 @@ function abs(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
 end
 
 """
-add
+`add`
 
 The `add` operation takes two complex numbers and returns their sum.
 
@@ -60,7 +60,7 @@ function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-angle
+`angle`
 
 The `angle` op takes a single complex number and computes its argument value with a branch cut along the negative real axis.
 
@@ -87,7 +87,7 @@ function angle(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
 end
 
 """
-atan2
+`atan2`
 
 For complex numbers it is expressed using complex logarithm
 atan2(y, x) = -i * log((x + i * y) / sqrt(x**2 + y**2))
@@ -115,7 +115,7 @@ function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
 end
 
 """
-bitcast
+`bitcast`
 
 
 # Example
@@ -140,7 +140,7 @@ function bitcast(operand::Value; result::MLIRType, location=Location())
 end
 
 """
-conj
+`conj`
 
 The `conj` op takes a single complex number and computes the
 complex conjugate.
@@ -168,7 +168,7 @@ function conj(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
 end
 
 """
-constant
+`constant`
 
 The `complex.constant` operation creates a constant complex number from an
 attribute containing the real and imaginary parts.
@@ -195,7 +195,7 @@ function constant(; complex::MLIRType, value::Union{Attribute, NamedAttribute}, 
 end
 
 """
-cos
+`cos`
 
 The `cos` op takes a single complex number and computes the cosine of
 it, i.e. `cos(x)`, where `x` is the input value.
@@ -223,7 +223,7 @@ function cos(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
 end
 
 """
-create
+`create`
 
 The `complex.create` operation creates a complex number from two
 floating-point operands, the real and the imaginary part.
@@ -250,7 +250,7 @@ function create(real::Value, imaginary::Value; complex::MLIRType, location=Locat
 end
 
 """
-div
+`div`
 
 The `div` operation takes two complex numbers and returns result of their
 division:
@@ -276,7 +276,7 @@ function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-eq
+`eq`
 
 The `eq` op takes two complex numbers and returns whether they are equal.
 
@@ -303,7 +303,7 @@ function eq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, lo
 end
 
 """
-exp
+`exp`
 
 The `exp` op takes a single complex number and computes the exponential of
 it, i.e. `exp(x)` or `e^(x)`, where `x` is the input value.
@@ -332,7 +332,7 @@ function exp(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
 end
 
 """
-expm1
+`expm1`
 
 # Syntax
 
@@ -365,7 +365,7 @@ function expm1(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
 end
 
 """
-im
+`im`
 
 The `im` op takes a single complex number and extracts the imaginary part.
 
@@ -392,7 +392,7 @@ function im(complex::Value; imaginary=nothing::Union{Nothing, MLIRType}, locatio
 end
 
 """
-log1p
+`log1p`
 
 The `log` op takes a single complex number and computes the natural
 logarithm of one plus the given value, i.e. `log(1 + x)` or `log_e(1 + x)`,
@@ -422,7 +422,7 @@ function log1p(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
 end
 
 """
-log
+`log`
 
 The `log` op takes a single complex number and computes the natural
 logarithm of it, i.e. `log(x)` or `log_e(x)`, where `x` is the input value.
@@ -451,7 +451,7 @@ function log(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
 end
 
 """
-mul
+`mul`
 
 The `mul` operation takes two complex numbers and returns their product:
 
@@ -476,7 +476,7 @@ function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-neg
+`neg`
 
 The `neg` op takes a single complex number `complex` and returns `-complex`.
 
@@ -503,7 +503,7 @@ function neg(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
 end
 
 """
-neq
+`neq`
 
 The `neq` op takes two complex numbers and returns whether they are not
 equal.
@@ -531,7 +531,7 @@ function neq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-pow
+`pow`
 
 The `sqrt` operation takes a complex number raises it to the given complex
 exponent.
@@ -559,7 +559,7 @@ function pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-re
+`re`
 
 The `re` op takes a single complex number and extracts the real part.
 
@@ -586,7 +586,7 @@ function re(complex::Value; real=nothing::Union{Nothing, MLIRType}, location=Loc
 end
 
 """
-rsqrt
+`rsqrt`
 
 The `rsqrt` operation computes reciprocal of square root.
 
@@ -613,7 +613,7 @@ function rsqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
 end
 
 """
-sign
+`sign`
 
 The `sign` op takes a single complex number and computes the sign of
 it, i.e. `y = sign(x) = x / |x|` if `x != 0`, otherwise `y = 0`.
@@ -641,7 +641,7 @@ function sign(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
 end
 
 """
-sin
+`sin`
 
 The `sin` op takes a single complex number and computes the sine of
 it, i.e. `sin(x)`, where `x` is the input value.
@@ -669,7 +669,7 @@ function sin(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
 end
 
 """
-sqrt
+`sqrt`
 
 The `sqrt` operation takes a complex number and returns its square root.
 
@@ -696,7 +696,7 @@ function sqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
 end
 
 """
-sub
+`sub`
 
 The `sub` operation takes two complex numbers and returns their difference.
 
@@ -723,7 +723,7 @@ function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-tan
+`tan`
 
 The `tan` op takes a single complex number and computes the tangent of
 it, i.e. `tan(x)`, where `x` is the input value.
@@ -751,7 +751,7 @@ function tan(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
 end
 
 """
-tanh
+`tanh`
 
 The `tanh` operation takes a complex number and returns its hyperbolic
 tangent.
@@ -778,4 +778,4 @@ function tanh(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     )
 end
 
-end # Complex
+end # complex

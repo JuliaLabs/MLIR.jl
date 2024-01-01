@@ -1,4 +1,4 @@
-module Shape
+module shape
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-add
+`add`
 
 Adds two sizes or indices. If either operand is an error it will be
 propagated to the result. The operands can be of type `size` or `index`. If
@@ -32,7 +32,7 @@ function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-any
+`any`
 
 This operation takes multiple input shapes or extent tensors and returns
 some combination of their dimensions. This can be best seen with examples
@@ -63,7 +63,7 @@ function any(inputs::Vector{Value}; result::MLIRType, location=Location())
 end
 
 """
-assuming_all
+`assuming_all`
 
 Used to simplify constraints as any single failing precondition is enough
 to prevent execution.
@@ -99,7 +99,7 @@ function assuming_all(inputs::Vector{Value}; result=nothing::Union{Nothing, MLIR
 end
 
 """
-assuming
+`assuming`
 
 Executes the region assuming all witnesses are true.
 
@@ -124,7 +124,7 @@ function assuming(witness::Value; results::Vector{MLIRType}, doRegion::Region, l
 end
 
 """
-assuming_yield
+`assuming_yield`
 
 This yield operation represents a return operation within the
 `shape.assuming` operation region. The operation takes variable number of
@@ -147,7 +147,7 @@ function assuming_yield(operands::Vector{Value}; location=Location())
 end
 
 """
-broadcast
+`broadcast`
 
 Returns the broadcasted shape for input shapes or extent tensors. The rest
 of this description is simplified for the 2 input case but can be extended
@@ -186,7 +186,7 @@ function broadcast(shapes::Vector{Value}; result::MLIRType, error=nothing::Union
 end
 
 """
-concat
+`concat`
 
 Creates a shape whose dimensions consist of first the dimensions from `lhs`
 followed by the dimensions of `rhs`.
@@ -212,7 +212,7 @@ function concat(lhs::Value, rhs::Value; result::MLIRType, location=Location())
 end
 
 """
-const_shape
+`const_shape`
 
 Creates a constant shape or extent tensor. The individual extents are given
 as the `shape` attribute. The number of these values equals the shape\'s
@@ -241,7 +241,7 @@ function const_shape(; result=nothing::Union{Nothing, MLIRType}, shape::Union{At
 end
 
 """
-const_size
+`const_size`
 
 Creates a `shape.size` type representing the constant size given by `value`.
 
@@ -266,7 +266,7 @@ function const_size(; result=nothing::Union{Nothing, MLIRType}, value::Union{Att
 end
 
 """
-const_witness
+`const_witness`
 
 This operation represents a statically known witness result. This can be
 often used to canonicalize/fold constraint and assuming code that will always
@@ -297,7 +297,7 @@ function const_witness(; result=nothing::Union{Nothing, MLIRType}, passing::Unio
 end
 
 """
-cstr_broadcastable
+`cstr_broadcastable`
 
 Given input shapes or extent tensors, return a witness specifying if they
 are broadcastable. This broadcastable follows the same logic as what
@@ -328,7 +328,7 @@ function cstr_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing
 end
 
 """
-cstr_eq
+`cstr_eq`
 
 Given 1 or more input shapes, determine if all shapes are the exact same.
 
@@ -357,7 +357,7 @@ function cstr_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType}
 end
 
 """
-cstr_require
+`cstr_require`
 
 Represents a runtime assertion that an i1 is true. It returns a
 !shape.witness to order this assertion.
@@ -392,7 +392,7 @@ function cstr_require(pred::Value; result=nothing::Union{Nothing, MLIRType}, msg
 end
 
 """
-debug_print
+`debug_print`
 
 Prints the input dim or shape and passes through input.
 
@@ -414,7 +414,7 @@ function debug_print(input::Value; output::MLIRType, location=Location())
 end
 
 """
-dim
+`dim`
 
 Gets the extent indexed by `dim` from the shape of the `value` operand. If
 the index is error or out-of-bound then it returns an invalid size if the
@@ -440,7 +440,7 @@ function dim(value::Value, index::Value; extent=nothing::Union{Nothing, MLIRType
 end
 
 """
-div
+`div`
 
 Divides two sizes or indices. If either operand is an error it will be
 propagated to the result. The operands can be of type `size` or `index`.
@@ -473,7 +473,7 @@ function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-from_extent_tensor
+`from_extent_tensor`
 
 Creates a shape from a 1D integral tensor of extents. The rank of the
 resulting shape equals the number of elements in the tensor, and the
@@ -496,7 +496,7 @@ function from_extent_tensor(input::Value; result=nothing::Union{Nothing, MLIRTyp
 end
 
 """
-from_extents
+`from_extents`
 
 Creates a shape from multiple SSA values representing the extents of
 the shape.
@@ -525,7 +525,7 @@ function from_extents(extents::Vector{Value}; shape=nothing::Union{Nothing, MLIR
 end
 
 """
-func
+`func`
 
 An operation with a name containing a single `SSACFG` region which
 represents a shape transfer function or helper function for shape transfer
@@ -550,7 +550,7 @@ function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union
 end
 
 """
-function_library
+`function_library`
 
 Represents a list of shape functions and the ops whose shape transfer
 functions they represent.
@@ -585,7 +585,7 @@ function function_library(; sym_name::Union{Attribute, NamedAttribute}, sym_visi
 end
 
 """
-get_extent
+`get_extent`
 
 Gets the extent indexed by `dim` from the `shape` operand. If the shape is
 an error then it returns an invalid size.
@@ -607,7 +607,7 @@ function get_extent(shape::Value, dim::Value; extent=nothing::Union{Nothing, MLI
 end
 
 """
-index_to_size
+`index_to_size`
 
 Converts a standard index to a `shape.size`. This operation and its
 inverse, `size_to_index`, facilitate index conversion between the standard
@@ -632,7 +632,7 @@ function index_to_size(arg::Value; result=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-is_broadcastable
+`is_broadcastable`
 
 Given multiple input shapes or extent tensors, return a predicate
 specifying if they are broadcastable. This broadcastable follows the same
@@ -666,7 +666,7 @@ function is_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing, 
 end
 
 """
-max
+`max`
 
 Computes the elementwise maximum of two sizes or shapes with equal ranks.
 If either operand is an error, then an error will be propagated to the
@@ -690,7 +690,7 @@ function max(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-meet
+`meet`
 
 An operation that computes the least general shape or dim of input operands.
 This effectively asserts that corresponding static dimensions are equal.
@@ -734,7 +734,7 @@ function meet(arg0::Value, arg1::Value; result=nothing::Union{Nothing, MLIRType}
 end
 
 """
-min
+`min`
 
 Computes the elementwise minimum of two sizes or shapes with equal ranks.
 If either operand is an error, then an error will be propagated to the
@@ -758,7 +758,7 @@ function min(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-mul
+`mul`
 
 Multiplies two sizes or indices. If either operand is an error it will be
 propagated to the result. The operands can be of type `size` or `index`. If
@@ -784,7 +784,7 @@ function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
 end
 
 """
-num_elements
+`num_elements`
 
 Returns the number of elements for a given shape which is the product of
 its extents. If the argument is of type `shape` then the result will be of
@@ -809,7 +809,7 @@ function num_elements(shape::Value; result=nothing::Union{Nothing, MLIRType}, lo
 end
 
 """
-rank
+`rank`
 
 Returns the rank of the shape or extent tensor, i.e. the number of extents.
 """
@@ -830,7 +830,7 @@ function rank(shape::Value; rank=nothing::Union{Nothing, MLIRType}, location=Loc
 end
 
 """
-reduce
+`reduce`
 
 An operation that takes as input a shape or extent tensor, and a number of
 initial values. This operation has a region that is applied repeatedly for
@@ -879,7 +879,7 @@ function reduce(shape::Value, initVals::Vector{Value}; result::Vector{MLIRType},
 end
 
 """
-return_
+`return_`
 
 The `shape.return` operation represents a return operation within a
 function.  The operation takes variable number of operands and produces no
@@ -901,7 +901,7 @@ function return_(operands::Vector{Value}; location=Location())
 end
 
 """
-shape_eq
+`shape_eq`
 
 Takes one or more shape or extent tensor operands and determines whether
 they are equal. When extent tensors are compared to shapes they are
@@ -926,7 +926,7 @@ function shape_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType
 end
 
 """
-shape_of
+`shape_of`
 
 The operation takes a value or a shaped operand as an argument and it
 returns a shape or extent tensor.
@@ -948,7 +948,7 @@ function shape_of(arg::Value; result=nothing::Union{Nothing, MLIRType}, location
 end
 
 """
-size_to_index
+`size_to_index`
 
 Converts a `shape.size` to a standard index. This operation and its
 inverse, `index_to_size`, facilitate index conversion between the standard
@@ -972,7 +972,7 @@ function size_to_index(arg::Value; result=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-split_at
+`split_at`
 
 Splits a shape at a given dimension `index`, returning two shapes. If
 `index` is negative, it is treated as indexing from the back of the shape.
@@ -1011,7 +1011,7 @@ function split_at(operand::Value, index::Value; head::MLIRType, tail::MLIRType, 
 end
 
 """
-to_extent_tensor
+`to_extent_tensor`
 
 Converts a shape to a 1D integral tensor of extents. The number of elements
 in the tensor equals the rank of the shape, and the elements equal the
@@ -1035,7 +1035,7 @@ function to_extent_tensor(input::Value; result::MLIRType, location=Location())
 end
 
 """
-value_as_shape
+`value_as_shape`
 
 The operations takes a ValueShape and returns a Shape corresponding to the
 value.  If the input value cannot be shape (e.g., not a 1D tensor of
@@ -1068,7 +1068,7 @@ function value_as_shape(arg::Value; result::MLIRType, location=Location())
 end
 
 """
-value_of
+`value_of`
 
 The operation takes !shape.value_shape, a.k.a. (value, shape) tuple as an
 argument, and returns its value. The behavior is undefined for unknown and
@@ -1090,7 +1090,7 @@ function value_of(arg::Value; result::MLIRType, location=Location())
 end
 
 """
-with_shape
+`with_shape`
 
 Returns ValueShape with the shape updated to match the shape operand. That
 is a new ValueShape tuple is created with value equal to `operand`\'s
@@ -1141,7 +1141,7 @@ function with_shape(operand::Value, shape::Value; result=nothing::Union{Nothing,
 end
 
 """
-yield
+`yield`
 
 """
 function yield(operands::Vector{Value}; location=Location())
@@ -1159,4 +1159,4 @@ function yield(operands::Vector{Value}; location=Location())
     )
 end
 
-end # Shape
+end # shape

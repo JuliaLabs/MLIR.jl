@@ -1,4 +1,4 @@
-module Arith
+module memref
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-assume_alignment
+`assume_alignment`
 
 The `assume_alignment` operation takes a memref and an integer of alignment
 value, and internally annotates the buffer with the given alignment. If
@@ -31,7 +31,7 @@ function assume_alignment(memref::Value; alignment::Union{Attribute, NamedAttrib
 end
 
 """
-atomic_rmw
+`atomic_rmw`
 
 The `memref.atomic_rmw` operation provides a way to perform a read-modify-write
 sequence that is free from data races. The kind enumeration specifies the
@@ -64,7 +64,7 @@ function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result=
 end
 
 """
-atomic_yield
+`atomic_yield`
 
 \"memref.atomic_yield\" yields an SSA value from a
 GenericAtomicRMWOp region.
@@ -85,7 +85,7 @@ function atomic_yield(result::Value; location=Location())
 end
 
 """
-copy
+`copy`
 
 Copies the data from the source to the destination memref.
 
@@ -114,7 +114,7 @@ function copy(source::Value, target::Value; location=Location())
 end
 
 """
-generic_atomic_rmw
+`generic_atomic_rmw`
 
 The `memref.generic_atomic_rmw` operation provides a way to perform a
 read-modify-write sequence that is free from data races. The memref operand
@@ -153,7 +153,7 @@ function generic_atomic_rmw(memref::Value, indices::Vector{Value}; result::MLIRT
 end
 
 """
-load
+`load`
 
 The `load` op reads an element from a memref specified by an index list. The
 output of load is a new value with the same type as the elements of the
@@ -208,7 +208,7 @@ function load(memref::Value, indices::Vector{Value}; result=nothing::Union{Nothi
 end
 
 """
-alloc
+`alloc`
 
 The `alloc` operation allocates a region of memory, as specified by its
 memref type.
@@ -266,7 +266,7 @@ function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memre
 end
 
 """
-alloca
+`alloca`
 
 The `alloca` operation allocates memory on the stack, to be automatically
 released when control transfers back from the region of its closest
@@ -320,7 +320,7 @@ function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memr
 end
 
 """
-alloca_scope
+`alloca_scope`
 
 The `memref.alloca_scope` operation represents an explicitly-delimited
 scope for the alloca allocations. Any `memref.alloca` operations that are
@@ -369,7 +369,7 @@ function alloca_scope(; results::Vector{MLIRType}, bodyRegion::Region, location=
 end
 
 """
-alloca_scope_return
+`alloca_scope_return`
 
 `memref.alloca_scope.return` operation returns zero or more SSA values
 from the region within `memref.alloca_scope`. If no values are returned,
@@ -396,7 +396,7 @@ function alloca_scope_return(results::Vector{Value}; location=Location())
 end
 
 """
-cast
+`cast`
 
 # Syntax
 
@@ -467,7 +467,7 @@ function cast(source::Value; dest::MLIRType, location=Location())
 end
 
 """
-collapse_shape
+`collapse_shape`
 
 The `memref.collapse_shape` op produces a new view with a smaller rank
 whose sizes are a reassociation of the original `view`. The operation is
@@ -525,7 +525,7 @@ function collapse_shape(src::Value; result::MLIRType, reassociation::Union{Attri
 end
 
 """
-dealloc
+`dealloc`
 
 The `dealloc` operation frees the region of memory referenced by a memref
 which was originally created by the `alloc` operation.
@@ -555,7 +555,7 @@ function dealloc(memref::Value; location=Location())
 end
 
 """
-dim
+`dim`
 
 The `dim` operation takes a memref and a dimension operand of type `index`.
 It returns the size of the requested dimension of the given memref.
@@ -596,7 +596,7 @@ function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRTyp
 end
 
 """
-dma_start
+`dma_start`
 
 DmaStartOp starts a non-blocking DMA operation that transfers data from a
 source memref to a destination memref. The source and destination memref
@@ -658,7 +658,7 @@ function dma_start(operands::Vector{Value}; location=Location())
 end
 
 """
-dma_wait
+`dma_wait`
 
 DmaWaitOp blocks until the completion of a DMA operation associated with the
 tag element \'%tag[%index]\'. %tag is a memref, and %index has to be an index
@@ -693,7 +693,7 @@ function dma_wait(tagMemRef::Value, tagIndices::Vector{Value}, numElements::Valu
 end
 
 """
-expand_shape
+`expand_shape`
 
 The `memref.expand_shape` op produces a new view with a higher rank whose
 sizes are a reassociation of the original `view`. The operation is limited
@@ -750,7 +750,7 @@ function expand_shape(src::Value; result::MLIRType, reassociation::Union{Attribu
 end
 
 """
-extract_aligned_pointer_as_index
+`extract_aligned_pointer_as_index`
 
 Extracts the underlying aligned pointer as an index.
 
@@ -788,7 +788,7 @@ function extract_aligned_pointer_as_index(source::Value; aligned_pointer=nothing
 end
 
 """
-extract_strided_metadata
+`extract_strided_metadata`
 
 Extracts a base buffer, offset and strides. This op allows additional layers
 of transformations and foldings to be added as lowering progresses from
@@ -851,7 +851,7 @@ function extract_strided_metadata(source::Value; base_buffer=nothing::Union{Noth
 end
 
 """
-get_global
+`get_global`
 
 The `memref.get_global` operation retrieves the memref pointing to a
 named global variable. If the global variable is marked constant, writing
@@ -880,7 +880,7 @@ function get_global(; result::MLIRType, name::Union{Attribute, NamedAttribute}, 
 end
 
 """
-global_
+`global_`
 
 The `memref.global` operation declares or defines a named global memref
 variable. The backing memory for the variable is allocated statically and is
@@ -937,7 +937,7 @@ function global_(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=no
 end
 
 """
-memory_space_cast
+`memory_space_cast`
 
 This operation casts memref values between memory spaces.
 The input and result will be memrefs of the same types and shape that alias
@@ -977,7 +977,7 @@ function memory_space_cast(source::Value; dest::MLIRType, location=Location())
 end
 
 """
-prefetch
+`prefetch`
 
 The \"prefetch\" op prefetches data from a memref location described with
 subscript indices similar to memref.load, and with three attributes: a
@@ -1010,7 +1010,7 @@ function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribut
 end
 
 """
-rank
+`rank`
 
 The `memref.rank` operation takes a memref operand and returns its rank.
 
@@ -1038,7 +1038,7 @@ function rank(memref::Value; result_0=nothing::Union{Nothing, MLIRType}, locatio
 end
 
 """
-realloc
+`realloc`
 
 The `realloc` operation changes the size of a memory region. The memory
 region is specified by a 1D source memref and the size of the new memory
@@ -1113,7 +1113,7 @@ function realloc(source::Value, dynamicResultSize=nothing::Union{Nothing, Value}
 end
 
 """
-reinterpret_cast
+`reinterpret_cast`
 
 Modify offset, sizes and strides of an unranked/ranked memref.
 
@@ -1167,7 +1167,7 @@ function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{V
 end
 
 """
-reshape
+`reshape`
 
 The `reshape` operation converts a memref from one type to an
 equivalent type with a provided shape. The data is never copied or
@@ -1217,7 +1217,7 @@ function reshape(source::Value, shape::Value; result::MLIRType, location=Locatio
 end
 
 """
-store
+`store`
 
 Store a value to a memref location given by indices. The value stored should
 have the same type as the elemental type of the memref. The number of
@@ -1263,7 +1263,7 @@ function store(value::Value, memref::Value, indices::Vector{Value}; nontemporal=
 end
 
 """
-transpose
+`transpose`
 
 The `transpose` op produces a strided memref whose sizes and strides
 are a permutation of the original `in` memref. This is purely a metadata
@@ -1291,7 +1291,7 @@ function transpose(in::Value; result_0::MLIRType, permutation::Union{Attribute, 
 end
 
 """
-view
+`view`
 
 The \"view\" operation extracts an N-D contiguous memref with empty layout map
 with arbitrary element type from a 1-D contiguous memref with empty layout
@@ -1344,7 +1344,7 @@ function view(source::Value, byte_shift::Value, sizes::Vector{Value}; result_0::
 end
 
 """
-subview
+`subview`
 
 The \"subview\" operation converts a memref type to another memref type
 which represents a reduced-size view of the original memref as specified by
@@ -1493,7 +1493,7 @@ function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, st
 end
 
 """
-tensor_store
+`tensor_store`
 
 Stores the contents of a tensor into a memref. The first operand is a value
 of tensor type, the second operand is a value of memref type. The shapes and
@@ -1522,4 +1522,4 @@ function tensor_store(tensor::Value, memref::Value; location=Location())
     )
 end
 
-end # Arith
+end # memref

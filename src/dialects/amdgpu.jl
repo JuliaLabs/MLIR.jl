@@ -1,4 +1,4 @@
-module AMDGPU
+module amdgpu
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-lds_barrier
+`lds_barrier`
 
 `amdgpu.lds_barrier` is both a barrier (all workitems in a workgroup must reach
 the barrier before any of them may proceed past it) and a wait for all
@@ -36,7 +36,7 @@ function lds_barrier(; location=Location())
 end
 
 """
-mfma
+`mfma`
 
 The `amdgpu.mfma` op is an MLIR wrapper around intrinsics
 for various `mfma` instructions in the CDNA architecture, which perform
@@ -87,7 +87,7 @@ function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, m::
 end
 
 """
-raw_buffer_atomic_cmpswap
+`raw_buffer_atomic_cmpswap`
 
 The `amdgpu.raw_buffer_atomic_cmpswap` op is a wrapper around the
 buffer-based atomic compare-and-swap min available on AMD GPUs.
@@ -125,7 +125,7 @@ function raw_buffer_atomic_cmpswap(src::Value, cmp::Value, memref::Value, indice
 end
 
 """
-raw_buffer_atomic_fadd
+`raw_buffer_atomic_fadd`
 
 The `amdgpu.raw_buffer_atomic_fadd` op is a wrapper around the
 buffer-based atomic floating point addition available on the MI-* series
@@ -164,7 +164,7 @@ function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Val
 end
 
 """
-raw_buffer_atomic_fmax
+`raw_buffer_atomic_fmax`
 
 The `amdgpu.raw_buffer_atomic_fmax` op is a wrapper around the
 buffer-based atomic floating point max available on AMD GPUs (except GFX9).
@@ -202,7 +202,7 @@ function raw_buffer_atomic_fmax(value::Value, memref::Value, indices::Vector{Val
 end
 
 """
-raw_buffer_atomic_smax
+`raw_buffer_atomic_smax`
 
 The `amdgpu.raw_buffer_atomic_smax` op is a wrapper around the
 buffer-based atomic signed integer max available on AMD GPUs.
@@ -240,7 +240,7 @@ function raw_buffer_atomic_smax(value::Value, memref::Value, indices::Vector{Val
 end
 
 """
-raw_buffer_atomic_umin
+`raw_buffer_atomic_umin`
 
 The `amdgpu.raw_buffer_atomic_umin` op is a wrapper around the
 buffer-based atomic signed integer min available on AMD GPUs.
@@ -278,7 +278,7 @@ function raw_buffer_atomic_umin(value::Value, memref::Value, indices::Vector{Val
 end
 
 """
-raw_buffer_load
+`raw_buffer_load`
 
 The `amdgpu.raw_buffer_load` op is a wrapper around the buffer load intrinsics
 available on AMD GPUs, including extensions in newer GPUs.
@@ -329,7 +329,7 @@ function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothi
 end
 
 """
-raw_buffer_store
+`raw_buffer_store`
 
 The `amdgpu.raw_buffer_store` op is a wrapper around the buffer store
 intrinsics available on AMD GPUs, including extensions in newer GPUs.
@@ -368,7 +368,7 @@ function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, s
 end
 
 """
-wmma
+`wmma`
 
 The `amdgpu.wmma` op is an MLIR wrapper around intrinsics
 for various `wmma` instructions in the RDNA3 architecture, which perform
@@ -403,4 +403,4 @@ function wmma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, sub
     )
 end
 
-end # AMDGPU
+end # amdgpu

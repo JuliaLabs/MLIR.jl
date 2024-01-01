@@ -1,4 +1,4 @@
-module Quantization
+module quant
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-dcast
+`dcast`
 
 A DequantizeCast op `dcast` represents the inverse of a `qcast`,
 converting back from a quantized to quantizable (expressed) type.
@@ -35,7 +35,7 @@ function dcast(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-qcast
+`qcast`
 
 A QuantizeCast `qcast` represents a potential type shift from a quantizable
 type to a quantized type.
@@ -74,7 +74,7 @@ function qcast(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-scast
+`scast`
 
 A StorageCast `scast` represents a cast from or to a type based on the
 storage type and a type based on a corresponding quantized type.
@@ -109,4 +109,4 @@ function scast(arg::Value; res::MLIRType, location=Location())
     )
 end
 
-end # Quantization
+end # quant

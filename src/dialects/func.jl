@@ -1,4 +1,4 @@
-module Func
+module func
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -6,7 +6,7 @@ import ...API
 
 
 """
-call_indirect
+`call_indirect`
 
 The `func.call_indirect` operation represents an indirect call to a value
 of function type. The operands and result types of the call must match the
@@ -38,7 +38,7 @@ function call_indirect(callee::Value, callee_operands::Vector{Value}; results::V
 end
 
 """
-call
+`call`
 
 The `func.call` operation represents a direct call to a function that is
 within the same symbol scope as the call. The operands and result types of
@@ -67,7 +67,7 @@ function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee::Union
 end
 
 """
-constant
+`constant`
 
 The `func.constant` operation produces an SSA value from a symbol reference
 to a `func.func` operation
@@ -103,7 +103,7 @@ function constant(; result_0::MLIRType, value::Union{Attribute, NamedAttribute},
 end
 
 """
-func
+`func_`
 
 Operations within the function cannot implicitly capture values defined
 outside of the function, i.e. Functions are `IsolatedFromAbove`. All
@@ -141,7 +141,7 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
 func.func @example_fn_attr() attributes {dialectName.attrName = false}
 ```
 """
-function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, arg_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, res_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, body::Region, location=Location())
+function func_(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, arg_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, res_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, body::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[body, ]
@@ -160,7 +160,7 @@ function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union
 end
 
 """
-return_
+`return_`
 
 The `func.return` operation represents a return operation within a function.
 The operation takes variable number of operands and produces no results.
@@ -191,4 +191,4 @@ function return_(operands::Vector{Value}; location=Location())
     )
 end
 
-end # Func
+end # func
