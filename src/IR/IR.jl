@@ -208,7 +208,7 @@ IndexType() = MLIRType(API.mlirIndexTypeGet(context()))
 Base.convert(::Type{MlirType}, mtype::MLIRType) = mtype.type
 Base.parse(::Type{MLIRType}, s) =
     MLIRType(API.mlirTypeParseGet(context(), s))
-    
+
 function Base.eltype(type::MLIRType)
     if API.mlirTypeIsAShaped(type)
         MLIRType(API.mlirShapedTypeGetElementType(type))
@@ -642,11 +642,16 @@ end
 
 function Base.show(io::IO, operation::Operation)
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
-    ref = Ref(io)
+
+    buffer = IOBuffer()
+    ref = Ref(buffer)
+
     flags = API.mlirOpPrintingFlagsCreate()
     get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true, true)
     API.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
-    println(io)
+    API.mlirOpPrintingFlagsDestroy(flags)
+
+    write(io, rstrip(String(take!(buffer))))
 end
 
 verify(operation::Operation) = API.mlirOperationVerify(operation)
