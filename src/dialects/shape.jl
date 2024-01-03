@@ -169,7 +169,7 @@ value. If the result type is an extent tensor (and can therefore not hold
 the error value) the behavior may be undefined. The optional string
 attribute can be used to describe the error case.
 """
-function broadcast(shapes::Vector{Value}; result::MLIRType, error=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function broadcast(shapes::Vector{Value}; result::MLIRType, error=nothing, location=Location())
     results = MLIRType[result, ]
     operands = Value[shapes..., ]
     owned_regions = Region[]
@@ -224,7 +224,7 @@ rank.
 %2 = shape.const_shape [4, 5, 6] : tensor<3xindex>
 ```
 """
-function const_shape(; result=nothing::Union{Nothing, MLIRType}, shape::Union{Attribute, NamedAttribute}, location=Location())
+function const_shape(; result=nothing::Union{Nothing, MLIRType}, shape, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
@@ -249,7 +249,7 @@ Creates a `shape.size` type representing the constant size given by `value`.
 %x = shape.const_size 10
 ```
 """
-function const_size(; result=nothing::Union{Nothing, MLIRType}, value::Union{Attribute, NamedAttribute}, location=Location())
+function const_size(; result=nothing::Union{Nothing, MLIRType}, value, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
@@ -280,7 +280,7 @@ pass.
 %w2 = shape.assuming_all(%w0, %w2) // Can be folded to \"const_witness true\"
 ```
 """
-function const_witness(; result=nothing::Union{Nothing, MLIRType}, passing::Union{Attribute, NamedAttribute}, location=Location())
+function const_witness(; result=nothing::Union{Nothing, MLIRType}, passing, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
@@ -375,7 +375,7 @@ Since this op can be used to express many different possible assertions
 (depending on whatever computation calculated `pred`), the `msg`
 should clarify the nature of the assertion for users.
 """
-function cstr_require(pred::Value; result=nothing::Union{Nothing, MLIRType}, msg::Union{Attribute, NamedAttribute}, location=Location())
+function cstr_require(pred::Value; result=nothing::Union{Nothing, MLIRType}, msg, location=Location())
     results = MLIRType[]
     operands = Value[pred, ]
     owned_regions = Region[]
@@ -531,7 +531,7 @@ An operation with a name containing a single `SSACFG` region which
 represents a shape transfer function or helper function for shape transfer
 function.
 """
-function func(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union{Attribute, NamedAttribute}, arg_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, res_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, body::Region, location=Location())
+function func(; sym_name, function_type, arg_attrs=nothing, res_attrs=nothing, sym_visibility=nothing, body::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[body, ]
@@ -568,7 +568,7 @@ shape.function_library {
 }
 ```
 """
-function function_library(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, mapping::Union{Attribute, NamedAttribute}, body::Region, location=Location())
+function function_library(; sym_name, sym_visibility=nothing, mapping, body::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[body, ]
@@ -716,7 +716,7 @@ used to return an error to the user upon mismatch of dimensions.
 %c = shape.meet %a, %b, error=\"<reason>\" : !shape.shape, !shape.shape -> !shape.shape
 ```
 """
-function meet(arg0::Value, arg1::Value; result=nothing::Union{Nothing, MLIRType}, error=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function meet(arg0::Value, arg1::Value; result=nothing::Union{Nothing, MLIRType}, error=nothing, location=Location())
     results = MLIRType[]
     operands = Value[arg0, arg1, ]
     owned_regions = Region[]

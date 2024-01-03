@@ -19,7 +19,7 @@ entities.
 pdl.apply_native_constraint \"myConstraint\"(%input, %attr, %op : !pdl.value, !pdl.attribute, !pdl.operation)
 ```
 """
-function apply_native_constraint(args::Vector{Value}; name::Union{Attribute, NamedAttribute}, location=Location())
+function apply_native_constraint(args::Vector{Value}; name, location=Location())
     results = MLIRType[]
     operands = Value[args..., ]
     owned_regions = Region[]
@@ -62,7 +62,7 @@ void registerNativeRewrite(PDLPatternModule &pdlModule) {
 }
 ```
 """
-function apply_native_rewrite(args::Vector{Value}; results::Vector{MLIRType}, name::Union{Attribute, NamedAttribute}, location=Location())
+function apply_native_rewrite(args::Vector{Value}; results::Vector{MLIRType}, name, location=Location())
     results = MLIRType[results..., ]
     operands = Value[args..., ]
     owned_regions = Region[]
@@ -102,7 +102,7 @@ defined within a `pdl.rewrite` region, the constant value must be specified.
 %attr = pdl.attribute = \"hello\"
 ```
 """
-function attribute(valueType=nothing::Union{Nothing, Value}; attr::MLIRType, value=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function attribute(valueType=nothing::Union{Nothing, Value}; attr::MLIRType, value=nothing, location=Location())
     results = MLIRType[attr, ]
     operands = Value[]
     owned_regions = Region[]
@@ -318,7 +318,7 @@ def MyOp {
 %op = pdl.operation \"foo.op\" -> (%result, %otherResults : !pdl.type, !pdl.range<type>)
 ```
 """
-function operation(operandValues::Vector{Value}, attributeValues::Vector{Value}, typeValues::Vector{Value}; op::MLIRType, opName=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, attributeValueNames::Union{Attribute, NamedAttribute}, location=Location())
+function operation(operandValues::Vector{Value}, attributeValues::Vector{Value}, typeValues::Vector{Value}; op::MLIRType, opName=nothing, attributeValueNames, location=Location())
     results = MLIRType[op, ]
     operands = Value[operandValues..., attributeValues..., typeValues..., ]
     owned_regions = Region[]
@@ -359,7 +359,7 @@ pdl.pattern : benefit(1) {
 }
 ```
 """
-function pattern(; benefit::Union{Attribute, NamedAttribute}, sym_name=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, bodyRegion::Region, location=Location())
+function pattern(; benefit, sym_name=nothing, bodyRegion::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[bodyRegion, ]
@@ -481,7 +481,7 @@ as defined by the ODS definition of the operation.
 // the IR snippet, `%pdl_result` would correspond to `%result_1`.
 ```
 """
-function result(parent::Value; val::MLIRType, index::Union{Attribute, NamedAttribute}, location=Location())
+function result(parent::Value; val::MLIRType, index, location=Location())
     results = MLIRType[val, ]
     operands = Value[parent, ]
     owned_regions = Region[]
@@ -525,7 +525,7 @@ operation.
 %results = pdl.results 1 of %operation -> !pdl.value
 ```
 """
-function results(parent::Value; val::MLIRType, index=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function results(parent::Value; val::MLIRType, index=nothing, location=Location())
     results = MLIRType[val, ]
     operands = Value[parent, ]
     owned_regions = Region[]
@@ -580,7 +580,7 @@ pdl.rewrite {
 }
 ```
 """
-function rewrite(root=nothing::Union{Nothing, Value}, externalArgs::Vector{Value}; name=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, bodyRegion::Region, location=Location())
+function rewrite(root=nothing::Union{Nothing, Value}, externalArgs::Vector{Value}; name=nothing, bodyRegion::Region, location=Location())
     results = MLIRType[]
     operands = Value[externalArgs..., ]
     owned_regions = Region[bodyRegion, ]
@@ -616,7 +616,7 @@ partially constrain the result by specifying a constant `Type`.
 %type = pdl.type : i32
 ```
 """
-function type(; result::MLIRType, constantType=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function type(; result::MLIRType, constantType=nothing, location=Location())
     results = MLIRType[result, ]
     operands = Value[]
     owned_regions = Region[]
@@ -650,7 +650,7 @@ an array of `Type`s.
 %types = pdl.types : [i32, i64, i32]
 ```
 """
-function types(; result::MLIRType, constantTypes=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function types(; result::MLIRType, constantTypes=nothing, location=Location())
     results = MLIRType[result, ]
     operands = Value[]
     owned_regions = Region[]

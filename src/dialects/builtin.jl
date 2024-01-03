@@ -24,7 +24,7 @@ module {
 }
 ```
 """
-function module_(; sym_name=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, bodyRegion::Region, location=Location())
+function module_(; sym_name=nothing, sym_visibility=nothing, bodyRegion::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[bodyRegion, ]

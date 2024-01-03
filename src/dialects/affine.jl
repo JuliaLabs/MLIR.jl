@@ -27,7 +27,7 @@ have ‘index’ type.
 %2 = affine.apply affine_map<(i)[s0] -> (i+s0)> (%42)[%n]
 ```
 """
-function apply(mapOperands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, NamedAttribute}, location=Location())
+function apply(mapOperands::Vector{Value}; result_0::MLIRType, map, location=Location())
     results = MLIRType[result_0, ]
     operands = Value[mapOperands..., ]
     owned_regions = Region[]
@@ -342,7 +342,7 @@ affine map.
 %0 = affine.max (d0) -> (1000, d0 + 512) (%i0) : index
 ```
 """
-function max(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, NamedAttribute}, location=Location())
+function max(operands::Vector{Value}; result_0::MLIRType, map, location=Location())
     results = MLIRType[result_0, ]
     operands = Value[operands..., ]
     owned_regions = Region[]
@@ -379,7 +379,7 @@ input operands and result must all have \'index\' type.
 %0 = affine.min affine_map<(d0)[s0] -> (1000, d0 + 512, s0)> (%arg0)[%arg1]
 ```
 """
-function min(operands::Vector{Value}; result_0::MLIRType, map::Union{Attribute, NamedAttribute}, location=Location())
+function min(operands::Vector{Value}; result_0::MLIRType, map, location=Location())
     results = MLIRType[result_0, ]
     operands = Value[operands..., ]
     owned_regions = Region[]
@@ -459,7 +459,7 @@ affine.parallel (%ii, %jj) = (0, 0) to (%N, %M) step (32, 32) {
 }
 ```
 """
-function parallel(mapOperands::Vector{Value}; results::Vector{MLIRType}, reductions::Union{Attribute, NamedAttribute}, lowerBoundsMap::Union{Attribute, NamedAttribute}, lowerBoundsGroups::Union{Attribute, NamedAttribute}, upperBoundsMap::Union{Attribute, NamedAttribute}, upperBoundsGroups::Union{Attribute, NamedAttribute}, steps::Union{Attribute, NamedAttribute}, region::Region, location=Location())
+function parallel(mapOperands::Vector{Value}; results::Vector{MLIRType}, reductions, lowerBoundsMap, lowerBoundsGroups, upperBoundsMap, upperBoundsGroups, steps, region::Region, location=Location())
     results = MLIRType[results..., ]
     operands = Value[mapOperands..., ]
     owned_regions = Region[region, ]
@@ -492,7 +492,7 @@ local keep in cache). The cache type specifier is either \'data\' or \'instr\'
 and specifies whether the prefetch is performed on data cache or on
 instruction cache.
 """
-function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribute, NamedAttribute}, localityHint::Union{Attribute, NamedAttribute}, isDataCache::Union{Attribute, NamedAttribute}, location=Location())
+function prefetch(memref::Value, indices::Vector{Value}; isWrite, localityHint, isDataCache, location=Location())
     results = MLIRType[]
     operands = Value[memref, indices..., ]
     owned_regions = Region[]

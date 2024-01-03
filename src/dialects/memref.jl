@@ -15,7 +15,7 @@ the buffer isn\'t aligned to the given alignment, the behavior is undefined.
 This operation doesn\'t affect the semantics of a correct program. It\'s for
 optimization only, and the optimization is best-effort.
 """
-function assume_alignment(memref::Value; alignment::Union{Attribute, NamedAttribute}, location=Location())
+function assume_alignment(memref::Value; alignment, location=Location())
     results = MLIRType[]
     operands = Value[memref, ]
     owned_regions = Region[]
@@ -47,7 +47,7 @@ result represents the latest value that was stored.
 %x = memref.atomic_rmw \"addf\" %value, %I[%i] : (f32, memref<10xf32>) -> f32
 ```
 """
-function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, kind::Union{Attribute, NamedAttribute}, location=Location())
+function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, kind, location=Location())
     results = MLIRType[]
     operands = Value[value, memref, indices..., ]
     owned_regions = Region[]
@@ -190,7 +190,7 @@ techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
 """
-function load(memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, nontemporal=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function load(memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, nontemporal=nothing, location=Location())
     results = MLIRType[]
     operands = Value[memref, indices..., ]
     owned_regions = Region[]
@@ -248,7 +248,7 @@ boundary.
   memref<8x64xf32, affine_map<(d0, d1)[s0] -> ((d0 + s0), d1)>, 1>
 ```
 """
-function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing, location=Location())
     results = MLIRType[memref, ]
     operands = Value[dynamicSizes..., symbolOperands..., ]
     owned_regions = Region[]
@@ -302,7 +302,7 @@ specified, guarantees alignment at least to that boundary. If not specified,
 an alignment on any convenient boundary compatible with the type will be
 chosen.
 """
-function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing, location=Location())
     results = MLIRType[memref, ]
     operands = Value[dynamicSizes..., symbolOperands..., ]
     owned_regions = Region[]
@@ -509,7 +509,7 @@ only if the corresponding start dimension in the source type is dynamic.
 Note: This op currently assumes that the inner strides are of the
 source/result layout map are the faster-varying ones.
 """
-function collapse_shape(src::Value; result::MLIRType, reassociation::Union{Attribute, NamedAttribute}, location=Location())
+function collapse_shape(src::Value; result::MLIRType, reassociation, location=Location())
     results = MLIRType[result, ]
     operands = Value[src, ]
     owned_regions = Region[]
@@ -734,7 +734,7 @@ group. Same for strides.
 Note: This op currently assumes that the inner strides are of the
 source/result layout map are the faster-varying ones.
 """
-function expand_shape(src::Value; result::MLIRType, reassociation::Union{Attribute, NamedAttribute}, location=Location())
+function expand_shape(src::Value; result::MLIRType, reassociation, location=Location())
     results = MLIRType[result, ]
     operands = Value[src, ]
     owned_regions = Region[]
@@ -864,7 +864,7 @@ undefined.
 %x = memref.get_global @foo : memref<2xf32>
 ```
 """
-function get_global(; result::MLIRType, name::Union{Attribute, NamedAttribute}, location=Location())
+function get_global(; result::MLIRType, name, location=Location())
     results = MLIRType[result, ]
     operands = Value[]
     owned_regions = Region[]
@@ -917,7 +917,7 @@ memref.global @z : memref<3xf16> = uninitialized
 memref.global constant @c : memref<2xi32> = dense<1, 4>
 ```
 """
-function global_(; sym_name::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, type::Union{Attribute, NamedAttribute}, initial_value=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, constant=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function global_(; sym_name, sym_visibility=nothing, type, initial_value=nothing, constant=nothing, alignment=nothing, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
@@ -994,7 +994,7 @@ in cache). The cache type specifier is either \'data\' or \'instr\'
 and specifies whether the prefetch is performed on data cache or on
 instruction cache.
 """
-function prefetch(memref::Value, indices::Vector{Value}; isWrite::Union{Attribute, NamedAttribute}, localityHint::Union{Attribute, NamedAttribute}, isDataCache::Union{Attribute, NamedAttribute}, location=Location())
+function prefetch(memref::Value, indices::Vector{Value}; isWrite, localityHint, isDataCache, location=Location())
     results = MLIRType[]
     operands = Value[memref, indices..., ]
     owned_regions = Region[]
@@ -1095,7 +1095,7 @@ behavior.
 %5 = memref.load %old[%index]   // undefined behavior
 ```
 """
-function realloc(source::Value, dynamicResultSize=nothing::Union{Nothing, Value}; result_0::MLIRType, alignment=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function realloc(source::Value, dynamicResultSize=nothing::Union{Nothing, Value}; result_0::MLIRType, alignment=nothing, location=Location())
     results = MLIRType[result_0, ]
     operands = Value[source, ]
     owned_regions = Region[]
@@ -1150,7 +1150,7 @@ means that `%dst`\'s descriptor will be:
 %dst.strides = %strides
 ```
 """
-function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets::Union{Attribute, NamedAttribute}, static_sizes::Union{Attribute, NamedAttribute}, static_strides::Union{Attribute, NamedAttribute}, location=Location())
+function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
     results = MLIRType[result, ]
     operands = Value[source, offsets..., sizes..., strides..., ]
     owned_regions = Region[]
@@ -1246,7 +1246,7 @@ techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
 """
-function store(value::Value, memref::Value, indices::Vector{Value}; nontemporal=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, location=Location())
+function store(value::Value, memref::Value, indices::Vector{Value}; nontemporal=nothing, location=Location())
     results = MLIRType[]
     operands = Value[value, memref, indices..., ]
     owned_regions = Region[]
@@ -1275,7 +1275,7 @@ transformation.
 %1 = memref.transpose %0 (i, j) -> (j, i) : memref<?x?xf32> to memref<?x?xf32, affine_map<(d0, d1)[s0] -> (d1 * s0 + d0)>>
 ```
 """
-function transpose(in::Value; result_0::MLIRType, permutation::Union{Attribute, NamedAttribute}, location=Location())
+function transpose(in::Value; result_0::MLIRType, permutation, location=Location())
     results = MLIRType[result_0, ]
     operands = Value[in, ]
     owned_regions = Region[]
@@ -1476,7 +1476,7 @@ Example 5:
   memref<8x16x4xf32> to memref<6x3xf32, strided<[4, 1], offset: 210>>
 ```
 """
-function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets::Union{Attribute, NamedAttribute}, static_sizes::Union{Attribute, NamedAttribute}, static_strides::Union{Attribute, NamedAttribute}, location=Location())
+function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
     results = MLIRType[result, ]
     operands = Value[source, offsets..., sizes..., strides..., ]
     owned_regions = Region[]

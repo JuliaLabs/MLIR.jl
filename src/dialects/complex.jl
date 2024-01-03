@@ -179,7 +179,7 @@ attribute containing the real and imaginary parts.
 %a = complex.constant [0.1, -1.0] : complex<f64>
 ```
 """
-function constant(; complex::MLIRType, value::Union{Attribute, NamedAttribute}, location=Location())
+function constant(; complex::MLIRType, value, location=Location())
     results = MLIRType[complex, ]
     operands = Value[]
     owned_regions = Region[]

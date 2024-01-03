@@ -42,7 +42,7 @@ scf.for %i = %c0 to %0 step %c1 {
 }
 ```
 """
-function index(; result=nothing::Union{Nothing, MLIRType}, dim::Union{Attribute, NamedAttribute}, location=Location())
+function index(; result=nothing::Union{Nothing, MLIRType}, dim, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
@@ -78,7 +78,7 @@ of the transformation calling the tiling to ensure that the provided
 sizes for each dimension make sense with respect to the semantic of
 softmax.
 """
-function softmax(input::Value, output::Value; result::Vector{MLIRType}, dimension::Union{Attribute, NamedAttribute}, location=Location())
+function softmax(input::Value, output::Value; result::Vector{MLIRType}, dimension, location=Location())
     results = MLIRType[result..., ]
     operands = Value[input, output, ]
     owned_regions = Region[]

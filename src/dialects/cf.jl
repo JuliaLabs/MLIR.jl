@@ -19,7 +19,7 @@ runtime to propagate the error to the user.
 assert %b, \"Expected ... to be true\"
 ```
 """
-function assert(arg::Value; msg::Union{Attribute, NamedAttribute}, location=Location())
+function assert(arg::Value; msg, location=Location())
     results = MLIRType[]
     operands = Value[arg, ]
     owned_regions = Region[]
@@ -129,7 +129,7 @@ switch %flag : i32, [
 ]
 ```
 """
-function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, case_operand_segments::Union{Attribute, NamedAttribute}, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
+function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = MLIRType[]
     operands = Value[flag, defaultOperands..., caseOperands..., ]
     owned_regions = Region[]

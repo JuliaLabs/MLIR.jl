@@ -51,7 +51,7 @@ symbol reference attribute named \"callee\".
 %2 = func.call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee::Union{Attribute, NamedAttribute}, location=Location())
+function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee, location=Location())
     results = MLIRType[result_0..., ]
     operands = Value[operands..., ]
     owned_regions = Region[]
@@ -87,7 +87,7 @@ the compiler is multithreaded, and disallowing SSA values to directly
 reference a function simplifies this
 ([rationale](../Rationale/Rationale.md#multithreading-the-compiler)).
 """
-function constant(; result_0::MLIRType, value::Union{Attribute, NamedAttribute}, location=Location())
+function constant(; result_0::MLIRType, value, location=Location())
     results = MLIRType[result_0, ]
     operands = Value[]
     owned_regions = Region[]
@@ -141,7 +141,7 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
 func.func @example_fn_attr() attributes {dialectName.attrName = false}
 ```
 """
-function func_(; sym_name::Union{Attribute, NamedAttribute}, function_type::Union{Attribute, NamedAttribute}, sym_visibility=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, arg_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, res_attrs=nothing::Union{Nothing, Union{Attribute, NamedAttribute}}, body::Region, location=Location())
+function func_(; sym_name, function_type, sym_visibility=nothing, arg_attrs=nothing, res_attrs=nothing, body::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[body, ]

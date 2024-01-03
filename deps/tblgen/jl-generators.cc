@@ -323,7 +323,6 @@ end
       {
         attributename = "attribute_" + std::to_string(i);
       }
-      std::string type = "Union{Attribute, NamedAttribute}";
 
       bool optional = named_attr.attr.isOptional() || named_attr.attr.hasDefaultValue();
 
@@ -332,14 +331,13 @@ end
         optionals += llvm::formatv(R"(({0} != nothing) && push!(attributes, namedattribute("{0}", {0}))
     )",
                                    attributename);
-        type = "Union{Nothing, " + type + "}";
         defaultvalue = "=nothing";
       }
       else
       {
         attributecontainer += "namedattribute(\"" + attributename + "\", " + attributename + "), ";
       }
-      attributearguments += attributename + defaultvalue + "::" + type + ", ";
+      attributearguments += attributename + defaultvalue + ", ";
     }
 
     std::string regionarguments = "";
