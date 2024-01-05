@@ -39,7 +39,7 @@ run(`$(clang()) $files $CXXFLAGS $LDFLAGS $extra $libs $output`)
 
 # cleaning up
 println("Cleaning up...")
-rm.(filter(contains(r".jl$"), readdir(joinpath(@__DIR__, "..", "src", "dialects"); join=true)))
+rm.(filter(endswith(".jl"), readdir(joinpath(@__DIR__, "..", "src", "dialects"); join=true)))
 
 # generate bindings
 println("Generating bindings...")
