@@ -1,4 +1,4 @@
-using LLVM_full_jll
+include("llvm_installer.jl")
 
 println("Environment")
 println("- llvm-config = $(LLVM_full_jll.get_llvm_config_path())")
