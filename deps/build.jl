@@ -1,6 +1,7 @@
-include("llvm_installer.jl")
+using LLVM_full_jll
 
 println("Environment")
+println("- LLVM_full_jll v$(pkgversion(LLVM_full_jll))")
 println("- llvm-config = $(LLVM_full_jll.get_llvm_config_path())")
 println("- clang = $(LLVM_full_jll.get_clang_path())")
 
