@@ -1,0 +1,5 @@
+[deps]
+LLVM_full_jll = "a3ccf953-465e-511d-b87f-60a6490c289d"
+
+[compat]
+LLVM_full_jll = "15"

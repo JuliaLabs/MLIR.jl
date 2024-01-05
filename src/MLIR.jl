@@ -38,11 +38,11 @@ end
 module IR
     import ..API: API
 
-    include("./IR/IR.jl")
-    include("./IR/state.jl")
+    include("IR/IR.jl")
+    include("IR/state.jl")
 end # module IR
 
-include("./Dialects.jl")
+include("Dialects.jl")
 
 
 end # module MLIR
