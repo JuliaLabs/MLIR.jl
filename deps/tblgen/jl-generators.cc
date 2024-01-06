@@ -200,11 +200,8 @@ end
     {
       functionname = functionname + "_";
     }
-    auto i = functionname.find('.');
-    if (i!=std::string::npos)
-    {
-      functionname.replace(i, 1, "_"); // replace . with _
-    }
+    // replace all .'s with _'s
+    std::replace(functionname.begin(), functionname.end(), '.', '_');
 
     std::string description = "";
     if (op.hasDescription())
@@ -213,6 +210,7 @@ end
     }
     bool inferrable = canInferType(op);
 
+    bool alreadykeyword = false; // set to true when first optional argument is encountered. This is used to insert a single semicolon (;) instead of a comma (,) as separator between positional and keyword arguments.
     for (size_t i = 0; i < op.getNumOperands(); i++)
     {
       const auto &named_operand = op.getOperand(i);
@@ -234,6 +232,7 @@ end
         type = "Vector{" + type + "}";
       }
 
+      std::string separator = ", ";
       if (optional)
       {
         optionals += llvm::formatv(R"(({0} != nothing) && push!(operands, {0}{1})
@@ -241,12 +240,22 @@ end
                                    operandname, (variadic ? "..." : ""));
         type = "Union{Nothing, " + type + "}";
         defaultvalue = "=nothing";
+
+        if (!alreadykeyword) {
+          alreadykeyword = true;
+          separator = "; ";
+        } 
       }
       else
       {
         operandcontainer += operandname + (variadic ? "..." : "") + ", ";
+        separator = (!alreadykeyword && i == op.getNumOperands() - 1) ? "; " : ", ";
       }
-      operandarguments += operandname + defaultvalue + "::" + type + (i == op.getNumOperands() - 1 ? "" : ", ");
+
+      operandarguments += operandname + defaultvalue + "::" + type + separator;
+    }
+    if (operandarguments == "") {
+      operandarguments = "; ";
     }
 
     if (op.getTrait("::mlir::OpTrait::AttrSizedOperandSegments"))
@@ -392,7 +401,7 @@ end
       successorarguments += successorname + defaultvalue + "::" + type + ", ";
     }
 
-    std::string arguments = operandarguments + "; " + resultarguments + attributearguments + regionarguments + successorarguments;
+    std::string arguments = operandarguments + resultarguments + attributearguments + regionarguments + successorarguments;
     std::string functionbody = llvm::formatv(functionbodytemplate, resultcontainer, operandcontainer, regioncontainer, successorcontainer, attributecontainer, optionals, opname, resultsexpression, resultinference);
 
     modulecontents += llvm::formatv(functiontemplate, functionname, arguments, functionbody, description);
