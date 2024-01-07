@@ -1,4 +1,6 @@
 using LLVM_full_jll
+using Pkg.Artifacts
+using UUIDs
 
 println("Environment")
 println("- llvm-config = $(LLVM_full_jll.get_llvm_config_path())")
@@ -16,26 +18,36 @@ println("- DIALECTS_PATH = $DIALECTS_PATH")
 
 # compile TableGen generator
 println("Compiling TableGen generator...")
-files = [joinpath(@__DIR__, "tblgen", "mlir-jl-tblgen.cc"), joinpath(@__DIR__, "tblgen", "jl-generators.cc")]
-output = ["-o", "mlir-jl-tblgen"]
-libs = ["-lLLVM", "-lMLIR", "-lMLIRTableGen", "-lLLVMTableGen"]
 
-extra = ["-rpath", joinpath(LLVM_full_jll.artifact_dir, "lib")]
-if Base.Sys.isapple()
-    isysroot = strip(read(`xcrun --show-sdk-path`, String))
-    append!(extra, [
-        "-isysroot",
-        isysroot,
-        "-lc++",
-    ])
-elseif Base.Sys.islinux()
-    append!(extra, [
-        "-lstdc++",
-    ])
+mktempdir() do tmpdir
+    files = [joinpath(@__DIR__, "tblgen", "mlir-jl-tblgen.cc"), joinpath(@__DIR__, "tblgen", "jl-generators.cc")]
+    output = ["-o", joinpath(tmpdir, "mlir-jl-tblgen")]
+    libs = ["-lLLVM", "-lMLIR", "-lMLIRTableGen", "-lLLVMTableGen"]
+
+    extra = ["-rpath", joinpath(LLVM_full_jll.artifact_dir, "lib")]
+    if Base.Sys.isapple()
+        isysroot = strip(read(`xcrun --show-sdk-path`, String))
+        append!(extra, [
+            "-isysroot",
+            isysroot,
+            "-lc++",
+        ])
+    elseif Base.Sys.islinux()
+        append!(extra, [
+            "-lstdc++",
+        ])
+    end
+    println("- extra flags = $extra")
+
+    run(`$(clang()) $files $CXXFLAGS $LDFLAGS $extra $libs $output`)
+
+    hash = create_artifact() do artifact_dir
+        rm(artifact_dir)
+        cp(tmpdir, artifact_dir)
+    end
+
+    bind_artifact!(joinpath(@__DIR__, "..", "Artifacts.toml"), "MLIR", hash; force=true)
 end
-println("- extra flags = $extra")
-
-run(`$(clang()) $files $CXXFLAGS $LDFLAGS $extra $libs $output`)
 
 # generate bindings
 println("Generating bindings...")
@@ -79,8 +91,11 @@ target_dialects = [
     # ("X86Vector.jl", "X86Vector/X86Vector.td"),
 ]
 
+cp(joinpath(@__DIR__, "..", "Artifacts.toml"), joinpath(@__DIR__, "Artifacts.toml"); force=true)
+bin = artifact"MLIR/mlir-jl-tblgen"
+
 for (file, path) in target_dialects
     output = joinpath(@__DIR__, "..", "src", "dialects", file)
-    run(`./mlir-jl-tblgen --generator=jl-op-defs $(joinpath(DIALECTS_PATH, path)) -I$INCLUDE_PATH -o $output`)
+    run(`$bin --generator=jl-op-defs $(joinpath(DIALECTS_PATH, path)) -I$INCLUDE_PATH -o $output`)
     println("- Generated \"$output\" from \"$path\"")
 end
