@@ -3,7 +3,8 @@ module MLIR
 import LLVM
 using Artifacts
 
-const generator = artifact"MLIR/mlir-jl-tblgen"
+tblgen_exe() = artifact"MLIR/mlir-jl-tblgen"
+tblgen_exe(f) = f(tblgen_exe())
 
 module API
     using CEnum
