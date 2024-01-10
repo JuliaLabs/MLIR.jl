@@ -11,13 +11,7 @@ function namedattribute(name, val::NamedAttribute)
     return val
 end
 
-operandsegmentsizes(segments) = namedattribute(
-    "operand_segment_sizes",
-    Attribute(API.mlirDenseI32ArrayGet(
-        context().context,
-        length(segments),
-        Int32.(segments)
-    )))
+operandsegmentsizes(segments) = namedattribute("operand_segment_sizes", Attribute(Int32.(segments)))
 
 let
     ver = string(LLVM.version().major)

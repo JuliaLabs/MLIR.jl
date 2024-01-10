@@ -13,8 +13,10 @@ end
 
 examples_dir = joinpath(@__DIR__, "..", "examples")
 examples = find_sources(examples_dir)
+
 filter!(file -> readline(file) != "# EXCLUDE FROM TESTING", examples)
 filter!(file -> !occursin("Kaleidoscope", file), examples)
+filter!(file -> VERSION >= v"1.10" || !contains(file, "brutus.jl"), examples)
 
 cd(examples_dir) do
     examples = relpath.(examples, Ref(examples_dir))
