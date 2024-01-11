@@ -30,7 +30,8 @@ using .API:
     MlirValue,
     MlirIdentifier,
     MlirPassManager,
-    MlirOpPassManager
+    MlirOpPassManager,
+    MlirAffineMap
 
 function print_callback(str::MlirStringRef, userdata)
     data = unsafe_wrap(Array, Base.convert(Ptr{Cchar}, str.data), str.length; own=false)
@@ -838,6 +839,24 @@ else
     struct TypeIDAllocator end
 
 end
+
+### AffineMap
+
+struct AffineMap
+    map::MlirAffineMap
+end
+
+function Base.show(io::IO, m::AffineMap)
+    c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
+    ref = Ref(io)
+    show(io, AffineMap)
+    print(io, "(#= ")
+    API.mlirAffineMapPrint(m, c_print_callback, ref)
+    print(io, " =#)")
+end
+
+Base.cconvert(::Type{API.MlirAffineMap}, m::AffineMap) = m
+Base.unsafe_convert(::Type{API.MlirAffineMap}, m::AffineMap) = m.map
 
 include("./Support.jl")
 include("./Pass.jl")
