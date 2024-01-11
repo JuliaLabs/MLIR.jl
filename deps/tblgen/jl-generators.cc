@@ -189,8 +189,9 @@ end
 
     auto opname = op.getOperationName();
     auto functionname = opname.substr(op.getDialectName().str().length() + 1); // get rid of "dialect." prefix.
-    // check if functionname colides with Julia keywords (for, return, if, continue, break, ...):
-    std::vector<std::string> reservedKeywords = {modulename, "for", "return", "if", "continue", "break", "module", "global"};
+    // check if functionname colides with Julia keywords or generated module name:
+    // https://docs.julialang.org/en/v1/base/base/#Keywords
+    std::vector<std::string> reservedKeywords = {modulename, "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
     if (std::find(reservedKeywords.begin(), reservedKeywords.end(), functionname) != reservedKeywords.end())
     {
       functionname = functionname + "_";
