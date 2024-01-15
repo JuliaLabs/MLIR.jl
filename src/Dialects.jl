@@ -1,5 +1,6 @@
 module Dialects
 
+import LLVM
 import ..IR: Attribute, NamedAttribute, context
 import ..API
 
@@ -18,7 +19,18 @@ operandsegmentsizes(segments) = namedattribute(
         Int32.(segments)
     )))
 
-include.(filter(contains(r".jl$"), readdir(joinpath(@__DIR__, "dialects"); join=true)))
+let
+    ver = string(LLVM.version().major)
+    dir = joinpath(@__DIR__, "Dialects", ver)
+    if !isdir(dir)
+        error("""The MLIR dialect bindings for v$ver do not exist.
+                You might need a newer version of MLIR.jl for this version of Julia.""")
+    end
+
+    for path in readdir(joinpath(@__DIR__, "Dialects"); join=true)
+        include(path)
+    end
+end
 
 # module arith
 
