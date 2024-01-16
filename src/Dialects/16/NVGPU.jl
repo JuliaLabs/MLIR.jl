@@ -173,7 +173,7 @@ function ldmatrix(srcMemref::Value, indices::Vector{Value}; res::MLIRType, trans
 end
 
 """
-`mma_sp.sync`
+`mma_sp_sync`
 
 The `nvgu.mma.sp.sync` operation performs a warp-distributed MMA operation
 where operand A is \"structured sparse\". In this case, the `matrixA` operand
@@ -196,7 +196,7 @@ nvgpu.mma.sp.sync (%a, %b, %c) metadata (%meta) {mmaShape = [16, 8, 32]} :
   (vector<4x2xf16>, vector<2x2xf16>, vector<2x2xf16>) -> vector<2x2xf16>
 ```
 """
-function mma_sp.sync(matrixA::Value, matrixB::Value, matrixC::Value, sparseMetadata::Value; res::MLIRType, mmaShape, sparsitySelector=nothing, tf32Enabled=nothing, location=Location())
+function mma_sp_sync(matrixA::Value, matrixB::Value, matrixC::Value, sparseMetadata::Value; res::MLIRType, mmaShape, sparsitySelector=nothing, tf32Enabled=nothing, location=Location())
     results = MLIRType[res, ]
     operands = Value[matrixA, matrixB, matrixC, sparseMetadata, ]
     owned_regions = Region[]
