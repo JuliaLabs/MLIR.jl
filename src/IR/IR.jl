@@ -217,37 +217,6 @@ function Base.eltype(type::MLIRType)
     end
 end
 
-function show_inner(io::IO, type::MLIRType)
-    if API.mlirTypeIsAInteger(type)
-        is_signless = API.mlirIntegerTypeIsSignless(type)
-        is_signed = API.mlirIntegerTypeIsSigned(type)
-
-        width = API.mlirIntegerTypeGetWidth(type)
-        t = if is_signed
-            "si"
-        elseif is_signless
-            "i"
-        else
-            "u"
-        end
-        print(io, t, width)
-    elseif API.mlirTypeIsAF64(type)
-        print(io, "f64")
-    elseif API.mlirTypeIsAF32(type)
-        print(io, "f32")
-    elseif API.mlirTypeIsARankedTensor(type)
-        print(io, "tensor<")
-        s = size(type)
-        print(io, join(s, "x"), "x")
-        show_inner(io, eltype(type))
-        print(io, ">")
-    elseif API.mlirTypeIsAIndex(type)
-        print(io, "index")
-    else
-        print(io, "unknown")
-    end
-end
-
 function Base.show(io::IO, type::MLIRType)
     print(io, "MLIRType(#= ")
     c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))

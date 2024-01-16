@@ -33,7 +33,7 @@ Base.cconvert(::Type{API.MlirStringRef}, s::AbstractString) =
 # Directly create `MlirStringRef` instead of adding an extra ccall.
 function Base.unsafe_convert(::Type{API.MlirStringRef}, s::Union{Symbol, String, AbstractVector{UInt8}})
     p = Base.unsafe_convert(Ptr{Cchar}, s)
-    return API.MlirStringRef(p, length(s))
+    return API.MlirStringRef(p, sizeof(s))
 end
 
 module IR
