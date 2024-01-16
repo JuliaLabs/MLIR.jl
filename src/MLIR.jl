@@ -11,7 +11,7 @@ module API
     using MLIR_jll
     let
         ver = string(LLVM.version().major)
-        dir = joinpath(@__DIR__, "..", "lib", ver)
+        dir = joinpath(@__DIR__, "API", ver)
         if !isdir(dir)
             error("""The MLIR API bindings for v$ver do not exist.
                     You might need a newer version of MLIR.jl for this version of Julia.""")

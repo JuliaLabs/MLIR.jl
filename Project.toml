@@ -12,5 +12,5 @@ mlir_jl_tblgen_jll = "3dcf74f3-6bc3-597e-9d13-043388c3118a"
 [compat]
 CEnum = "0.4"
 LLVM = "5"
-MLIR_jll = "14,15"
+MLIR_jll = "14,15,16"
 julia = "1.9"
