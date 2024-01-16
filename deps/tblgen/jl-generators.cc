@@ -138,7 +138,11 @@ namespace
 bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
                      llvm::raw_ostream &os)
 {
+#if LLVM_VERSION_MAJOR >= 16
   std::vector<llvm::Record *> opdefs = recordKeeper.getAllDerivedDefinitionsIfDefined("Op");
+#else
+  std::vector<llvm::Record *> opdefs = recordKeeper.getAllDerivedDefinitions("Op");
+#endif
 
   const char *moduleTemplate = R"(module {0}
 
