@@ -363,7 +363,7 @@ that specify the memory allocator to be used to obtain storage for private value
 The optional \$proc_bind_val attribute controls the thread affinity for the execution
 of the parallel region.
 """
-function parallel(if_expr_var=nothing::Union{Nothing, Value}, num_threads_var=nothing::Union{Nothing, Value}, private_vars::Vector{Value}, firstprivate_vars::Vector{Value}, shared_vars::Vector{Value}, copyin_vars::Vector{Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}; default_val=nothing, proc_bind_val=nothing, region::Region, location=Location())
+function parallel(if_expr_var=nothing::Union{Nothing, Value}; num_threads_var=nothing::Union{Nothing, Value}, private_vars::Vector{Value}, firstprivate_vars::Vector{Value}, shared_vars::Vector{Value}, copyin_vars::Vector{Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, default_val=nothing, proc_bind_val=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[private_vars..., firstprivate_vars..., shared_vars..., copyin_vars..., allocate_vars..., allocators_vars..., ]
     owned_regions = Region[region, ]
@@ -534,7 +534,7 @@ even if the target task is not yet completed.
 
 TODO:  private, map, is_device_ptr, firstprivate, depend, defaultmap, in_reduction
 """
-function target(if_expr=nothing::Union{Nothing, Value}, device=nothing::Union{Nothing, Value}, thread_limit=nothing::Union{Nothing, Value}; nowait=nothing, region::Region, location=Location())
+function target(if_expr=nothing::Union{Nothing, Value}; device=nothing::Union{Nothing, Value}, thread_limit=nothing::Union{Nothing, Value}, nowait=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[region, ]

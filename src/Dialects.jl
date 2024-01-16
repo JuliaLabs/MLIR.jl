@@ -27,26 +27,9 @@ let
                 You might need a newer version of MLIR.jl for this version of Julia.""")
     end
 
-    for path in readdir(joinpath(@__DIR__, "Dialects"); join=true)
+    for path in readdir(dir; join=true)
         include(path)
     end
 end
-
-# module arith
-
-# module Predicates
-# const eq = 0
-# const ne = 1
-# const slt = 2
-# const sle = 3
-# const sgt = 4
-# const sge = 5
-# const ult = 6
-# const ule = 7
-# const ugt = 8
-# const uge = 9
-# end
-
-# end # module arith
 
 end # module Dialects

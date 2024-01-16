@@ -56,7 +56,7 @@ return %0 : tensor<?x?xf32, #SparseMatrix>
   : tensor<?x?xf32, #SparseMatrix>
 ```
 """
-function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing, Value}, size_hint=nothing::Union{Nothing, Value}; result::MLIRType, memory_space=nothing, location=Location())
+function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing, Value}; size_hint=nothing::Union{Nothing, Value}, result::MLIRType, memory_space=nothing, location=Location())
     results = MLIRType[result, ]
     operands = Value[dynamic_sizes..., ]
     owned_regions = Region[]

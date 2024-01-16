@@ -530,7 +530,7 @@ module attributes {gpu.container_module} {
 }
 ```
 """
-function launch_func(asyncDependencies::Vector{Value}, gridSizeX::Value, gridSizeY::Value, gridSizeZ::Value, blockSizeX::Value, blockSizeY::Value, blockSizeZ::Value, dynamicSharedMemorySize=nothing::Union{Nothing, Value}, kernelOperands::Vector{Value}; asyncToken=nothing::Union{Nothing, MLIRType}, kernel, location=Location())
+function launch_func(asyncDependencies::Vector{Value}, gridSizeX::Value, gridSizeY::Value, gridSizeZ::Value, blockSizeX::Value, blockSizeY::Value, blockSizeZ::Value, dynamicSharedMemorySize=nothing::Union{Nothing, Value}; kernelOperands::Vector{Value}, asyncToken=nothing::Union{Nothing, MLIRType}, kernel, location=Location())
     results = MLIRType[]
     operands = Value[asyncDependencies..., gridSizeX, gridSizeY, gridSizeZ, blockSizeX, blockSizeY, blockSizeZ, kernelOperands..., ]
     owned_regions = Region[]

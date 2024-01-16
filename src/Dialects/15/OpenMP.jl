@@ -416,7 +416,7 @@ threads complete.
 The optional \$proc_bind_val attribute controls the thread affinity for the execution
 of the parallel region.
 """
-function parallel(if_expr_var=nothing::Union{Nothing, Value}, num_threads_var=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, reduction_vars::Vector{Value}; reductions=nothing, proc_bind_val=nothing, region::Region, location=Location())
+function parallel(if_expr_var=nothing::Union{Nothing, Value}; num_threads_var=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, reduction_vars::Vector{Value}, reductions=nothing, proc_bind_val=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[allocate_vars..., allocators_vars..., reduction_vars..., ]
     owned_regions = Region[region, ]
@@ -654,7 +654,7 @@ even if the target task is not yet completed.
 
 TODO:  map, is_device_ptr, depend, defaultmap, in_reduction
 """
-function target(if_expr=nothing::Union{Nothing, Value}, device=nothing::Union{Nothing, Value}, thread_limit=nothing::Union{Nothing, Value}; nowait=nothing, region::Region, location=Location())
+function target(if_expr=nothing::Union{Nothing, Value}; device=nothing::Union{Nothing, Value}, thread_limit=nothing::Union{Nothing, Value}, nowait=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[region, ]
@@ -813,7 +813,7 @@ construct. Thus, the taskloop construct creates an implicit taskgroup
 region. If the `nogroup` clause is present, no implicit taskgroup region is
 created.
 """
-function taskloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vector{Value}, if_expr=nothing::Union{Nothing, Value}, final_expr=nothing::Union{Nothing, Value}, in_reduction_vars::Vector{Value}, reduction_vars::Vector{Value}, priority=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, grain_size=nothing::Union{Nothing, Value}, num_tasks=nothing::Union{Nothing, Value}; inclusive=nothing, untied=nothing, mergeable=nothing, in_reductions=nothing, reductions=nothing, nogroup=nothing, region::Region, location=Location())
+function taskloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vector{Value}, if_expr=nothing::Union{Nothing, Value}; final_expr=nothing::Union{Nothing, Value}, in_reduction_vars::Vector{Value}, reduction_vars::Vector{Value}, priority=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, grain_size=nothing::Union{Nothing, Value}, num_tasks=nothing::Union{Nothing, Value}, inclusive=nothing, untied=nothing, mergeable=nothing, in_reductions=nothing, reductions=nothing, nogroup=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[lowerBound..., upperBound..., step..., in_reduction_vars..., reduction_vars..., allocate_vars..., allocators_vars..., ]
     owned_regions = Region[region, ]
@@ -882,7 +882,7 @@ The `allocators_vars` and `allocate_vars` arguments are a variadic list of
 values that specify the memory allocator to be used to obtain storage for
 private values.
 """
-function task(if_expr=nothing::Union{Nothing, Value}, final_expr=nothing::Union{Nothing, Value}, in_reduction_vars::Vector{Value}, priority=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}; untied=nothing, mergeable=nothing, in_reductions=nothing, region::Region, location=Location())
+function task(if_expr=nothing::Union{Nothing, Value}; final_expr=nothing::Union{Nothing, Value}, in_reduction_vars::Vector{Value}, priority=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, untied=nothing, mergeable=nothing, in_reductions=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[in_reduction_vars..., allocate_vars..., allocators_vars..., ]
     owned_regions = Region[region, ]

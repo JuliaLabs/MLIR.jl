@@ -23,7 +23,7 @@ acc.data present(%a: memref<10x10xf32>, %b: memref<10x10xf32>,
 }
 ```
 """
-function data(ifCond=nothing::Union{Nothing, Value}, copyOperands::Vector{Value}, copyinOperands::Vector{Value}, copyinReadonlyOperands::Vector{Value}, copyoutOperands::Vector{Value}, copyoutZeroOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, noCreateOperands::Vector{Value}, presentOperands::Vector{Value}, deviceptrOperands::Vector{Value}, attachOperands::Vector{Value}; defaultAttr=nothing, region::Region, location=Location())
+function data(ifCond=nothing::Union{Nothing, Value}; copyOperands::Vector{Value}, copyinOperands::Vector{Value}, copyinReadonlyOperands::Vector{Value}, copyoutOperands::Vector{Value}, copyoutZeroOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, noCreateOperands::Vector{Value}, presentOperands::Vector{Value}, deviceptrOperands::Vector{Value}, attachOperands::Vector{Value}, defaultAttr=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[copyOperands..., copyinOperands..., copyinReadonlyOperands..., copyoutOperands..., copyoutZeroOperands..., createOperands..., createZeroOperands..., noCreateOperands..., presentOperands..., deviceptrOperands..., attachOperands..., ]
     owned_regions = Region[region, ]
@@ -52,7 +52,7 @@ The \"acc.enter_data\" operation represents the OpenACC enter data directive.
 acc.enter_data create(%d1 : memref<10xf32>) attributes {async}
 ```
 """
-function enter_data(ifCond=nothing::Union{Nothing, Value}, asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, copyinOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, attachOperands::Vector{Value}; async=nothing, wait=nothing, location=Location())
+function enter_data(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, copyinOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, attachOperands::Vector{Value}, async=nothing, wait=nothing, location=Location())
     results = MLIRType[]
     operands = Value[waitOperands..., copyinOperands..., createOperands..., createZeroOperands..., attachOperands..., ]
     owned_regions = Region[]
@@ -84,7 +84,7 @@ The \"acc.exit_data\" operation represents the OpenACC exit data directive.
 acc.exit_data delete(%d1 : memref<10xf32>) attributes {async}
 ```
 """
-function exit_data(ifCond=nothing::Union{Nothing, Value}, asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, copyoutOperands::Vector{Value}, deleteOperands::Vector{Value}, detachOperands::Vector{Value}; async=nothing, wait=nothing, finalize=nothing, location=Location())
+function exit_data(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, copyoutOperands::Vector{Value}, deleteOperands::Vector{Value}, detachOperands::Vector{Value}, async=nothing, wait=nothing, finalize=nothing, location=Location())
     results = MLIRType[]
     operands = Value[waitOperands..., copyoutOperands..., deleteOperands..., detachOperands..., ]
     owned_regions = Region[]
@@ -119,7 +119,7 @@ acc.init
 acc.init device_num(%dev1 : i32)
 ```
 """
-function init(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}; location=Location())
+function init(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union{Nothing, Value}; ifCond=nothing::Union{Nothing, Value}, location=Location())
     results = MLIRType[]
     operands = Value[deviceTypeOperands..., ]
     owned_regions = Region[]
@@ -157,7 +157,7 @@ acc.loop gang vector {
 } attributes { collapse = 3 }
 ```
 """
-function loop(gangNum=nothing::Union{Nothing, Value}, gangStatic=nothing::Union{Nothing, Value}, workerNum=nothing::Union{Nothing, Value}, vectorLength=nothing::Union{Nothing, Value}, tileOperands::Vector{Value}, privateOperands::Vector{Value}, reductionOperands::Vector{Value}; results::Vector{MLIRType}, collapse=nothing, seq=nothing, independent=nothing, auto_=nothing, reductionOp=nothing, exec_mapping=nothing, region::Region, location=Location())
+function loop(gangNum=nothing::Union{Nothing, Value}; gangStatic=nothing::Union{Nothing, Value}, workerNum=nothing::Union{Nothing, Value}, vectorLength=nothing::Union{Nothing, Value}, tileOperands::Vector{Value}, privateOperands::Vector{Value}, reductionOperands::Vector{Value}, results::Vector{MLIRType}, collapse=nothing, seq=nothing, independent=nothing, auto_=nothing, reductionOp=nothing, exec_mapping=nothing, region::Region, location=Location())
     results = MLIRType[results..., ]
     operands = Value[tileOperands..., privateOperands..., reductionOperands..., ]
     owned_regions = Region[region, ]
@@ -198,7 +198,7 @@ acc.parallel num_gangs(%c10) num_workers(%c10)
 }
 ```
 """
-function parallel(async=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, numGangs=nothing::Union{Nothing, Value}, numWorkers=nothing::Union{Nothing, Value}, vectorLength=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}, selfCond=nothing::Union{Nothing, Value}, reductionOperands::Vector{Value}, copyOperands::Vector{Value}, copyinOperands::Vector{Value}, copyinReadonlyOperands::Vector{Value}, copyoutOperands::Vector{Value}, copyoutZeroOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, noCreateOperands::Vector{Value}, presentOperands::Vector{Value}, devicePtrOperands::Vector{Value}, attachOperands::Vector{Value}, gangPrivateOperands::Vector{Value}, gangFirstPrivateOperands::Vector{Value}; asyncAttr=nothing, waitAttr=nothing, selfAttr=nothing, reductionOp=nothing, defaultAttr=nothing, region::Region, location=Location())
+function parallel(async=nothing::Union{Nothing, Value}; waitOperands::Vector{Value}, numGangs=nothing::Union{Nothing, Value}, numWorkers=nothing::Union{Nothing, Value}, vectorLength=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}, selfCond=nothing::Union{Nothing, Value}, reductionOperands::Vector{Value}, copyOperands::Vector{Value}, copyinOperands::Vector{Value}, copyinReadonlyOperands::Vector{Value}, copyoutOperands::Vector{Value}, copyoutZeroOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, noCreateOperands::Vector{Value}, presentOperands::Vector{Value}, devicePtrOperands::Vector{Value}, attachOperands::Vector{Value}, gangPrivateOperands::Vector{Value}, gangFirstPrivateOperands::Vector{Value}, asyncAttr=nothing, waitAttr=nothing, selfAttr=nothing, reductionOp=nothing, defaultAttr=nothing, region::Region, location=Location())
     results = MLIRType[]
     operands = Value[waitOperands..., reductionOperands..., copyOperands..., copyinOperands..., copyinReadonlyOperands..., copyoutOperands..., copyoutZeroOperands..., createOperands..., createZeroOperands..., noCreateOperands..., presentOperands..., devicePtrOperands..., attachOperands..., gangPrivateOperands..., gangFirstPrivateOperands..., ]
     owned_regions = Region[region, ]
@@ -238,7 +238,7 @@ acc.shutdown
 acc.shutdown device_num(%dev1 : i32)
 ```
 """
-function shutdown(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}; location=Location())
+function shutdown(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union{Nothing, Value}; ifCond=nothing::Union{Nothing, Value}, location=Location())
     results = MLIRType[]
     operands = Value[deviceTypeOperands..., ]
     owned_regions = Region[]
@@ -293,7 +293,7 @@ add to \$hostOperands.
 acc.update device(%d1 : memref<10xf32>) attributes {async}
 ```
 """
-function update(ifCond=nothing::Union{Nothing, Value}, asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, deviceTypeOperands::Vector{Value}, hostOperands::Vector{Value}, deviceOperands::Vector{Value}; async=nothing, wait=nothing, ifPresent=nothing, location=Location())
+function update(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, deviceTypeOperands::Vector{Value}, hostOperands::Vector{Value}, deviceOperands::Vector{Value}, async=nothing, wait=nothing, ifPresent=nothing, location=Location())
     results = MLIRType[]
     operands = Value[waitOperands..., deviceTypeOperands..., hostOperands..., deviceOperands..., ]
     owned_regions = Region[]
@@ -328,7 +328,7 @@ acc.wait(%value1: index)
 acc.wait() async(%async1: i32)
 ```
 """
-function wait(waitOperands::Vector{Value}, asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}; async=nothing, location=Location())
+function wait(waitOperands::Vector{Value}, asyncOperand=nothing::Union{Nothing, Value}; waitDevnum=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}, async=nothing, location=Location())
     results = MLIRType[]
     operands = Value[waitOperands..., ]
     owned_regions = Region[]

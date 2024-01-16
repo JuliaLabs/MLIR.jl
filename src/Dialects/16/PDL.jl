@@ -442,7 +442,7 @@ pdl.replace %root with (%vals : !pdl.range<value>)
 pdl.replace %root with %otherOp
 ```
 """
-function replace(opValue::Value, replOperation=nothing::Union{Nothing, Value}, replValues::Vector{Value}; location=Location())
+function replace(opValue::Value, replOperation=nothing::Union{Nothing, Value}; replValues::Vector{Value}, location=Location())
     results = MLIRType[]
     operands = Value[opValue, replValues..., ]
     owned_regions = Region[]
@@ -580,7 +580,7 @@ pdl.rewrite {
 }
 ```
 """
-function rewrite(root=nothing::Union{Nothing, Value}, externalArgs::Vector{Value}; name=nothing, bodyRegion::Region, location=Location())
+function rewrite(root=nothing::Union{Nothing, Value}; externalArgs::Vector{Value}, name=nothing, bodyRegion::Region, location=Location())
     results = MLIRType[]
     operands = Value[externalArgs..., ]
     owned_regions = Region[bodyRegion, ]

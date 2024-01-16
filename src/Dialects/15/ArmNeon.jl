@@ -43,20 +43,20 @@ corresponding entry of `a`:
 res[i] := a[i] + dot_product(b[i, ...], c[i, ...])
 ```
 """
-function 2d_sdot(a::Value, b::Value, c::Value; res::MLIRType, location=Location())
-    results = MLIRType[res, ]
-    operands = Value[a, b, c, ]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+# function 2d_sdot(a::Value, b::Value, c::Value; res::MLIRType, location=Location())
+#     results = MLIRType[res, ]
+#     operands = Value[a, b, c, ]
+#     owned_regions = Region[]
+#     successors = Block[]
+#     attributes = NamedAttribute[]
     
-    create_operation(
-        "arm_neon.2d.sdot", location;
-        operands, owned_regions, successors, attributes,
-        results=results,
-        result_inference=false
-    )
-end
+#     create_operation(
+#         "arm_neon.2d.sdot", location;
+#         operands, owned_regions, successors, attributes,
+#         results=results,
+#         result_inference=false
+#     )
+# end
 
 """
 `intr_sdot`

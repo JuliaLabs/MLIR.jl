@@ -6,10 +6,10 @@ import ...API
 
 
 """
-`avx_intr.dp.ps.256`
+`avx_intr_dp_ps_256`
 
 """
-function avx_intr.dp.ps.256(a::Value, b::Value, c::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx_intr_dp_ps_256(a::Value, b::Value, c::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[a, b, c, ]
     owned_regions = Region[]
@@ -26,7 +26,7 @@ function avx_intr.dp.ps.256(a::Value, b::Value, c::Value; res=nothing::Union{Not
 end
 
 """
-`avx_intr.dot`
+`avx_intr_dot`
 
 Computes the 4-way dot products of the lower and higher parts of the source
 vectors and broadcasts the two results to the lower and higher elements of
@@ -43,7 +43,7 @@ dot product of the two source vectors.
 %d = arith.addf %1, %2 : f32
 ```
 """
-function avx_intr.dot(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx_intr_dot(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[a, b, ]
     owned_regions = Region[]
@@ -60,10 +60,10 @@ function avx_intr.dot(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType},
 end
 
 """
-`avx512_intr.mask.compress`
+`avx512_intr_mask_compress`
 
 """
-function avx512_intr.mask.compress(a::Value, src::Value, k::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_compress(a::Value, src::Value, k::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[a, src, k, ]
     owned_regions = Region[]
@@ -80,7 +80,7 @@ function avx512_intr.mask.compress(a::Value, src::Value, k::Value; res=nothing::
 end
 
 """
-`avx512_mask.compress`
+`avx512_mask_compress`
 
 The mask.compress op is an AVX512 specific op that can lower to the
 `llvm.mask.compress` instruction. Instead of `src`, a constant vector
@@ -94,7 +94,7 @@ Contiguously store the active integer/floating-point elements in `a` (those
 with their respective bit set in writemask `k`) to `dst`, and pass through the
 remaining elements from `src`.
 """
-function avx512_mask.compress(k::Value, a::Value, src=nothing::Union{Nothing, Value}; dst=nothing::Union{Nothing, MLIRType}, constant_src=nothing, location=Location())
+function avx512_mask_compress(k::Value, a::Value, src=nothing::Union{Nothing, Value}; dst=nothing::Union{Nothing, MLIRType}, constant_src=nothing, location=Location())
     results = MLIRType[]
     operands = Value[k, a, ]
     owned_regions = Region[]
@@ -113,7 +113,7 @@ function avx512_mask.compress(k::Value, a::Value, src=nothing::Union{Nothing, Va
 end
 
 """
-`avx512_mask.rndscale`
+`avx512_mask_rndscale`
 
 The mask.rndscale op is an AVX512 specific op that can lower to the proper
 LLVMAVX512 operation: `llvm.mask.rndscale.ps.512` or
@@ -126,7 +126,7 @@ Round packed floating-point elements in `a` to the number of fraction bits
 specified by `imm`, and store the results in `dst` using writemask `k`
 (elements are copied from src when the corresponding mask bit is not set).
 """
-function avx512_mask.rndscale(src::Value, k::Value, a::Value, imm::Value, rounding::Value; dst=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_mask_rndscale(src::Value, k::Value, a::Value, imm::Value, rounding::Value; dst=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[src, k, a, imm, rounding, ]
     owned_regions = Region[]
@@ -143,10 +143,10 @@ function avx512_mask.rndscale(src::Value, k::Value, a::Value, imm::Value, roundi
 end
 
 """
-`avx512_intr.mask.rndscale.pd.512`
+`avx512_intr_mask_rndscale_pd_512`
 
 """
-function avx512_intr.mask.rndscale.pd.512(src::Value, k::Value, a::Value, imm::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_rndscale_pd_512(src::Value, k::Value, a::Value, imm::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[src, k, a, imm, rounding, ]
     owned_regions = Region[]
@@ -163,10 +163,10 @@ function avx512_intr.mask.rndscale.pd.512(src::Value, k::Value, a::Value, imm::V
 end
 
 """
-`avx512_intr.mask.rndscale.ps.512`
+`avx512_intr_mask_rndscale_ps_512`
 
 """
-function avx512_intr.mask.rndscale.ps.512(src::Value, k::Value, a::Value, imm::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_rndscale_ps_512(src::Value, k::Value, a::Value, imm::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[src, k, a, imm, rounding, ]
     owned_regions = Region[]
@@ -183,7 +183,7 @@ function avx512_intr.mask.rndscale.ps.512(src::Value, k::Value, a::Value, imm::V
 end
 
 """
-`avx512_mask.scalef`
+`avx512_mask_scalef`
 
 The `mask.scalef` op is an AVX512 specific op that can lower to the proper
 LLVMAVX512 operation: `llvm.mask.scalef.ps.512` or
@@ -196,7 +196,7 @@ Scale the packed floating-point elements in `a` using values from `b`, and
 store the results in `dst` using writemask `k` (elements are copied from src
 when the corresponding mask bit is not set).
 """
-function avx512_mask.scalef(src::Value, a::Value, b::Value, k::Value, rounding::Value; dst=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_mask_scalef(src::Value, a::Value, b::Value, k::Value, rounding::Value; dst=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[src, a, b, k, rounding, ]
     owned_regions = Region[]
@@ -213,10 +213,10 @@ function avx512_mask.scalef(src::Value, a::Value, b::Value, k::Value, rounding::
 end
 
 """
-`avx512_intr.mask.scalef.pd.512`
+`avx512_intr_mask_scalef_pd_512`
 
 """
-function avx512_intr.mask.scalef.pd.512(src::Value, a::Value, b::Value, k::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_scalef_pd_512(src::Value, a::Value, b::Value, k::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[src, a, b, k, rounding, ]
     owned_regions = Region[]
@@ -233,10 +233,10 @@ function avx512_intr.mask.scalef.pd.512(src::Value, a::Value, b::Value, k::Value
 end
 
 """
-`avx512_intr.mask.scalef.ps.512`
+`avx512_intr_mask_scalef_ps_512`
 
 """
-function avx512_intr.mask.scalef.ps.512(src::Value, a::Value, b::Value, k::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_scalef_ps_512(src::Value, a::Value, b::Value, k::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[src, a, b, k, rounding, ]
     owned_regions = Region[]
@@ -253,10 +253,10 @@ function avx512_intr.mask.scalef.ps.512(src::Value, a::Value, b::Value, k::Value
 end
 
 """
-`avx_intr.rsqrt.ps.256`
+`avx_intr_rsqrt_ps_256`
 
 """
-function avx_intr.rsqrt.ps.256(a::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx_intr_rsqrt_ps_256(a::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
     operands = Value[a, ]
     owned_regions = Region[]
@@ -293,10 +293,10 @@ function avx_rsqrt(a::Value; b=nothing::Union{Nothing, MLIRType}, location=Locat
 end
 
 """
-`avx512_intr.vp2intersect.d.512`
+`avx512_intr_vp2intersect_d_512`
 
 """
-function avx512_intr.vp2intersect.d.512(a::Value, b::Value; res::MLIRType, location=Location())
+function avx512_intr_vp2intersect_d_512(a::Value, b::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[a, b, ]
     owned_regions = Region[]
@@ -345,10 +345,10 @@ function avx512_vp2intersect(a::Value, b::Value; k1=nothing::Union{Nothing, MLIR
 end
 
 """
-`avx512_intr.vp2intersect.q.512`
+`avx512_intr_vp2intersect_q_512`
 
 """
-function avx512_intr.vp2intersect.q.512(a::Value, b::Value; res::MLIRType, location=Location())
+function avx512_intr_vp2intersect_q_512(a::Value, b::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[a, b, ]
     owned_regions = Region[]
