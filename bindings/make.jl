@@ -102,11 +102,14 @@ for (julia_version, llvm_version) in julia_llvm
         platform["llvm_version"] = string(llvm_version.major)
         platform["julia_version"] = string(julia_version)
 
-        # NOTE LLVM version is implicitly resolved by compatibility with the Julia version
-        dependencies = PkgSpec[PkgSpec(; name="LLVM_full_jll")]
+        dependencies = PkgSpec[
+            PkgSpec(; name="LLVM_full_jll", version=llvm_version),
+            PkgSpec(; name="mlir_jl_tblgen_jll")
+            ]
 
         artifact_paths = setup_dependencies(prefix, dependencies, platform; verbose=true)
 
+        mlir_jl_tblgen = joinpath(destdir(prefix, platform), "bin", "mlir-jl-tblgen")
         include_dir = joinpath(destdir(prefix, platform), "include")
 
         # generate MLIR API bindings
@@ -143,7 +146,7 @@ for (julia_version, llvm_version) in julia_llvm
                 "-I", include_dir,
                 "-o", joinpath(@__DIR__, "..", "src", "Dialects", string(llvm_version.major), binding),
             ]
-            run(`./mlir-jl-tblgen $flags`) # TODO replace for artifact
+            run(`$mlir_jl_tblgen $flags`)
             println("- Generated \"$binding\" from \"$td\"")
         end
     end
