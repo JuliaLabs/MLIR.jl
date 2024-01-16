@@ -356,6 +356,11 @@ function ArrayAttribute(attributes::Vector{Attribute})
         API.mlirArrayAttrGet(context(), length(attributes), attributes),
     )
 end
+function DenseArrayAttribute(values::AbstractVector{Int32})
+    Attribute(
+        API.mlirDenseI32ArrayGet(context(), length(values), collect(values))
+    )
+end
 function DenseArrayAttribute(values::AbstractVector{Int})
     Attribute(
         API.mlirDenseI64ArrayGet(context(), length(values), collect(values))
