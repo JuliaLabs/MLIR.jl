@@ -80,12 +80,12 @@ MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
 
 # TODO add C-API for translateModuleToLLVMIR
 
-jit = if LLVM.version() <= v"15"
-    MLIR.API.mlirExecutionEngineCreate(
-        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
-else
+jit = if LLVM.version() >= v"16"
     MLIR.API.mlirExecutionEngineCreate(
         mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL, #= enableObjectDump =# false)
+else
+    MLIR.API.mlirExecutionEngineCreate(
+        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
 end
 
 if jit == C_NULL
