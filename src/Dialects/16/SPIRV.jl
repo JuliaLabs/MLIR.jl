@@ -5354,7 +5354,7 @@ spirv.GlobalVariable @var2 bind(1, 2) : !spirv.ptr<f32, Uniform>
 spirv.GlobalVariable @var3 built_in(\"GlobalInvocationId\") : !spirv.ptr<vector<3xi32>, Input>
 ```
 """
-function GlobalVariable(; type, sym_name, initializer=nothing, location=nothing, binding=nothing, descriptor_set=nothing, builtin=nothing, location=Location())
+function GlobalVariable(; type, sym_name, initializer=nothing, binding=nothing, descriptor_set=nothing, builtin=nothing, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
