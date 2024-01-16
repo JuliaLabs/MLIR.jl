@@ -497,10 +497,10 @@ function intr_copysign(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType}
 end
 
 """
-`intr_coro.align`
+`intr_coro_align`
 
 """
-function intr_coro.align(; res::MLIRType, location=Location())
+function intr_coro_align(; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[]
     owned_regions = Region[]
@@ -516,10 +516,10 @@ function intr_coro.align(; res::MLIRType, location=Location())
 end
 
 """
-`intr_coro.begin`
+`intr_coro_begin`
 
 """
-function intr_coro.begin(token::Value, mem::Value; res::MLIRType, location=Location())
+function intr_coro_begin(token::Value, mem::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[token, mem, ]
     owned_regions = Region[]
@@ -535,10 +535,10 @@ function intr_coro.begin(token::Value, mem::Value; res::MLIRType, location=Locat
 end
 
 """
-`intr_coro.end`
+`intr_coro_end`
 
 """
-function intr_coro.end(handle::Value, unwind::Value; res::MLIRType, location=Location())
+function intr_coro_end(handle::Value, unwind::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[handle, unwind, ]
     owned_regions = Region[]
@@ -554,10 +554,10 @@ function intr_coro.end(handle::Value, unwind::Value; res::MLIRType, location=Loc
 end
 
 """
-`intr_coro.free`
+`intr_coro_free`
 
 """
-function intr_coro.free(id::Value, handle::Value; res::MLIRType, location=Location())
+function intr_coro_free(id::Value, handle::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[id, handle, ]
     owned_regions = Region[]
@@ -573,10 +573,10 @@ function intr_coro.free(id::Value, handle::Value; res::MLIRType, location=Locati
 end
 
 """
-`intr_coro.id`
+`intr_coro_id`
 
 """
-function intr_coro.id(align::Value, promise::Value, coroaddr::Value, fnaddrs::Value; res::MLIRType, location=Location())
+function intr_coro_id(align::Value, promise::Value, coroaddr::Value, fnaddrs::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[align, promise, coroaddr, fnaddrs, ]
     owned_regions = Region[]
@@ -592,10 +592,10 @@ function intr_coro.id(align::Value, promise::Value, coroaddr::Value, fnaddrs::Va
 end
 
 """
-`intr_coro.resume`
+`intr_coro_resume`
 
 """
-function intr_coro.resume(handle::Value; location=Location())
+function intr_coro_resume(handle::Value; location=Location())
     results = MLIRType[]
     operands = Value[handle, ]
     owned_regions = Region[]
@@ -611,10 +611,10 @@ function intr_coro.resume(handle::Value; location=Location())
 end
 
 """
-`intr_coro.save`
+`intr_coro_save`
 
 """
-function intr_coro.save(handle::Value; res::MLIRType, location=Location())
+function intr_coro_save(handle::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[handle, ]
     owned_regions = Region[]
@@ -630,10 +630,10 @@ function intr_coro.save(handle::Value; res::MLIRType, location=Location())
 end
 
 """
-`intr_coro.size`
+`intr_coro_size`
 
 """
-function intr_coro.size(; res::MLIRType, location=Location())
+function intr_coro_size(; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[]
     owned_regions = Region[]
@@ -649,10 +649,10 @@ function intr_coro.size(; res::MLIRType, location=Location())
 end
 
 """
-`intr_coro.suspend`
+`intr_coro_suspend`
 
 """
-function intr_coro.suspend(save::Value, final::Value; res::MLIRType, location=Location())
+function intr_coro_suspend(save::Value, final::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[save, final, ]
     owned_regions = Region[]
@@ -746,10 +746,10 @@ function intr_ctpop(in::Value; res=nothing::Union{Nothing, MLIRType}, location=L
 end
 
 """
-`intr_eh.typeid.for`
+`intr_eh_typeid_for`
 
 """
-function intr_eh.typeid.for(type_info::Value; res::MLIRType, location=Location())
+function intr_eh_typeid_for(type_info::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[type_info, ]
     owned_regions = Region[]
@@ -1223,10 +1223,10 @@ function getelementptr(base::Value, indices::Vector{Value}; res::MLIRType, struc
 end
 
 """
-`intr_get.active.lane.mask`
+`intr_get_active_lane_mask`
 
 """
-function intr_get.active.lane.mask(base::Value, n::Value; res::MLIRType, location=Location())
+function intr_get_active_lane_mask(base::Value, n::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[base, n, ]
     owned_regions = Region[]
@@ -1732,10 +1732,10 @@ function intr_log(in::Value; res=nothing::Union{Nothing, MLIRType}, location=Loc
 end
 
 """
-`intr_masked.load`
+`intr_masked_load`
 
 """
-function intr_masked.load(data::Value, mask::Value, pass_thru::Vector{Value}; res::MLIRType, alignment, location=Location())
+function intr_masked_load(data::Value, mask::Value, pass_thru::Vector{Value}; res::MLIRType, alignment, location=Location())
     results = MLIRType[res, ]
     operands = Value[data, mask, pass_thru..., ]
     owned_regions = Region[]
@@ -1751,10 +1751,10 @@ function intr_masked.load(data::Value, mask::Value, pass_thru::Vector{Value}; re
 end
 
 """
-`intr_masked.store`
+`intr_masked_store`
 
 """
-function intr_masked.store(value::Value, data::Value, mask::Value; alignment, location=Location())
+function intr_masked_store(value::Value, data::Value, mask::Value; alignment, location=Location())
     results = MLIRType[]
     operands = Value[value, data, mask, ]
     owned_regions = Region[]
@@ -1770,10 +1770,10 @@ function intr_masked.store(value::Value, data::Value, mask::Value; alignment, lo
 end
 
 """
-`intr_matrix.column.major.load`
+`intr_matrix_column_major_load`
 
 """
-function intr_matrix.column.major.load(data::Value, stride::Value; res::MLIRType, isVolatile, rows, columns, location=Location())
+function intr_matrix_column_major_load(data::Value, stride::Value; res::MLIRType, isVolatile, rows, columns, location=Location())
     results = MLIRType[res, ]
     operands = Value[data, stride, ]
     owned_regions = Region[]
@@ -1789,10 +1789,10 @@ function intr_matrix.column.major.load(data::Value, stride::Value; res::MLIRType
 end
 
 """
-`intr_matrix.column.major.store`
+`intr_matrix_column_major_store`
 
 """
-function intr_matrix.column.major.store(matrix::Value, data::Value, stride::Value; isVolatile, rows, columns, location=Location())
+function intr_matrix_column_major_store(matrix::Value, data::Value, stride::Value; isVolatile, rows, columns, location=Location())
     results = MLIRType[]
     operands = Value[matrix, data, stride, ]
     owned_regions = Region[]
@@ -1808,10 +1808,10 @@ function intr_matrix.column.major.store(matrix::Value, data::Value, stride::Valu
 end
 
 """
-`intr_matrix.multiply`
+`intr_matrix_multiply`
 
 """
-function intr_matrix.multiply(lhs::Value, rhs::Value; res::MLIRType, lhs_rows, lhs_columns, rhs_columns, location=Location())
+function intr_matrix_multiply(lhs::Value, rhs::Value; res::MLIRType, lhs_rows, lhs_columns, rhs_columns, location=Location())
     results = MLIRType[res, ]
     operands = Value[lhs, rhs, ]
     owned_regions = Region[]
@@ -1827,10 +1827,10 @@ function intr_matrix.multiply(lhs::Value, rhs::Value; res::MLIRType, lhs_rows, l
 end
 
 """
-`intr_matrix.transpose`
+`intr_matrix_transpose`
 
 """
-function intr_matrix.transpose(matrix::Value; res::MLIRType, rows, columns, location=Location())
+function intr_matrix_transpose(matrix::Value; res::MLIRType, rows, columns, location=Location())
     results = MLIRType[res, ]
     operands = Value[matrix, ]
     owned_regions = Region[]
@@ -1886,10 +1886,10 @@ function intr_maximum(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType},
 end
 
 """
-`intr_memcpy.inline`
+`intr_memcpy_inline`
 
 """
-function intr_memcpy.inline(dst::Value, src::Value, len::Value, isVolatile::Value; location=Location())
+function intr_memcpy_inline(dst::Value, src::Value, len::Value, isVolatile::Value; location=Location())
     results = MLIRType[]
     operands = Value[dst, src, len, isVolatile, ]
     owned_regions = Region[]
@@ -2217,10 +2217,10 @@ function return_(args::Vector{Value}; location=Location())
 end
 
 """
-`intr_sadd.with.overflow`
+`intr_sadd_with_overflow`
 
 """
-function intr_sadd.with.overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
+function intr_sadd_with_overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -2334,10 +2334,10 @@ function intr_smin(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType}, lo
 end
 
 """
-`intr_smul.with.overflow`
+`intr_smul_with_overflow`
 
 """
-function intr_smul.with.overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
+function intr_smul_with_overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -2373,10 +2373,10 @@ function srem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-`intr_ssub.with.overflow`
+`intr_ssub_with_overflow`
 
 """
-function intr_ssub.with.overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
+function intr_ssub_with_overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -2615,10 +2615,10 @@ function trunc(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-`intr_uadd.with.overflow`
+`intr_uadd_with_overflow`
 
 """
-function intr_uadd.with.overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
+function intr_uadd_with_overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -2713,10 +2713,10 @@ function intr_umin(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType}, lo
 end
 
 """
-`intr_umul.with.overflow`
+`intr_umul_with_overflow`
 
 """
-function intr_umul.with.overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
+function intr_umul_with_overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -2752,10 +2752,10 @@ function urem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
 end
 
 """
-`intr_usub.with.overflow`
+`intr_usub_with_overflow`
 
 """
-function intr_usub.with.overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
+function intr_usub_with_overflow(operand_0::Value, operand_1::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -2859,10 +2859,10 @@ function zext(arg::Value; res::MLIRType, location=Location())
 end
 
 """
-`intr_masked.compressstore`
+`intr_masked_compressstore`
 
 """
-function intr_masked.compressstore(operand_0::Value, operand_1::Value, operand_2::Value; location=Location())
+function intr_masked_compressstore(operand_0::Value, operand_1::Value, operand_2::Value; location=Location())
     results = MLIRType[]
     operands = Value[operand_0, operand_1, operand_2, ]
     owned_regions = Region[]
@@ -2878,10 +2878,10 @@ function intr_masked.compressstore(operand_0::Value, operand_1::Value, operand_2
 end
 
 """
-`intr_masked.expandload`
+`intr_masked_expandload`
 
 """
-function intr_masked.expandload(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_masked_expandload(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, operand_2, ]
     owned_regions = Region[]
@@ -2897,10 +2897,10 @@ function intr_masked.expandload(operand_0::Value, operand_1::Value, operand_2::V
 end
 
 """
-`intr_masked.gather`
+`intr_masked_gather`
 
 """
-function intr_masked.gather(ptrs::Value, mask::Value, pass_thru::Vector{Value}; res::MLIRType, alignment, location=Location())
+function intr_masked_gather(ptrs::Value, mask::Value, pass_thru::Vector{Value}; res::MLIRType, alignment, location=Location())
     results = MLIRType[res, ]
     operands = Value[ptrs, mask, pass_thru..., ]
     owned_regions = Region[]
@@ -2916,10 +2916,10 @@ function intr_masked.gather(ptrs::Value, mask::Value, pass_thru::Vector{Value}; 
 end
 
 """
-`intr_masked.scatter`
+`intr_masked_scatter`
 
 """
-function intr_masked.scatter(value::Value, ptrs::Value, mask::Value; alignment, location=Location())
+function intr_masked_scatter(value::Value, ptrs::Value, mask::Value; alignment, location=Location())
     results = MLIRType[]
     operands = Value[value, ptrs, mask, ]
     owned_regions = Region[]
@@ -2935,10 +2935,10 @@ function intr_masked.scatter(value::Value, ptrs::Value, mask::Value; alignment, 
 end
 
 """
-`intr_vector.reduce.add`
+`intr_vector_reduce_add`
 
 """
-function intr_vector.reduce.add(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_add(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -2954,10 +2954,10 @@ function intr_vector.reduce.add(operand_0::Value; res::MLIRType, location=Locati
 end
 
 """
-`intr_vector.reduce.and`
+`intr_vector_reduce_and`
 
 """
-function intr_vector.reduce.and(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_and(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -2973,10 +2973,10 @@ function intr_vector.reduce.and(operand_0::Value; res::MLIRType, location=Locati
 end
 
 """
-`intr_vector.reduce.fadd`
+`intr_vector_reduce_fadd`
 
 """
-function intr_vector.reduce.fadd(operand_0::Value, operand_1::Value; res::MLIRType, reassoc=nothing, location=Location())
+function intr_vector_reduce_fadd(operand_0::Value, operand_1::Value; res::MLIRType, reassoc=nothing, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -2993,10 +2993,10 @@ function intr_vector.reduce.fadd(operand_0::Value, operand_1::Value; res::MLIRTy
 end
 
 """
-`intr_vector.reduce.fmax`
+`intr_vector_reduce_fmax`
 
 """
-function intr_vector.reduce.fmax(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_fmax(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3012,10 +3012,10 @@ function intr_vector.reduce.fmax(operand_0::Value; res::MLIRType, location=Locat
 end
 
 """
-`intr_vector.reduce.fmin`
+`intr_vector_reduce_fmin`
 
 """
-function intr_vector.reduce.fmin(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_fmin(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3031,10 +3031,10 @@ function intr_vector.reduce.fmin(operand_0::Value; res::MLIRType, location=Locat
 end
 
 """
-`intr_vector.reduce.fmul`
+`intr_vector_reduce_fmul`
 
 """
-function intr_vector.reduce.fmul(operand_0::Value, operand_1::Value; res::MLIRType, reassoc=nothing, location=Location())
+function intr_vector_reduce_fmul(operand_0::Value, operand_1::Value; res::MLIRType, reassoc=nothing, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, operand_1, ]
     owned_regions = Region[]
@@ -3051,10 +3051,10 @@ function intr_vector.reduce.fmul(operand_0::Value, operand_1::Value; res::MLIRTy
 end
 
 """
-`intr_vector.reduce.mul`
+`intr_vector_reduce_mul`
 
 """
-function intr_vector.reduce.mul(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_mul(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3070,10 +3070,10 @@ function intr_vector.reduce.mul(operand_0::Value; res::MLIRType, location=Locati
 end
 
 """
-`intr_vector.reduce.or`
+`intr_vector_reduce_or`
 
 """
-function intr_vector.reduce.or(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_or(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3089,10 +3089,10 @@ function intr_vector.reduce.or(operand_0::Value; res::MLIRType, location=Locatio
 end
 
 """
-`intr_vector.reduce.smax`
+`intr_vector_reduce_smax`
 
 """
-function intr_vector.reduce.smax(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_smax(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3108,10 +3108,10 @@ function intr_vector.reduce.smax(operand_0::Value; res::MLIRType, location=Locat
 end
 
 """
-`intr_vector.reduce.smin`
+`intr_vector_reduce_smin`
 
 """
-function intr_vector.reduce.smin(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_smin(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3127,10 +3127,10 @@ function intr_vector.reduce.smin(operand_0::Value; res::MLIRType, location=Locat
 end
 
 """
-`intr_vector.reduce.umax`
+`intr_vector_reduce_umax`
 
 """
-function intr_vector.reduce.umax(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_umax(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3146,10 +3146,10 @@ function intr_vector.reduce.umax(operand_0::Value; res::MLIRType, location=Locat
 end
 
 """
-`intr_vector.reduce.umin`
+`intr_vector_reduce_umin`
 
 """
-function intr_vector.reduce.umin(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_umin(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
@@ -3165,10 +3165,10 @@ function intr_vector.reduce.umin(operand_0::Value; res::MLIRType, location=Locat
 end
 
 """
-`intr_vector.reduce.xor`
+`intr_vector_reduce_xor`
 
 """
-function intr_vector.reduce.xor(operand_0::Value; res::MLIRType, location=Location())
+function intr_vector_reduce_xor(operand_0::Value; res::MLIRType, location=Location())
     results = MLIRType[res, ]
     operands = Value[operand_0, ]
     owned_regions = Region[]
