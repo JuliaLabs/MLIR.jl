@@ -16,9 +16,8 @@ function mlir_dialects(version::VersionNumber)
             ("Async.jl", "Async/IR/AsyncOps.td"),
             ("Bufferization.jl", "Bufferization/IR/BufferizationOps.td"),
             ("Complex.jl", "Complex/IR/ComplexOps.td"),
-            ("DLTI.jl", "DLTI/DLTI.td"),
+            # ("DLTI.jl", "DLTI/DLTI.td"), fails on v15
             ("EmitC.jl", "EmitC/IR/EmitC.td"),
-            ("GPU.jl", "GPU/IR/GPUOps.td"),
             ("LLVMIR.jl", "LLVMIR/LLVMOps.td"),
             ("Linalg.jl", "Linalg/IR/LinalgOps.td"), # TODO include LinalgStructuredOps.td
             ("Math.jl", "Math/IR/MathOps.td"),
@@ -28,7 +27,6 @@ function mlir_dialects(version::VersionNumber)
             ("PDL.jl", "PDL/IR/PDLOps.td"),
             ("PDLInterp.jl", "PDLInterp/IR/PDLInterpOps.td"),
             ("Quant.jl", "Quant/QuantOps.td"),
-            ("SCF.jl", "SCF/IR/SCFOps.td"),
             ("SPIRV.jl", "SPIRV/IR/SPIRVOps.td"),
             ("Shape.jl", "Shape/IR/ShapeOps.td"),
             ("SparseTensor.jl", "SparseTensor/IR/SparseTensorOps.td"),
@@ -41,7 +39,9 @@ function mlir_dialects(version::VersionNumber)
 
     if v"14" <= version < v"15"
         append!(dialects, [
-            ("StandardOps.jl", "Standard/IR/StandardOps.td"),
+            ("GPU.jl", "GPU/GPUOps.td"),
+            ("SCF.jl", "SCF/SCFOps.td"),
+            ("StandardOps.jl", "StandardOps/IR/Ops.td"),
         ])
     end
 
@@ -53,6 +53,8 @@ function mlir_dialects(version::VersionNumber)
 
     if version >= v"15"
         append!(dialects, [
+            ("GPU.jl", "GPU/IR/GPUOps.td"),
+            ("SCF.jl", "SCF/IR/SCFOps.td"),
             ("AMDGPU.jl", "AMDGPU/AMDGPU.td"),
             ("ControlFlow.jl", "ControlFlow/IR/ControlFlowOps.td"),
             ("Func.jl", "Func/IR/FuncOps.td"),
