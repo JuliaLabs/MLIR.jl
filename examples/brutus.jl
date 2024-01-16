@@ -292,7 +292,7 @@ fptr = IR.context!(IR.Context()) do
 
     IR.run!(pm, mod)
 
-    jit = if LLVM.version().major <= 15
+    jit = if LLVM.version() <= v"15"
         MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
     else
         MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL, false)

@@ -13,7 +13,7 @@ end
 
 operandsegmentsizes(segments) =
     namedattribute("operand_segment_sizes",
-        LLVM.version().major <= 15 ?
+        LLVM.version() <= v"15" ?
             Attribute(Int32.(segments)) :
             DenseArrayAttribute(Int32.(segments))
     )
