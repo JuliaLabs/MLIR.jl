@@ -5354,14 +5354,14 @@ spirv.GlobalVariable @var2 bind(1, 2) : !spirv.ptr<f32, Uniform>
 spirv.GlobalVariable @var3 built_in(\"GlobalInvocationId\") : !spirv.ptr<vector<3xi32>, Input>
 ```
 """
-function GlobalVariable(; type, sym_name, initializer=nothing, binding=nothing, descriptor_set=nothing, builtin=nothing, location=Location())
+function GlobalVariable(; type, sym_name, initializer=nothing, location_=nothing, binding=nothing, descriptor_set=nothing, builtin=nothing, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("type", type), namedattribute("sym_name", sym_name), ]
     (initializer != nothing) && push!(attributes, namedattribute("initializer", initializer))
-    (location != nothing) && push!(attributes, namedattribute("location", location))
+    (location != nothing) && push!(attributes, namedattribute("location", location_))
     (binding != nothing) && push!(attributes, namedattribute("binding", binding))
     (descriptor_set != nothing) && push!(attributes, namedattribute("descriptor_set", descriptor_set))
     (builtin != nothing) && push!(attributes, namedattribute("builtin", builtin))

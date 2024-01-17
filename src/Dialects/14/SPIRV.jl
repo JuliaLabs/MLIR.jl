@@ -4502,14 +4502,14 @@ spv.GlobalVariable @var2 bind(1, 2) : !spv.ptr<f32, Uniform>
 spv.GlobalVariable @var3 built_in(\"GlobalInvocationId\") : !spv.ptr<vector<3xi32>, Input>
 ```
 """
-function GlobalVariable(; type, sym_name, initializer=nothing, binding=nothing, descriptorSet=nothing, builtin=nothing, location=Location())
+function GlobalVariable(; type, sym_name, initializer=nothing, location_=nothing, binding=nothing, descriptorSet=nothing, builtin=nothing, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("type", type), namedattribute("sym_name", sym_name), ]
     (initializer != nothing) && push!(attributes, namedattribute("initializer", initializer))
-    (location != nothing) && push!(attributes, namedattribute("location", location))
+    (location != nothing) && push!(attributes, namedattribute("location", location_))
     (binding != nothing) && push!(attributes, namedattribute("binding", binding))
     (descriptorSet != nothing) && push!(attributes, namedattribute("descriptorSet", descriptorSet))
     (builtin != nothing) && push!(attributes, namedattribute("builtin", builtin))
