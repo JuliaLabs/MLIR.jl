@@ -1,7 +1,6 @@
 module MLIR
 
 import LLVM
-import mlir_jl_tblgen_jll
 
 module API
     using CEnum
