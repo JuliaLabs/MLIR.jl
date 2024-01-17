@@ -270,7 +270,7 @@ end
 
 # ---
 
-using Test
+using Test, LLVM
 using MLIR.IR, MLIR
 
 fptr = IR.context!(IR.Context()) do
@@ -292,7 +292,11 @@ fptr = IR.context!(IR.Context()) do
 
     IR.run!(pm, mod)
 
-    jit = MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
+    jit = if LLVM.version() >= v"16"
+        MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL, false)
+    else
+        MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
+    end
     MLIR.API.mlirExecutionEngineLookup(jit, "pow")
 end
 

@@ -16,7 +16,6 @@ function registerAllUpstreamDialects!(ctx)
     return nothing
 end
 
-# TODO: Fix for LLVM 15
 function lowerModuleToLLVM(ctx, mod)
     pm = MLIR.API.mlirPassManagerCreate(ctx)
     if LLVM.version() >= v"15"
@@ -26,7 +25,7 @@ function lowerModuleToLLVM(ctx, mod)
     end
     opm = MLIR.API.mlirPassManagerGetNestedUnder(pm, op)
     if LLVM.version() >= v"15"
-                MLIR.API.mlirPassManagerAddOwnedPass(pm,
+        MLIR.API.mlirPassManagerAddOwnedPass(pm,
             MLIR.API.mlirCreateConversionConvertFuncToLLVM()
         )
     else
@@ -34,9 +33,16 @@ function lowerModuleToLLVM(ctx, mod)
             MLIR.API.mlirCreateConversionConvertStandardToLLVM()
         )
     end
-    MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
-        MLIR.API.mlirCreateConversionConvertArithmeticToLLVM()
-    )
+
+    if LLVM.version() >= v"16"
+        MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
+            MLIR.API.mlirCreateConversionArithToLLVMConversionPass()
+        )
+    else
+        MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
+            MLIR.API.mlirCreateConversionConvertArithmeticToLLVM()
+        )
+    end
     status = MLIR.API.mlirPassManagerRun(pm, mod)
     # undefined symbol: mlirLogicalResultIsFailure
     if status.value == 0
@@ -74,8 +80,13 @@ MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
 
 # TODO add C-API for translateModuleToLLVMIR
 
-jit = MLIR.API.mlirExecutionEngineCreate(
-    mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
+jit = if LLVM.version() >= v"16"
+    MLIR.API.mlirExecutionEngineCreate(
+        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL, #= enableObjectDump =# false)
+else
+    MLIR.API.mlirExecutionEngineCreate(
+        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
+end
 
 if jit == C_NULL
     error("Execution engine creation failed")
