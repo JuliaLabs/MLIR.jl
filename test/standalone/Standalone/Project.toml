@@ -1,0 +1,8 @@
+name = "Standalone"
+uuid = "581bf5d4-2b26-4c71-b8d4-1c51a2421152"
+authors = ["Valentin Churavy <v.churavy@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+MLIR = "bfde9dd4-8f40-4a1e-be09-1475335e1c92"
+Preferences = "21216c6a-2e73-6563-6e65-726566657250"
