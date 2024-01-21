@@ -12,3 +12,10 @@ include("executionengine.jl")
 
     @test s == reconstructed
 end
+
+@testset "show" begin
+    MLIR.IR.context!(MLIR.IR.Context()) do
+        dialect = MLIR.IR.get_or_load_dialect!("llvm")
+        @test sprint(show, dialect) == "Dialect(\"llvm\")"
+    end
+end

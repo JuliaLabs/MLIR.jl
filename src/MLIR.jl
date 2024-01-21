@@ -35,6 +35,10 @@ function Base.unsafe_convert(::Type{API.MlirStringRef}, s::Union{Symbol, String,
     return API.MlirStringRef(p, sizeof(s))
 end
 
+function Base.String(str::API.MlirStringRef)
+    Base.unsafe_string(pointer(str.data), str.length)
+end
+
 module IR
     import ..API: API
 
