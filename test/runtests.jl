@@ -15,7 +15,7 @@ end
 
 @testset "show" begin
     MLIR.IR.context!(MLIR.IR.Context()) do
-        dialect = MLIR.IR.get_or_load_dialect!("func")
-        @test sprint(show, dialect) == "Dialect(\"func\")"
+        dialect = MLIR.IR.get_or_load_dialect!("llvm")
+        @test sprint(show, dialect) == "Dialect(\"llvm\")"
     end
 end
