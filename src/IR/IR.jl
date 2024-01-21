@@ -582,7 +582,7 @@ location(operation) = Location(API.mlirOperationGetLocation(operation))
 name(operation) = String(API.mlirOperationGetName(operation))
 block(operation) = Block(API.mlirOperationGetBlock(operation), false)
 parent_operation(operation) = Operation(API.mlirOperationGetParentOperation(operation), false)
-dialect(operation) = first(split(get_name(operation), '.')) |> Symbol
+dialect(operation) = first(split(name(operation), '.')) |> Symbol
 
 function get_first_region(op::Operation)
     reg = iterate(RegionIterator(op))
