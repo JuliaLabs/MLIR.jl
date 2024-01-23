@@ -760,6 +760,7 @@ end
 
 MModule(loc::Location=Location()) =
     MModule(API.mlirModuleCreateEmpty(loc))
+MModule(op::Operation) = MModule(API.mlirModuleFromOperation(op))
 get_operation(module_) = Operation(API.mlirModuleGetOperation(module_), false)
 get_body(module_) = Block(API.mlirModuleGetBody(module_), false)
 get_first_child_op(mod::MModule) = get_first_child_op(get_operation(mod))
