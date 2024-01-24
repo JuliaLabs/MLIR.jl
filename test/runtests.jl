@@ -3,6 +3,7 @@ using Test
 
 include("examples.jl")
 include("executionengine.jl")
+include("ir.jl")
 
 @testset "MlirStringRef conversion" begin
     s = "mlir 😄 α γ 🍕"
