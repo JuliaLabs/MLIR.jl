@@ -3,7 +3,7 @@ export
     OperationState,
     Location,
     Context,
-    MModule,
+    Module,
     Value,
     MLIRType,
     Region,
@@ -749,34 +749,34 @@ Base.unsafe_convert(::Type{MlirRegion}, region::Region) = region.region
 
 ### Module
 
-mutable struct MModule
+mutable struct Module
     module_::MlirModule
 
-    MModule(module_) = begin
-        @assert !mlirIsNull(module_) "cannot create MModule with null MlirModule"
+    Module(module_) = begin
+        @assert !mlirIsNull(module_) "cannot create Module with null MlirModule"
         finalizer(API.mlirModuleDestroy, new(module_))
     end
 end
 
-MModule(loc::Location=Location()) =
-    MModule(API.mlirModuleCreateEmpty(loc))
-MModule(op::Operation) = MModule(API.mlirModuleFromOperation(lose_ownership!(op)))
+Module(loc::Location=Location()) =
+    Module(API.mlirModuleCreateEmpty(loc))
+Module(op::Operation) = Module(API.mlirModuleFromOperation(lose_ownership!(op)))
 get_operation(module_) = Operation(API.mlirModuleGetOperation(module_), false)
 get_body(module_) = Block(API.mlirModuleGetBody(module_), false)
-get_first_child_op(mod::MModule) = get_first_child_op(get_operation(mod))
+get_first_child_op(mod::Module) = get_first_child_op(get_operation(mod))
 
-Base.convert(::Type{MlirModule}, module_::MModule) = module_.module_
-Base.parse(::Type{MModule}, module_) = MModule(API.mlirModuleCreateParse(context(), module_), context())
+Base.convert(::Type{MlirModule}, module_::Module) = module_.module_
+Base.parse(::Type{Module}, module_) = Module(API.mlirModuleCreateParse(context(), module_), context())
 
 macro mlir_str(code)
     quote
         ctx = Context()
-        parse(MModule, code)
+        parse(Module, code)
     end
 end
 
-function Base.show(io::IO, module_::MModule)
-    println(io, "MModule:")
+function Base.show(io::IO, module_::Module)
+    println(io, "Module:")
     show(io, get_operation(module_))
 end
 

@@ -276,7 +276,7 @@ using MLIR.IR, MLIR
 fptr = IR.context!(IR.Context()) do
     op = Brutus.code_mlir(pow, Tuple{Int,Int})
 
-    mod = MModule(Location())
+    mod = IR.Module(Location())
     body = IR.get_body(mod)
     push!(body, op)
 
