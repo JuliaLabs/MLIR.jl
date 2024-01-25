@@ -14,7 +14,11 @@ end
 
 @testset "Module construction from operation" begin
     IR.context!(IR.Context()) do
-        op = builtin.module_(bodyRegion=IR.Region())
+        if LLVM.version() >= v"15"
+            op = builtin.module_(bodyRegion=IR.Region())
+        else
+            op = builtin.module_(body=IR.Region())
+        end
         mod = IR.Module(op)
         op = IR.get_operation(mod)
 
