@@ -3,7 +3,6 @@ export
     OperationState,
     Location,
     Context,
-    Module,
     Value,
     MLIRType,
     Region,
