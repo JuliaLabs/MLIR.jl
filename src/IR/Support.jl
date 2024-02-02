@@ -129,5 +129,5 @@ function verifyall(operation::Operation; debug=false)
         end
     end
 end
-verifyall(module_::MModule) = get_operation(module_) |> verifyall
+verifyall(module_::IR.Module) = get_operation(module_) |> verifyall
 
