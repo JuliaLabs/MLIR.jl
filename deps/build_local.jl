@@ -58,17 +58,13 @@ cmake() do cmake_path
     run(`$cmake_path --build $(build_dir) --target install`)
 end
 
-# discover built binaries
-built_libs = filter(readdir(joinpath(scratch_dir, "lib"))) do file
-    endswith(file, ".$(Libdl.dlext)")
-end
-lib_path = joinpath(scratch_dir, "lib", only(built_libs))
-isfile(lib_path) || error("Could not find library $lib_path in build directory")
+bin_path = joinpath(scratch_dir, "bin", only(readdir(joinpath(scratch_dir, "bin"))))
+isfile(bin_path) || error("Could not find executable $bin_path in build directory")
 
-# tell LLVM.jl to load our library instead of the default artifact one
+# tell LLVM.jl to load our executable instead of the default artifact one
 set_preferences!(
     joinpath(dirname(@__DIR__), "LocalPreferences.toml"),
     "mlir_jl_tblgen_jll",
-    "mlir_jl_tblgen" => lib_path;
+    "mlir_jl_tblgen" => bin_path;
     force=true,
 )
