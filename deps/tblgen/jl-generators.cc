@@ -133,7 +133,7 @@ namespace
     return dialect_name;
   }
 
-  std::string sanitizeName(std::string name) {
+  std::string sanitizeName(std::string name, std::optional<std::string> modulename = std::nullopt) {
     // check if name starts with digit:
     if (std::isdigit(name[0]))
     {
@@ -142,6 +142,9 @@ namespace
     // check if name colides with Julia keywords, generated module name, or "location":
     // https://docs.julialang.org/en/v1/base/base/#Keywords
     std::vector<std::string> reservedKeywords = {"location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
+    if (modulename.has_value()) {
+      reservedKeywords.push_back(modulename.value());
+    }
     if (std::find(reservedKeywords.begin(), reservedKeywords.end(), name) != reservedKeywords.end())
     {
       name = name + "_";
@@ -226,7 +229,7 @@ end
 
     auto opname = op.getOperationName();
     auto functionname = opname.substr(op.getDialectName().str().length() + 1); // get rid of "dialect." prefix.
-    functionname = sanitizeName(functionname);
+    functionname = sanitizeName(functionname, modulename);
 
     std::string description = "";
     if (op.hasDescription())
