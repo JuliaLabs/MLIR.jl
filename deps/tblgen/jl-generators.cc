@@ -133,7 +133,7 @@ namespace
     return dialect_name;
   }
 
-  std::string sanitizeName(std::string name) {
+  std::string sanitizeName(std::string name, std::optional<std::string> modulename = std::nullopt) {
     // check if name starts with digit:
     if (std::isdigit(name[0]))
     {
@@ -142,6 +142,9 @@ namespace
     // check if name colides with Julia keywords, generated module name, or "location":
     // https://docs.julialang.org/en/v1/base/base/#Keywords
     std::vector<std::string> reservedKeywords = {"location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
+    if (modulename.has_value()) {
+      reservedKeywords.push_back(modulename.value());
+    }
     if (std::find(reservedKeywords.begin(), reservedKeywords.end(), name) != reservedKeywords.end())
     {
       name = name + "_";
@@ -164,7 +167,7 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
 
   const char *moduleTemplate = R"(module {0}
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -179,7 +182,7 @@ function {0}({1}location=Location())
 end
 )";      // 0: functionname, 1: functionarguments, 2: functionbody
   const char *functionbodytemplate = R"(results = MLIRType[{0}]
-    operands = Value[{1}]
+    operands = API.MlirValue[{1}]
     owned_regions = Region[{2}]
     successors = Block[{3}]
     attributes = NamedAttribute[{4}]
@@ -211,7 +214,7 @@ end
 
     auto opname = op.getOperationName();
     auto functionname = opname.substr(op.getDialectName().str().length() + 1); // get rid of "dialect." prefix.
-    functionname = sanitizeName(functionname);
+    functionname = sanitizeName(functionname, modulename);
 
     std::string description = "";
     if (op.hasDescription())
@@ -232,23 +235,15 @@ end
       }
       operandname = sanitizeName(operandname);
 
-      std::string type = "Value";
-
       bool optional = named_operand.isOptional();
       bool variadic = named_operand.isVariadic();
-
-      if (variadic)
-      {
-        type = "Vector{" + type + "}";
-      }
 
       std::string separator = ", ";
       if (optional)
       {
-        optionals += llvm::formatv(R"(({0} != nothing) && push!(operands, {0}{1})
+        optionals += llvm::formatv(R"(({0} != nothing) && push!(operands, get_value{2}{0}{1})
     )",
-                                   operandname, (variadic ? "..." : ""));
-        type = "Union{Nothing, " + type + "}";
+                                   operandname, (variadic ? "..." : ""), (variadic ? "." : ""));
         defaultvalue = "=nothing";
 
         if (!alreadykeyword) {
@@ -258,11 +253,11 @@ end
       }
       else
       {
-        operandcontainer += operandname + (variadic ? "..." : "") + ", ";
+        operandcontainer += llvm::formatv(R"(get_value{0}({1}){2}, )", (variadic ? "." : ""), operandname, (variadic ? "..." : ""));
         separator = (!alreadykeyword && i == op.getNumOperands() - 1) ? "; " : ", ";
       }
 
-      operandarguments += operandname + defaultvalue + "::" + type + separator;
+      operandarguments += operandname + defaultvalue + separator;
     }
     if (operandarguments == "") {
       operandarguments = "; ";
