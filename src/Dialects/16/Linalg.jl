@@ -1,6 +1,6 @@
 module linalg
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -44,7 +44,7 @@ scf.for %i = %c0 to %0 step %c1 {
 """
 function index(; result=nothing::Union{Nothing, MLIRType}, dim, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dim", dim), ]
@@ -71,9 +71,9 @@ in `linalg` generic ops. It returns values to the immediately enclosing
 linalg.yield %f0, %f1 : f32, f32
 ```
 """
-function yield(values::Vector{Value}; location=Location())
+function yield(values; location=Location())
     results = MLIRType[]
-    operands = Value[values..., ]
+    operands = API.MlirValue[get_value.(values)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

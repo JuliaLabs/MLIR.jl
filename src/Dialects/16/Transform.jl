@@ -1,6 +1,6 @@
 module transform
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -66,13 +66,13 @@ Remark: this op allows one to implement a simple \"try\" construct as follows:
 }
 ```
 """
-function alternatives(scope=nothing::Union{Nothing, Value}; results::Vector{MLIRType}, alternatives::Vector{Region}, location=Location())
+function alternatives(scope=nothing; results::Vector{MLIRType}, alternatives::Vector{Region}, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[alternatives..., ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (scope != nothing) && push!(operands, scope)
+    (scope != nothing) && push!(operands, get_valuescope)
     
     create_operation(
         "transform.alternatives", location;
@@ -86,9 +86,9 @@ end
 `cast`
 
 """
-function cast(input::Value; output::MLIRType, location=Location())
+function cast(input; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -123,9 +123,9 @@ This op generates as many handles as the terminating YieldOp has operands.
 For each result, the payload ops of the corresponding YieldOp operand are
 merged and mapped to the same resulting handle.
 """
-function foreach(target::Value; results::Vector{MLIRType}, body::Region, location=Location())
+function foreach(target; results::Vector{MLIRType}, body::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[target, ]
+    operands = API.MlirValue[get_value(target), ]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -156,9 +156,9 @@ resulting list will be just \"(A, B)\". Note that no other semantic ordering
 is applied, e.g., \"B\" may itself be a parent of \"A\". This may have an impact
 on the further transformation applied to the handle produced here.
 """
-function get_closest_isolated_parent(target::Value; parent::MLIRType, location=Location())
+function get_closest_isolated_parent(target; parent::MLIRType, location=Location())
     results = MLIRType[parent, ]
-    operands = Value[target, ]
+    operands = API.MlirValue[get_value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -182,9 +182,9 @@ definitely fails.
 The return handle points to the consuming operations operations, which can
 be empty.
 """
-function get_consumers_of_result(target::Value; consumers::MLIRType, result_number, location=Location())
+function get_consumers_of_result(target; consumers::MLIRType, result_number, location=Location())
     results = MLIRType[consumers, ]
-    operands = Value[target, ]
+    operands = API.MlirValue[get_value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("result_number", result_number), ]
@@ -207,9 +207,9 @@ a block argument), the transform silently fails.
 The return handle points to only the subset of successfully produced
 computational operations, which can be empty.
 """
-function get_producer_of_operand(target::Value; producer::MLIRType, operand_number, location=Location())
+function get_producer_of_operand(target; producer::MLIRType, operand_number, location=Location())
     results = MLIRType[producer, ]
-    operands = Value[target, ]
+    operands = API.MlirValue[get_value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("operand_number", operand_number), ]
@@ -234,9 +234,9 @@ and so on. If `deduplicate` is set, do not add the given Payload IR
 operation more than once to the final list regardless of it coming from the
 same or different handles. Consumes the operands and produces a new handle.
 """
-function merge_handles(handles::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, deduplicate=nothing, location=Location())
+function merge_handles(handles; result=nothing::Union{Nothing, MLIRType}, deduplicate=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[handles..., ]
+    operands = API.MlirValue[get_value.(handles)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -269,9 +269,9 @@ The transformation is considered successful regardless of whether some
 Payload IR ops actually matched the pattern and only fails if the pattern
 could not be looked up or compiled.
 """
-function pdl_match(root::Value; matched::MLIRType, pattern_name, location=Location())
+function pdl_match(root; matched::MLIRType, pattern_name, location=Location())
     results = MLIRType[matched, ]
-    operands = Value[root, ]
+    operands = API.MlirValue[get_value(root), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pattern_name", pattern_name), ]
@@ -293,13 +293,13 @@ specified, the top-level op is dumped.
 
 This op is useful for printf-style debugging.
 """
-function print(target=nothing::Union{Nothing, Value}; name=nothing, location=Location())
+function print(target=nothing; name=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (target != nothing) && push!(operands, target)
+    (target != nothing) && push!(operands, get_valuetarget)
     (name != nothing) && push!(attributes, namedattribute("name", name))
     
     create_operation(
@@ -335,9 +335,9 @@ MergeHandlesOp may be used to deduplicate the associated list of payload IR
 ops when necessary. Furthermore, a combination of ReplicateOp and
 MergeHandlesOp can be used to construct arbitrary lists with repetitions.
 """
-function replicate(pattern::Value, handles::Vector{Value}; replicated::Vector{MLIRType}, location=Location())
+function replicate(pattern, handles; replicated::Vector{MLIRType}, location=Location())
     results = MLIRType[replicated..., ]
-    operands = Value[pattern, handles..., ]
+    operands = API.MlirValue[get_value(pattern), get_value.(handles)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -381,13 +381,13 @@ The body of the sequence terminates with an implicit or explicit
 `transform.yield` op. The operands of the terminator are returned as the
 results of the sequence op.
 """
-function sequence(root=nothing::Union{Nothing, Value}; results::Vector{MLIRType}, failure_propagation_mode, body::Region, location=Location())
+function sequence(root=nothing; results::Vector{MLIRType}, failure_propagation_mode, body::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("failure_propagation_mode", failure_propagation_mode), ]
-    (root != nothing) && push!(operands, root)
+    (root != nothing) && push!(operands, get_valueroot)
     
     create_operation(
         "transform.sequence", location;
@@ -411,9 +411,9 @@ This operation succeeds and returns `num_result_handles` if the statically
 specified `num_result_handles` corresponds to the dynamic number of
 operations contained in the source `handle`. Otherwise it silently fails.
 """
-function split_handles(handle::Value; results::Vector{MLIRType}, num_result_handles, location=Location())
+function split_handles(handle; results::Vector{MLIRType}, num_result_handles, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[handle, ]
+    operands = API.MlirValue[get_value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("num_result_handles", num_result_handles), ]
@@ -462,13 +462,13 @@ available. This op is a possible top-level Transform IR op, the argument of
 its entry block corresponds to either the root op of the payload IR or the
 ops associated with its operand when provided.
 """
-function with_pdl_patterns(root=nothing::Union{Nothing, Value}; body::Region, location=Location())
+function with_pdl_patterns(root=nothing; body::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (root != nothing) && push!(operands, root)
+    (root != nothing) && push!(operands, get_valueroot)
     
     create_operation(
         "transform.with_pdl_patterns", location;
@@ -485,9 +485,9 @@ This terminator operation yields operation handles from regions of the
 transform IR ops back to the containing op. It is not itself associated with
 any transformation on the payload IR and is used for flow purposes only.
 """
-function yield(operands::Vector{Value}; location=Location())
+function yield(operands; location=Location())
     results = MLIRType[]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -1,6 +1,6 @@
 module bufferization
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -56,14 +56,14 @@ return %0 : tensor<?x?xf32, #SparseMatrix>
   : tensor<?x?xf32, #SparseMatrix>
 ```
 """
-function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing, Value}; size_hint=nothing::Union{Nothing, Value}, result::MLIRType, memory_space=nothing, location=Location())
+function alloc_tensor(dynamic_sizes, copy=nothing; size_hint=nothing, result::MLIRType, memory_space=nothing, location=Location())
     results = MLIRType[result, ]
-    operands = Value[dynamic_sizes..., ]
+    operands = API.MlirValue[get_value.(dynamic_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (copy != nothing) && push!(operands, copy)
-    (size_hint != nothing) && push!(operands, size_hint)
+    (copy != nothing) && push!(operands, get_valuecopy)
+    (size_hint != nothing) && push!(operands, get_valuesize_hint)
     push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy==nothing) ? 0 : 1(size_hint==nothing) ? 0 : 1]))
     (memory_space != nothing) && push!(attributes, namedattribute("memory_space", memory_space))
     
@@ -91,9 +91,9 @@ views or create an actual copy. Mutating the source or result
 of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
-function clone(input::Value; output::MLIRType, location=Location())
+function clone(input; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -132,9 +132,9 @@ tensor returns undefined results.
 bufferization.dealloc_tensor %tensor : tensor<1024x1024xf64, #CSR>
 ```
 """
-function dealloc_tensor(tensor::Value; location=Location())
+function dealloc_tensor(tensor; location=Location())
     results = MLIRType[]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -164,9 +164,9 @@ This operation is a specialized variant of the built-in
 `unrealized_conversion_cast` and is intended for use in the context of
 gradual bufferization.
 """
-function to_memref(tensor::Value; memref::MLIRType, location=Location())
+function to_memref(tensor; memref::MLIRType, location=Location())
     results = MLIRType[memref, ]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -200,19 +200,18 @@ involving tensors and memrefs.
 If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
-function to_tensor(memref::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[memref, ]
+function to_tensor(memref; result::MLIRType, location=Location())
+    results = MLIRType[result, ]
+    operands = API.MlirValue[get_value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
     
     create_operation(
         "bufferization.to_tensor", location;
         operands, owned_regions, successors, attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        results=results,
+        result_inference=false
     )
 end
 

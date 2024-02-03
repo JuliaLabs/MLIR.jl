@@ -1,6 +1,6 @@
 module llvm
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -9,9 +9,9 @@ import ...API
 `ashr`
 
 """
-function ashr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function ashr(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -39,7 +39,7 @@ https://llvm.org/docs/LangRef.html#llvm-access-group-metadata
 """
 function access_group(; sym_name, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
@@ -56,9 +56,9 @@ end
 `add`
 
 """
-function add(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function add(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -76,9 +76,9 @@ end
 `addrspacecast`
 
 """
-function addrspacecast(arg::Value; res::MLIRType, location=Location())
+function addrspacecast(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -122,7 +122,7 @@ llvm.mlir.global @const(42 : i32) : i32
 """
 function mlir_addressof(; res::MLIRType, global_name, location=Location())
     results = MLIRType[res, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global_name", global_name), ]
@@ -145,7 +145,7 @@ https://llvm.org/docs/LangRef.html#noalias-and-alias-scope-metadata
 """
 function alias_scope_domain(; sym_name, description=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
@@ -193,7 +193,7 @@ https://llvm.org/docs/LangRef.html#noalias-and-alias-scope-metadata
 """
 function alias_scope(; sym_name, domain, description=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("domain", domain), ]
@@ -211,9 +211,9 @@ end
 `alloca`
 
 """
-function alloca(arraySize::Value; res::MLIRType, alignment=nothing, elem_type=nothing, location=Location())
+function alloca(arraySize; res::MLIRType, alignment=nothing, elem_type=nothing, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arraySize, ]
+    operands = API.MlirValue[get_value(arraySize), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -232,9 +232,9 @@ end
 `and`
 
 """
-function and(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function and(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -252,9 +252,9 @@ end
 `cmpxchg`
 
 """
-function cmpxchg(ptr::Value, cmp::Value, val::Value; res::MLIRType, success_ordering, failure_ordering, location=Location())
+function cmpxchg(ptr, cmp, val; res::MLIRType, success_ordering, failure_ordering, location=Location())
     results = MLIRType[res, ]
-    operands = Value[ptr, cmp, val, ]
+    operands = API.MlirValue[get_value(ptr), get_value(cmp), get_value(val), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("success_ordering", success_ordering), namedattribute("failure_ordering", failure_ordering), ]
@@ -271,9 +271,9 @@ end
 `atomicrmw`
 
 """
-function atomicrmw(ptr::Value, val::Value; res::MLIRType, bin_op, ordering, location=Location())
+function atomicrmw(ptr, val; res::MLIRType, bin_op, ordering, location=Location())
     results = MLIRType[res, ]
-    operands = Value[ptr, val, ]
+    operands = API.MlirValue[get_value(ptr), get_value(val), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("bin_op", bin_op), namedattribute("ordering", ordering), ]
@@ -290,9 +290,9 @@ end
 `bitcast`
 
 """
-function bitcast(arg::Value; res::MLIRType, location=Location())
+function bitcast(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -309,9 +309,9 @@ end
 `br`
 
 """
-function br(destOperands::Vector{Value}; dest::Block, location=Location())
+function br(destOperands; dest::Block, location=Location())
     results = MLIRType[]
-    operands = Value[destOperands..., ]
+    operands = API.MlirValue[get_value.(destOperands)..., ]
     owned_regions = Region[]
     successors = Block[dest, ]
     attributes = NamedAttribute[]
@@ -352,9 +352,9 @@ llvm.call @bar(%0) : (f32) -> ()
 llvm.call %1(%0) : (f32) -> ()
 ```
 """
-function call(operand_0::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, callee=nothing, fastmathFlags=nothing, branch_weights=nothing, location=Location())
+function call(operand_0; result=nothing::Union{Nothing, MLIRType}, callee=nothing, fastmathFlags=nothing, branch_weights=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand_0..., ]
+    operands = API.MlirValue[get_value.(operand_0)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -375,9 +375,9 @@ end
 `cond_br`
 
 """
-function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; branch_weights=nothing, trueDest::Block, falseDest::Block, location=Location())
+function cond_br(condition, trueDestOperands, falseDestOperands; branch_weights=nothing, trueDest::Block, falseDest::Block, location=Location())
     results = MLIRType[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
+    operands = API.MlirValue[get_value(condition), get_value.(trueDestOperands)..., get_value.(falseDestOperands)..., ]
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[]
@@ -424,7 +424,7 @@ Examples:
 """
 function mlir_constant(; res::MLIRType, value, location=Location())
     results = MLIRType[res, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
@@ -441,19 +441,18 @@ end
 `extractelement`
 
 """
-function extractelement(vector::Value, position::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[vector, position, ]
+function extractelement(vector, position; res::MLIRType, location=Location())
+    results = MLIRType[res, ]
+    operands = API.MlirValue[get_value(vector), get_value(position), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
     
     create_operation(
         "llvm.extractelement", location;
         operands, owned_regions, successors, attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        results=results,
+        result_inference=false
     )
 end
 
@@ -461,9 +460,9 @@ end
 `extractvalue`
 
 """
-function extractvalue(container::Value; res::MLIRType, position, location=Location())
+function extractvalue(container; res::MLIRType, position, location=Location())
     results = MLIRType[res, ]
-    operands = Value[container, ]
+    operands = API.MlirValue[get_value(container), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
@@ -480,9 +479,9 @@ end
 `fadd`
 
 """
-function fadd(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
+function fadd(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -501,20 +500,19 @@ end
 `fcmp`
 
 """
-function fcmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, predicate, fastmathFlags=nothing, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function fcmp(lhs, rhs; res::MLIRType, predicate, fastmathFlags=nothing, location=Location())
+    results = MLIRType[res, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    (res != nothing) && push!(results, res)
     (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.fcmp", location;
         operands, owned_regions, successors, attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        results=results,
+        result_inference=false
     )
 end
 
@@ -522,9 +520,9 @@ end
 `fdiv`
 
 """
-function fdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
+function fdiv(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -543,9 +541,9 @@ end
 `fmul`
 
 """
-function fmul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
+function fmul(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -564,9 +562,9 @@ end
 `fneg`
 
 """
-function fneg(operand::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
+function fneg(operand; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -585,9 +583,9 @@ end
 `fpext`
 
 """
-function fpext(arg::Value; res::MLIRType, location=Location())
+function fpext(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -604,9 +602,9 @@ end
 `fptosi`
 
 """
-function fptosi(arg::Value; res::MLIRType, location=Location())
+function fptosi(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -623,9 +621,9 @@ end
 `fptoui`
 
 """
-function fptoui(arg::Value; res::MLIRType, location=Location())
+function fptoui(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -642,9 +640,9 @@ end
 `fptrunc`
 
 """
-function fptrunc(arg::Value; res::MLIRType, location=Location())
+function fptrunc(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -661,9 +659,9 @@ end
 `frem`
 
 """
-function frem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
+function frem(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -682,9 +680,9 @@ end
 `fsub`
 
 """
-function fsub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
+function fsub(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, fastmathFlags=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -705,7 +703,7 @@ end
 """
 function fence(; ordering, syncscope, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("ordering", ordering), namedattribute("syncscope", syncscope), ]
@@ -722,9 +720,9 @@ end
 `freeze`
 
 """
-function freeze(val::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function freeze(val; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[val, ]
+    operands = API.MlirValue[get_value(val), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -765,9 +763,9 @@ Examples:
    : (!llvm.ptr<struct(i32, f32)>) -> !llvm.ptr<f32>
 ```
 """
-function getelementptr(base::Value, dynamicIndices::Vector{Value}; res::MLIRType, rawConstantIndices, elem_type=nothing, inbounds=nothing, location=Location())
+function getelementptr(base, dynamicIndices; res::MLIRType, rawConstantIndices, elem_type=nothing, inbounds=nothing, location=Location())
     results = MLIRType[res, ]
-    operands = Value[base, dynamicIndices..., ]
+    operands = API.MlirValue[get_value(base), get_value.(dynamicIndices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("rawConstantIndices", rawConstantIndices), ]
@@ -806,7 +804,7 @@ llvm.func @ctor() {
 """
 function mlir_global_ctors(; ctors, priorities, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("ctors", ctors), namedattribute("priorities", priorities), ]
@@ -840,7 +838,7 @@ llvm.mlir.global_dtors {@dtor}
 """
 function mlir_global_dtors(; dtors, priorities, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dtors", dtors), namedattribute("priorities", priorities), ]
@@ -952,7 +950,7 @@ llvm.mlir.global private constant @y(dense<1.0> : tensor<8xf32>) { alignment = 3
 """
 function mlir_global(; global_type, constant=nothing, sym_name, linkage, dso_local=nothing, thread_local_=nothing, value=nothing, alignment=nothing, addr_space=nothing, unnamed_addr=nothing, section=nothing, initializer::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[initializer, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global_type", global_type), namedattribute("sym_name", sym_name), namedattribute("linkage", linkage), ]
@@ -977,19 +975,18 @@ end
 `icmp`
 
 """
-function icmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, predicate, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function icmp(lhs, rhs; res::MLIRType, predicate, location=Location())
+    results = MLIRType[res, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    (res != nothing) && push!(results, res)
     
     create_operation(
         "llvm.icmp", location;
         operands, owned_regions, successors, attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        results=results,
+        result_inference=false
     )
 end
 
@@ -1003,9 +1000,9 @@ written, or referenced.
 Attempting to define or reference any symbol or any global behavior is
 considered undefined behavior at this time.
 """
-function inline_asm(operands::Vector{Value}; res=nothing::Union{Nothing, MLIRType}, asm_string, constraints, has_side_effects=nothing, is_align_stack=nothing, asm_dialect=nothing, operand_attrs=nothing, location=Location())
+function inline_asm(operands; res=nothing::Union{Nothing, MLIRType}, asm_string, constraints, has_side_effects=nothing, is_align_stack=nothing, asm_dialect=nothing, operand_attrs=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("asm_string", asm_string), namedattribute("constraints", constraints), ]
@@ -1027,9 +1024,9 @@ end
 `insertelement`
 
 """
-function insertelement(vector::Value, value::Value, position::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function insertelement(vector, value, position; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[vector, value, position, ]
+    operands = API.MlirValue[get_value(vector), get_value(value), get_value(position), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1047,9 +1044,9 @@ end
 `insertvalue`
 
 """
-function insertvalue(container::Value, value::Value; res=nothing::Union{Nothing, MLIRType}, position, location=Location())
+function insertvalue(container, value; res=nothing::Union{Nothing, MLIRType}, position, location=Location())
     results = MLIRType[]
-    operands = Value[container, value, ]
+    operands = API.MlirValue[get_value(container), get_value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
@@ -1067,9 +1064,9 @@ end
 `inttoptr`
 
 """
-function inttoptr(arg::Value; res::MLIRType, location=Location())
+function inttoptr(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1086,9 +1083,9 @@ end
 `invoke`
 
 """
-function invoke(callee_operands::Vector{Value}, normalDestOperands::Vector{Value}, unwindDestOperands::Vector{Value}; result_0::Vector{MLIRType}, callee=nothing, branch_weights=nothing, normalDest::Block, unwindDest::Block, location=Location())
+function invoke(callee_operands, normalDestOperands, unwindDestOperands; result_0::Vector{MLIRType}, callee=nothing, branch_weights=nothing, normalDest::Block, unwindDest::Block, location=Location())
     results = MLIRType[result_0..., ]
-    operands = Value[callee_operands..., normalDestOperands..., unwindDestOperands..., ]
+    operands = API.MlirValue[get_value.(callee_operands)..., get_value.(normalDestOperands)..., get_value.(unwindDestOperands)..., ]
     owned_regions = Region[]
     successors = Block[normalDest, unwindDest, ]
     attributes = NamedAttribute[]
@@ -1135,7 +1132,7 @@ llvm.func internal @internal_func() {
 """
 function func(; sym_name, function_type, linkage=nothing, dso_local=nothing, CConv=nothing, personality=nothing, garbageCollector=nothing, passthrough=nothing, arg_attrs=nothing, res_attrs=nothing, function_entry_count=nothing, memory=nothing, body::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
@@ -1162,9 +1159,9 @@ end
 `lshr`
 
 """
-function lshr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function lshr(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1182,9 +1179,9 @@ end
 `landingpad`
 
 """
-function landingpad(operand_0::Vector{Value}; res::MLIRType, cleanup=nothing, location=Location())
+function landingpad(operand_0; res::MLIRType, cleanup=nothing, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0..., ]
+    operands = API.MlirValue[get_value.(operand_0)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1202,9 +1199,9 @@ end
 `load`
 
 """
-function load(addr::Value; res::MLIRType, access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
+function load(addr; res::MLIRType, access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
     results = MLIRType[res, ]
-    operands = Value[addr, ]
+    operands = API.MlirValue[get_value(addr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1236,7 +1233,7 @@ llvm.metadata op defines one or more metadata nodes.
 """
 function metadata(; sym_name, body::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
@@ -1253,9 +1250,9 @@ end
 `mul`
 
 """
-function mul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function mul(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1289,7 +1286,7 @@ Examples:
 """
 function mlir_null(; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1306,9 +1303,9 @@ end
 `or`
 
 """
-function or(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function or(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1326,9 +1323,9 @@ end
 `ptrtoint`
 
 """
-function ptrtoint(arg::Value; res::MLIRType, location=Location())
+function ptrtoint(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1345,9 +1342,9 @@ end
 `resume`
 
 """
-function resume(value::Value; location=Location())
+function resume(value; location=Location())
     results = MLIRType[]
-    operands = Value[value, ]
+    operands = API.MlirValue[get_value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1364,13 +1361,13 @@ end
 `return_`
 
 """
-function return_(arg=nothing::Union{Nothing, Value}; location=Location())
+function return_(arg=nothing; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (arg != nothing) && push!(operands, arg)
+    (arg != nothing) && push!(operands, get_valuearg)
     
     create_operation(
         "llvm.return", location;
@@ -1384,9 +1381,9 @@ end
 `sdiv`
 
 """
-function sdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function sdiv(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1404,9 +1401,9 @@ end
 `sext`
 
 """
-function sext(arg::Value; res::MLIRType, location=Location())
+function sext(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1423,9 +1420,9 @@ end
 `sitofp`
 
 """
-function sitofp(arg::Value; res::MLIRType, location=Location())
+function sitofp(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1442,9 +1439,9 @@ end
 `srem`
 
 """
-function srem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function srem(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1462,9 +1459,9 @@ end
 `select`
 
 """
-function select(condition::Value, trueValue::Value, falseValue::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function select(condition, trueValue, falseValue; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[condition, trueValue, falseValue, ]
+    operands = API.MlirValue[get_value(condition), get_value(trueValue), get_value(falseValue), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1482,9 +1479,9 @@ end
 `shl`
 
 """
-function shl(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function shl(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1502,9 +1499,9 @@ end
 `shufflevector`
 
 """
-function shufflevector(v1::Value, v2::Value; res::MLIRType, mask, location=Location())
+function shufflevector(v1, v2; res::MLIRType, mask, location=Location())
     results = MLIRType[res, ]
-    operands = Value[v1, v2, ]
+    operands = API.MlirValue[get_value(v1), get_value(v2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mask", mask), ]
@@ -1521,9 +1518,9 @@ end
 `store`
 
 """
-function store(value::Value, addr::Value; access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
+function store(value, addr; access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[value, addr, ]
+    operands = API.MlirValue[get_value(value), get_value(addr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1546,9 +1543,9 @@ end
 `sub`
 
 """
-function sub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function sub(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1566,9 +1563,9 @@ end
 `switch`
 
 """
-function switch(value::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, branch_weights=nothing, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
+function switch(value, defaultOperands, caseOperands; case_values=nothing, case_operand_segments, branch_weights=nothing, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = MLIRType[]
-    operands = Value[value, defaultOperands..., caseOperands..., ]
+    operands = API.MlirValue[get_value(value), get_value.(defaultOperands)..., get_value.(caseOperands)..., ]
     owned_regions = Region[]
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
@@ -1599,7 +1596,7 @@ https://llvm.org/docs/LangRef.html#tbaa-metadata
 """
 function tbaa_root(; sym_name, identity, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("identity", identity), ]
@@ -1662,7 +1659,7 @@ https://llvm.org/docs/LangRef.html#tbaa-metadata
 """
 function tbaa_tag(; sym_name, base_type, access_type, offset, constant=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("base_type", base_type), namedattribute("access_type", access_type), namedattribute("offset", offset), ]
@@ -1716,7 +1713,7 @@ https://llvm.org/docs/LangRef.html#tbaa-metadata
 """
 function tbaa_type_desc(; sym_name, identity=nothing, members, offsets, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("members", members), namedattribute("offsets", offsets), ]
@@ -1734,9 +1731,9 @@ end
 `trunc`
 
 """
-function trunc(arg::Value; res::MLIRType, location=Location())
+function trunc(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1753,9 +1750,9 @@ end
 `udiv`
 
 """
-function udiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function udiv(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1773,9 +1770,9 @@ end
 `uitofp`
 
 """
-function uitofp(arg::Value; res::MLIRType, location=Location())
+function uitofp(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1792,9 +1789,9 @@ end
 `urem`
 
 """
-function urem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function urem(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1825,7 +1822,7 @@ IR dialect type wrapping an LLVM IR structure type.
 """
 function mlir_undef(; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1844,7 +1841,7 @@ end
 """
 function unreachable(; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1861,9 +1858,9 @@ end
 `xor`
 
 """
-function xor(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function xor(lhs, rhs; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1881,9 +1878,9 @@ end
 `zext`
 
 """
-function zext(arg::Value; res::MLIRType, location=Location())
+function zext(arg; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

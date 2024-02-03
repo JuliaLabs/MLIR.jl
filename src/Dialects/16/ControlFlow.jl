@@ -1,6 +1,6 @@
 module cf
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -19,9 +19,9 @@ runtime to propagate the error to the user.
 assert %b, \"Expected ... to be true\"
 ```
 """
-function assert(arg::Value; msg, location=Location())
+function assert(arg; msg, location=Location())
     results = MLIRType[]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("msg", msg), ]
@@ -51,9 +51,9 @@ target block.
 ^bb3(%3: tensor<*xf32>):
 ```
 """
-function br(destOperands::Vector{Value}; dest::Block, location=Location())
+function br(destOperands; dest::Block, location=Location())
     results = MLIRType[]
-    operands = Value[destOperands..., ]
+    operands = API.MlirValue[get_value.(destOperands)..., ]
     owned_regions = Region[]
     successors = Block[dest, ]
     attributes = NamedAttribute[]
@@ -94,9 +94,9 @@ func.func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
 }
 ```
 """
-function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; trueDest::Block, falseDest::Block, location=Location())
+function cond_br(condition, trueDestOperands, falseDestOperands; trueDest::Block, falseDest::Block, location=Location())
     results = MLIRType[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
+    operands = API.MlirValue[get_value(condition), get_value.(trueDestOperands)..., get_value.(falseDestOperands)..., ]
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[]
@@ -129,9 +129,9 @@ switch %flag : i32, [
 ]
 ```
 """
-function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
+function switch(flag, defaultOperands, caseOperands; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = MLIRType[]
-    operands = Value[flag, defaultOperands..., caseOperands..., ]
+    operands = API.MlirValue[get_value(flag), get_value.(defaultOperands)..., get_value.(caseOperands)..., ]
     owned_regions = Region[]
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]

@@ -1,6 +1,6 @@
 module tosa
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -10,9 +10,9 @@ import ...API
 
 Elementwise absolute value operation
 """
-function abs(input1::Value; output::MLIRType, location=Location())
+function abs(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -31,9 +31,9 @@ end
 Elementwise addition of input1 and input2. Axis of size 1 will be broadcast,
 as necessary.
 """
-function add(input1::Value, input2::Value; output::MLIRType, location=Location())
+function add(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -56,9 +56,9 @@ The commonplace implementation is to use i64 operations to avoid integer
 overflow with target specific implementations can use native operations to
 avoid wider than necessary types.
 """
-function apply_scale(value::Value, multiplier::Value, shift::Value; output::MLIRType, double_round, location=Location())
+function apply_scale(value, multiplier, shift; output::MLIRType, double_round, location=Location())
     results = MLIRType[output, ]
-    operands = Value[value, multiplier, shift, ]
+    operands = API.MlirValue[get_value(value), get_value(multiplier), get_value(shift), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("double_round", double_round), ]
@@ -77,9 +77,9 @@ end
 This returns the index with the largest value across the given axis of the
 input tensor.
 """
-function argmax(input::Value; output::MLIRType, axis, location=Location())
+function argmax(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -98,9 +98,9 @@ end
 Elementwise arithmetic right shift of input1 by the amount specified in
 input2. Axis of size 1 will be broadcast, as necessary.
 """
-function arithmetic_right_shift(input1::Value, input2::Value; output::MLIRType, round, location=Location())
+function arithmetic_right_shift(input1, input2; output::MLIRType, round, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("round", round), ]
@@ -120,9 +120,9 @@ This performs an average pooling over the given input tensor. A sliding
 window of size given by <kernel size> is passed over the input tensor, with
 the mean value being placed in the output tensor.
 """
-function avg_pool2d(input::Value; output::MLIRType, kernel, stride, pad, quantization_info=nothing, location=Location())
+function avg_pool2d(input; output::MLIRType, kernel, stride, pad, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kernel", kernel), namedattribute("stride", stride), namedattribute("pad", pad), ]
@@ -142,9 +142,9 @@ end
 Elementwise bitwise AND of input1 and input2. Axis of size 1
 will be broadcast as necessary.
 """
-function bitwise_and(input1::Value, input2::Value; output::MLIRType, location=Location())
+function bitwise_and(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -162,9 +162,9 @@ end
 
 Elementwise bitwise NOT of input tensor.
 """
-function bitwise_not(input1::Value; output::MLIRType, location=Location())
+function bitwise_not(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -183,9 +183,9 @@ end
 Elementwise bitwise OR of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function bitwise_or(input1::Value, input2::Value; output::MLIRType, location=Location())
+function bitwise_or(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -204,9 +204,9 @@ end
 Elementwise bitwise XOR of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function bitwise_xor(input1::Value, input2::Value; output::MLIRType, location=Location())
+function bitwise_xor(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -242,9 +242,9 @@ Performs a set of permissible cast operations
     signed 8 to float       int8    float
     signed 16 to float      int16   float
 """
-function cast(input::Value; output::MLIRType, location=Location())
+function cast(input; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -262,9 +262,9 @@ end
 
 Elementwise ceiling operation
 """
-function ceil(input1::Value; output::MLIRType, location=Location())
+function ceil(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -286,9 +286,9 @@ input type.
 No zero point subtraction is done to the values, thus to clamp to the zero
 point value, the zero point itself should be supplied as the minimum value.
 """
-function clamp(input::Value; output::MLIRType, min_int, max_int, min_fp, max_fp, location=Location())
+function clamp(input; output::MLIRType, min_int, max_int, min_fp, max_fp, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min_int", min_int), namedattribute("max_int", max_int), namedattribute("min_fp", min_fp), namedattribute("max_fp", max_fp), ]
@@ -306,9 +306,9 @@ end
 
 Elementwise count leading zeros operation
 """
-function clz(input1::Value; output::MLIRType, location=Location())
+function clz(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -327,9 +327,9 @@ end
 Concatenate a variadic amount of tensors along a given axis. No data
 conversion happens during a concat operation.
 """
-function concat(input1::Vector{Value}; output::MLIRType, axis, location=Location())
+function concat(input1; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1..., ]
+    operands = API.MlirValue[get_value.(input1)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -350,7 +350,7 @@ hold data in any of the supported data formats.
 """
 function const_(; output=nothing::Union{Nothing, MLIRType}, value, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
@@ -370,9 +370,9 @@ end
 Performs a 2D convolution over the given tensor input, using the weight
 tensor.
 """
-function conv2d(input::Value, weight::Value, bias::Value; output::MLIRType, pad, stride, dilation, quantization_info=nothing, location=Location())
+function conv2d(input, weight, bias; output::MLIRType, pad, stride, dilation, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = API.MlirValue[get_value(input), get_value(weight), get_value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
@@ -391,9 +391,9 @@ end
 
 Performs a 3D convolution over the given input tensor.
 """
-function conv3d(input::Value, weight::Value, bias::Value; output::MLIRType, pad, stride, dilation, quantization_info=nothing, location=Location())
+function conv3d(input, weight, bias; output::MLIRType, pad, stride, dilation, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = API.MlirValue[get_value(input), get_value(weight), get_value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
@@ -415,9 +415,9 @@ that are not expressed in the existing TOSA operations. These operators are
 not expected to be portable across TOSA implementations. The input and
 output signatures must be expressed in the corresponding TOSA node.
 """
-function custom(inputs::Vector{Value}; outputs::Vector{MLIRType}, identifier, location=Location())
+function custom(inputs; outputs::Vector{MLIRType}, identifier, location=Location())
     results = MLIRType[outputs..., ]
-    operands = Value[inputs..., ]
+    operands = API.MlirValue[get_value.(inputs)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("identifier", identifier), ]
@@ -436,9 +436,9 @@ end
 Performs 2D convolutions separately over each channel of the given tensor
 input, using the weight tensor.
 """
-function depthwise_conv2d(input::Value, weight::Value, bias::Value; output::MLIRType, pad, stride, dilation, quantization_info=nothing, location=Location())
+function depthwise_conv2d(input, weight, bias; output::MLIRType, pad, stride, dilation, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = API.MlirValue[get_value(input), get_value(weight), get_value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
@@ -458,9 +458,9 @@ end
 Elementwise integer divide operator of input1 by input2. Axis of size 1
 will be broadcast, as necessary.
 """
-function div(input1::Value, input2::Value; output::MLIRType, location=Location())
+function div(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -478,9 +478,9 @@ end
 
 Elementwise comparison operation
 """
-function equal(input1::Value, input2::Value; output::MLIRType, location=Location())
+function equal(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -498,9 +498,9 @@ end
 
 Elementwise e to the x operation
 """
-function exp(input1::Value; output::MLIRType, location=Location())
+function exp(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -518,9 +518,9 @@ end
 
 Elementwise floor operation
 """
-function floor(input1::Value; output::MLIRType, location=Location())
+function floor(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -538,9 +538,9 @@ end
 
 Performs a fully connected network.
 """
-function fully_connected(input::Value, weight::Value, bias::Value; output::MLIRType, quantization_info=nothing, location=Location())
+function fully_connected(input, weight, bias; output::MLIRType, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = API.MlirValue[get_value(input), get_value(weight), get_value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -560,9 +560,9 @@ end
 Generate a tensor for which each element in the output is a slice of the
 values tensor based on the value of indices.
 """
-function gather(values::Value, indices::Value; output::MLIRType, location=Location())
+function gather(values, indices; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[values, indices, ]
+    operands = API.MlirValue[get_value(values), get_value(indices), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -580,9 +580,9 @@ end
 
 Elementwise comparison operation
 """
-function greater_equal(input1::Value, input2::Value; output::MLIRType, location=Location())
+function greater_equal(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -600,9 +600,9 @@ end
 
 Elementwise greater than comparison operation
 """
-function greater(input1::Value, input2::Value; output::MLIRType, location=Location())
+function greater(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -621,9 +621,9 @@ end
 Returns a tensor with the same shape, size, type
 and content as the input.
 """
-function identity(input1::Value; output::MLIRType, location=Location())
+function identity(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -642,9 +642,9 @@ end
 Evaluates a Boolean condition and then takes one of two distinct execution
 paths. This implements the semantic If-then-else structure.
 """
-function cond_if(cond::Value, inputs::Vector{Value}; output::Vector{MLIRType}, then_branch::Region, else_branch::Region, location=Location())
+function cond_if(cond, inputs; output::Vector{MLIRType}, then_branch::Region, else_branch::Region, location=Location())
     results = MLIRType[output..., ]
-    operands = Value[cond, inputs..., ]
+    operands = API.MlirValue[get_value(cond), get_value.(inputs)..., ]
     owned_regions = Region[then_branch, else_branch, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -662,9 +662,9 @@ end
 
 Elementwise natural logarithm operation
 """
-function log(input1::Value; output::MLIRType, location=Location())
+function log(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -683,9 +683,9 @@ end
 Elementwise logical AND of input1 and input2. Axis of size 1 will be
 broadcast, as necessary.
 """
-function logical_and(input1::Value, input2::Value; z::MLIRType, location=Location())
+function logical_and(input1, input2; z::MLIRType, location=Location())
     results = MLIRType[z, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -704,9 +704,9 @@ end
 Elementwise left shift of input1 and input2. Axis of size 1 will be
 broadcast, as necessary.
 """
-function logical_left_shift(input1::Value, input2::Value; output::MLIRType, location=Location())
+function logical_left_shift(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -724,9 +724,9 @@ end
 
 Elementwise logical NOT of input.
 """
-function logical_not(input1::Value; output::MLIRType, location=Location())
+function logical_not(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -745,9 +745,9 @@ end
 Elementwise logical OR of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function logical_or(input1::Value, input2::Value; z::MLIRType, location=Location())
+function logical_or(input1, input2; z::MLIRType, location=Location())
     results = MLIRType[z, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -766,9 +766,9 @@ end
 Elementwise logical right shift of input1 by the amount specified in input2.
 Axis of size 1 will be broadcast, as necessary.
 """
-function logical_right_shift(input1::Value, input2::Value; output::MLIRType, location=Location())
+function logical_right_shift(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -787,9 +787,9 @@ end
 Elementwise logical XOR of input1 and input2.  Axis of size 1 will be
 broadcast as necessary.
 """
-function logical_xor(input1::Value, input2::Value; z::MLIRType, location=Location())
+function logical_xor(input1, input2; z::MLIRType, location=Location())
     results = MLIRType[z, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -809,9 +809,9 @@ Performs a two dimensional matrix multiplication. This allows both inputs to
 be activations, rather than reserving weights as an attribute in the
 FULLY_CONNECTED operator.
 """
-function matmul(a::Value, b::Value; c::MLIRType, quantization_info=nothing, location=Location())
+function matmul(a, b; c::MLIRType, quantization_info=nothing, location=Location())
     results = MLIRType[c, ]
-    operands = Value[a, b, ]
+    operands = API.MlirValue[get_value(a), get_value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -833,9 +833,9 @@ size given by <kernel size> is passed over the input tensor, with the
 maximum value being placed in the
 output tensor.
 """
-function max_pool2d(input::Value; output::MLIRType, kernel, stride, pad, location=Location())
+function max_pool2d(input; output::MLIRType, kernel, stride, pad, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kernel", kernel), namedattribute("stride", stride), namedattribute("pad", pad), ]
@@ -854,9 +854,9 @@ end
 Elementwise max of input1 and input2. Axis of size 1 will be broadcast, as
 necessary.
 """
-function maximum(input1::Value, input2::Value; output::MLIRType, location=Location())
+function maximum(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -875,9 +875,9 @@ end
 Elementwise minimum of input1 and input2. Axis of size 1
 will be broadcast, as necessary.
 """
-function minimum(input1::Value, input2::Value; output::MLIRType, location=Location())
+function minimum(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -896,9 +896,9 @@ end
 Elementwise multiplication (Hadamard product) of input1 and input2.
 Axis of size 1 will be broadcast, as necessary.
 """
-function mul(input1::Value, input2::Value; output::MLIRType, shift, location=Location())
+function mul(input1, input2; output::MLIRType, shift, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("shift", shift), ]
@@ -916,9 +916,9 @@ end
 
 Elementwise negation operation
 """
-function negate(input1::Value; output::MLIRType, quantization_info=nothing, location=Location())
+function negate(input1; output::MLIRType, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -937,13 +937,13 @@ end
 
 Pads a tensor along borders of each dimension with pad_value.
 """
-function pad(input1::Value, padding::Value, pad_const=nothing::Union{Nothing, Value}; output::MLIRType, quantization_info=nothing, location=Location())
+function pad(input1, padding, pad_const=nothing; output::MLIRType, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, padding, ]
+    operands = API.MlirValue[get_value(input1), get_value(padding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (pad_const != nothing) && push!(operands, pad_const)
+    (pad_const != nothing) && push!(operands, get_valuepad_const)
     (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
@@ -960,9 +960,9 @@ end
 Elementwise input1 raised to the power of input2.
 Axis of size 1 will be broadcast, as necessary.
 """
-function pow(input1::Value, input2::Value; z::MLIRType, location=Location())
+function pow(input1, input2; z::MLIRType, location=Location())
     results = MLIRType[z, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -981,9 +981,9 @@ end
 Elementwise reciprocal operation. For integer operation, a TABLE should be
 used with the appropriate ranges.
 """
-function reciprocal(input1::Value; output::MLIRType, location=Location())
+function reciprocal(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1001,9 +1001,9 @@ end
 
 Reduce a tensor along the given axis with a logical AND operation
 """
-function reduce_all(input::Value; output::MLIRType, axis, location=Location())
+function reduce_all(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1021,9 +1021,9 @@ end
 
 Reduce a tensor along the given axis with a logical OR operation
 """
-function reduce_any(input::Value; output::MLIRType, axis, location=Location())
+function reduce_any(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1041,9 +1041,9 @@ end
 
 Reduce a tensor along the given axis with a maximum operation
 """
-function reduce_max(input::Value; output::MLIRType, axis, location=Location())
+function reduce_max(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1061,9 +1061,9 @@ end
 
 Reduce a tensor along the given axis with a minimum operation
 """
-function reduce_min(input::Value; output::MLIRType, axis, location=Location())
+function reduce_min(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1081,9 +1081,9 @@ end
 
 Reduce a tensor along the given axis by computing the product of the axis.
 """
-function reduce_prod(input::Value; output::MLIRType, axis, location=Location())
+function reduce_prod(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1101,9 +1101,9 @@ end
 
 Reduce a tensor along the given axis by computing the sum of the axis.
 """
-function reduce_sum(input::Value; output::MLIRType, axis, location=Location())
+function reduce_sum(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1121,9 +1121,9 @@ end
 
 ReLU with a scalar maximum value.
 """
-function reluN(input::Value; output::MLIRType, max_int, max_fp, location=Location())
+function reluN(input; output::MLIRType, max_int, max_fp, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("max_int", max_int), namedattribute("max_fp", max_fp), ]
@@ -1156,9 +1156,9 @@ signed 48 to 32         int48   int32
 unsigned 8 to signed 8  uint8   int8
 signed 8 to unsigned 8  int8    uint8
 """
-function rescale(input::Value; output::MLIRType, input_zp, output_zp, multiplier, shift, scale32, double_round, per_channel, location=Location())
+function rescale(input; output::MLIRType, input_zp, output_zp, multiplier, shift, scale32, double_round, per_channel, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("input_zp", input_zp), namedattribute("output_zp", output_zp), namedattribute("multiplier", multiplier), namedattribute("shift", shift), namedattribute("scale32", scale32), namedattribute("double_round", double_round), namedattribute("per_channel", per_channel), ]
@@ -1178,9 +1178,9 @@ Returns a tensor with the same type/values as the input, with a new shape
 specified by the shape argument. Reshape may operate on tensors of any rank.
 No data conversion happens during a reshape operation.
 """
-function reshape(input1::Value; output::MLIRType, new_shape, location=Location())
+function reshape(input1; output::MLIRType, new_shape, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("new_shape", new_shape), ]
@@ -1201,9 +1201,9 @@ expected use, stride_y is approximately (IH<<shift)/OH and stride_x is
 approximately (IW<<shift)/OW.  OH and OW are also supplied as inputs since
 there may be off by one errors if calculating OH and OW from the strides.
 """
-function resize(input::Value; output::MLIRType, output_size, stride, offset, shift, stride_fp, offset_fp, mode, location=Location())
+function resize(input; output::MLIRType, output_size, stride, offset, shift, stride_fp, offset_fp, mode, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("output_size", output_size), namedattribute("stride", stride), namedattribute("offset", offset), namedattribute("shift", shift), namedattribute("stride_fp", stride_fp), namedattribute("offset_fp", offset_fp), namedattribute("mode", mode), ]
@@ -1223,9 +1223,9 @@ Returns a tensor with the same type/values as the input, with the data
 reversed along the given axis. No data conversion happens during a reverse
 operation.
 """
-function reverse(input::Value; output::MLIRType, axis, location=Location())
+function reverse(input; output::MLIRType, axis, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1244,9 +1244,9 @@ end
 Elementwise reciprocal square root operation. For integer operation, a TABLE
 should be used with the appropriate ranges.
 """
-function rsqrt(input1::Value; output::MLIRType, location=Location())
+function rsqrt(input1; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1265,9 +1265,9 @@ end
 The values_out tensor is set to the values_in tensor with data modified as follows:
 data from the input tensor is inserted at the positions specified by the indices tensor.
 """
-function scatter(values_in::Value, indices::Value, input::Value; values_out::MLIRType, location=Location())
+function scatter(values_in, indices, input; values_out::MLIRType, location=Location())
     results = MLIRType[values_out, ]
-    operands = Value[values_in, indices, input, ]
+    operands = API.MlirValue[get_value(values_in), get_value(indices), get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1285,9 +1285,9 @@ end
 
 Elementwise select of the output based on a condition.
 """
-function select(pred::Value, on_true::Value, on_false::Value; output::MLIRType, location=Location())
+function select(pred, on_true, on_false; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[pred, on_true, on_false, ]
+    operands = API.MlirValue[get_value(pred), get_value(on_true), get_value(on_false), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1309,9 +1309,9 @@ with the following definition.  The sigmoid table has 513 entries each of
 16-bit precision and covering the input range -16.0 to +16.0
 in steps of 1/16.
 """
-function sigmoid(input::Value; output::MLIRType, location=Location())
+function sigmoid(input; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1331,9 +1331,9 @@ Extracts a slice of the input1 on the given axis, beginning at the
 start coordinates, and extending for size elements in each direction.  No
 data conversion happens during a slice operation.
 """
-function slice(input::Value; output::MLIRType, start, size, location=Location())
+function slice(input; output::MLIRType, start, size, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("start", start), namedattribute("size", size), ]
@@ -1352,9 +1352,9 @@ end
 Elementwise subtraction of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function sub(input1::Value, input2::Value; output::MLIRType, location=Location())
+function sub(input1, input2; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, input2, ]
+    operands = API.MlirValue[get_value(input1), get_value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1385,9 +1385,9 @@ The TABLE operator is expected to be used as follows:
 * If an int8_t result is required then follow the TABLE operator with a
   RESCALE with a right shift of 15
 """
-function table(input::Value, table::Value; output::MLIRType, location=Location())
+function table(input, table; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, table, ]
+    operands = API.MlirValue[get_value(input), get_value(table), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1408,9 +1408,9 @@ For quantized integer data types, the TABLE operator should be used instead
 with the following definition.  The tanh_table has 513 entries each of
 16-bit precision and covering the input range -8.0 to +8.0 in steps of 1/32.
 """
-function tanh(input::Value; output::MLIRType, location=Location())
+function tanh(input; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1428,9 +1428,9 @@ end
 
 Replicates input 0 multiplies times along each dimension.
 """
-function tile(input1::Value; output::MLIRType, multiples, location=Location())
+function tile(input1; output::MLIRType, multiples, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, ]
+    operands = API.MlirValue[get_value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("multiples", multiples), ]
@@ -1449,9 +1449,9 @@ end
 Performs a 2D transposed convolution over the given tensor input, using the
 weights tensor.
 """
-function transpose_conv2d(input::Value, filter::Value, bias::Value; output::MLIRType, out_pad, stride, out_shape, quantization_info=nothing, location=Location())
+function transpose_conv2d(input, filter, bias; output::MLIRType, out_pad, stride, out_shape, quantization_info=nothing, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, filter, bias, ]
+    operands = API.MlirValue[get_value(input), get_value(filter), get_value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("out_pad", out_pad), namedattribute("stride", stride), namedattribute("out_shape", out_shape), ]
@@ -1470,9 +1470,9 @@ end
 
 Permutes the dimensions based on perm.
 """
-function transpose(input1::Value, perms::Value; output::MLIRType, location=Location())
+function transpose(input1, perms; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input1, perms, ]
+    operands = API.MlirValue[get_value(input1), get_value(perms), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1493,9 +1493,9 @@ exits to another control point. This action is performed repeatedly after
 updating and re-evaluating the Boolean condition every iteration. This
 implements the semantic foreach or while iterative loop structure.
 """
-function while_loop(inputs::Vector{Value}; output::Vector{MLIRType}, cond::Region, body::Region, location=Location())
+function while_loop(inputs; output::Vector{MLIRType}, cond::Region, body::Region, location=Location())
     results = MLIRType[output..., ]
-    operands = Value[inputs..., ]
+    operands = API.MlirValue[get_value.(inputs)..., ]
     owned_regions = Region[cond, body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1515,9 +1515,9 @@ return operation within the conditional and body of
 structured control flow. Operation takes variadic operands
 but produces no results of its own.
 """
-function yield(inputs::Vector{Value}; location=Location())
+function yield(inputs; location=Location())
     results = MLIRType[]
-    operands = Value[inputs..., ]
+    operands = API.MlirValue[get_value.(inputs)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

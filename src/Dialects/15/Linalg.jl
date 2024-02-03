@@ -1,6 +1,6 @@
 module linalg
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -44,7 +44,7 @@ scf.for %i = %c0 to %0 step %c1 {
 """
 function index(; result=nothing::Union{Nothing, MLIRType}, dim, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dim", dim), ]
@@ -69,9 +69,9 @@ specified shape in IR and make it available to other transformations.
 Note: This op can be lowered to a `bufferization.alloc_tensor`, at which
 point it turns into an explicit buffer allocation.
 """
-function init_tensor(sizes::Vector{Value}; result::MLIRType, static_sizes, location=Location())
+function init_tensor(sizes; result::MLIRType, static_sizes, location=Location())
     results = MLIRType[result, ]
-    operands = Value[sizes..., ]
+    operands = API.MlirValue[get_value.(sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_sizes", static_sizes), ]
@@ -97,9 +97,9 @@ in `linalg` generic ops. It returns values to the immediately enclosing
 linalg.yield %f0, %f1 : f32, f32
 ```
 """
-function yield(values::Vector{Value}; location=Location())
+function yield(values; location=Location())
     results = MLIRType[]
-    operands = Value[values..., ]
+    operands = API.MlirValue[get_value.(values)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

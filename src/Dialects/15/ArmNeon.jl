@@ -1,6 +1,6 @@
 module arm_neon
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -16,9 +16,9 @@ vector to the destination SIMD&FP register.
 Source:
 https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsics
 """
-function intr_smull(a::Value, b::Value; res::MLIRType, location=Location())
+function intr_smull(a, b; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[a, b, ]
+    operands = API.MlirValue[get_value(a), get_value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -32,7 +32,7 @@ function intr_smull(a::Value, b::Value; res::MLIRType, location=Location())
 end
 
 """
-`2d_sdot`
+`_2d_sdot`
 
 The two input vectors `b` and `c` have a 2D shape, consisting of either 2
 or 4 rows, each row having length 4. This operation computes the pair-wise
@@ -43,20 +43,20 @@ corresponding entry of `a`:
 res[i] := a[i] + dot_product(b[i, ...], c[i, ...])
 ```
 """
-# function 2d_sdot(a::Value, b::Value, c::Value; res::MLIRType, location=Location())
-#     results = MLIRType[res, ]
-#     operands = Value[a, b, c, ]
-#     owned_regions = Region[]
-#     successors = Block[]
-#     attributes = NamedAttribute[]
+function _2d_sdot(a, b, c; res::MLIRType, location=Location())
+    results = MLIRType[res, ]
+    operands = API.MlirValue[get_value(a), get_value(b), get_value(c), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
     
-#     create_operation(
-#         "arm_neon.2d.sdot", location;
-#         operands, owned_regions, successors, attributes,
-#         results=results,
-#         result_inference=false
-#     )
-# end
+    create_operation(
+        "arm_neon.2d.sdot", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
+    )
+end
 
 """
 `intr_sdot`
@@ -68,9 +68,9 @@ where vector operands are partitioned into groups of four elements.
 Source:
 https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsics
 """
-function intr_sdot(a::Value, b::Value, c::Value; res::MLIRType, location=Location())
+function intr_sdot(a, b, c; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[a, b, c, ]
+    operands = API.MlirValue[get_value(a), get_value(b), get_value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

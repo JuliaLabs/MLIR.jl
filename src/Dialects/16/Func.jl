@@ -1,6 +1,6 @@
 module func
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -22,9 +22,9 @@ Function values can be created with the
 %result = func.call_indirect %func(%0, %1) : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
 """
-function call_indirect(callee::Value, callee_operands::Vector{Value}; results::Vector{MLIRType}, location=Location())
+function call_indirect(callee, callee_operands; results::Vector{MLIRType}, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[callee, callee_operands..., ]
+    operands = API.MlirValue[get_value(callee), get_value.(callee_operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -51,9 +51,9 @@ symbol reference attribute named \"callee\".
 %2 = func.call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee, location=Location())
+function call(operands; result_0::Vector{MLIRType}, callee, location=Location())
     results = MLIRType[result_0..., ]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
@@ -89,7 +89,7 @@ reference a function simplifies this
 """
 function constant(; result_0::MLIRType, value, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
@@ -143,7 +143,7 @@ func.func @example_fn_attr() attributes {dialectName.attrName = false}
 """
 function func_(; sym_name, function_type, sym_visibility=nothing, arg_attrs=nothing, res_attrs=nothing, body::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
@@ -176,9 +176,9 @@ func.func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands; location=Location())
     results = MLIRType[]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

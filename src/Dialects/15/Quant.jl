@@ -1,6 +1,6 @@
 module quant
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -13,9 +13,9 @@ same uniform quantization simulation as is done by the TensorFlow
 fake_quant_with_min_max_args op. See the fakeQuantAttrsToType() utility
 method and the quant-convert-simulated-quantization pass for further details.
 """
-function const_fake_quant(inputs::Value; outputs=nothing::Union{Nothing, MLIRType}, min, max, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
+function const_fake_quant(inputs; outputs=nothing::Union{Nothing, MLIRType}, min, max, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[inputs, ]
+    operands = API.MlirValue[get_value(inputs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("num_bits", num_bits), ]
@@ -40,9 +40,9 @@ fake_quant_with_min_max_vars_per_channel op. See the fakeQuantAttrsToType()
 utility method and the quant-convert-simulated-quantization pass for further
 details.
 """
-function const_fake_quant_per_axis(inputs::Value; outputs=nothing::Union{Nothing, MLIRType}, min, max, axis, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
+function const_fake_quant_per_axis(inputs; outputs=nothing::Union{Nothing, MLIRType}, min, max, axis, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[inputs, ]
+    operands = API.MlirValue[get_value(inputs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("axis", axis), namedattribute("num_bits", num_bits), ]
@@ -68,9 +68,9 @@ external connections. In such a case, during analysis, all coupled_ref
 nodes in a module which share a coupledKey will be considered to be
 directly connected as via an identity op for the purpose of type inference.
 """
-function coupled_ref(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, coupledKey, location=Location())
+function coupled_ref(arg; result_0=nothing::Union{Nothing, MLIRType}, coupledKey, location=Location())
     results = MLIRType[]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("coupledKey", coupledKey), ]
@@ -88,9 +88,9 @@ end
 `dcast`
 
 """
-function dcast(arg::Value; result_0::MLIRType, location=Location())
+function dcast(arg; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -107,9 +107,9 @@ end
 `qcast`
 
 """
-function qcast(arg::Value; result_0::MLIRType, location=Location())
+function qcast(arg; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -126,9 +126,9 @@ end
 `region`
 
 """
-function region(inputs::Vector{Value}; outputs::Vector{MLIRType}, input_specs, output_specs, logical_kernel, body::Region, location=Location())
+function region(inputs; outputs::Vector{MLIRType}, input_specs, output_specs, logical_kernel, body::Region, location=Location())
     results = MLIRType[outputs..., ]
-    operands = Value[inputs..., ]
+    operands = API.MlirValue[get_value.(inputs)..., ]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("input_specs", input_specs), namedattribute("output_specs", output_specs), namedattribute("logical_kernel", logical_kernel), ]
@@ -145,9 +145,9 @@ end
 `return_`
 
 """
-function return_(results::Vector{Value}; location=Location())
+function return_(results; location=Location())
     results = MLIRType[]
-    operands = Value[results..., ]
+    operands = API.MlirValue[get_value.(results)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -180,9 +180,9 @@ Currently, only dim=2 is supported, which is interpreted as [min, max].
 <?x?x3x2>, axis=2 => N=6
 ```
 """
-function stats(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, layerStats, axisStats=nothing, axis=nothing, location=Location())
+function stats(arg; result_0=nothing::Union{Nothing, MLIRType}, layerStats, axisStats=nothing, axis=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("layerStats", layerStats), ]
@@ -207,9 +207,9 @@ Such statistics will be stored with the provided key, allowing this node
 to later be converted to a \'stats\' op if statistics with that key have been
 encountered.
 """
-function stats_ref(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, statsKey, location=Location())
+function stats_ref(arg; result_0=nothing::Union{Nothing, MLIRType}, statsKey, location=Location())
     results = MLIRType[]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("statsKey", statsKey), ]
@@ -227,9 +227,9 @@ end
 `scast`
 
 """
-function scast(arg::Value; result_0::MLIRType, location=Location())
+function scast(arg; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

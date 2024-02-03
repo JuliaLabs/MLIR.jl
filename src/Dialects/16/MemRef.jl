@@ -1,6 +1,6 @@
 module memref
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -15,9 +15,9 @@ the buffer isn\'t aligned to the given alignment, the behavior is undefined.
 This operation doesn\'t affect the semantics of a correct program. It\'s for
 optimization only, and the optimization is best-effort.
 """
-function assume_alignment(memref::Value; alignment, location=Location())
+function assume_alignment(memref; alignment, location=Location())
     results = MLIRType[]
-    operands = Value[memref, ]
+    operands = API.MlirValue[get_value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("alignment", alignment), ]
@@ -47,9 +47,9 @@ result represents the latest value that was stored.
 %x = memref.atomic_rmw \"addf\" %value, %I[%i] : (f32, memref<10xf32>) -> f32
 ```
 """
-function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, kind, location=Location())
+function atomic_rmw(value, memref, indices; result=nothing::Union{Nothing, MLIRType}, kind, location=Location())
     results = MLIRType[]
-    operands = Value[value, memref, indices..., ]
+    operands = API.MlirValue[get_value(value), get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kind", kind), ]
@@ -69,9 +69,9 @@ end
 \"memref.atomic_yield\" yields an SSA value from a
 GenericAtomicRMWOp region.
 """
-function atomic_yield(result::Value; location=Location())
+function atomic_yield(result; location=Location())
     results = MLIRType[]
-    operands = Value[result, ]
+    operands = API.MlirValue[get_value(result), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -98,9 +98,9 @@ memref.copy %arg0, %arg1 : memref<?xf32> to memref<?xf32>
 Source and destination are expected to have the same element type and shape.
 Otherwise, the result is undefined. They may have different layouts.
 """
-function copy(source::Value, target::Value; location=Location())
+function copy(source, target; location=Location())
     results = MLIRType[]
-    operands = Value[source, target, ]
+    operands = API.MlirValue[get_value(source), get_value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -137,9 +137,9 @@ body of `GenericAtomicRMWOp`.
 }
 ```
 """
-function generic_atomic_rmw(memref::Value, indices::Vector{Value}; result::MLIRType, atomic_body::Region, location=Location())
+function generic_atomic_rmw(memref, indices; result::MLIRType, atomic_body::Region, location=Location())
     results = MLIRType[result, ]
-    operands = Value[memref, indices..., ]
+    operands = API.MlirValue[get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[atomic_body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -190,19 +190,18 @@ techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
 """
-function load(memref::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[memref, indices..., ]
+function load(memref, indices; result::MLIRType, location=Location())
+    results = MLIRType[result, ]
+    operands = API.MlirValue[get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
     
     create_operation(
         "memref.load", location;
         operands, owned_regions, successors, attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        results=results,
+        result_inference=false
     )
 end
 
@@ -247,9 +246,9 @@ boundary.
   memref<8x64xf32, affine_map<(d0, d1)[s0] -> ((d0 + s0), d1)>, 1>
 ```
 """
-function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing, location=Location())
+function alloc(dynamicSizes, symbolOperands; memref::MLIRType, alignment=nothing, location=Location())
     results = MLIRType[memref, ]
-    operands = Value[dynamicSizes..., symbolOperands..., ]
+    operands = API.MlirValue[get_value.(dynamicSizes)..., get_value.(symbolOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -301,9 +300,9 @@ specified, guarantees alignment at least to that boundary. If not specified,
 an alignment on any convenient boundary compatible with the type will be
 chosen.
 """
-function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::MLIRType, alignment=nothing, location=Location())
+function alloca(dynamicSizes, symbolOperands; memref::MLIRType, alignment=nothing, location=Location())
     results = MLIRType[memref, ]
-    operands = Value[dynamicSizes..., symbolOperands..., ]
+    operands = API.MlirValue[get_value.(dynamicSizes)..., get_value.(symbolOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -354,7 +353,7 @@ be left out, and will be inserted implicitly.
 """
 function alloca_scope(; results::Vector{MLIRType}, bodyRegion::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[bodyRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -379,9 +378,9 @@ to indicate which values are going to be returned. For example:
 memref.alloca_scope.return %value
 ```
 """
-function alloca_scope_return(results::Vector{Value}; location=Location())
+function alloca_scope_return(results; location=Location())
     results = MLIRType[]
-    operands = Value[results..., ]
+    operands = API.MlirValue[get_value.(results)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -450,9 +449,9 @@ Erase rank information.
     %5 = memref.cast %1 : memref<4x?xf32> to memref<*xf32>
 ```
 """
-function cast(source::Value; dest::MLIRType, location=Location())
+function cast(source; dest::MLIRType, location=Location())
     results = MLIRType[dest, ]
-    operands = Value[source, ]
+    operands = API.MlirValue[get_value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -508,9 +507,9 @@ only if the corresponding start dimension in the source type is dynamic.
 Note: This op currently assumes that the inner strides are of the
 source/result layout map are the faster-varying ones.
 """
-function collapse_shape(src::Value; result::MLIRType, reassociation, location=Location())
+function collapse_shape(src; result::MLIRType, reassociation, location=Location())
     results = MLIRType[result, ]
-    operands = Value[src, ]
+    operands = API.MlirValue[get_value(src), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
@@ -538,9 +537,9 @@ alloc\'d memref (e.g. memrefs returned by `view` operations).
 memref.dealloc %0 : memref<8x64xf32,  affine_map<(d0, d1) -> (d0, d1), 1>>
 ```
 """
-function dealloc(memref::Value; location=Location())
+function dealloc(memref; location=Location())
     results = MLIRType[]
-    operands = Value[memref, ]
+    operands = API.MlirValue[get_value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -578,9 +577,9 @@ The specified memref type is that of the first operand.
 %y = \"memref.dim\"(%A, %c1) : (memref<4 x ? x f32>, index) -> index
 ```
 """
-function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function dim(source, index; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[source, index, ]
+    operands = API.MlirValue[get_value(source), get_value(index), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -641,9 +640,9 @@ TODO: add additional operands to allow source and destination striding, and
 multiple stride levels.
 TODO: Consider replacing src/dst memref indices with view memrefs.
 """
-function dma_start(operands::Vector{Value}; location=Location())
+function dma_start(operands; location=Location())
     results = MLIRType[]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -676,9 +675,9 @@ number of elements associated with the DMA operation.
  dma_wait %tag[%index], %num_elements : memref<1 x i32, affine_map<(d0) -> (d0)>, 2>
  ```
 """
-function dma_wait(tagMemRef::Value, tagIndices::Vector{Value}, numElements::Value; location=Location())
+function dma_wait(tagMemRef, tagIndices, numElements; location=Location())
     results = MLIRType[]
-    operands = Value[tagMemRef, tagIndices..., numElements, ]
+    operands = API.MlirValue[get_value(tagMemRef), get_value.(tagIndices)..., get_value(numElements), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -733,9 +732,9 @@ group. Same for strides.
 Note: This op currently assumes that the inner strides are of the
 source/result layout map are the faster-varying ones.
 """
-function expand_shape(src::Value; result::MLIRType, reassociation, location=Location())
+function expand_shape(src; result::MLIRType, reassociation, location=Location())
     results = MLIRType[result, ]
-    operands = Value[src, ]
+    operands = API.MlirValue[get_value(src), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
@@ -770,9 +769,9 @@ as a pointer is explicitly discouraged.
   call @foo(%2) : (!llvm.ptr<f32>) ->()
 ```
 """
-function extract_aligned_pointer_as_index(source::Value; aligned_pointer=nothing::Union{Nothing, MLIRType}, location=Location())
+function extract_aligned_pointer_as_index(source; aligned_pointer=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[source, ]
+    operands = API.MlirValue[get_value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -830,9 +829,9 @@ This makes lowering more progressive and brings the following benefits:
     : memref<f32> to memref<?x?xf32, offset: ?, strides: [?, ?]>
 ```
 """
-function extract_strided_metadata(source::Value; base_buffer=nothing::Union{Nothing, MLIRType}, offset=nothing::Union{Nothing, MLIRType}, sizes=nothing::Union{Nothing, Vector{MLIRType}}, strides=nothing::Union{Nothing, Vector{MLIRType}}, location=Location())
+function extract_strided_metadata(source; base_buffer=nothing::Union{Nothing, MLIRType}, offset=nothing::Union{Nothing, MLIRType}, sizes=nothing::Union{Nothing, Vector{MLIRType}}, strides=nothing::Union{Nothing, Vector{MLIRType}}, location=Location())
     results = MLIRType[]
-    operands = Value[source, ]
+    operands = API.MlirValue[get_value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -865,7 +864,7 @@ undefined.
 """
 function get_global(; result::MLIRType, name, location=Location())
     results = MLIRType[result, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("name", name), ]
@@ -918,7 +917,7 @@ memref.global constant @c : memref<2xi32> = dense<1, 4>
 """
 function global_(; sym_name, sym_visibility=nothing, type, initial_value=nothing, constant=nothing, alignment=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
@@ -953,9 +952,9 @@ in cache). The cache type specifier is either \'data\' or \'instr\'
 and specifies whether the prefetch is performed on data cache or on
 instruction cache.
 """
-function prefetch(memref::Value, indices::Vector{Value}; isWrite, localityHint, isDataCache, location=Location())
+function prefetch(memref, indices; isWrite, localityHint, isDataCache, location=Location())
     results = MLIRType[]
-    operands = Value[memref, indices..., ]
+    operands = API.MlirValue[get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("isWrite", isWrite), namedattribute("localityHint", localityHint), namedattribute("isDataCache", isDataCache), ]
@@ -980,9 +979,9 @@ The `memref.rank` operation takes a memref operand and returns its rank.
 %1 = memref.rank %arg1 : memref<?x?xf32>
 ```
 """
-function rank(memref::Value; result_0=nothing::Union{Nothing, MLIRType}, location=Location())
+function rank(memref; result_0=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[memref, ]
+    operands = API.MlirValue[get_value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1054,13 +1053,13 @@ behavior.
 %5 = memref.load %old[%index]   // undefined behavior
 ```
 """
-function realloc(source::Value, dynamicResultSize=nothing::Union{Nothing, Value}; result_0::MLIRType, alignment=nothing, location=Location())
+function realloc(source, dynamicResultSize=nothing; result_0::MLIRType, alignment=nothing, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[source, ]
+    operands = API.MlirValue[get_value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (dynamicResultSize != nothing) && push!(operands, dynamicResultSize)
+    (dynamicResultSize != nothing) && push!(operands, get_valuedynamicResultSize)
     (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
@@ -1109,9 +1108,9 @@ means that `%dst`\'s descriptor will be:
 %dst.strides = %strides
 ```
 """
-function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
+function reinterpret_cast(source, offsets, sizes, strides; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
     results = MLIRType[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+    operands = API.MlirValue[get_value(source), get_value.(offsets)..., get_value.(sizes)..., get_value.(strides)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
@@ -1160,9 +1159,9 @@ Result type is unranked.
          : (memref<*xf32>, memref<?xi32>) to memref<*xf32>
 ```
 """
-function reshape(source::Value, shape::Value; result::MLIRType, location=Location())
+function reshape(source, shape; result::MLIRType, location=Location())
     results = MLIRType[result, ]
-    operands = Value[source, shape, ]
+    operands = API.MlirValue[get_value(source), get_value(shape), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1205,9 +1204,9 @@ techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
 """
-function store(value::Value, memref::Value, indices::Vector{Value}; location=Location())
+function store(value, memref, indices; location=Location())
     results = MLIRType[]
-    operands = Value[value, memref, indices..., ]
+    operands = API.MlirValue[get_value(value), get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1233,9 +1232,9 @@ transformation.
 %1 = memref.transpose %0 (i, j) -> (j, i) : memref<?x?xf32> to memref<?x?xf32, affine_map<(d0, d1)[s0] -> (d1 * s0 + d0)>>
 ```
 """
-function transpose(in::Value; result_0::MLIRType, permutation, location=Location())
+function transpose(in; result_0::MLIRType, permutation, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[in, ]
+    operands = API.MlirValue[get_value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("permutation", permutation), ]
@@ -1286,9 +1285,9 @@ For now, a \"view\" op:
   memref<2048xi8> to memref<?x4x?xf32>
 ```
 """
-function view(source::Value, byte_shift::Value, sizes::Vector{Value}; result_0::MLIRType, location=Location())
+function view(source, byte_shift, sizes; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[source, byte_shift, sizes..., ]
+    operands = API.MlirValue[get_value(source), get_value(byte_shift), get_value.(sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1435,9 +1434,9 @@ Example 5:
   memref<8x16x4xf32> to memref<6x3xf32, strided<[4, 1], offset: 210>>
 ```
 """
-function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
+function subview(source, offsets, sizes, strides; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
     results = MLIRType[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+    operands = API.MlirValue[get_value(source), get_value.(offsets)..., get_value.(sizes)..., get_value.(strides)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
@@ -1466,9 +1465,9 @@ element types of these must match, and are specified by the memref type.
 memref.tensor_store %8, %10 : memref<4x?xf32, #layout, memspace0>
 ```
 """
-function tensor_store(tensor::Value, memref::Value; location=Location())
+function tensor_store(tensor, memref; location=Location())
     results = MLIRType[]
-    operands = Value[tensor, memref, ]
+    operands = API.MlirValue[get_value(tensor), get_value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

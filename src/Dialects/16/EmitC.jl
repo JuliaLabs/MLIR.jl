@@ -1,6 +1,6 @@
 module emitc
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -23,9 +23,9 @@ can be applied to a single operand.
 
 ```
 """
-function apply(operand::Value; result::MLIRType, applicableOperator, location=Location())
+function apply(operand; result::MLIRType, applicableOperator, location=Location())
     results = MLIRType[result, ]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator), ]
@@ -57,9 +57,9 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee, args=nothing, template_args=nothing, location=Location())
+function call(operands; result_0::Vector{MLIRType}, callee, args=nothing, template_args=nothing, location=Location())
     results = MLIRType[result_0..., ]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
@@ -92,9 +92,9 @@ and EmitC types.
     !emitc.ptr<!emitc.opaque<\"void\">> to !emitc.ptr<i32>
 ```
 """
-function cast(source::Value; dest::MLIRType, location=Location())
+function cast(source; dest::MLIRType, location=Location())
     results = MLIRType[dest, ]
-    operands = Value[source, ]
+    operands = API.MlirValue[get_value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -131,7 +131,7 @@ it should not be used with pointers.
 """
 function constant(; result_0::MLIRType, value, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
@@ -168,7 +168,7 @@ emitc.include \"myheader.h\"
 """
 function include(; include, is_standard_include=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("include", include), ]
@@ -218,7 +218,7 @@ emitc.call \"write\"(%2, %3) : (!emitc.ptr<i32>, !emitc.ptr<i32>) -> ()
 """
 function variable(; result_0::MLIRType, value, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]

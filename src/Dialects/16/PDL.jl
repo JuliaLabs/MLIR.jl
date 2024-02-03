@@ -1,6 +1,6 @@
 module pdl
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -19,9 +19,9 @@ entities.
 pdl.apply_native_constraint \"myConstraint\"(%input, %attr, %op : !pdl.value, !pdl.attribute, !pdl.operation)
 ```
 """
-function apply_native_constraint(args::Vector{Value}; name, location=Location())
+function apply_native_constraint(args; name, location=Location())
     results = MLIRType[]
-    operands = Value[args..., ]
+    operands = API.MlirValue[get_value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("name", name), ]
@@ -62,9 +62,9 @@ void registerNativeRewrite(PDLPatternModule &pdlModule) {
 }
 ```
 """
-function apply_native_rewrite(args::Vector{Value}; results::Vector{MLIRType}, name, location=Location())
+function apply_native_rewrite(args; results::Vector{MLIRType}, name, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[args..., ]
+    operands = API.MlirValue[get_value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("name", name), ]
@@ -102,13 +102,13 @@ defined within a `pdl.rewrite` region, the constant value must be specified.
 %attr = pdl.attribute = \"hello\"
 ```
 """
-function attribute(valueType=nothing::Union{Nothing, Value}; attr::MLIRType, value=nothing, location=Location())
+function attribute(valueType=nothing; attr::MLIRType, value=nothing, location=Location())
     results = MLIRType[attr, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (valueType != nothing) && push!(operands, valueType)
+    (valueType != nothing) && push!(operands, get_valuevalueType)
     (value != nothing) && push!(attributes, namedattribute("value", value))
     
     create_operation(
@@ -132,9 +132,9 @@ operation correspond with the `eraseOp` method on a `PatternRewriter`.
 pdl.erase %root
 ```
 """
-function erase(opValue::Value; location=Location())
+function erase(opValue; location=Location())
     results = MLIRType[]
-    operands = Value[opValue, ]
+    operands = API.MlirValue[get_value(opValue), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -168,13 +168,13 @@ may partially constrain an operand by specifying an expected value type
 %operand = pdl.operand : %type
 ```
 """
-function operand(valueType=nothing::Union{Nothing, Value}; value::MLIRType, location=Location())
+function operand(valueType=nothing; value::MLIRType, location=Location())
     results = MLIRType[value, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (valueType != nothing) && push!(operands, valueType)
+    (valueType != nothing) && push!(operands, get_valuevalueType)
     
     create_operation(
         "pdl.operand", location;
@@ -205,13 +205,13 @@ operands by specifying expected value types (via `pdl.types` operations).
 %typed_operands = pdl.operands : %types
 ```
 """
-function operands(valueType=nothing::Union{Nothing, Value}; value::MLIRType, location=Location())
+function operands(valueType=nothing; value::MLIRType, location=Location())
     results = MLIRType[value, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (valueType != nothing) && push!(operands, valueType)
+    (valueType != nothing) && push!(operands, get_valuevalueType)
     
     create_operation(
         "pdl.operands", location;
@@ -318,9 +318,9 @@ def MyOp {
 %op = pdl.operation \"foo.op\" -> (%result, %otherResults : !pdl.type, !pdl.range<type>)
 ```
 """
-function operation(operandValues::Vector{Value}, attributeValues::Vector{Value}, typeValues::Vector{Value}; op::MLIRType, opName=nothing, attributeValueNames, location=Location())
+function operation(operandValues, attributeValues, typeValues; op::MLIRType, opName=nothing, attributeValueNames, location=Location())
     results = MLIRType[op, ]
-    operands = Value[operandValues..., attributeValues..., typeValues..., ]
+    operands = API.MlirValue[get_value.(operandValues)..., get_value.(attributeValues)..., get_value.(typeValues)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("attributeValueNames", attributeValueNames), ]
@@ -361,7 +361,7 @@ pdl.pattern : benefit(1) {
 """
 function pattern(; benefit, sym_name=nothing, bodyRegion::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[bodyRegion, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("benefit", benefit), ]
@@ -402,9 +402,9 @@ determine how to extract the underlying elements. If we can\'t, e.g. if
 there are multiple sub ranges used for construction, we won\'t be able
 to determine their sizes during constraint time.
 """
-function range(arguments::Vector{Value}; result::MLIRType, location=Location())
+function range(arguments; result::MLIRType, location=Location())
     results = MLIRType[result, ]
-    operands = Value[arguments..., ]
+    operands = API.MlirValue[get_value.(arguments)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -442,13 +442,13 @@ pdl.replace %root with (%vals : !pdl.range<value>)
 pdl.replace %root with %otherOp
 ```
 """
-function replace(opValue::Value, replOperation=nothing::Union{Nothing, Value}; replValues::Vector{Value}, location=Location())
+function replace(opValue, replOperation=nothing; replValues, location=Location())
     results = MLIRType[]
-    operands = Value[opValue, replValues..., ]
+    operands = API.MlirValue[get_value(opValue), get_value.(replValues)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (replOperation != nothing) && push!(operands, replOperation)
+    (replOperation != nothing) && push!(operands, get_valuereplOperation)
     push!(attributes, operandsegmentsizes([1, (replOperation==nothing) ? 0 : 1length(replValues), ]))
     
     create_operation(
@@ -481,9 +481,9 @@ as defined by the ODS definition of the operation.
 // the IR snippet, `%pdl_result` would correspond to `%result_1`.
 ```
 """
-function result(parent::Value; val::MLIRType, index, location=Location())
+function result(parent; val::MLIRType, index, location=Location())
     results = MLIRType[val, ]
-    operands = Value[parent, ]
+    operands = API.MlirValue[get_value(parent), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("index", index), ]
@@ -525,9 +525,9 @@ operation.
 %results = pdl.results 1 of %operation -> !pdl.value
 ```
 """
-function results(parent::Value; val::MLIRType, index=nothing, location=Location())
+function results(parent; val::MLIRType, index=nothing, location=Location())
     results = MLIRType[val, ]
-    operands = Value[parent, ]
+    operands = API.MlirValue[get_value(parent), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -580,13 +580,13 @@ pdl.rewrite {
 }
 ```
 """
-function rewrite(root=nothing::Union{Nothing, Value}; externalArgs::Vector{Value}, name=nothing, bodyRegion::Region, location=Location())
+function rewrite(root=nothing; externalArgs, name=nothing, bodyRegion::Region, location=Location())
     results = MLIRType[]
-    operands = Value[externalArgs..., ]
+    operands = API.MlirValue[get_value.(externalArgs)..., ]
     owned_regions = Region[bodyRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (root != nothing) && push!(operands, root)
+    (root != nothing) && push!(operands, get_valueroot)
     push!(attributes, operandsegmentsizes([(root==nothing) ? 0 : 1length(externalArgs), ]))
     (name != nothing) && push!(attributes, namedattribute("name", name))
     
@@ -618,7 +618,7 @@ partially constrain the result by specifying a constant `Type`.
 """
 function type(; result::MLIRType, constantType=nothing, location=Location())
     results = MLIRType[result, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -652,7 +652,7 @@ an array of `Type`s.
 """
 function types(; result::MLIRType, constantTypes=nothing, location=Location())
     results = MLIRType[result, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

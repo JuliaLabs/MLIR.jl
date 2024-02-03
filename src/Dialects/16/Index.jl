@@ -1,6 +1,6 @@
 module index
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -17,9 +17,9 @@ The `index.add` operation takes two index values and computes their sum.
 %c = index.add %a, %b
 ```
 """
-function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function add(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -46,9 +46,9 @@ and.
 %c = index.and %a, %b
 ```
 """
-function and(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function and(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -79,7 +79,7 @@ This operation is used to materialize bool constants that arise when folding
 """
 function bool_constant(; result=nothing::Union{Nothing, MLIRType}, value, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
@@ -111,9 +111,9 @@ truncated.
 %1 = index.casts %b : i64 to index
 ```
 """
-function casts(input::Value; output::MLIRType, location=Location())
+function casts(input; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -144,9 +144,9 @@ truncated.
 %1 = index.castu %b : i64 to index
 ```
 """
-function castu(input::Value; output::MLIRType, location=Location())
+function castu(input; output::MLIRType, location=Location())
     results = MLIRType[output, ]
-    operands = Value[input, ]
+    operands = API.MlirValue[get_value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -175,9 +175,9 @@ Note: division by zero and signed division overflow are undefined behaviour.
 %c = index.ceildivs %a, %b
 ```
 """
-function ceildivs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function ceildivs(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -207,9 +207,9 @@ Note: division by zero is undefined behaviour.
 %c = index.ceildivu %a, %b
 ```
 """
-function ceildivu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function ceildivu(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -256,9 +256,9 @@ The result is `1` if the comparison is true and `0` otherwise.
 %2 = index.cmp ne(%a, %b)
 ```
 """
-function cmp(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, pred, location=Location())
+function cmp(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, pred, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pred", pred), ]
@@ -286,7 +286,7 @@ some index-typed integer constant.
 """
 function constant(; result=nothing::Union{Nothing, MLIRType}, value, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
@@ -316,9 +316,9 @@ Note: division by zero and signed division overflow are undefined behaviour.
 %c = index.divs %a, %b
 ```
 """
-function divs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function divs(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -348,9 +348,9 @@ Note: division by zero is undefined behaviour.
 %c = index.divu %a, %b
 ```
 """
-function divu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function divu(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -380,9 +380,9 @@ Note: division by zero and signed division overflow are undefined behaviour.
 %c = index.floordivs %a, %b
 ```
 """
-function floordivs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function floordivs(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -409,9 +409,9 @@ maximum value. Treats the leading bit as the sign, i.e. `max(-2, 6) = 6`.
 %c = index.maxs %a, %b
 ```
 """
-function maxs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function maxs(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -439,9 +439,9 @@ unsigned maximum value. Treats the leading bit as the most significant, i.e.
 %c = index.maxu %a, %b
 ```
 """
-function maxu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function maxu(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -468,9 +468,9 @@ minimum value. Treats the leading bit as the sign, i.e. `min(-2, 6) = -2`.
 %c = index.mins %a, %b
 ```
 """
-function mins(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function mins(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -498,9 +498,9 @@ unsigned minimum value. Treats the leading bit as the most significant, i.e.
 %c = index.minu %a, %b
 ```
 """
-function minu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function minu(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -526,9 +526,9 @@ The `index.mul` operation takes two index values and computes their product.
 %c = index.mul %a, %b
 ```
 """
-function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function mul(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -555,9 +555,9 @@ or.
 %c = index.or %a, %b
 ```
 """
-function or(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function or(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -584,9 +584,9 @@ remainder. Treats the leading bit as the sign, i.e. `6 % -2 = 0`.
 %c = index.rems %a, %b
 ```
 """
-function rems(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function rems(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -614,9 +614,9 @@ unsigned remainder. Treats the leading bit as the most significant, i.e.
 %c = index.remu %a, %b
 ```
 """
-function remu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function remu(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -645,9 +645,9 @@ index bitwidth, the operation is undefined.
 %c = index.shl %a, %b
 ```
 """
-function shl(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function shl(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -676,9 +676,9 @@ greater than the index bitwidth, the operation is undefined.
 %c = index.shrs %a, %b
 ```
 """
-function shrs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function shrs(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -707,9 +707,9 @@ bitwidth, the operation is undefined.
 %c = index.shru %a, %b
 ```
 """
-function shru(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function shru(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -738,7 +738,7 @@ is `32 : index`, and on 64-bit systems, the result is `64 : index`.
 """
 function sizeof(; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -765,9 +765,9 @@ of the first from the second operand.
 %c = index.sub %a, %b
 ```
 """
-function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function sub(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -794,9 +794,9 @@ xor.
 %c = index.xor %a, %b
 ```
 """
-function xor(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function xor(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

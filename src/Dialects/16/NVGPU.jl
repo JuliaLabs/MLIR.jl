@@ -1,6 +1,6 @@
 module nvgpu
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -55,13 +55,13 @@ nvgpu.device_async_wait %token2
   memref<4x5xf32> to memref<2x7x5xf32, 3>
 ```
 """
-function device_async_copy(dst::Value, dstIndices::Vector{Value}, src::Value, srcIndices::Vector{Value}, srcElements=nothing::Union{Nothing, Value}; asyncToken::MLIRType, dstElements, bypassL1=nothing, location=Location())
+function device_async_copy(dst, dstIndices, src, srcIndices, srcElements=nothing; asyncToken::MLIRType, dstElements, bypassL1=nothing, location=Location())
     results = MLIRType[asyncToken, ]
-    operands = Value[dst, dstIndices..., src, srcIndices..., ]
+    operands = API.MlirValue[get_value(dst), get_value.(dstIndices)..., get_value(src), get_value.(srcIndices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dstElements", dstElements), ]
-    (srcElements != nothing) && push!(operands, srcElements)
+    (srcElements != nothing) && push!(operands, get_valuesrcElements)
     push!(attributes, operandsegmentsizes([1, length(dstIndices), 1, length(srcIndices), (srcElements==nothing) ? 0 : 1]))
     (bypassL1 != nothing) && push!(attributes, namedattribute("bypassL1", bypassL1))
     
@@ -93,9 +93,9 @@ Groups are executed in the order they are created.
 %0 = nvgpu.device_async_create_group
   ```
 """
-function device_async_create_group(inputTokens::Vector{Value}; asyncToken::MLIRType, location=Location())
+function device_async_create_group(inputTokens; asyncToken::MLIRType, location=Location())
     results = MLIRType[asyncToken, ]
-    operands = Value[inputTokens..., ]
+    operands = API.MlirValue[get_value.(inputTokens)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -123,9 +123,9 @@ groups uncompleted when the wait can unblock the thread.
 nvgpu.device_async_wait %0
 ```
 """
-function device_async_wait(asyncDependencies::Value; numGroups=nothing, location=Location())
+function device_async_wait(asyncDependencies; numGroups=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[asyncDependencies, ]
+    operands = API.MlirValue[get_value(asyncDependencies), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -157,9 +157,9 @@ https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#warp-level-mat
   memref<?x?xf16, 3> -> vector<4x2xf16>
 ```
 """
-function ldmatrix(srcMemref::Value, indices::Vector{Value}; res::MLIRType, transpose, numTiles, location=Location())
+function ldmatrix(srcMemref, indices; res::MLIRType, transpose, numTiles, location=Location())
     results = MLIRType[res, ]
-    operands = Value[srcMemref, indices..., ]
+    operands = API.MlirValue[get_value(srcMemref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("transpose", transpose), namedattribute("numTiles", numTiles), ]
@@ -196,9 +196,9 @@ nvgpu.mma.sp.sync (%a, %b, %c) metadata (%meta) {mmaShape = [16, 8, 32]} :
   (vector<4x2xf16>, vector<2x2xf16>, vector<2x2xf16>) -> vector<2x2xf16>
 ```
 """
-function mma_sp_sync(matrixA::Value, matrixB::Value, matrixC::Value, sparseMetadata::Value; res::MLIRType, mmaShape, sparsitySelector=nothing, tf32Enabled=nothing, location=Location())
+function mma_sp_sync(matrixA, matrixB, matrixC, sparseMetadata; res::MLIRType, mmaShape, sparsitySelector=nothing, tf32Enabled=nothing, location=Location())
     results = MLIRType[res, ]
-    operands = Value[matrixA, matrixB, matrixC, sparseMetadata, ]
+    operands = API.MlirValue[get_value(matrixA), get_value(matrixB), get_value(matrixC), get_value(sparseMetadata), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mmaShape", mmaShape), ]
@@ -235,9 +235,9 @@ This operation is meant to follow the semantic of described here:
     (vector<4x2xf16>, vector<2x2xf16>, vector<2x2xf32>) -> vector<2x2xf32>
 ```
 """
-function mma_sync(matrixA::Value, matrixB::Value, matrixC::Value; res::MLIRType, mmaShape, tf32Enabled=nothing, location=Location())
+function mma_sync(matrixA, matrixB, matrixC; res::MLIRType, mmaShape, tf32Enabled=nothing, location=Location())
     results = MLIRType[res, ]
-    operands = Value[matrixA, matrixB, matrixC, ]
+    operands = API.MlirValue[get_value(matrixA), get_value(matrixB), get_value(matrixC), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mmaShape", mmaShape), ]

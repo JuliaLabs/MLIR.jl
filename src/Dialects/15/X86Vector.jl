@@ -1,6 +1,6 @@
 module x86vector
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -9,9 +9,9 @@ import ...API
 `avx_intr_dp_ps_256`
 
 """
-function avx_intr_dp_ps_256(a::Value, b::Value, c::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx_intr_dp_ps_256(a, b, c; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[a, b, c, ]
+    operands = API.MlirValue[get_value(a), get_value(b), get_value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -43,9 +43,9 @@ dot product of the two source vectors.
 %d = arith.addf %1, %2 : f32
 ```
 """
-function avx_intr_dot(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx_intr_dot(a, b; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[a, b, ]
+    operands = API.MlirValue[get_value(a), get_value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -63,9 +63,9 @@ end
 `avx512_intr_mask_compress`
 
 """
-function avx512_intr_mask_compress(a::Value, src::Value, k::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_compress(a, src, k; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[a, src, k, ]
+    operands = API.MlirValue[get_value(a), get_value(src), get_value(k), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -94,13 +94,13 @@ Contiguously store the active integer/floating-point elements in `a` (those
 with their respective bit set in writemask `k`) to `dst`, and pass through the
 remaining elements from `src`.
 """
-function avx512_mask_compress(k::Value, a::Value, src=nothing::Union{Nothing, Value}; dst=nothing::Union{Nothing, MLIRType}, constant_src=nothing, location=Location())
+function avx512_mask_compress(k, a, src=nothing; dst=nothing::Union{Nothing, MLIRType}, constant_src=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[k, a, ]
+    operands = API.MlirValue[get_value(k), get_value(a), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (src != nothing) && push!(operands, src)
+    (src != nothing) && push!(operands, get_valuesrc)
     (dst != nothing) && push!(results, dst)
     (constant_src != nothing) && push!(attributes, namedattribute("constant_src", constant_src))
     
@@ -126,9 +126,9 @@ Round packed floating-point elements in `a` to the number of fraction bits
 specified by `imm`, and store the results in `dst` using writemask `k`
 (elements are copied from src when the corresponding mask bit is not set).
 """
-function avx512_mask_rndscale(src::Value, k::Value, a::Value, imm::Value, rounding::Value; dst=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_mask_rndscale(src, k, a, imm, rounding; dst=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[src, k, a, imm, rounding, ]
+    operands = API.MlirValue[get_value(src), get_value(k), get_value(a), get_value(imm), get_value(rounding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -146,9 +146,9 @@ end
 `avx512_intr_mask_rndscale_pd_512`
 
 """
-function avx512_intr_mask_rndscale_pd_512(src::Value, k::Value, a::Value, imm::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_rndscale_pd_512(src, k, a, imm, rounding; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[src, k, a, imm, rounding, ]
+    operands = API.MlirValue[get_value(src), get_value(k), get_value(a), get_value(imm), get_value(rounding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -166,9 +166,9 @@ end
 `avx512_intr_mask_rndscale_ps_512`
 
 """
-function avx512_intr_mask_rndscale_ps_512(src::Value, k::Value, a::Value, imm::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_rndscale_ps_512(src, k, a, imm, rounding; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[src, k, a, imm, rounding, ]
+    operands = API.MlirValue[get_value(src), get_value(k), get_value(a), get_value(imm), get_value(rounding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -196,9 +196,9 @@ Scale the packed floating-point elements in `a` using values from `b`, and
 store the results in `dst` using writemask `k` (elements are copied from src
 when the corresponding mask bit is not set).
 """
-function avx512_mask_scalef(src::Value, a::Value, b::Value, k::Value, rounding::Value; dst=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_mask_scalef(src, a, b, k, rounding; dst=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[src, a, b, k, rounding, ]
+    operands = API.MlirValue[get_value(src), get_value(a), get_value(b), get_value(k), get_value(rounding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -216,9 +216,9 @@ end
 `avx512_intr_mask_scalef_pd_512`
 
 """
-function avx512_intr_mask_scalef_pd_512(src::Value, a::Value, b::Value, k::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_scalef_pd_512(src, a, b, k, rounding; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[src, a, b, k, rounding, ]
+    operands = API.MlirValue[get_value(src), get_value(a), get_value(b), get_value(k), get_value(rounding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -236,9 +236,9 @@ end
 `avx512_intr_mask_scalef_ps_512`
 
 """
-function avx512_intr_mask_scalef_ps_512(src::Value, a::Value, b::Value, k::Value, rounding::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx512_intr_mask_scalef_ps_512(src, a, b, k, rounding; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[src, a, b, k, rounding, ]
+    operands = API.MlirValue[get_value(src), get_value(a), get_value(b), get_value(k), get_value(rounding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -256,9 +256,9 @@ end
 `avx_intr_rsqrt_ps_256`
 
 """
-function avx_intr_rsqrt_ps_256(a::Value; res=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx_intr_rsqrt_ps_256(a; res=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[a, ]
+    operands = API.MlirValue[get_value(a), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -276,9 +276,9 @@ end
 `avx_rsqrt`
 
 """
-function avx_rsqrt(a::Value; b=nothing::Union{Nothing, MLIRType}, location=Location())
+function avx_rsqrt(a; b=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[a, ]
+    operands = API.MlirValue[get_value(a), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -296,9 +296,9 @@ end
 `avx512_intr_vp2intersect_d_512`
 
 """
-function avx512_intr_vp2intersect_d_512(a::Value, b::Value; res::MLIRType, location=Location())
+function avx512_intr_vp2intersect_d_512(a, b; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[a, b, ]
+    operands = API.MlirValue[get_value(a), get_value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -327,9 +327,9 @@ specified by `k1` and `k2`. A match in corresponding elements of `a` and
 `b` is indicated by a set bit in the corresponding bit of the mask
 registers.
 """
-function avx512_vp2intersect(a::Value, b::Value; k1::MLIRType, k2::MLIRType, location=Location())
+function avx512_vp2intersect(a, b; k1::MLIRType, k2::MLIRType, location=Location())
     results = MLIRType[k1, k2, ]
-    operands = Value[a, b, ]
+    operands = API.MlirValue[get_value(a), get_value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -346,9 +346,9 @@ end
 `avx512_intr_vp2intersect_q_512`
 
 """
-function avx512_intr_vp2intersect_q_512(a::Value, b::Value; res::MLIRType, location=Location())
+function avx512_intr_vp2intersect_q_512(a, b; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[a, b, ]
+    operands = API.MlirValue[get_value(a), get_value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

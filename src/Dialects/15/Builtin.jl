@@ -1,6 +1,6 @@
 module builtin
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -26,7 +26,7 @@ module {
 """
 function module_(; sym_name=nothing, sym_visibility=nothing, bodyRegion::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[bodyRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -75,9 +75,9 @@ operands of arity 0-N.
 %result3 = unrealized_conversion_cast %operand, %operand : !foo.type, !foo.type to !bar.tuple_type<!foo.type, !foo.type>
 ```
 """
-function unrealized_conversion_cast(inputs::Vector{Value}; outputs::Vector{MLIRType}, location=Location())
+function unrealized_conversion_cast(inputs; outputs::Vector{MLIRType}, location=Location())
     results = MLIRType[outputs..., ]
-    operands = Value[inputs..., ]
+    operands = API.MlirValue[get_value.(inputs)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

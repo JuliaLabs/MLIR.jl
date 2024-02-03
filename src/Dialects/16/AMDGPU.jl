@@ -1,6 +1,6 @@
 module amdgpu
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -22,7 +22,7 @@ are used (for example, by writing them to LDS).
 """
 function lds_barrier(; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -64,9 +64,9 @@ order (that is, v[0] will go to arg[7:0], v[1] to arg[15:8] and so on).
 The negateA, negateB, and negateC flags are only supported for double-precision
 operations on gfx940+.
 """
-function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, m, n, k, blocks, cbsz=nothing, abid=nothing, blgp=nothing, reducePrecision=nothing, negateA=nothing, negateB=nothing, negateC=nothing, location=Location())
+function mfma(sourceA, sourceB, destC; destD::MLIRType, m, n, k, blocks, cbsz=nothing, abid=nothing, blgp=nothing, reducePrecision=nothing, negateA=nothing, negateB=nothing, negateC=nothing, location=Location())
     results = MLIRType[destD, ]
-    operands = Value[sourceA, sourceB, destC, ]
+    operands = API.MlirValue[get_value(sourceA), get_value(sourceB), get_value(destC), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("m", m), namedattribute("n", n), namedattribute("k", k), namedattribute("blocks", blocks), ]
@@ -106,13 +106,13 @@ Out of bounds atomic operations are ignored in hardware.
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
 """
-function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
+function raw_buffer_atomic_fadd(value, memref, indices, sgprOffset=nothing; boundsCheck=nothing, indexOffset=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[value, memref, indices..., ]
+    operands = API.MlirValue[get_value(value), get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    (sgprOffset != nothing) && push!(operands, get_valuesgprOffset)
     push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
     (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -157,13 +157,13 @@ are translated to intrinsic arguments as follows:
   to 2 to disable bounds checks, otherwise it is 3
 - The cache coherency bits are off
 """
-function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; value::MLIRType, boundsCheck=nothing, indexOffset=nothing, location=Location())
+function raw_buffer_load(memref, indices, sgprOffset=nothing; value::MLIRType, boundsCheck=nothing, indexOffset=nothing, location=Location())
     results = MLIRType[value, ]
-    operands = Value[memref, indices..., ]
+    operands = API.MlirValue[get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    (sgprOffset != nothing) && push!(operands, get_valuesgprOffset)
     push!(attributes, operandsegmentsizes([1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
     (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -196,13 +196,13 @@ components is partically completed is chipset-dependent.
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
 """
-function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
+function raw_buffer_store(value, memref, indices, sgprOffset=nothing; boundsCheck=nothing, indexOffset=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[value, memref, indices..., ]
+    operands = API.MlirValue[get_value(value), get_value(memref), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    (sgprOffset != nothing) && push!(operands, get_valuesgprOffset)
     push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
     (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))

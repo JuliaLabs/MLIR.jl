@@ -1,6 +1,6 @@
 module arm_sve
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -9,9 +9,9 @@ import ...API
 `intr_fadd`
 
 """
-function intr_fadd(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_fadd(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -31,9 +31,9 @@ The `arm_sve.masked.addf` operation takes one scalable vector mask
 and two scalable vector operands, and perform floating point addition on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_addf(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_addf(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -50,9 +50,9 @@ end
 `intr_add`
 
 """
-function intr_add(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_add(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -72,9 +72,9 @@ The `arm_sve.masked.addi` operation takes one scalable vector mask
 and two scalable vector operands, and perform integer addition on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_addi(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_addi(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -91,9 +91,9 @@ end
 `intr_fdiv`
 
 """
-function intr_fdiv(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_fdiv(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -113,9 +113,9 @@ The `arm_sve.masked.divf` operation takes one scalable vector mask
 and two scalable vector operands, and perform floating point division on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_divf(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_divf(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -132,9 +132,9 @@ end
 `intr_fmul`
 
 """
-function intr_fmul(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_fmul(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -154,9 +154,9 @@ The `arm_sve.masked.mulf` operation takes one scalable vector mask
 and two scalable vector operands, and perform floating point multiplication on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_mulf(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_mulf(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -173,9 +173,9 @@ end
 `intr_mul`
 
 """
-function intr_mul(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_mul(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -195,9 +195,9 @@ The `arm_sve.masked.muli` operation takes one scalable vector mask
 and two scalable vector operands, and perform integer multiplication on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_muli(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_muli(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -214,9 +214,9 @@ end
 `intr_sdiv`
 
 """
-function intr_sdiv(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_sdiv(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -236,9 +236,9 @@ The `arm_sve.masked.divi_signed` operation takes one scalable vector mask
 and two scalable vector operands, and perform integer signed division on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_divi_signed(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_divi_signed(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -255,9 +255,9 @@ end
 `intr_fsub`
 
 """
-function intr_fsub(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_fsub(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -277,9 +277,9 @@ The `arm_sve.masked.subf` operation takes one scalable vector mask
 and two scalable vector operands, and perform floating point subtraction on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_subf(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_subf(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -296,9 +296,9 @@ end
 `intr_sub`
 
 """
-function intr_sub(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_sub(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -318,9 +318,9 @@ The `arm_sve.masked.subi` operation takes one scalable vector mask
 and two scalable vector operands, and perform integer subtraction on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_subi(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_subi(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -337,9 +337,9 @@ end
 `intr_udiv`
 
 """
-function intr_udiv(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_udiv(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -359,9 +359,9 @@ The `arm_sve.masked.divi_unsigned` operation takes one scalable vector mask
 and two scalable vector operands, and perform integer unsigned division on active lanes. Inactive lanes will keep the value of
 the first operand.
 """
-function masked_divi_unsigned(mask::Value, src1::Value, src2::Value; res::MLIRType, location=Location())
+function masked_divi_unsigned(mask, src1, src2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[mask, src1, src2, ]
+    operands = API.MlirValue[get_value(mask), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -378,9 +378,9 @@ end
 `intr_sdot`
 
 """
-function intr_sdot(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_sdot(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -407,9 +407,9 @@ to the overlapping element of the first vector input.
 Source:
 https://developer.arm.com/documentation/100987/0000
 """
-function sdot(acc::Value, src1::Value, src2::Value; dst::MLIRType, location=Location())
+function sdot(acc, src1, src2; dst::MLIRType, location=Location())
     results = MLIRType[dst, ]
-    operands = Value[acc, src1, src2, ]
+    operands = API.MlirValue[get_value(acc), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -426,9 +426,9 @@ end
 `intr_smmla`
 
 """
-function intr_smmla(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_smmla(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -458,9 +458,9 @@ the result to the first input using modular arithmetic.
 Source:
 https://developer.arm.com/documentation/100987/0000
 """
-function smmla(acc::Value, src1::Value, src2::Value; dst::MLIRType, location=Location())
+function smmla(acc, src1, src2; dst::MLIRType, location=Location())
     results = MLIRType[dst, ]
-    operands = Value[acc, src1, src2, ]
+    operands = API.MlirValue[get_value(acc), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -477,9 +477,9 @@ end
 `intr_udot`
 
 """
-function intr_udot(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_udot(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -506,9 +506,9 @@ to the overlapping element of the first vector input.
 Source:
 https://developer.arm.com/documentation/100987/0000
 """
-function udot(acc::Value, src1::Value, src2::Value; dst::MLIRType, location=Location())
+function udot(acc, src1, src2; dst::MLIRType, location=Location())
     results = MLIRType[dst, ]
-    operands = Value[acc, src1, src2, ]
+    operands = API.MlirValue[get_value(acc), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -525,9 +525,9 @@ end
 `intr_ummla`
 
 """
-function intr_ummla(operand_0::Value, operand_1::Value, operand_2::Value; res::MLIRType, location=Location())
+function intr_ummla(operand_0, operand_1, operand_2; res::MLIRType, location=Location())
     results = MLIRType[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = API.MlirValue[get_value(operand_0), get_value(operand_1), get_value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -557,9 +557,9 @@ the result to the first input using modular arithmetic.
 Source:
 https://developer.arm.com/documentation/100987/0000
 """
-function ummla(acc::Value, src1::Value, src2::Value; dst::MLIRType, location=Location())
+function ummla(acc, src1, src2; dst::MLIRType, location=Location())
     results = MLIRType[dst, ]
-    operands = Value[acc, src1, src2, ]
+    operands = API.MlirValue[get_value(acc), get_value(src1), get_value(src2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

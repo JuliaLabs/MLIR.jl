@@ -1,6 +1,6 @@
 module scf
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -13,9 +13,9 @@ of the `scf.while` construct. If its first argument is true, the \"after\"
 region of `scf.while` is executed, with the remaining arguments forwarded
 to the entry block of the region. Otherwise, the loop terminates.
 """
-function condition(condition::Value, args::Vector{Value}; location=Location())
+function condition(condition, args; location=Location())
     results = MLIRType[]
-    operands = Value[condition, args..., ]
+    operands = API.MlirValue[get_value(condition), get_value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -71,7 +71,7 @@ affine.for %i = 0 to 100 {
 """
 function execute_region(; result_0::Vector{MLIRType}, region::Region, location=Location())
     results = MLIRType[result_0..., ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -173,9 +173,9 @@ func.func @conditional_reduce(%buffer: memref<1024xf32>, %lb: index,
 }
 ```
 """
-function for_(lowerBound::Value, upperBound::Value, step::Value, initArgs::Vector{Value}; results::Vector{MLIRType}, region::Region, location=Location())
+function for_(lowerBound, upperBound, step, initArgs; results::Vector{MLIRType}, region::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[lowerBound, upperBound, step, initArgs..., ]
+    operands = API.MlirValue[get_value(lowerBound), get_value(upperBound), get_value(step), get_value.(initArgs)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -288,9 +288,9 @@ Example with thread_dim_mapping attribute:
 // Sequential context.
 //
 """
-function foreach_thread(num_threads::Vector{Value}; results::Vector{MLIRType}, thread_dim_mapping=nothing, region::Region, location=Location())
+function foreach_thread(num_threads; results::Vector{MLIRType}, thread_dim_mapping=nothing, region::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[num_threads..., ]
+    operands = API.MlirValue[get_value.(num_threads)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -350,9 +350,9 @@ scf.if %b  {
 }
 ```
 """
-function if_(condition::Value; results::Vector{MLIRType}, thenRegion::Region, elseRegion::Region, location=Location())
+function if_(condition; results::Vector{MLIRType}, thenRegion::Region, elseRegion::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[condition, ]
+    operands = API.MlirValue[get_value(condition), ]
     owned_regions = Region[thenRegion, elseRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -411,9 +411,9 @@ scf.parallel (%iv) = (%lb) to (%ub) step (%step) init (%init) -> f32 {
 }
 ```
 """
-function parallel(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vector{Value}, initVals::Vector{Value}; results::Vector{MLIRType}, region::Region, location=Location())
+function parallel(lowerBound, upperBound, step, initVals; results::Vector{MLIRType}, region::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[lowerBound..., upperBound..., step..., initVals..., ]
+    operands = API.MlirValue[get_value.(lowerBound)..., get_value.(upperBound)..., get_value.(step)..., get_value.(initVals)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -440,7 +440,7 @@ The result number corresponds to the position of the op in the terminator.
 """
 function foreach_thread_perform_concurrently(; region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -489,9 +489,9 @@ scf.reduce(%operand) : f32 {
 }
 ```
 """
-function reduce(operand::Value; reductionOperator::Region, location=Location())
+function reduce(operand; reductionOperator::Region, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[reductionOperator, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -515,9 +515,9 @@ the operand of \"scf.reduce\". Example for the custom format:
 scf.reduce.return %res : f32
 ```
 """
-function reduce_return(result::Value; location=Location())
+function reduce_return(result; location=Location())
     results = MLIRType[]
-    operands = Value[result, ]
+    operands = API.MlirValue[get_value(result), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -644,9 +644,9 @@ assignment-list ::= assignment | assignment `,` assignment-list
 assignment ::= ssa-value `=` ssa-value
 ```
 """
-function while_(inits::Vector{Value}; results::Vector{MLIRType}, before::Region, after::Region, location=Location())
+function while_(inits; results::Vector{MLIRType}, before::Region, after::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[inits..., ]
+    operands = API.MlirValue[get_value.(inits)..., ]
     owned_regions = Region[before, after, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -672,9 +672,9 @@ left out in the custom syntax and the builders will insert one implicitly.
 Otherwise, it has to be present in the syntax to indicate which values are
 yielded.
 """
-function yield(results::Vector{Value}; location=Location())
+function yield(results; location=Location())
     results = MLIRType[]
-    operands = Value[results..., ]
+    operands = API.MlirValue[get_value.(results)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -1,6 +1,6 @@
 module quant
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -9,9 +9,9 @@ import ...API
 `dcast`
 
 """
-function dcast(arg::Value; result_0::MLIRType, location=Location())
+function dcast(arg; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -28,9 +28,9 @@ end
 `qcast`
 
 """
-function qcast(arg::Value; result_0::MLIRType, location=Location())
+function qcast(arg; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -47,9 +47,9 @@ end
 `scast`
 
 """
-function scast(arg::Value; result_0::MLIRType, location=Location())
+function scast(arg; result_0::MLIRType, location=Location())
     results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+    operands = API.MlirValue[get_value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

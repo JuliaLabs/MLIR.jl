@@ -1,6 +1,6 @@
 module sparse_tensor
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -106,9 +106,9 @@ because we never use its values, only its sparse structure:
 } -> tensor<?x?xf64, #CSR>
 ```
 """
-function binary(x::Value, y::Value; output::MLIRType, left_identity=nothing, right_identity=nothing, overlapRegion::Region, leftRegion::Region, rightRegion::Region, location=Location())
+function binary(x, y; output::MLIRType, left_identity=nothing, right_identity=nothing, overlapRegion::Region, leftRegion::Region, rightRegion::Region, location=Location())
     results = MLIRType[output, ]
-    operands = Value[x, y, ]
+    operands = API.MlirValue[get_value(x), get_value(y), ]
     owned_regions = Region[overlapRegion, leftRegion, rightRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -146,9 +146,9 @@ done \"in place\", and referencing the old SSA value is undefined behavior.
   : memref<?xf64>, memref<?xi1>, memref<?xindex>, tensor<4x4xf64, #CSR>
 ```
 """
-function compress(values::Value, filled::Value, added::Value, count::Value, tensor::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function compress(values, filled, added, count, tensor, indices; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[values, filled, added, count, tensor, indices..., ]
+    operands = API.MlirValue[get_value(values), get_value(filled), get_value(added), get_value(count), get_value(tensor), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -181,9 +181,9 @@ can be dynamically-sized.
   : tensor<64x64xf64, #CSR>, tensor<64x64xf64, #CSR> to tensor<128x64xf64, #CSR>
 ```
 """
-function concatenate(inputs::Vector{Value}; result::MLIRType, dimension, location=Location())
+function concatenate(inputs; result::MLIRType, dimension, location=Location())
     results = MLIRType[result, ]
-    operands = Value[inputs..., ]
+    operands = API.MlirValue[get_value.(inputs)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
@@ -235,9 +235,9 @@ Examples:
 %4 = sparse_tensor.convert %d : tensor<?xf64> to tensor<100xf64, #SV>
 ```
 """
-function convert(source::Value; dest::MLIRType, location=Location())
+function convert(source; dest::MLIRType, location=Location())
     results = MLIRType[dest, ]
-    operands = Value[source, ]
+    operands = API.MlirValue[get_value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -282,9 +282,9 @@ side-effecting context that sets and resets the expanded arrays.
   : tensor<4x4xf64, #CSR> to memref<?xf64>, memref<?xi1>, memref<?xindex>
 ```
 """
-function expand(tensor::Value; values::MLIRType, filled::MLIRType, added::MLIRType, count::MLIRType, location=Location())
+function expand(tensor; values::MLIRType, filled::MLIRType, added::MLIRType, count::MLIRType, location=Location())
     results = MLIRType[values, filled, added, count, ]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -359,9 +359,9 @@ sparse_tensor.foreach in %0 : tensor<2x3xf64, #ROW_MAJOR> do {
 
 ```
 """
-function foreach(tensor::Value, initArgs::Vector{Value}; results::Vector{MLIRType}, region::Region, location=Location())
+function foreach(tensor, initArgs; results::Vector{MLIRType}, region::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[tensor, initArgs..., ]
+    operands = API.MlirValue[get_value(tensor), get_value.(initArgs)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -386,9 +386,9 @@ Example of querying the size of the index array for level 0:
      : !sparse_tensor.storage_specifier<#COO> to i64
 ```
 """
-function storage_specifier_get(specifier::Value; result::MLIRType, specifierKind, dim=nothing, location=Location())
+function storage_specifier_get(specifier; result::MLIRType, specifierKind, dim=nothing, location=Location())
     results = MLIRType[result, ]
-    operands = Value[specifier, ]
+    operands = API.MlirValue[get_value(specifier), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("specifierKind", specifierKind), ]
@@ -432,9 +432,9 @@ This operation is scheduled to be unified with the dense counterpart
 %result = sparse_tensor.insert %val into %tensor[%i,%j] : tensor<1024x1024xf64, #CSR>
 ```
 """
-function insert(value::Value, tensor::Value, indices::Vector{Value}; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function insert(value, tensor, indices; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[value, tensor, indices..., ]
+    operands = API.MlirValue[get_value(value), get_value(tensor), get_value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -476,9 +476,9 @@ Examples:
 %1 = sparse_tensor.load %0 hasInserts : tensor<16x32xf32, #CSR>
 ```
 """
-function load(tensor::Value; result=nothing::Union{Nothing, MLIRType}, hasInserts=nothing, location=Location())
+function load(tensor; result=nothing::Union{Nothing, MLIRType}, hasInserts=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -518,9 +518,9 @@ storage is planned for the future.
 sparse_tensor.new %source : !Source to tensor<1024x1024xf64, #CSR>
 ```
 """
-function new(source::Value; result::MLIRType, expandSymmetry=nothing, location=Location())
+function new(source; result::MLIRType, expandSymmetry=nothing, location=Location())
     results = MLIRType[result, ]
-    operands = Value[source, ]
+    operands = API.MlirValue[get_value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -548,9 +548,9 @@ accurate nomenclature is used.
 %noe = sparse_tensor.number_of_entries %tensor : tensor<64x64xf64, #CSR>
 ```
 """
-function number_of_entries(tensor::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function number_of_entries(tensor; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -583,9 +583,9 @@ is solely defined by side-effects and not SSA values.
 sparse_tensor.out %t, %dest : tensor<1024x1024xf64, #CSR>, !Dest
 ```
 """
-function out(tensor::Value, dest::Value; location=Location())
+function out(tensor, dest; location=Location())
     results = MLIRType[]
-    operands = Value[tensor, dest, ]
+    operands = API.MlirValue[get_value(tensor), get_value(dest), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -642,13 +642,13 @@ through the old SSA value after this operation is undefined behavior.
    : xindex, memref<?xf64>, f64
 ```
 """
-function push_back(curSize::Value, inBuffer::Value, value::Value, n=nothing::Union{Nothing, Value}; outBuffer=nothing::Union{Nothing, MLIRType}, newSize=nothing::Union{Nothing, MLIRType}, inbounds=nothing, location=Location())
+function push_back(curSize, inBuffer, value, n=nothing; outBuffer=nothing::Union{Nothing, MLIRType}, newSize=nothing::Union{Nothing, MLIRType}, inbounds=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[curSize, inBuffer, value, ]
+    operands = API.MlirValue[get_value(curSize), get_value(inBuffer), get_value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (n != nothing) && push!(operands, n)
+    (n != nothing) && push!(operands, get_valuen)
     (outBuffer != nothing) && push!(results, outBuffer)
     (newSize != nothing) && push!(results, newSize)
     (inbounds != nothing) && push!(attributes, namedattribute("inbounds", inbounds))
@@ -699,9 +699,9 @@ Example of Matrix->Vector reduction using max(product(x_i), 100):
 } -> tensor<?xf64, #SparseVector>
 ```
 """
-function reduce(x::Value, y::Value, identity::Value; output=nothing::Union{Nothing, MLIRType}, region::Region, location=Location())
+function reduce(x, y, identity; output=nothing::Union{Nothing, MLIRType}, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[x, y, identity, ]
+    operands = API.MlirValue[get_value(x), get_value(y), get_value(identity), ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -765,9 +765,9 @@ Example of selecting lower triangle of a matrix:
 } -> tensor<?x?xf64, #CSR>
 ```
 """
-function select(x::Value; output=nothing::Union{Nothing, MLIRType}, region::Region, location=Location())
+function select(x; output=nothing::Union{Nothing, MLIRType}, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[x, ]
+    operands = API.MlirValue[get_value(x), ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -795,9 +795,9 @@ Example of updating the sizes of the index array for level 0:
 
 ```
 """
-function storage_specifier_set(specifier::Value, value::Value; result=nothing::Union{Nothing, MLIRType}, specifierKind, dim=nothing, location=Location())
+function storage_specifier_set(specifier, value; result=nothing::Union{Nothing, MLIRType}, specifierKind, dim=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[specifier, value, ]
+    operands = API.MlirValue[get_value(specifier), get_value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("specifierKind", specifierKind), ]
@@ -839,9 +839,9 @@ sparse_tensor.sort %n, %xy jointly %y1 { nx = 2 : index, ny = 2 : index}
   : memref<?xi64> jointly memref<?xf32>
 ```
 """
-function sort_coo(n::Value, xy::Value, ys::Vector{Value}; nx=nothing, ny=nothing, stable=nothing, location=Location())
+function sort_coo(n, xy, ys; nx=nothing, ny=nothing, stable=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[n, xy, ys..., ]
+    operands = API.MlirValue[get_value(n), get_value(xy), get_value.(ys)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -896,9 +896,9 @@ sparse_tensor.sort stable %n, %x1, %x2 jointly y1, %y2
   : memref<?xindex>, memref<?xindex> jointly memref<?xindex>, memref<?xf32>
 ```
 """
-function sort(n::Value, xs::Vector{Value}, ys::Vector{Value}; stable=nothing, location=Location())
+function sort(n, xs, ys; stable=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[n, xs..., ys..., ]
+    operands = API.MlirValue[get_value(n), get_value.(xs)..., get_value.(ys)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -927,7 +927,7 @@ the sizes for tensor dimensions, pointer arrays, index arrays, and the value arr
 """
 function storage_specifier_init(; result::MLIRType, location=Location())
     results = MLIRType[result, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -962,9 +962,9 @@ and (3, 6).
 : tensor<64x64xf64, #COO> to memref<?xindex>
 ```
 """
-function indices_buffer(tensor::Value; result::MLIRType, location=Location())
+function indices_buffer(tensor; result::MLIRType, location=Location())
     results = MLIRType[result, ]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -995,9 +995,9 @@ scheme (either by calling a support library or through direct code).
    : tensor<64x64xf64, #CSR> to memref<?xindex>
 ```
 """
-function indices(tensor::Value; result::MLIRType, dimension, location=Location())
+function indices(tensor; result::MLIRType, dimension, location=Location())
     results = MLIRType[result, ]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
@@ -1028,9 +1028,9 @@ scheme (either by calling a support library or through direct code).
    : tensor<64x64xf64, #CSR> to memref<?xindex>
 ```
 """
-function pointers(tensor::Value; result::MLIRType, dimension, location=Location())
+function pointers(tensor; result::MLIRType, dimension, location=Location())
     results = MLIRType[result, ]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
@@ -1060,9 +1060,9 @@ scheme (either by calling a support library or through direct code).
 %1 = sparse_tensor.values %0 : tensor<64x64xf64, #CSR> to memref<?xf64>
 ```
 """
-function values(tensor::Value; result::MLIRType, location=Location())
+function values(tensor; result::MLIRType, location=Location())
     results = MLIRType[result, ]
-    operands = Value[tensor, ]
+    operands = API.MlirValue[get_value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1141,9 +1141,9 @@ the output, while missing values are filled with 1):
   }
 ```
 """
-function unary(x::Value; output::MLIRType, presentRegion::Region, absentRegion::Region, location=Location())
+function unary(x; output::MLIRType, presentRegion::Region, absentRegion::Region, location=Location())
     results = MLIRType[output, ]
-    operands = Value[x, ]
+    operands = API.MlirValue[get_value(x), ]
     owned_regions = Region[presentRegion, absentRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1173,13 +1173,13 @@ Yields a value from within a `binary`, `unary`, `reduce`,
 }
 ```
 """
-function yield(result=nothing::Union{Nothing, Value}; location=Location())
+function yield(result=nothing; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(operands, result)
+    (result != nothing) && push!(operands, get_valueresult)
     
     create_operation(
         "sparse_tensor.yield", location;

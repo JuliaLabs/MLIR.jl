@@ -1,6 +1,6 @@
 module omp
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -40,7 +40,7 @@ The region has the following allowed forms:
 """
 function atomic_capture(; hint_val=nothing, memory_order_val=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -70,9 +70,9 @@ optimization.
 `memory_order` indicates the memory ordering behavior of the construct. It
 can be one of `seq_cst`, `acquire` or `relaxed`.
 """
-function atomic_read(x::Value, v::Value; hint_val=nothing, memory_order_val=nothing, location=Location())
+function atomic_read(x, v; hint_val=nothing, memory_order_val=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[x, v, ]
+    operands = API.MlirValue[get_value(x), get_value(v), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -117,9 +117,9 @@ the core update operation is directly translated like regular operations by
 the host dialect. The front-end must handle semantic checks for allowed
 operations.
 """
-function atomic_update(x::Value; hint_val=nothing, memory_order_val=nothing, region::Region, location=Location())
+function atomic_update(x; hint_val=nothing, memory_order_val=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[x, ]
+    operands = API.MlirValue[get_value(x), ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -151,9 +151,9 @@ optimization.
 `memory_order` indicates the memory ordering behavior of the construct. It
 can be one of `seq_cst`, `release` or `relaxed`.
 """
-function atomic_write(address::Value, value::Value; hint_val=nothing, memory_order_val=nothing, location=Location())
+function atomic_write(address, value; hint_val=nothing, memory_order_val=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[address, value, ]
+    operands = API.MlirValue[get_value(address), get_value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -176,7 +176,7 @@ the construct appears.
 """
 function barrier(; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -195,13 +195,13 @@ end
 The cancel construct activates cancellation of the innermost enclosing
 region of the type specified.
 """
-function cancel(if_expr=nothing::Union{Nothing, Value}; cancellation_construct_type_val, location=Location())
+function cancel(if_expr=nothing; cancellation_construct_type_val, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("cancellation_construct_type_val", cancellation_construct_type_val), ]
-    (if_expr != nothing) && push!(operands, if_expr)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
     
     create_operation(
         "omp.cancel", location;
@@ -220,7 +220,7 @@ innermost enclosing region of the type specified has been activated.
 """
 function cancellationpoint(; cancellation_construct_type_val, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("cancellation_construct_type_val", cancellation_construct_type_val), ]
@@ -242,7 +242,7 @@ The name can be used in critical constructs in the dialect.
 """
 function critical_declare(; sym_name, hint_val=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
@@ -264,7 +264,7 @@ block (region) to be executed by only a single thread at a time.
 """
 function critical(; name=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -286,9 +286,9 @@ makes a thread’s temporary view of memory consistent with memory and
 enforces an order on the memory operations of the variables explicitly
 specified or implied.
 """
-function flush(varList::Vector{Value}; location=Location())
+function flush(varList; location=Location())
     results = MLIRType[]
-    operands = Value[varList..., ]
+    operands = API.MlirValue[get_value.(varList)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -309,7 +309,7 @@ the master thread of the team.
 """
 function master(; region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -340,9 +340,9 @@ the index of the element of \"vec\" for the DEPEND(SINK: vec) clause. It
 contains the operands in multiple \"vec\" when multiple DEPEND(SINK: vec)
 clauses exist in one ORDERED directive.
 """
-function ordered(depend_vec_vars::Vector{Value}; depend_type_val=nothing, num_loops_val=nothing, location=Location())
+function ordered(depend_vec_vars; depend_type_val=nothing, num_loops_val=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[depend_vec_vars..., ]
+    operands = API.MlirValue[get_value.(depend_vec_vars)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -370,7 +370,7 @@ specified.
 """
 function ordered_region(; simd=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -416,14 +416,14 @@ threads complete.
 The optional \$proc_bind_val attribute controls the thread affinity for the execution
 of the parallel region.
 """
-function parallel(if_expr_var=nothing::Union{Nothing, Value}; num_threads_var=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, reduction_vars::Vector{Value}, reductions=nothing, proc_bind_val=nothing, region::Region, location=Location())
+function parallel(if_expr_var=nothing; num_threads_var=nothing, allocate_vars, allocators_vars, reduction_vars, reductions=nothing, proc_bind_val=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[allocate_vars..., allocators_vars..., reduction_vars..., ]
+    operands = API.MlirValue[get_value.(allocate_vars)..., get_value.(allocators_vars)..., get_value.(reduction_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr_var != nothing) && push!(operands, if_expr_var)
-    (num_threads_var != nothing) && push!(operands, num_threads_var)
+    (if_expr_var != nothing) && push!(operands, get_valueif_expr_var)
+    (num_threads_var != nothing) && push!(operands, get_valuenum_threads_var)
     push!(attributes, operandsegmentsizes([(if_expr_var==nothing) ? 0 : 1(num_threads_var==nothing) ? 0 : 1length(allocate_vars), length(allocators_vars), length(reduction_vars), ]))
     (reductions != nothing) && push!(attributes, namedattribute("reductions", reductions))
     (proc_bind_val != nothing) && push!(attributes, namedattribute("proc_bind_val", proc_bind_val))
@@ -463,7 +463,7 @@ match the parent operation\'s results.
 """
 function reduction_declare(; sym_name, type, initializerRegion::Region, reductionRegion::Region, atomicReductionRegion::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[initializerRegion, reductionRegion, atomicReductionRegion, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
@@ -484,9 +484,9 @@ entity for a reduction requested in some ancestor. The reduction is
 identified by the accumulator, but the value of the accumulator may not be
 updated immediately.
 """
-function reduction(operand::Value, accumulator::Value; location=Location())
+function reduction(operand, accumulator; location=Location())
     results = MLIRType[]
-    operands = Value[operand, accumulator, ]
+    operands = API.MlirValue[get_value(operand), get_value(accumulator), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -508,7 +508,7 @@ sections construct. A section op should always be surrounded by an
 """
 function section(; region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -548,9 +548,9 @@ that specify the memory allocator to be used to obtain storage for private value
 The `nowait` attribute, when present, signifies that there should be no
 implicit barrier at the end of the construct.
 """
-function sections(reduction_vars::Vector{Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}; reductions=nothing, nowait=nothing, region::Region, location=Location())
+function sections(reduction_vars, allocate_vars, allocators_vars; reductions=nothing, nowait=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[reduction_vars..., allocate_vars..., allocators_vars..., ]
+    operands = API.MlirValue[get_value.(reduction_vars)..., get_value.(allocate_vars)..., get_value.(allocators_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -611,13 +611,13 @@ for (%i1, %i2) : index = (%c0, %c0) to (%c10, %c10) step (%c1, %c1) {
 }
 ```
 """
-function simdloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vector{Value}, aligned_vars::Vector{Value}, if_expr=nothing::Union{Nothing, Value}; nontemporal_vars::Vector{Value}, alignment_values=nothing, order_val=nothing, simdlen=nothing, safelen=nothing, inclusive=nothing, region::Region, location=Location())
+function simdloop(lowerBound, upperBound, step, aligned_vars, if_expr=nothing; nontemporal_vars, alignment_values=nothing, order_val=nothing, simdlen=nothing, safelen=nothing, inclusive=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[lowerBound..., upperBound..., step..., aligned_vars..., nontemporal_vars..., ]
+    operands = API.MlirValue[get_value.(lowerBound)..., get_value.(upperBound)..., get_value.(step)..., get_value.(aligned_vars)..., get_value.(nontemporal_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
     push!(attributes, operandsegmentsizes([length(lowerBound), length(upperBound), length(step), length(aligned_vars), (if_expr==nothing) ? 0 : 1length(nontemporal_vars), ]))
     (alignment_values != nothing) && push!(attributes, namedattribute("alignment_values", alignment_values))
     (order_val != nothing) && push!(attributes, namedattribute("order_val", order_val))
@@ -642,9 +642,9 @@ master thread), in the context of its implicit task. The other threads
 in the team, which do not execute the block, wait at an implicit barrier
 at the end of the single construct unless a nowait clause is specified.
 """
-function single(allocate_vars::Vector{Value}, allocators_vars::Vector{Value}; nowait=nothing, region::Region, location=Location())
+function single(allocate_vars, allocators_vars; nowait=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[allocate_vars..., allocators_vars..., ]
+    operands = API.MlirValue[get_value.(allocate_vars)..., get_value.(allocators_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -679,15 +679,15 @@ even if the target task is not yet completed.
 
 TODO:  map, is_device_ptr, depend, defaultmap, in_reduction
 """
-function target(if_expr=nothing::Union{Nothing, Value}; device=nothing::Union{Nothing, Value}, thread_limit=nothing::Union{Nothing, Value}, nowait=nothing, region::Region, location=Location())
+function target(if_expr=nothing; device=nothing, thread_limit=nothing, nowait=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (device != nothing) && push!(operands, device)
-    (thread_limit != nothing) && push!(operands, thread_limit)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
+    (device != nothing) && push!(operands, get_valuedevice)
+    (thread_limit != nothing) && push!(operands, get_valuethread_limit)
     push!(attributes, operandsegmentsizes([(if_expr==nothing) ? 0 : 1(device==nothing) ? 0 : 1(thread_limit==nothing) ? 0 : 1]))
     (nowait != nothing) && push!(attributes, namedattribute("nowait", nowait))
     
@@ -730,14 +730,14 @@ The \$map_types specifies the types and modifiers for the map clause.
 
 TODO:  depend clause and map_type_modifier values iterator and mapper.
 """
-function target_data(if_expr=nothing::Union{Nothing, Value}; device=nothing::Union{Nothing, Value}, use_device_ptr::Vector{Value}, use_device_addr::Vector{Value}, map_operands::Vector{Value}, map_types, region::Region, location=Location())
+function target_data(if_expr=nothing; device=nothing, use_device_ptr, use_device_addr, map_operands, map_types, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[use_device_ptr..., use_device_addr..., map_operands..., ]
+    operands = API.MlirValue[get_value.(use_device_ptr)..., get_value.(use_device_addr)..., get_value.(map_operands)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("map_types", map_types), ]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (device != nothing) && push!(operands, device)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
+    (device != nothing) && push!(operands, get_valuedevice)
     push!(attributes, operandsegmentsizes([(if_expr==nothing) ? 0 : 1(device==nothing) ? 0 : 1length(use_device_ptr), length(use_device_addr), length(map_operands), ]))
     
     create_operation(
@@ -772,14 +772,14 @@ The \$map_types specifies the types and modifiers for the map clause.
 
 TODO:  depend clause and map_type_modifier values iterator and mapper.
 """
-function target_enter_data(if_expr=nothing::Union{Nothing, Value}; device=nothing::Union{Nothing, Value}, map_operands::Vector{Value}, nowait=nothing, map_types, location=Location())
+function target_enter_data(if_expr=nothing; device=nothing, map_operands, nowait=nothing, map_types, location=Location())
     results = MLIRType[]
-    operands = Value[map_operands..., ]
+    operands = API.MlirValue[get_value.(map_operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("map_types", map_types), ]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (device != nothing) && push!(operands, device)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
+    (device != nothing) && push!(operands, get_valuedevice)
     push!(attributes, operandsegmentsizes([(if_expr==nothing) ? 0 : 1(device==nothing) ? 0 : 1length(map_operands), ]))
     (nowait != nothing) && push!(attributes, namedattribute("nowait", nowait))
     
@@ -815,14 +815,14 @@ The \$map_types specifies the types and modifiers for the map clause.
 
 TODO:  depend clause and map_type_modifier values iterator and mapper.
 """
-function target_exit_data(if_expr=nothing::Union{Nothing, Value}; device=nothing::Union{Nothing, Value}, map_operands::Vector{Value}, nowait=nothing, map_types, location=Location())
+function target_exit_data(if_expr=nothing; device=nothing, map_operands, nowait=nothing, map_types, location=Location())
     results = MLIRType[]
-    operands = Value[map_operands..., ]
+    operands = API.MlirValue[get_value.(map_operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("map_types", map_types), ]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (device != nothing) && push!(operands, device)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
+    (device != nothing) && push!(operands, get_valuedevice)
     push!(attributes, operandsegmentsizes([(if_expr==nothing) ? 0 : 1(device==nothing) ? 0 : 1length(map_operands), ]))
     (nowait != nothing) && push!(attributes, namedattribute("nowait", nowait))
     
@@ -858,9 +858,9 @@ The `allocators_vars` and `allocate_vars` arguments are a variadic list of
 values that specify the memory allocator to be used to obtain storage for
 private values.
 """
-function taskgroup(task_reduction_vars::Vector{Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}; task_reductions=nothing, region::Region, location=Location())
+function taskgroup(task_reduction_vars, allocate_vars, allocators_vars; task_reductions=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[task_reduction_vars..., allocate_vars..., allocators_vars..., ]
+    operands = API.MlirValue[get_value.(task_reduction_vars)..., get_value.(allocate_vars)..., get_value.(allocators_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -973,17 +973,17 @@ construct. Thus, the taskloop construct creates an implicit taskgroup
 region. If the `nogroup` clause is present, no implicit taskgroup region is
 created.
 """
-function taskloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vector{Value}, if_expr=nothing::Union{Nothing, Value}; final_expr=nothing::Union{Nothing, Value}, in_reduction_vars::Vector{Value}, reduction_vars::Vector{Value}, priority=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, grain_size=nothing::Union{Nothing, Value}, num_tasks=nothing::Union{Nothing, Value}, inclusive=nothing, untied=nothing, mergeable=nothing, in_reductions=nothing, reductions=nothing, nogroup=nothing, region::Region, location=Location())
+function taskloop(lowerBound, upperBound, step, if_expr=nothing; final_expr=nothing, in_reduction_vars, reduction_vars, priority=nothing, allocate_vars, allocators_vars, grain_size=nothing, num_tasks=nothing, inclusive=nothing, untied=nothing, mergeable=nothing, in_reductions=nothing, reductions=nothing, nogroup=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[lowerBound..., upperBound..., step..., in_reduction_vars..., reduction_vars..., allocate_vars..., allocators_vars..., ]
+    operands = API.MlirValue[get_value.(lowerBound)..., get_value.(upperBound)..., get_value.(step)..., get_value.(in_reduction_vars)..., get_value.(reduction_vars)..., get_value.(allocate_vars)..., get_value.(allocators_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (final_expr != nothing) && push!(operands, final_expr)
-    (priority != nothing) && push!(operands, priority)
-    (grain_size != nothing) && push!(operands, grain_size)
-    (num_tasks != nothing) && push!(operands, num_tasks)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
+    (final_expr != nothing) && push!(operands, get_valuefinal_expr)
+    (priority != nothing) && push!(operands, get_valuepriority)
+    (grain_size != nothing) && push!(operands, get_valuegrain_size)
+    (num_tasks != nothing) && push!(operands, get_valuenum_tasks)
     push!(attributes, operandsegmentsizes([length(lowerBound), length(upperBound), length(step), (if_expr==nothing) ? 0 : 1(final_expr==nothing) ? 0 : 1length(in_reduction_vars), length(reduction_vars), (priority==nothing) ? 0 : 1length(allocate_vars), length(allocators_vars), (grain_size==nothing) ? 0 : 1(num_tasks==nothing) ? 0 : 1]))
     (inclusive != nothing) && push!(attributes, namedattribute("inclusive", inclusive))
     (untied != nothing) && push!(attributes, namedattribute("untied", untied))
@@ -1042,15 +1042,15 @@ The `allocators_vars` and `allocate_vars` arguments are a variadic list of
 values that specify the memory allocator to be used to obtain storage for
 private values.
 """
-function task(if_expr=nothing::Union{Nothing, Value}; final_expr=nothing::Union{Nothing, Value}, in_reduction_vars::Vector{Value}, priority=nothing::Union{Nothing, Value}, allocate_vars::Vector{Value}, allocators_vars::Vector{Value}, untied=nothing, mergeable=nothing, in_reductions=nothing, region::Region, location=Location())
+function task(if_expr=nothing; final_expr=nothing, in_reduction_vars, priority=nothing, allocate_vars, allocators_vars, untied=nothing, mergeable=nothing, in_reductions=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[in_reduction_vars..., allocate_vars..., allocators_vars..., ]
+    operands = API.MlirValue[get_value.(in_reduction_vars)..., get_value.(allocate_vars)..., get_value.(allocators_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (final_expr != nothing) && push!(operands, final_expr)
-    (priority != nothing) && push!(operands, priority)
+    (if_expr != nothing) && push!(operands, get_valueif_expr)
+    (final_expr != nothing) && push!(operands, get_valuefinal_expr)
+    (priority != nothing) && push!(operands, get_valuepriority)
     push!(attributes, operandsegmentsizes([(if_expr==nothing) ? 0 : 1(final_expr==nothing) ? 0 : 1length(in_reduction_vars), (priority==nothing) ? 0 : 1length(allocate_vars), length(allocators_vars), ]))
     (untied != nothing) && push!(attributes, namedattribute("untied", untied))
     (mergeable != nothing) && push!(attributes, namedattribute("mergeable", mergeable))
@@ -1072,7 +1072,7 @@ of the current task.
 """
 function taskwait(; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1093,7 +1093,7 @@ in favor of execution of a different task.
 """
 function taskyield(; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1116,7 +1116,7 @@ enclosing op.
 """
 function terminator(; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1147,9 +1147,9 @@ this operation.
 The `sym_addr` refers to the address of the symbol, which is a pointer to
 the original variable.
 """
-function threadprivate(sym_addr::Value; tls_addr::MLIRType, location=Location())
+function threadprivate(sym_addr; tls_addr::MLIRType, location=Location())
     results = MLIRType[tls_addr, ]
-    operands = Value[sym_addr, ]
+    operands = API.MlirValue[get_value(sym_addr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1223,13 +1223,13 @@ The optional `order` attribute specifies which order the iterations of the
 associate loops are executed in. Currently the only option for this
 attribute is \"concurrent\".
 """
-function wsloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vector{Value}, linear_vars::Vector{Value}, linear_step_vars::Vector{Value}, reduction_vars::Vector{Value}, schedule_chunk_var=nothing::Union{Nothing, Value}; reductions=nothing, schedule_val=nothing, schedule_modifier=nothing, simd_modifier=nothing, nowait=nothing, ordered_val=nothing, order_val=nothing, inclusive=nothing, region::Region, location=Location())
+function wsloop(lowerBound, upperBound, step, linear_vars, linear_step_vars, reduction_vars, schedule_chunk_var=nothing; reductions=nothing, schedule_val=nothing, schedule_modifier=nothing, simd_modifier=nothing, nowait=nothing, ordered_val=nothing, order_val=nothing, inclusive=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[lowerBound..., upperBound..., step..., linear_vars..., linear_step_vars..., reduction_vars..., ]
+    operands = API.MlirValue[get_value.(lowerBound)..., get_value.(upperBound)..., get_value.(step)..., get_value.(linear_vars)..., get_value.(linear_step_vars)..., get_value.(reduction_vars)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (schedule_chunk_var != nothing) && push!(operands, schedule_chunk_var)
+    (schedule_chunk_var != nothing) && push!(operands, get_valueschedule_chunk_var)
     push!(attributes, operandsegmentsizes([length(lowerBound), length(upperBound), length(step), length(linear_vars), length(linear_step_vars), length(reduction_vars), (schedule_chunk_var==nothing) ? 0 : 1]))
     (reductions != nothing) && push!(attributes, namedattribute("reductions", reductions))
     (schedule_val != nothing) && push!(attributes, namedattribute("schedule_val", schedule_val))
@@ -1255,9 +1255,9 @@ end
 terminates the region. The semantics of how the values are yielded is
 defined by the parent operation.
 """
-function yield(results::Vector{Value}; location=Location())
+function yield(results; location=Location())
     results = MLIRType[]
-    operands = Value[results..., ]
+    operands = API.MlirValue[get_value.(results)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

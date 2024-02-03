@@ -303,8 +303,8 @@ Attribute(type::MLIRType) = Attribute(API.mlirTypeAttrGet(type))
 Attribute(f::F, type=MLIRType(F)) where {F<:AbstractFloat} = Attribute(
     API.mlirFloatAttrDoubleGet(context(), type, Float64(f))
 )
-Attribute(i::T) where {T<:Integer} = Attribute(
-    API.mlirIntegerAttrGet(MLIRType(T), Int64(i))
+Attribute(i::T, type=MLIRType(T)) where {T<:Integer} = Attribute(
+    API.mlirIntegerAttrGet(type, Int64(i))
 )
 function Attribute(values::T) where {T<:AbstractArray{Int32}}
     type = MLIRType(T, size(values))
@@ -434,6 +434,16 @@ struct Value
 end
 
 get_type(value) = MLIRType(API.mlirValueGetType(value))
+
+abstract type MLIRValueTrait end
+struct Convertible <: MLIRValueTrait end
+struct NonConvertible <: MLIRValueTrait end
+
+MLIRValueTrait(T) = NonConvertible()
+get_value(x::Value) = x
+get_value(x::T) where T = get_value(MLIRValueTrait(T), x)
+get_value(::Convertible, x) = x.value
+get_value(::NonConvertible, x::T) where T = error("Type $T does not have the Convertible MLIRValueTrait")
 
 Base.convert(::Type{MlirValue}, value::Value) = value.value
 Base.size(value::Value) = Base.size(get_type(value))

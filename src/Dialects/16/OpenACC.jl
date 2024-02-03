@@ -1,6 +1,6 @@
 module acc
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -23,13 +23,13 @@ acc.data present(%a: memref<10x10xf32>, %b: memref<10x10xf32>,
 }
 ```
 """
-function data(ifCond=nothing::Union{Nothing, Value}; copyOperands::Vector{Value}, copyinOperands::Vector{Value}, copyinReadonlyOperands::Vector{Value}, copyoutOperands::Vector{Value}, copyoutZeroOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, noCreateOperands::Vector{Value}, presentOperands::Vector{Value}, deviceptrOperands::Vector{Value}, attachOperands::Vector{Value}, defaultAttr=nothing, region::Region, location=Location())
+function data(ifCond=nothing; copyOperands, copyinOperands, copyinReadonlyOperands, copyoutOperands, copyoutZeroOperands, createOperands, createZeroOperands, noCreateOperands, presentOperands, deviceptrOperands, attachOperands, defaultAttr=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[copyOperands..., copyinOperands..., copyinReadonlyOperands..., copyoutOperands..., copyoutZeroOperands..., createOperands..., createZeroOperands..., noCreateOperands..., presentOperands..., deviceptrOperands..., attachOperands..., ]
+    operands = API.MlirValue[get_value.(copyOperands)..., get_value.(copyinOperands)..., get_value.(copyinReadonlyOperands)..., get_value.(copyoutOperands)..., get_value.(copyoutZeroOperands)..., get_value.(createOperands)..., get_value.(createZeroOperands)..., get_value.(noCreateOperands)..., get_value.(presentOperands)..., get_value.(deviceptrOperands)..., get_value.(attachOperands)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1length(copyOperands), length(copyinOperands), length(copyinReadonlyOperands), length(copyoutOperands), length(copyoutZeroOperands), length(createOperands), length(createZeroOperands), length(noCreateOperands), length(presentOperands), length(deviceptrOperands), length(attachOperands), ]))
     (defaultAttr != nothing) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
     
@@ -52,15 +52,15 @@ The \"acc.enter_data\" operation represents the OpenACC enter data directive.
 acc.enter_data create(%d1 : memref<10xf32>) attributes {async}
 ```
 """
-function enter_data(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, copyinOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, attachOperands::Vector{Value}, async=nothing, wait=nothing, location=Location())
+function enter_data(ifCond=nothing; asyncOperand=nothing, waitDevnum=nothing, waitOperands, copyinOperands, createOperands, createZeroOperands, attachOperands, async=nothing, wait=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[waitOperands..., copyinOperands..., createOperands..., createZeroOperands..., attachOperands..., ]
+    operands = API.MlirValue[get_value.(waitOperands)..., get_value.(copyinOperands)..., get_value.(createOperands)..., get_value.(createZeroOperands)..., get_value.(attachOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
+    (asyncOperand != nothing) && push!(operands, get_valueasyncOperand)
+    (waitDevnum != nothing) && push!(operands, get_valuewaitDevnum)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1(asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1length(waitOperands), length(copyinOperands), length(createOperands), length(createZeroOperands), length(attachOperands), ]))
     (async != nothing) && push!(attributes, namedattribute("async", async))
     (wait != nothing) && push!(attributes, namedattribute("wait", wait))
@@ -84,15 +84,15 @@ The \"acc.exit_data\" operation represents the OpenACC exit data directive.
 acc.exit_data delete(%d1 : memref<10xf32>) attributes {async}
 ```
 """
-function exit_data(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, copyoutOperands::Vector{Value}, deleteOperands::Vector{Value}, detachOperands::Vector{Value}, async=nothing, wait=nothing, finalize=nothing, location=Location())
+function exit_data(ifCond=nothing; asyncOperand=nothing, waitDevnum=nothing, waitOperands, copyoutOperands, deleteOperands, detachOperands, async=nothing, wait=nothing, finalize=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[waitOperands..., copyoutOperands..., deleteOperands..., detachOperands..., ]
+    operands = API.MlirValue[get_value.(waitOperands)..., get_value.(copyoutOperands)..., get_value.(deleteOperands)..., get_value.(detachOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
+    (asyncOperand != nothing) && push!(operands, get_valueasyncOperand)
+    (waitDevnum != nothing) && push!(operands, get_valuewaitDevnum)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1(asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1length(waitOperands), length(copyoutOperands), length(deleteOperands), length(detachOperands), ]))
     (async != nothing) && push!(attributes, namedattribute("async", async))
     (wait != nothing) && push!(attributes, namedattribute("wait", wait))
@@ -119,14 +119,14 @@ acc.init
 acc.init device_num(%dev1 : i32)
 ```
 """
-function init(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union{Nothing, Value}; ifCond=nothing::Union{Nothing, Value}, location=Location())
+function init(deviceTypeOperands, deviceNumOperand=nothing; ifCond=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[deviceTypeOperands..., ]
+    operands = API.MlirValue[get_value.(deviceTypeOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (deviceNumOperand != nothing) && push!(operands, deviceNumOperand)
-    (ifCond != nothing) && push!(operands, ifCond)
+    (deviceNumOperand != nothing) && push!(operands, get_valuedeviceNumOperand)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
     push!(attributes, operandsegmentsizes([length(deviceTypeOperands), (deviceNumOperand==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1]))
     
     create_operation(
@@ -157,16 +157,16 @@ acc.loop gang vector {
 } attributes { collapse = 3 }
 ```
 """
-function loop(gangNum=nothing::Union{Nothing, Value}; gangStatic=nothing::Union{Nothing, Value}, workerNum=nothing::Union{Nothing, Value}, vectorLength=nothing::Union{Nothing, Value}, tileOperands::Vector{Value}, privateOperands::Vector{Value}, reductionOperands::Vector{Value}, results::Vector{MLIRType}, collapse=nothing, seq=nothing, independent=nothing, auto_=nothing, reductionOp=nothing, exec_mapping=nothing, region::Region, location=Location())
+function loop(gangNum=nothing; gangStatic=nothing, workerNum=nothing, vectorLength=nothing, tileOperands, privateOperands, reductionOperands, results::Vector{MLIRType}, collapse=nothing, seq=nothing, independent=nothing, auto_=nothing, reductionOp=nothing, exec_mapping=nothing, region::Region, location=Location())
     results = MLIRType[results..., ]
-    operands = Value[tileOperands..., privateOperands..., reductionOperands..., ]
+    operands = API.MlirValue[get_value.(tileOperands)..., get_value.(privateOperands)..., get_value.(reductionOperands)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (gangNum != nothing) && push!(operands, gangNum)
-    (gangStatic != nothing) && push!(operands, gangStatic)
-    (workerNum != nothing) && push!(operands, workerNum)
-    (vectorLength != nothing) && push!(operands, vectorLength)
+    (gangNum != nothing) && push!(operands, get_valuegangNum)
+    (gangStatic != nothing) && push!(operands, get_valuegangStatic)
+    (workerNum != nothing) && push!(operands, get_valueworkerNum)
+    (vectorLength != nothing) && push!(operands, get_valuevectorLength)
     push!(attributes, operandsegmentsizes([(gangNum==nothing) ? 0 : 1(gangStatic==nothing) ? 0 : 1(workerNum==nothing) ? 0 : 1(vectorLength==nothing) ? 0 : 1length(tileOperands), length(privateOperands), length(reductionOperands), ]))
     (collapse != nothing) && push!(attributes, namedattribute("collapse", collapse))
     (seq != nothing) && push!(attributes, namedattribute("seq", seq))
@@ -198,18 +198,18 @@ acc.parallel num_gangs(%c10) num_workers(%c10)
 }
 ```
 """
-function parallel(async=nothing::Union{Nothing, Value}; waitOperands::Vector{Value}, numGangs=nothing::Union{Nothing, Value}, numWorkers=nothing::Union{Nothing, Value}, vectorLength=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}, selfCond=nothing::Union{Nothing, Value}, reductionOperands::Vector{Value}, copyOperands::Vector{Value}, copyinOperands::Vector{Value}, copyinReadonlyOperands::Vector{Value}, copyoutOperands::Vector{Value}, copyoutZeroOperands::Vector{Value}, createOperands::Vector{Value}, createZeroOperands::Vector{Value}, noCreateOperands::Vector{Value}, presentOperands::Vector{Value}, devicePtrOperands::Vector{Value}, attachOperands::Vector{Value}, gangPrivateOperands::Vector{Value}, gangFirstPrivateOperands::Vector{Value}, asyncAttr=nothing, waitAttr=nothing, selfAttr=nothing, reductionOp=nothing, defaultAttr=nothing, region::Region, location=Location())
+function parallel(async=nothing; waitOperands, numGangs=nothing, numWorkers=nothing, vectorLength=nothing, ifCond=nothing, selfCond=nothing, reductionOperands, copyOperands, copyinOperands, copyinReadonlyOperands, copyoutOperands, copyoutZeroOperands, createOperands, createZeroOperands, noCreateOperands, presentOperands, devicePtrOperands, attachOperands, gangPrivateOperands, gangFirstPrivateOperands, asyncAttr=nothing, waitAttr=nothing, selfAttr=nothing, reductionOp=nothing, defaultAttr=nothing, region::Region, location=Location())
     results = MLIRType[]
-    operands = Value[waitOperands..., reductionOperands..., copyOperands..., copyinOperands..., copyinReadonlyOperands..., copyoutOperands..., copyoutZeroOperands..., createOperands..., createZeroOperands..., noCreateOperands..., presentOperands..., devicePtrOperands..., attachOperands..., gangPrivateOperands..., gangFirstPrivateOperands..., ]
+    operands = API.MlirValue[get_value.(waitOperands)..., get_value.(reductionOperands)..., get_value.(copyOperands)..., get_value.(copyinOperands)..., get_value.(copyinReadonlyOperands)..., get_value.(copyoutOperands)..., get_value.(copyoutZeroOperands)..., get_value.(createOperands)..., get_value.(createZeroOperands)..., get_value.(noCreateOperands)..., get_value.(presentOperands)..., get_value.(devicePtrOperands)..., get_value.(attachOperands)..., get_value.(gangPrivateOperands)..., get_value.(gangFirstPrivateOperands)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (async != nothing) && push!(operands, async)
-    (numGangs != nothing) && push!(operands, numGangs)
-    (numWorkers != nothing) && push!(operands, numWorkers)
-    (vectorLength != nothing) && push!(operands, vectorLength)
-    (ifCond != nothing) && push!(operands, ifCond)
-    (selfCond != nothing) && push!(operands, selfCond)
+    (async != nothing) && push!(operands, get_valueasync)
+    (numGangs != nothing) && push!(operands, get_valuenumGangs)
+    (numWorkers != nothing) && push!(operands, get_valuenumWorkers)
+    (vectorLength != nothing) && push!(operands, get_valuevectorLength)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
+    (selfCond != nothing) && push!(operands, get_valueselfCond)
     push!(attributes, operandsegmentsizes([(async==nothing) ? 0 : 1length(waitOperands), (numGangs==nothing) ? 0 : 1(numWorkers==nothing) ? 0 : 1(vectorLength==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1(selfCond==nothing) ? 0 : 1length(reductionOperands), length(copyOperands), length(copyinOperands), length(copyinReadonlyOperands), length(copyoutOperands), length(copyoutZeroOperands), length(createOperands), length(createZeroOperands), length(noCreateOperands), length(presentOperands), length(devicePtrOperands), length(attachOperands), length(gangPrivateOperands), length(gangFirstPrivateOperands), ]))
     (asyncAttr != nothing) && push!(attributes, namedattribute("asyncAttr", asyncAttr))
     (waitAttr != nothing) && push!(attributes, namedattribute("waitAttr", waitAttr))
@@ -238,14 +238,14 @@ acc.shutdown
 acc.shutdown device_num(%dev1 : i32)
 ```
 """
-function shutdown(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union{Nothing, Value}; ifCond=nothing::Union{Nothing, Value}, location=Location())
+function shutdown(deviceTypeOperands, deviceNumOperand=nothing; ifCond=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[deviceTypeOperands..., ]
+    operands = API.MlirValue[get_value.(deviceTypeOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (deviceNumOperand != nothing) && push!(operands, deviceNumOperand)
-    (ifCond != nothing) && push!(operands, ifCond)
+    (deviceNumOperand != nothing) && push!(operands, get_valuedeviceNumOperand)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
     push!(attributes, operandsegmentsizes([length(deviceTypeOperands), (deviceNumOperand==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1]))
     
     create_operation(
@@ -266,7 +266,7 @@ to the enclosing op.
 """
 function terminator(; location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -293,15 +293,15 @@ add to \$hostOperands.
 acc.update device(%d1 : memref<10xf32>) attributes {async}
 ```
 """
-function update(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::Union{Nothing, Value}, waitDevnum=nothing::Union{Nothing, Value}, waitOperands::Vector{Value}, deviceTypeOperands::Vector{Value}, hostOperands::Vector{Value}, deviceOperands::Vector{Value}, async=nothing, wait=nothing, ifPresent=nothing, location=Location())
+function update(ifCond=nothing; asyncOperand=nothing, waitDevnum=nothing, waitOperands, deviceTypeOperands, hostOperands, deviceOperands, async=nothing, wait=nothing, ifPresent=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[waitOperands..., deviceTypeOperands..., hostOperands..., deviceOperands..., ]
+    operands = API.MlirValue[get_value.(waitOperands)..., get_value.(deviceTypeOperands)..., get_value.(hostOperands)..., get_value.(deviceOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
+    (asyncOperand != nothing) && push!(operands, get_valueasyncOperand)
+    (waitDevnum != nothing) && push!(operands, get_valuewaitDevnum)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1(asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1length(waitOperands), length(deviceTypeOperands), length(hostOperands), length(deviceOperands), ]))
     (async != nothing) && push!(attributes, namedattribute("async", async))
     (wait != nothing) && push!(attributes, namedattribute("wait", wait))
@@ -328,15 +328,15 @@ acc.wait(%value1: index)
 acc.wait() async(%async1: i32)
 ```
 """
-function wait(waitOperands::Vector{Value}, asyncOperand=nothing::Union{Nothing, Value}; waitDevnum=nothing::Union{Nothing, Value}, ifCond=nothing::Union{Nothing, Value}, async=nothing, location=Location())
+function wait(waitOperands, asyncOperand=nothing; waitDevnum=nothing, ifCond=nothing, async=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[waitOperands..., ]
+    operands = API.MlirValue[get_value.(waitOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
-    (ifCond != nothing) && push!(operands, ifCond)
+    (asyncOperand != nothing) && push!(operands, get_valueasyncOperand)
+    (waitDevnum != nothing) && push!(operands, get_valuewaitDevnum)
+    (ifCond != nothing) && push!(operands, get_valueifCond)
     push!(attributes, operandsegmentsizes([length(waitOperands), (asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1]))
     (async != nothing) && push!(attributes, namedattribute("async", async))
     
@@ -355,9 +355,9 @@ end
 acc ops (parallel and loop). It returns values to the immediately enclosing
 acc op.
 """
-function yield(operands::Vector{Value}; location=Location())
+function yield(operands; location=Location())
     results = MLIRType[]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

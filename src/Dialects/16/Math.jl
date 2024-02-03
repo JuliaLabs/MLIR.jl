@@ -1,6 +1,6 @@
 module math
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -19,9 +19,9 @@ of the same type.
 %a = math.absf %b : f64
 ```
 """
-function absf(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function absf(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -50,9 +50,9 @@ same type.
 %a = math.absi %b : i64
 ```
 """
-function absi(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function absi(operand; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -93,9 +93,9 @@ See also https://en.wikipedia.org/wiki/Atan2
 %a = math.atan2 %b, %c : f32
 ```
 """
-function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function atan2(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -130,9 +130,9 @@ one result of the same type. It has no standard attributes.
 %a = math.atan %b : f64
 ```
 """
-function atan(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function atan(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -163,9 +163,9 @@ of the same type. It has no standard attributes.
 
 Note: This op is not equivalent to powf(..., 1/3.0).
 """
-function cbrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function cbrt(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -200,9 +200,9 @@ result of the same type.  It has no standard attributes.
 %a = math.ceil %b : f64
 ```
 """
-function ceil(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function ceil(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -238,9 +238,9 @@ tensor or vector). It has no standard attributes.
 %a = math.copysign %b, %c : f64
 ```
 """
-function copysign(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function copysign(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -275,9 +275,9 @@ result of the same type.  It has no standard attributes.
 %a = math.cos %b : f64
 ```
 """
-function cos(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function cos(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -305,9 +305,9 @@ It operates on scalar, tensor or vector.
 %a = math.ctlz %b : i32
 ```
 """
-function ctlz(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function ctlz(operand; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -334,9 +334,9 @@ It operates on scalar, tensor or vector.
 %a = math.cttz %b : i32
 ```
 """
-function cttz(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function cttz(operand; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -363,9 +363,9 @@ It operates on scalar, tensor or vector.
 %a = math.ctpop %b : i32
 ```
 """
-function ctpop(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function ctpop(operand; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -399,9 +399,9 @@ the same type. It has no standard attributes.
 %a = math.erf %b : f64
 ```
 """
-function erf(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function erf(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -436,9 +436,9 @@ attributes.
 %a = math.exp2 %b : f64
 ```
 """
-function exp2(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function exp2(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -475,9 +475,9 @@ standard attributes.
 %a = math.expm1 %b : f64
 ```
 """
-function expm1(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function expm1(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -512,9 +512,9 @@ attributes.
 %a = math.exp %b : f64
 ```
 """
-function exp(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function exp(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -561,9 +561,9 @@ The result is a vector of:
 %a = math.fpowi %base, %power : f64, i32
 ```
 """
-function fpowi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function fpowi(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -598,9 +598,9 @@ result of the same type.  It has no standard attributes.
 %a = math.floor %b : f64
 ```
 """
-function floor(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function floor(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -640,9 +640,9 @@ The semantics of the operation correspond to those of the `llvm.fma`
 particular case of lowering to LLVM, this is guaranteed to lower
 to the `llvm.fma.*` intrinsic.
 """
-function fma(a::Value, b::Value, c::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function fma(a, b, c; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[a, b, c, ]
+    operands = API.MlirValue[get_value(a), get_value(b), get_value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -677,9 +677,9 @@ must have the same type.
 %a = math.ipowi %b, %c : i32
 ```
 """
-function ipowi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
+function ipowi(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -707,9 +707,9 @@ the same type.
 %y = math.log10 %x : f64
 ```
 """
-function log10(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function log10(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -740,9 +740,9 @@ log1p(x) := log(1 + x)
 %y = math.log1p %x : f64
 ```
 """
-function log1p(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function log1p(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -771,9 +771,9 @@ the same type.
 %y = math.log2 %x : f64
 ```
 """
-function log2(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function log2(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -802,9 +802,9 @@ the same type.
 %y = math.log %x : f64
 ```
 """
-function log(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function log(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -839,9 +839,9 @@ must have the same type.
 %a = math.powf %b, %c : f64
 ```
 """
-function powf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function powf(lhs, rhs; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+    operands = API.MlirValue[get_value(lhs), get_value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -879,9 +879,9 @@ rounding direction.
 %a = math.roundeven %b : f64
 ```
 """
-function roundeven(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function roundeven(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -919,9 +919,9 @@ rounding direction.
 %a = math.round %b : f64
 ```
 """
-function round(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function round(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -950,9 +950,9 @@ one result of the same type. It has no standard attributes.
 %a = math.rsqrt %b : f64
 ```
 """
-function rsqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function rsqrt(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -987,9 +987,9 @@ result of the same type.  It has no standard attributes.
 %a = math.sin %b : f64
 ```
 """
-function sin(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function sin(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1018,9 +1018,9 @@ the same type. It has no standard attributes.
 %a = math.sqrt %b : f64
 ```
 """
-function sqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function sqrt(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1049,9 +1049,9 @@ result of the same type. It has no standard attributes.
 %a = math.tan %b : f64
 ```
 """
-function tan(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function tan(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1080,9 +1080,9 @@ result of the same type. It has no standard attributes.
 %a = math.tanh %b : f64
 ```
 """
-function tanh(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function tanh(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1119,9 +1119,9 @@ than the operand, regardless of the current rounding direction.
 %a = math.trunc %b : f64
 ```
 """
-function trunc(operand::Value; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
+function trunc(operand; result=nothing::Union{Nothing, MLIRType}, fastmath=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[operand, ]
+    operands = API.MlirValue[get_value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

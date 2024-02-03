@@ -1,6 +1,6 @@
 module ml_program
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -27,7 +27,7 @@ ml_program.func @compute(%arg0 : i32) -> i32 {
 """
 function func(; sym_name, function_type, sym_visibility=nothing, body::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
@@ -55,20 +55,20 @@ such a load can be considered to have no side effects.
 %0 = ml_program.global_load_const @foobar : tensor<?xi32>
 ```
 """
-# function global_load_const(; result::MLIRType, global, location=Location())
-#     results = MLIRType[result, ]
-#     operands = Value[]
-#     owned_regions = Region[]
-#     successors = Block[]
-#     attributes = NamedAttribute[namedattribute("global", global), ]
+function global_load_const(; result::MLIRType, global_, location=Location())
+    results = MLIRType[result, ]
+    operands = API.MlirValue[]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("global", global_), ]
     
-#     create_operation(
-#         "ml_program.global_load_const", location;
-#         operands, owned_regions, successors, attributes,
-#         results=results,
-#         result_inference=false
-#     )
-# end
+    create_operation(
+        "ml_program.global_load_const", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
+    )
+end
 
 """
 `global_load_graph`
@@ -90,20 +90,20 @@ without additional consideration to evaluation order constraints.
   ordering (%token -> !ml_program.token) : tensor<?xi32>
 ```
 """
-# function global_load_graph(consumeTokens::Vector{Value}; result::MLIRType, produceToken::MLIRType, global, location=Location())
-#     results = MLIRType[result, produceToken, ]
-#     operands = Value[consumeTokens..., ]
-#     owned_regions = Region[]
-#     successors = Block[]
-#     attributes = NamedAttribute[namedattribute("global", global), ]
+function global_load_graph(consumeTokens; result::MLIRType, produceToken::MLIRType, global_, location=Location())
+    results = MLIRType[result, produceToken, ]
+    operands = API.MlirValue[get_value.(consumeTokens)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("global", global_), ]
     
-#     create_operation(
-#         "ml_program.global_load_graph", location;
-#         operands, owned_regions, successors, attributes,
-#         results=results,
-#         result_inference=false
-#     )
-# end
+    create_operation(
+        "ml_program.global_load_graph", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
+    )
+end
 
 """
 `global_load`
@@ -125,20 +125,20 @@ without additional consideration to evaluation order constraints. See
 %0 = ml_program.global_load @foobar : tensor<?xi32>
 ```
 """
-# function global_load(; result::MLIRType, global, location=Location())
-#     results = MLIRType[result, ]
-#     operands = Value[]
-#     owned_regions = Region[]
-#     successors = Block[]
-#     attributes = NamedAttribute[namedattribute("global", global), ]
+function global_load(; result::MLIRType, global_, location=Location())
+    results = MLIRType[result, ]
+    operands = API.MlirValue[]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("global", global_), ]
     
-#     create_operation(
-#         "ml_program.global_load", location;
-#         operands, owned_regions, successors, attributes,
-#         results=results,
-#         result_inference=false
-#     )
-# end
+    create_operation(
+        "ml_program.global_load", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
+    )
+end
 
 """
 `global_`
@@ -172,7 +172,7 @@ ml_program.global mutable @foobar : tensor<?xi32>
 """
 function global_(; sym_name, type, is_mutable=nothing, value=nothing, sym_visibility=nothing, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
@@ -208,20 +208,20 @@ without additional consideration to evaluation order constraints.
   ordering (%in_token -> !ml_program.token) : tensor<?xi32>
 ```
 """
-# function global_store_graph(value::Value, consumeTokens::Vector{Value}; produceToken::MLIRType, global, location=Location())
-#     results = MLIRType[produceToken, ]
-#     operands = Value[value, consumeTokens..., ]
-#     owned_regions = Region[]
-#     successors = Block[]
-#     attributes = NamedAttribute[namedattribute("global", global), ]
+function global_store_graph(value, consumeTokens; produceToken::MLIRType, global_, location=Location())
+    results = MLIRType[produceToken, ]
+    operands = API.MlirValue[get_value(value), get_value.(consumeTokens)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("global", global_), ]
     
-#     create_operation(
-#         "ml_program.global_store_graph", location;
-#         operands, owned_regions, successors, attributes,
-#         results=results,
-#         result_inference=false
-#     )
-# end
+    create_operation(
+        "ml_program.global_store_graph", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
+    )
+end
 
 """
 `global_store`
@@ -243,20 +243,20 @@ without additional consideration to evaluation order constraints. See
 ml_program.global_store @foobar = %0 : tensor<?xi32>
 ```
 """
-# function global_store(value::Value; global, location=Location())
-#     results = MLIRType[]
-#     operands = Value[value, ]
-#     owned_regions = Region[]
-#     successors = Block[]
-#     attributes = NamedAttribute[namedattribute("global", global), ]
+function global_store(value; global_, location=Location())
+    results = MLIRType[]
+    operands = API.MlirValue[get_value(value), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("global", global_), ]
     
-#     create_operation(
-#         "ml_program.global_store", location;
-#         operands, owned_regions, successors, attributes,
-#         results=results,
-#         result_inference=false
-#     )
-# end
+    create_operation(
+        "ml_program.global_store", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
+    )
+end
 
 """
 `output`
@@ -267,9 +267,9 @@ The operation takes variable number of operands and produces no results.
 The operand number and types must match the signature of the function
 that contains the operation.
 """
-function output(operands::Vector{Value}; location=Location())
+function output(operands; location=Location())
     results = MLIRType[]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -291,9 +291,9 @@ The operation takes variable number of operands and produces no results.
 The operand number and types must match the signature of the function
 that contains the operation.
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands; location=Location())
     results = MLIRType[]
-    operands = Value[operands..., ]
+    operands = API.MlirValue[get_value.(operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -328,7 +328,7 @@ ml_program.subgraph @compute(%arg0 : i32) -> i32 {
 """
 function subgraph(; sym_name, function_type, sym_visibility=nothing, body::Region, location=Location())
     results = MLIRType[]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
@@ -350,7 +350,7 @@ establish an execution order. This op produces a token.
 """
 function token(; token::MLIRType, location=Location())
     results = MLIRType[token, ]
-    operands = Value[]
+    operands = API.MlirValue[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
