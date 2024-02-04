@@ -4,6 +4,18 @@ import ...IR: NamedAttribute, MLIRType, get_value, Location, Block, Region, Attr
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
+module Predicates
+    const eq = 0
+    const ne = 1
+    const slt = 2
+    const sle = 3
+    const sgt = 4
+    const sge = 5
+    const ult = 6
+    const ule = 7
+    const ugt = 8
+    const uge = 9
+end
 
 """
 `addf`

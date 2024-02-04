@@ -8,6 +8,8 @@ module API
     # MLIR C API
     import ..LLVM
     using MLIR_jll
+    const mlir_runner_utils = joinpath(MLIR_jll.artifact_dir, "lib", "libmlir_runner_utils.so")
+    const mlir_c_runner_utils = joinpath(MLIR_jll.artifact_dir, "lib", "libmlir_c_runner_utils.so")
     let
         ver = string(LLVM.version().major)
         dir = joinpath(@__DIR__, "API", ver)
