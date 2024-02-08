@@ -35,7 +35,6 @@ function mlir_dialects(version::VersionNumber)
             ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
             ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
             ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
-            ("spv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
             ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
             ("sparse_tensor", "SparseTensor.jl", ["SparseTensor/IR/SparseTensorOps.td"]),
             ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
@@ -55,7 +54,8 @@ function mlir_dialects(version::VersionNumber)
 
     if v"14" <= version < v"16"
         append!(dialects, [
-            ("arith", "Arithmetic.jl", ["Arithmetic/IR/ArithmeticOps.td"]), # renamed to 'Arith' in v16
+            ("arith", "Arithmetic.jl", ["Arithmetic/IR/ArithmeticOps.td"]), # folder renamed to 'Arith' in v16
+            ("spv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]), # dialect name renamed to 'spirv' in v16
         ])
     end
 
@@ -76,6 +76,7 @@ function mlir_dialects(version::VersionNumber)
         append!(dialects, [
             ("arith", "Arith.jl", ["Arith/IR/ArithOps.td"]),
             ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
+            ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
         ])
     end
 
