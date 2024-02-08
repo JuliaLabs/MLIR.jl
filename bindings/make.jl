@@ -13,7 +13,7 @@ function mlir_dialects(version::VersionNumber)
 
     if version >= v"14"
         append!(dialects, [
-            ("AMX.jl", "AMX/AMX.td"),
+            ("AMX.jl", ["AMX/AMX.td"]),
             ("Affine.jl", ["Affine/IR/AffineOps.td"]),
             ("ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
             ("ArmSVE.jl", ["ArmSVE/ArmSVE.td"]),
