@@ -6,11 +6,12 @@ n = 128
 a = rand(Float64, n, n)
 b = rand(Float64, n, n)
 
+# TODO remove this when bindings are regenerated
 function linalg_matmul(a::IR.Value, b::IR.Value; result::Union{Nothing,IR.MLIRType}=nothing, location=IR.Location())
     IR.create_operation(
         "linalg.matmul", location;
         operands=Value[a, b],
-        owned_regions=IR.Region[],
+        owned_regions=IR.Region[IR.Region()],
         successors=IR.Block[],
         results=isnothing(result) ? nothing : MLIRType[result],
         attributes=IR.NamedAttribute[],
@@ -19,6 +20,10 @@ end
 
 fptr = IR.context!(IR.Context()) do
     IR.enable_multithreading!(false)
+
+    for dialect in ["func", "linalg"]
+        IR.get_or_load_dialect!(dialect)
+    end
 
     mod = IR.Module(Location())
     body = IR.get_body(mod)
@@ -32,6 +37,8 @@ fptr = IR.context!(IR.Context()) do
     op = linalg_matmul(a_ir, b_ir; result=mattype) # TODO refactor to `linalg.matmul` when bindings are regenerated
     push!(block, op)
 
+    push!(block, func.return_([IR.get_result(op)]))
+
     region = IR.Region()
     push!(region, block)
 
@@ -41,6 +48,7 @@ fptr = IR.context!(IR.Context()) do
         function_type=IR.Attribute(ftype),
         body=region,
     )
+    IR.verifyall(f)
     push!(body, f)
 
     pm = IR.PassManager()
