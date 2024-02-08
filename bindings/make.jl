@@ -68,7 +68,32 @@ function mlir_dialects(version::VersionNumber)
             ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
             ("ml_program", "MLProgram.jl", ["MLProgram/IR/MLProgramOps.td"]),
             ("nvgpu", "NVGPU.jl", ["NVGPU/IR/NVGPU.td"]),
-            ("transform", "Transform.jl", ["Transform/IR/TransformOps.td"]),
+        ])
+    end
+
+    if v"15" <= version < v"16"
+        append!(dialects, [
+            ("transform", "Transform.jl", [
+                "Transform/IR/TransformOps.td",
+                "Bufferization/TransformOps/BufferizationTransformOps.td",
+                "Linalg/TransformOps/LinalgTransformOps.td",
+                "SCF/TransformOps/SCFTransformOps.td",
+            ]), # more ops files in v16
+        ])
+    end
+
+    if v"16" <= version < v"17"
+        append!(dialects, [
+            ("transform", "Transform.jl", [
+                "Transform/IR/TransformOps.td",
+                "Affine/TranssformOps/AffineTransformOps.td",
+                "Bufferization/TransformOps/BufferizationTransformOps.td",
+                "GPU/TransformOps/GPUTransformOps.td",
+                "Linalg/TransformOps/LinalgTransformOps.td",
+                "MemRef/TransformOps/MemRefTransformOps.td",
+                "SCF/TransformOps/SCFTransformOps.td",
+                "Vector/TransformOps/VectorTransformOps.td",
+            ]), # more ops files in v17
         ])
     end
 
@@ -85,6 +110,19 @@ function mlir_dialects(version::VersionNumber)
             ("arm_sme", "ArmSME.jl", ["ArmSME/IR/ArmSME.td"]),
             ("irdl", "IRDL.jl", ["IRDL/IR/IRDLOps.td"]),
             ("ub", "UB.jl", ["UB/IR/UBOps.td"]),
+            ("transform", "Transform.jl", [
+                "Transform/IR/TransformOps.td",
+                "Affine/TranssformOps/AffineTransformOps.td",
+                "Bufferization/TransformOps/BufferizationTransformOps.td",
+                "GPU/TransformOps/GPUTransformOps.td",
+                "Linalg/TransformOps/LinalgTransformOps.td",
+                "Linalg/TransformOps/LinalgMatchOps.td",
+                "MemRef/TransformOps/MemRefTransformOps.td",
+                "NVGPU/TransformOps/NVGPUTransformOps.td",
+                "SCF/TransformOps/SCFTransformOps.td",
+                "Tensor/TransformOps/TensorTransformOps.td",
+                "Vector/TransformOps/VectorTransformOps.td",
+            ])
         ])
     end
 
