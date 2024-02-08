@@ -153,6 +153,8 @@ namespace
 
 } // namespace
 
+extern bool disableModuleWrap;
+
 bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
                      llvm::raw_ostream &os)
 {
@@ -162,7 +164,19 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
   std::vector<llvm::Record *> opdefs = recordKeeper.getAllDerivedDefinitions("Op");
 #endif
 
-  const char *moduleTemplate = R"(module {0}
+  const char *moduleTemplate;
+  if (disableModuleWrap)
+  {
+    moduleTemplate = R"(import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ..Dialects: namedattribute, operandsegmentsizes
+import ...API
+
+{0}
+)";
+  }
+  else
+  {
+    moduleTemplate = R"(module {0}
 
 import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
@@ -171,6 +185,7 @@ import ...API
 {1}
 end # {0}
 )";
+  }
 
   const char *functiontemplate = R"(
 {3}
@@ -418,7 +433,14 @@ end
     modulecontents += llvm::formatv(functiontemplate, functionname, arguments, functionbody, description);
   }
 
-  os << llvm::formatv(moduleTemplate, modulename, modulecontents);
+  if (disableModuleWrap)
+  {
+    os << llvm::formatv(moduleTemplate, modulecontents);
+  }
+  else
+  {
+    os << llvm::formatv(moduleTemplate, modulename, modulecontents);
+  }
 
   return false;
 }

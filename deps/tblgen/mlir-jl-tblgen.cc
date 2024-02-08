@@ -42,10 +42,12 @@ static std::array<GeneratorInfo, 1> generators {{
 }};
 
 generator_function* generator;
+bool disableModuleWrap;
 
 int main(int argc, char **argv) {
   llvm::InitLLVM y(argc, argv);
   llvm::cl::opt<std::string> generatorOpt("generator", llvm::cl::desc("Generator to run"), cl::Required);
+  llvm::cl::opt<bool> disableModuleWrapOpt("disable-module-wrap", llvm::cl::desc("Disable module wrap"), cl::init(false));
   cl::ParseCommandLineOptions(argc, argv);
   for (const auto& spec : generators) {
     if (generatorOpt == spec.name) {
@@ -57,6 +59,7 @@ int main(int argc, char **argv) {
     llvm::errs() << "Invalid generator type\n";
     abort();
   }
+  disableModuleWrap = disableModuleWrapOpt;
 
   return TableGenMain(argv[0], [](raw_ostream& os, RecordKeeper &records) {
     return generator(records, os);
