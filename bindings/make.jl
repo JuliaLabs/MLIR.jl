@@ -7,7 +7,7 @@ import BinaryBuilderBase: PkgSpec, Prefix, temp_prefix, setup_dependencies, clea
 using Clang.Generators
 
 function mlir_dialects(version::VersionNumber)
-    dialects = Tuple{String,String}[
+    dialects = Tuple{String,Vector{String}}[
         ("Builtin.jl", ["../IR/BuiltinOps.td"]),
     ]
 
