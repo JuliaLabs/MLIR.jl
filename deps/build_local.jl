@@ -45,11 +45,13 @@ else
 end
 LLVM_DIR = joinpath(LLVM.artifact_dir, "lib", "cmake", "llvm")
 MLIR_DIR = joinpath(LLVM.artifact_dir, "lib", "cmake", "mlir")
+CLANG_PATH = joinpath(LLVM.artifact_dir, "tools", "clang")
+CLANGXX_PATH = joinpath(LLVM.artifact_dir, "tools", "clang++")
 
 # build and install
-@info "Building" source_dir scratch_dir build_dir LLVM_DIR MLIR_DIR
+@info "Building" source_dir scratch_dir build_dir LLVM_DIR MLIR_DIR CLANG_PATH CLANGXX_PATH
 cmake() do cmake_path
-    config_opts = `-DLLVM_ROOT=$(LLVM_DIR) -DMLIR_ROOT=$(MLIR_DIR) -DCMAKE_INSTALL_PREFIX=$(scratch_dir)`
+    config_opts = `-DLLVM_ROOT=$(LLVM_DIR) -DMLIR_ROOT=$(MLIR_DIR) -DCMAKE_INSTALL_PREFIX=$(scratch_dir) -DCMAKE_C_COMPILER=$(CLANG_PATH) -DCMAKE_CXX_COMPILER=$(CLANGXX_PATH)`
     if Sys.iswindows()
         # prevent picking up MSVC
         config_opts = `$config_opts -G "MSYS Makefiles"`
