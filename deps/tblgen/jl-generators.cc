@@ -221,7 +221,7 @@ end
     bool inferrable = canInferType(op);
 
     bool alreadykeyword = false; // set to true when first optional argument is encountered. This is used to insert a single semicolon (;) instead of a comma (,) as separator between positional and keyword arguments.
-    for (size_t i = 0; i < op.getNumOperands(); i++)
+    for (int i = 0; i < op.getNumOperands(); i++)
     {
       const auto &named_operand = op.getOperand(i);
       std::string defaultvalue = "";
@@ -271,7 +271,7 @@ end
     if (op.getTrait("::mlir::OpTrait::AttrSizedOperandSegments"))
     {
       std::string operandsegmentsizes = "";
-      for (size_t i = 0; i < op.getNumOperands(); i++)
+      for (int i = 0; i < op.getNumOperands(); i++)
       {
         const auto &named_operand = op.getOperand(i);
         std::string operandname = named_operand.name.str();
@@ -293,7 +293,7 @@ end
 
     std::string resultarguments = "";
     std::string resultcontainer = "";
-    for (size_t i = 0; i < op.getNumResults(); i++)
+    for (int i = 0; i < op.getNumResults(); i++)
     {
       const auto &named_result = op.getResult(i);
       std::string defaultvalue = "";
@@ -333,7 +333,7 @@ end
 
     std::string attributearguments = "";
     std::string attributecontainer = "";
-    for (size_t i = 0; i < op.getNumAttributes(); i++)
+    for (int i = 0; i < op.getNumAttributes(); i++)
     {
       const auto &named_attr = op.getAttribute(i);
 
