@@ -245,7 +245,7 @@ end
       std::string separator = ", ";
       if (optional)
       {
-        optionals += llvm::formatv(R"(({0} != nothing) && push!(operands, {0}{1})
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(operands, {0}{1})
     )",
                                    operandname, (variadic ? "..." : ""));
         type = "Union{Nothing, " + type + "}";
@@ -315,7 +315,7 @@ end
 
       if (optional)
       {
-        optionals += llvm::formatv(R"(({0} != nothing) && push!(results, {0}{1})
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(results, {0}{1})
     )",
                                    resultname, (variadic ? "..." : ""));
         type = "Union{Nothing, " + type + "}";
@@ -351,7 +351,7 @@ end
 
       if (optional)
       {
-        optionals += llvm::formatv(R"(({0} != nothing) && push!(attributes, namedattribute("{0}", {1}))
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(attributes, namedattribute("{0}", {1}))
     )",
                                    attributename, sanitizedname);
         defaultvalue = "=nothing";
