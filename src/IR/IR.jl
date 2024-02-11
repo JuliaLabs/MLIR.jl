@@ -532,7 +532,7 @@ function create_operation(
         end
         op = API.mlirOperationCreate(state)
         if mlirIsNull(op)
-            error("Create Operation failed")
+            error("Create Operation '$name' failed")
         end
         Operation(op, true)
     end
