@@ -1,7 +1,3 @@
-if VERSION >= v"1.8" || VERSION < v"1.7"
-    error("This script only supports 1.7")
-end
-
 using Pkg
 import BinaryBuilderBase: PkgSpec, Prefix, temp_prefix, setup_dependencies, cleanup_dependencies, destdir
 using Clang.Generators
@@ -94,7 +90,7 @@ end
 
 function rewrite!(dag::ExprDAG) end
 
-julia_llvm = Dict([v"1.9" => v"14.0.5", v"1.10" => v"15.0.7", v"1.11" => v"16.0.6"])
+julia_llvm = Dict([v"1.9" => v"14.0.5+3", v"1.10" => v"15.0.7+10", v"1.11" => v"16.0.6+2"])
 options = load_options(joinpath(@__DIR__, "wrap.toml"))
 
 @add_def off_t
