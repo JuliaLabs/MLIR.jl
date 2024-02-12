@@ -48,7 +48,11 @@ fptr = IR.context!(IR.Context()) do
     linalg_block = IR.Block()
     arg0 = IR.push_argument!(linalg_block, scalartype, IR.Location())
     arg1 = IR.push_argument!(linalg_block, scalartype, IR.Location())
-    op = arith.addf(arg0, arg1; result=scalartype)
+    arg2 = IR.push_argument!(linalg_block, scalartype, IR.Location())
+    op = arith.mulf(arg0, arg1; result=scalartype)
+    push!(linalg_block, op)
+
+    op = arith.addf(arg2, IR.get_result(op))
     push!(linalg_block, op)
 
     op = linalg_yield(IR.get_result(op))
