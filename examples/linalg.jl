@@ -1,20 +1,32 @@
 using MLIR.IR
 using MLIR.API
-using MLIR.Dialects: arith, linalg, func
+using MLIR.Dialects: arith, linalg, func, operandsegmentsizes
 
 n = 128
 a = rand(Float64, n, n)
 b = rand(Float64, n, n)
 
+function linalg_yield(x::IR.Value; location=IR.Location())
+    IR.create_operation(
+        "linalg.yield", location;
+        operands=[x],
+        owned_regions=IR.Region[],
+        successors=IR.Block[],
+        results=nothing,
+        result_inference=false,
+        attributes=IR.NamedAttribute[operandsegmentsizes([1])],
+    )
+end
+
 # TODO remove this when bindings are regenerated
-function linalg_matmul(a::IR.Value, b::IR.Value; result::Union{Nothing,IR.MLIRType}=nothing, location=IR.Location())
+function linalg_matmul(c::IR.Value, a::IR.Value, b::IR.Value; region, result::Union{Nothing,IR.MLIRType}=nothing, location=IR.Location())
     IR.create_operation(
         "linalg.matmul", location;
-        operands=Value[a, b],
-        owned_regions=IR.Region[IR.Region()],
+        operands=[a, b, c],
+        owned_regions=IR.Region[region],
         successors=IR.Block[],
         results=isnothing(result) ? nothing : MLIRType[result],
-        attributes=IR.NamedAttribute[],
+        attributes=IR.NamedAttribute[operandsegmentsizes([2, 1])],
     )
 end
 
@@ -29,12 +41,28 @@ fptr = IR.context!(IR.Context()) do
     body = IR.get_body(mod)
 
     # Create a function    
-    mattype = MLIRType(API.mlirRankedTensorTypeGet(2, [n, n], MLIRType(Float64), API.mlirAttributeGetNull()))
+    scalartype = MLIRType(Float64)
+    mattype = MLIRType(API.mlirRankedTensorTypeGet(2, [n, n], scalartype, API.mlirAttributeGetNull()))
+    # mattype = MLIRType(API.mlirMemRefTypeContiguousGet(MLIRType(Float64), 2, [n, n], API.mlirAttributeGetNull()))
+
+    linalg_block = IR.Block()
+    arg0 = IR.push_argument!(linalg_block, scalartype, IR.Location())
+    arg1 = IR.push_argument!(linalg_block, scalartype, IR.Location())
+    op = arith.addf(arg0, arg1; result=scalartype)
+    push!(linalg_block, op)
+
+    op = linalg_yield(IR.get_result(op))
+    push!(linalg_block, op)
+
+    linalg_region = IR.Region()
+    push!(linalg_region, linalg_block)
 
     block = IR.Block()
+    c_ir = IR.push_argument!(block, mattype, IR.Location())
     a_ir = IR.push_argument!(block, mattype, IR.Location())
     b_ir = IR.push_argument!(block, mattype, IR.Location())
-    op = linalg_matmul(a_ir, b_ir; result=mattype) # TODO refactor to `linalg.matmul` when bindings are regenerated
+
+    op = linalg_matmul(c_ir, a_ir, b_ir; region=linalg_region, result=mattype) # TODO refactor to `linalg.matmul` when bindings are regenerated
     push!(block, op)
 
     push!(block, func.return_([IR.get_result(op)]))
@@ -59,7 +87,7 @@ fptr = IR.context!(IR.Context()) do
 
     API.mlirRegisterAllPasses()
     API.mlirRegisterAllLLVMTranslations(IR.context())
-    IR.add_pipeline!(opm, "convert-func-to-llvm")
+    # IR.add_pipeline!(opm, "convert-func-to-llvm")
 
     IR.run!(pm, mod)
 
