@@ -1,3 +1,4 @@
+using LLVM
 using MLIR.IR
 using MLIR.API
 using MLIR.Dialects: arith, linalg, func, operandsegmentsizes
@@ -74,7 +75,7 @@ fptr = IR.context!(IR.Context()) do
     region = IR.Region()
     push!(region, block)
 
-    ftype = MLIRType(API.mlirFunctionTypeGet(IR.context(), 2, [mattype, mattype], 1, [mattype]))
+    ftype = MLIRType(API.mlirFunctionTypeGet(IR.context(), 3, [mattype, mattype, mattype], 1, [mattype]))
     f = func.func_(;
         sym_name=IR.Attribute("matmul_demo"),
         function_type=IR.Attribute(ftype),
@@ -91,16 +92,22 @@ fptr = IR.context!(IR.Context()) do
 
     API.mlirRegisterAllPasses()
     API.mlirRegisterAllLLVMTranslations(IR.context())
-    # IR.add_pipeline!(opm, "convert-func-to-llvm")
+    IR.add_pipeline!(opm, "any(convert-func-to-llvm)")
+    IR.add_pipeline!(opm, "any(linalg-bufferize)")
+    IR.add_pipeline!(opm, "any(buffer-deallocation)")
+    IR.add_pipeline!(opm, "any(convert-linalg-to-loops)")
+    IR.add_pipeline!(opm, "any(convert-scf-to-cf)")
+    IR.add_pipeline!(opm, "any(convert-cf-to-llvm)")
+    IR.add_pipeline!(opm, "any(convert-arith-to-llvm)")
 
     IR.run!(pm, mod)
 
-    # jit = if LLVM.version() >= v"16"
-    #     API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL, false)
-    # else
-    #     API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
-    # end
-    # API.mlirExecutionEngineLookup(jit, "matmul_demo")
+    jit = if LLVM.version() >= v"16"
+        API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL, false)
+    else
+        API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
+    end
+    API.mlirExecutionEngineLookup(jit, "matmul_demo")
 end
 
 # @test ccall(fptr, Ptr{Float64}, (Ptr{Float64}, Ptr{Float64}), a, b) ≈ a * b
