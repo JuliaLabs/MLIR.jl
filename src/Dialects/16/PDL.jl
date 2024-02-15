@@ -108,8 +108,8 @@ function attribute(valueType=nothing::Union{Nothing, Value}; attr::MLIRType, val
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (valueType != nothing) && push!(operands, valueType)
-    (value != nothing) && push!(attributes, namedattribute("value", value))
+    !isnothing(valueType) && push!(operands, valueType)
+    !isnothing(value) && push!(attributes, namedattribute("value", value))
     
     create_operation(
         "pdl.attribute", location;
@@ -174,7 +174,7 @@ function operand(valueType=nothing::Union{Nothing, Value}; value::MLIRType, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (valueType != nothing) && push!(operands, valueType)
+    !isnothing(valueType) && push!(operands, valueType)
     
     create_operation(
         "pdl.operand", location;
@@ -211,7 +211,7 @@ function operands(valueType=nothing::Union{Nothing, Value}; value::MLIRType, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (valueType != nothing) && push!(operands, valueType)
+    !isnothing(valueType) && push!(operands, valueType)
     
     create_operation(
         "pdl.operands", location;
@@ -325,7 +325,7 @@ function operation(operandValues::Vector{Value}, attributeValues::Vector{Value},
     successors = Block[]
     attributes = NamedAttribute[namedattribute("attributeValueNames", attributeValueNames), ]
     push!(attributes, operandsegmentsizes([length(operandValues), length(attributeValues), length(typeValues), ]))
-    (opName != nothing) && push!(attributes, namedattribute("opName", opName))
+    !isnothing(opName) && push!(attributes, namedattribute("opName", opName))
     
     create_operation(
         "pdl.operation", location;
@@ -365,7 +365,7 @@ function pattern(; benefit, sym_name=nothing, bodyRegion::Region, location=Locat
     owned_regions = Region[bodyRegion, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("benefit", benefit), ]
-    (sym_name != nothing) && push!(attributes, namedattribute("sym_name", sym_name))
+    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
     
     create_operation(
         "pdl.pattern", location;
@@ -448,7 +448,7 @@ function replace(opValue::Value, replOperation=nothing::Union{Nothing, Value}; r
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (replOperation != nothing) && push!(operands, replOperation)
+    !isnothing(replOperation) && push!(operands, replOperation)
     push!(attributes, operandsegmentsizes([1, (replOperation==nothing) ? 0 : 1length(replValues), ]))
     
     create_operation(
@@ -531,7 +531,7 @@ function results(parent::Value; val::MLIRType, index=nothing, location=Location(
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (index != nothing) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(attributes, namedattribute("index", index))
     
     create_operation(
         "pdl.results", location;
@@ -586,9 +586,9 @@ function rewrite(root=nothing::Union{Nothing, Value}; externalArgs::Vector{Value
     owned_regions = Region[bodyRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (root != nothing) && push!(operands, root)
+    !isnothing(root) && push!(operands, root)
     push!(attributes, operandsegmentsizes([(root==nothing) ? 0 : 1length(externalArgs), ]))
-    (name != nothing) && push!(attributes, namedattribute("name", name))
+    !isnothing(name) && push!(attributes, namedattribute("name", name))
     
     create_operation(
         "pdl.rewrite", location;
@@ -622,7 +622,7 @@ function type(; result::MLIRType, constantType=nothing, location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (constantType != nothing) && push!(attributes, namedattribute("constantType", constantType))
+    !isnothing(constantType) && push!(attributes, namedattribute("constantType", constantType))
     
     create_operation(
         "pdl.type", location;
@@ -656,7 +656,7 @@ function types(; result::MLIRType, constantTypes=nothing, location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (constantTypes != nothing) && push!(attributes, namedattribute("constantTypes", constantTypes))
+    !isnothing(constantTypes) && push!(attributes, namedattribute("constantTypes", constantTypes))
     
     create_operation(
         "pdl.types", location;

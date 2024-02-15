@@ -240,8 +240,8 @@ function tile_muli(lhs::Value, rhs::Value, acc::Value; res::MLIRType, isZextLhs=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (isZextLhs != nothing) && push!(attributes, namedattribute("isZextLhs", isZextLhs))
-    (isZextRhs != nothing) && push!(attributes, namedattribute("isZextRhs", isZextRhs))
+    !isnothing(isZextLhs) && push!(attributes, namedattribute("isZextLhs", isZextLhs))
+    !isnothing(isZextRhs) && push!(attributes, namedattribute("isZextRhs", isZextRhs))
     
     create_operation(
         "amx.tile_muli", location;

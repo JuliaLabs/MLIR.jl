@@ -114,7 +114,7 @@ function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "tensor.dim", location;
@@ -506,7 +506,7 @@ function pad(source::Value, low::Vector{Value}, high::Vector{Value}; result::MLI
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_low", static_low), namedattribute("static_high", static_high), ]
     push!(attributes, operandsegmentsizes([1, length(low), length(high), ]))
-    (nofold != nothing) && push!(attributes, namedattribute("nofold", nofold))
+    !isnothing(nofold) && push!(attributes, namedattribute("nofold", nofold))
     
     create_operation(
         "tensor.pad", location;
@@ -534,7 +534,7 @@ function rank(tensor::Value; result_0=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "tensor.rank", location;

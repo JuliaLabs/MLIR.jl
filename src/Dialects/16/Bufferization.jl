@@ -62,10 +62,10 @@ function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (copy != nothing) && push!(operands, copy)
-    (size_hint != nothing) && push!(operands, size_hint)
+    !isnothing(copy) && push!(operands, copy)
+    !isnothing(size_hint) && push!(operands, size_hint)
     push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy==nothing) ? 0 : 1(size_hint==nothing) ? 0 : 1]))
-    (memory_space != nothing) && push!(attributes, namedattribute("memory_space", memory_space))
+    !isnothing(memory_space) && push!(attributes, namedattribute("memory_space", memory_space))
     
     create_operation(
         "bufferization.alloc_tensor", location;
@@ -206,7 +206,7 @@ function to_tensor(memref::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "bufferization.to_tensor", location;

@@ -52,9 +52,9 @@ function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (copy != nothing) && push!(operands, copy)
+    !isnothing(copy) && push!(operands, copy)
     push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy==nothing) ? 0 : 1]))
-    (memory_space != nothing) && push!(attributes, namedattribute("memory_space", memory_space))
+    !isnothing(memory_space) && push!(attributes, namedattribute("memory_space", memory_space))
     
     create_operation(
         "bufferization.alloc_tensor", location;

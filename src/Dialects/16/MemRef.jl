@@ -53,7 +53,7 @@ function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kind", kind), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "memref.atomic_rmw", location;
@@ -196,7 +196,7 @@ function load(memref::Value, indices::Vector{Value}; result=nothing::Union{Nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "memref.load", location;
@@ -254,7 +254,7 @@ function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memre
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands), ]))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "memref.alloc", location;
@@ -308,7 +308,7 @@ function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memr
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands), ]))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "memref.alloca", location;
@@ -584,7 +584,7 @@ function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "memref.dim", location;
@@ -776,7 +776,7 @@ function extract_aligned_pointer_as_index(source::Value; aligned_pointer=nothing
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (aligned_pointer != nothing) && push!(results, aligned_pointer)
+    !isnothing(aligned_pointer) && push!(results, aligned_pointer)
     
     create_operation(
         "memref.extract_aligned_pointer_as_index", location;
@@ -836,10 +836,10 @@ function extract_strided_metadata(source::Value; base_buffer=nothing::Union{Noth
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (base_buffer != nothing) && push!(results, base_buffer)
-    (offset != nothing) && push!(results, offset)
-    (sizes != nothing) && push!(results, sizes...)
-    (strides != nothing) && push!(results, strides...)
+    !isnothing(base_buffer) && push!(results, base_buffer)
+    !isnothing(offset) && push!(results, offset)
+    !isnothing(sizes) && push!(results, sizes...)
+    !isnothing(strides) && push!(results, strides...)
     
     create_operation(
         "memref.extract_strided_metadata", location;
@@ -922,10 +922,10 @@ function global_(; sym_name, sym_visibility=nothing, type, initial_value=nothing
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
-    (initial_value != nothing) && push!(attributes, namedattribute("initial_value", initial_value))
-    (constant != nothing) && push!(attributes, namedattribute("constant", constant))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(initial_value) && push!(attributes, namedattribute("initial_value", initial_value))
+    !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "memref.global", location;
@@ -986,7 +986,7 @@ function rank(memref::Value; result_0=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "memref.rank", location;
@@ -1060,8 +1060,8 @@ function realloc(source::Value, dynamicResultSize=nothing::Union{Nothing, Value}
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (dynamicResultSize != nothing) && push!(operands, dynamicResultSize)
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(dynamicResultSize) && push!(operands, dynamicResultSize)
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "memref.realloc", location;

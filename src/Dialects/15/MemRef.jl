@@ -252,7 +252,7 @@ function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memre
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands), ]))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "memref.alloc", location;
@@ -306,7 +306,7 @@ function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memr
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands), ]))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "memref.alloca", location;
@@ -818,10 +818,10 @@ function global_(; sym_name, sym_visibility=nothing, type, initial_value=nothing
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
-    (initial_value != nothing) && push!(attributes, namedattribute("initial_value", initial_value))
-    (constant != nothing) && push!(attributes, namedattribute("constant", constant))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(initial_value) && push!(attributes, namedattribute("initial_value", initial_value))
+    !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "memref.global", location;

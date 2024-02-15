@@ -114,7 +114,7 @@ function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "tensor.dim", location;
@@ -216,7 +216,7 @@ function extract(tensor::Value, indices::Vector{Value}; result=nothing::Union{No
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "tensor.extract", location;
@@ -439,7 +439,7 @@ function gather(source::Value, indices::Value; result::MLIRType, gather_dims, un
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("gather_dims", gather_dims), ]
-    (unique != nothing) && push!(attributes, namedattribute("unique", unique))
+    !isnothing(unique) && push!(attributes, namedattribute("unique", unique))
     
     create_operation(
         "tensor.gather", location;
@@ -511,7 +511,7 @@ function insert(scalar::Value, dest::Value, indices::Vector{Value}; result=nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "tensor.insert", location;
@@ -583,7 +583,7 @@ function insert_slice(source::Value, dest::Value, offsets::Vector{Value}, sizes:
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
     push!(attributes, operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides), ]))
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "tensor.insert_slice", location;
@@ -638,10 +638,10 @@ function pack(source::Value, dest::Value, padding_value=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("inner_dims_pos", inner_dims_pos), namedattribute("static_inner_tiles", static_inner_tiles), ]
-    (padding_value != nothing) && push!(operands, padding_value)
+    !isnothing(padding_value) && push!(operands, padding_value)
     push!(attributes, operandsegmentsizes([1, 1, (padding_value==nothing) ? 0 : 1length(inner_tiles), ]))
-    (result != nothing) && push!(results, result)
-    (outer_dims_perm != nothing) && push!(attributes, namedattribute("outer_dims_perm", outer_dims_perm))
+    !isnothing(result) && push!(results, result)
+    !isnothing(outer_dims_perm) && push!(attributes, namedattribute("outer_dims_perm", outer_dims_perm))
     
     create_operation(
         "tensor.pack", location;
@@ -730,7 +730,7 @@ function pad(source::Value, low::Vector{Value}, high::Vector{Value}; result::MLI
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_low", static_low), namedattribute("static_high", static_high), ]
     push!(attributes, operandsegmentsizes([1, length(low), length(high), ]))
-    (nofold != nothing) && push!(attributes, namedattribute("nofold", nofold))
+    !isnothing(nofold) && push!(attributes, namedattribute("nofold", nofold))
     
     create_operation(
         "tensor.pad", location;
@@ -835,7 +835,7 @@ function rank(tensor::Value; result_0=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "tensor.rank", location;
@@ -1000,7 +1000,7 @@ function scatter(source::Value, dest::Value, indices::Value; result::MLIRType, s
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("scatter_dims", scatter_dims), ]
-    (unique != nothing) && push!(attributes, namedattribute("unique", unique))
+    !isnothing(unique) && push!(attributes, namedattribute("unique", unique))
     
     create_operation(
         "tensor.scatter", location;
@@ -1080,8 +1080,8 @@ function unpack(source::Value, dest::Value, inner_tiles::Vector{Value}; result=n
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("inner_dims_pos", inner_dims_pos), namedattribute("static_inner_tiles", static_inner_tiles), ]
-    (result != nothing) && push!(results, result)
-    (outer_dims_perm != nothing) && push!(attributes, namedattribute("outer_dims_perm", outer_dims_perm))
+    !isnothing(result) && push!(results, result)
+    !isnothing(outer_dims_perm) && push!(attributes, namedattribute("outer_dims_perm", outer_dims_perm))
     
     create_operation(
         "tensor.unpack", location;

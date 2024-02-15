@@ -61,9 +61,9 @@ function device_async_copy(dst::Value, dstIndices::Vector{Value}, src::Value, sr
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dstElements", dstElements), ]
-    (srcElements != nothing) && push!(operands, srcElements)
+    !isnothing(srcElements) && push!(operands, srcElements)
     push!(attributes, operandsegmentsizes([1, length(dstIndices), 1, length(srcIndices), (srcElements==nothing) ? 0 : 1]))
-    (bypassL1 != nothing) && push!(attributes, namedattribute("bypassL1", bypassL1))
+    !isnothing(bypassL1) && push!(attributes, namedattribute("bypassL1", bypassL1))
     
     create_operation(
         "nvgpu.device_async_copy", location;
@@ -129,7 +129,7 @@ function device_async_wait(asyncDependencies::Value; numGroups=nothing, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (numGroups != nothing) && push!(attributes, namedattribute("numGroups", numGroups))
+    !isnothing(numGroups) && push!(attributes, namedattribute("numGroups", numGroups))
     
     create_operation(
         "nvgpu.device_async_wait", location;
@@ -202,8 +202,8 @@ function mma_sp_sync(matrixA::Value, matrixB::Value, matrixC::Value, sparseMetad
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mmaShape", mmaShape), ]
-    (sparsitySelector != nothing) && push!(attributes, namedattribute("sparsitySelector", sparsitySelector))
-    (tf32Enabled != nothing) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
+    !isnothing(sparsitySelector) && push!(attributes, namedattribute("sparsitySelector", sparsitySelector))
+    !isnothing(tf32Enabled) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
     
     create_operation(
         "nvgpu.mma.sp.sync", location;
@@ -241,7 +241,7 @@ function mma_sync(matrixA::Value, matrixB::Value, matrixC::Value; res::MLIRType,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mmaShape", mmaShape), ]
-    (tf32Enabled != nothing) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
+    !isnothing(tf32Enabled) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
     
     create_operation(
         "nvgpu.mma.sync", location;

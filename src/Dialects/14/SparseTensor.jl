@@ -235,8 +235,8 @@ function load(tensor::Value; result=nothing::Union{Nothing, MLIRType}, hasInsert
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
-    (hasInserts != nothing) && push!(attributes, namedattribute("hasInserts", hasInserts))
+    !isnothing(result) && push!(results, result)
+    !isnothing(hasInserts) && push!(attributes, namedattribute("hasInserts", hasInserts))
     
     create_operation(
         "sparse_tensor.load", location;

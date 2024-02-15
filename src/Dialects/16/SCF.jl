@@ -320,7 +320,7 @@ function foreach_thread(num_threads::Vector{Value}, outputs::Vector{Value}; resu
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(num_threads), length(outputs), ]))
-    (mapping != nothing) && push!(attributes, namedattribute("mapping", mapping))
+    !isnothing(mapping) && push!(attributes, namedattribute("mapping", mapping))
     
     create_operation(
         "scf.foreach_thread", location;

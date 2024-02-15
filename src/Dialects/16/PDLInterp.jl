@@ -182,7 +182,7 @@ function check_operand_count(inputOp::Value; count, compareAtLeast=nothing, true
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[namedattribute("count", count), ]
-    (compareAtLeast != nothing) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+    !isnothing(compareAtLeast) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
     
     create_operation(
         "pdl_interp.check_operand_count", location;
@@ -245,7 +245,7 @@ function check_result_count(inputOp::Value; count, compareAtLeast=nothing, trueD
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[namedattribute("count", count), ]
-    (compareAtLeast != nothing) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+    !isnothing(compareAtLeast) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
     
     create_operation(
         "pdl_interp.check_result_count", location;
@@ -392,7 +392,7 @@ function create_operation(inputOperands::Vector{Value}, inputAttributes::Vector{
     successors = Block[]
     attributes = NamedAttribute[namedattribute("name", name), namedattribute("inputAttributeNames", inputAttributeNames), ]
     push!(attributes, operandsegmentsizes([length(inputOperands), length(inputAttributes), length(inputResultTypes), ]))
-    (inferredResultTypes != nothing) && push!(attributes, namedattribute("inferredResultTypes", inferredResultTypes))
+    !isnothing(inferredResultTypes) && push!(attributes, namedattribute("inferredResultTypes", inferredResultTypes))
     
     create_operation(
         "pdl_interp.create_operation", location;
@@ -633,8 +633,8 @@ function func(; sym_name, function_type, arg_attrs=nothing, res_attrs=nothing, b
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    (arg_attrs != nothing) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    (res_attrs != nothing) && push!(attributes, namedattribute("res_attrs", res_attrs))
+    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
     
     create_operation(
         "pdl_interp.func", location;
@@ -785,7 +785,7 @@ function get_operands(inputOp::Value; value::MLIRType, index=nothing, location=L
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (index != nothing) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(attributes, namedattribute("index", index))
     
     create_operation(
         "pdl_interp.get_operands", location;
@@ -852,7 +852,7 @@ function get_results(inputOp::Value; value::MLIRType, index=nothing, location=Lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (index != nothing) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(attributes, namedattribute("index", index))
     
     create_operation(
         "pdl_interp.get_results", location;
@@ -976,8 +976,8 @@ function record_match(inputs::Vector{Value}, matchedOps::Vector{Value}; rewriter
     successors = Block[dest, ]
     attributes = NamedAttribute[namedattribute("rewriter", rewriter), namedattribute("benefit", benefit), ]
     push!(attributes, operandsegmentsizes([length(inputs), length(matchedOps), ]))
-    (rootKind != nothing) && push!(attributes, namedattribute("rootKind", rootKind))
-    (generatedOps != nothing) && push!(attributes, namedattribute("generatedOps", generatedOps))
+    !isnothing(rootKind) && push!(attributes, namedattribute("rootKind", rootKind))
+    !isnothing(generatedOps) && push!(attributes, namedattribute("generatedOps", generatedOps))
     
     create_operation(
         "pdl_interp.record_match", location;

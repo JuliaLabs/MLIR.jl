@@ -22,7 +22,7 @@ function abs(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.abs", location;
@@ -49,7 +49,7 @@ function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.add", location;
@@ -76,7 +76,7 @@ function angle(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.angle", location;
@@ -104,7 +104,7 @@ function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.atan2", location;
@@ -132,7 +132,7 @@ function conj(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.conj", location;
@@ -187,7 +187,7 @@ function cos(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.cos", location;
@@ -240,7 +240,7 @@ function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.div", location;
@@ -267,7 +267,7 @@ function eq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.eq", location;
@@ -296,7 +296,7 @@ function exp(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.exp", location;
@@ -329,7 +329,7 @@ function expm1(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.expm1", location;
@@ -356,7 +356,7 @@ function im(complex::Value; imaginary=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (imaginary != nothing) && push!(results, imaginary)
+    !isnothing(imaginary) && push!(results, imaginary)
     
     create_operation(
         "complex.im", location;
@@ -386,7 +386,7 @@ function log1p(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.log1p", location;
@@ -415,7 +415,7 @@ function log(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.log", location;
@@ -440,7 +440,7 @@ function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.mul", location;
@@ -467,7 +467,7 @@ function neg(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.neg", location;
@@ -495,7 +495,7 @@ function neq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.neq", location;
@@ -523,7 +523,7 @@ function pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.pow", location;
@@ -550,7 +550,7 @@ function re(complex::Value; real=nothing::Union{Nothing, MLIRType}, location=Loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (real != nothing) && push!(results, real)
+    !isnothing(real) && push!(results, real)
     
     create_operation(
         "complex.re", location;
@@ -577,7 +577,7 @@ function rsqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.rsqrt", location;
@@ -605,7 +605,7 @@ function sign(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.sign", location;
@@ -633,7 +633,7 @@ function sin(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.sin", location;
@@ -660,7 +660,7 @@ function sqrt(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.sqrt", location;
@@ -687,7 +687,7 @@ function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.sub", location;
@@ -715,7 +715,7 @@ function tan(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.tan", location;
@@ -743,7 +743,7 @@ function tanh(complex::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "complex.tanh", location;

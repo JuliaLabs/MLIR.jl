@@ -31,7 +31,7 @@ function func(; sym_name, function_type, sym_visibility=nothing, body::Region, l
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
         "ml_program.func", location;
@@ -176,9 +176,9 @@ function global_(; sym_name, type, is_mutable=nothing, value=nothing, sym_visibi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
-    (is_mutable != nothing) && push!(attributes, namedattribute("is_mutable", is_mutable))
-    (value != nothing) && push!(attributes, namedattribute("value", value))
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(is_mutable) && push!(attributes, namedattribute("is_mutable", is_mutable))
+    !isnothing(value) && push!(attributes, namedattribute("value", value))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
         "ml_program.global", location;
@@ -332,7 +332,7 @@ function subgraph(; sym_name, function_type, sym_visibility=nothing, body::Regio
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
         "ml_program.subgraph", location;

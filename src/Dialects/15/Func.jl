@@ -147,7 +147,7 @@ function func(; sym_name, function_type, sym_visibility=nothing, body::Region, l
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
         "func.func", location;
