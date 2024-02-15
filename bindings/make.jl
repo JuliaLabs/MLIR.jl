@@ -203,9 +203,9 @@ for (julia_version, llvm_version) in julia_llvm
             open(output, "w") do io
                 println(io, "module $dialect_name\n")
                 for tempfile in tempfiles
-                    println(io, read(tempfile, String))
+                    write(io, read(tempfile, String))
                 end
-                println(io, "end")
+                println(io, "end # $dialect_name")
             end
 
             println("- Generated \"$binding\" from $(join(tds, ",", " and "))")
