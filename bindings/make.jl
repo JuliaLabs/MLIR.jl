@@ -3,85 +3,128 @@ import BinaryBuilderBase: PkgSpec, Prefix, temp_prefix, setup_dependencies, clea
 using Clang.Generators
 
 function mlir_dialects(version::VersionNumber)
-    dialects = Tuple{String,String}[
-        ("Builtin.jl", "../IR/BuiltinOps.td"),
+    # construct set of dialects to generate bindings for
+    # 1. dialect name
+    # 2. bindings file name
+    # 3. tablegen files
+    dialects = Tuple{String,String,Vector{String}}[
+        ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
     ]
 
     if version >= v"14"
         append!(dialects, [
-            ("AMX.jl", "AMX/AMX.td"),
-            ("Affine.jl", "Affine/IR/AffineOps.td"),
-            ("ArmNeon.jl", "ArmNeon/ArmNeon.td"),
-            ("ArmSVE.jl", "ArmSVE/ArmSVE.td"),
-            ("Async.jl", "Async/IR/AsyncOps.td"),
-            ("Bufferization.jl", "Bufferization/IR/BufferizationOps.td"),
-            ("Complex.jl", "Complex/IR/ComplexOps.td"),
-            # ("DLTI.jl", "DLTI/DLTI.td"), fails on v15
-            ("EmitC.jl", "EmitC/IR/EmitC.td"),
-            ("LLVMIR.jl", "LLVMIR/LLVMOps.td"),
-            ("Linalg.jl", "Linalg/IR/LinalgOps.td"), # TODO include LinalgStructuredOps.td
-            ("Math.jl", "Math/IR/MathOps.td"),
-            ("MemRef.jl", "MemRef/IR/MemRefOps.td"),
-            ("OpenACC.jl", "OpenACC/OpenACCOps.td"),
-            ("OpenMP.jl", "OpenMP/OpenMPOps.td"),
-            ("PDL.jl", "PDL/IR/PDLOps.td"),
-            ("PDLInterp.jl", "PDLInterp/IR/PDLInterpOps.td"),
-            ("Quant.jl", "Quant/QuantOps.td"),
-            ("SPIRV.jl", "SPIRV/IR/SPIRVOps.td"),
-            ("Shape.jl", "Shape/IR/ShapeOps.td"),
-            ("SparseTensor.jl", "SparseTensor/IR/SparseTensorOps.td"),
-            ("Tensor.jl", "Tensor/IR/TensorOps.td"),
-            ("Tosa.jl", "Tosa/IR/TosaOps.td"),
-            ("Vector.jl", "Vector/IR/VectorOps.td"),
-            ("X86Vector.jl", "X86Vector/X86Vector.td"),
+            ("amx", "AMX.jl", ["AMX/AMX.td"]),
+            ("affine", "Affine.jl", ["Affine/IR/AffineOps.td"]),
+            ("arm_neon", "ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
+            ("arm_sve", "ArmSVE.jl", ["ArmSVE/ArmSVE.td"]),
+            ("async", "Async.jl", ["Async/IR/AsyncOps.td"]),
+            ("bufferization", "Bufferization.jl", ["Bufferization/IR/BufferizationOps.td"]),
+            ("complex", "Complex.jl", ["Complex/IR/ComplexOps.td"]),
+            # ("dlti", "DLTI.jl"[, "DLTI/DLTI.td"]), fails on v15
+            ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
+            ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
+            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            ("math", "Math.jl", ["Math/IR/MathOps.td"]),
+            ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
+            ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]),
+            ("omp", "OpenMP.jl", ["OpenMP/OpenMPOps.td"]),
+            ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
+            ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
+            ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
+            ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
+            ("sparse_tensor", "SparseTensor.jl", ["SparseTensor/IR/SparseTensorOps.td"]),
+            ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
+            ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
+            ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
+            ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
         ])
     end
 
     if v"14" <= version < v"15"
         append!(dialects, [
-            ("GPU.jl", "GPU/GPUOps.td"),
-            ("SCF.jl", "SCF/SCFOps.td"),
-            ("StandardOps.jl", "StandardOps/IR/Ops.td"),
+            ("gpu", "GPU.jl", ["GPU/GPUOps.td"]), # moved to IR subfolder in v15
+            ("scf", "SCF.jl", ["SCF/SCFOps.td"]), # moved to IR subfolder in v15
+            ("std", "StandardOps.jl", ["StandardOps/IR/Ops.td"]),
         ])
     end
 
     if v"14" <= version < v"16"
         append!(dialects, [
-            ("Arithmetic.jl", "Arithmetic/IR/ArithmeticOps.td"), # renamed to 'Arith' in v16
+            ("arith", "Arithmetic.jl", ["Arithmetic/IR/ArithmeticOps.td"]), # folder renamed to 'Arith' in v16
+            ("spv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]), # dialect name renamed to 'spirv' in v16
         ])
     end
 
     if version >= v"15"
         append!(dialects, [
-            ("GPU.jl", "GPU/IR/GPUOps.td"),
-            ("SCF.jl", "SCF/IR/SCFOps.td"),
-            ("AMDGPU.jl", "AMDGPU/AMDGPU.td"),
-            ("ControlFlow.jl", "ControlFlow/IR/ControlFlowOps.td"),
-            ("Func.jl", "Func/IR/FuncOps.td"),
-            ("MLProgram.jl", "MLProgram/IR/MLProgramOps.td"),
-            ("NVGPU.jl", "NVGPU/IR/NVGPU.td"),
-            ("Transform.jl", "Transform/IR/TransformOps.td"),
+            ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
+            ("scf", "SCF.jl", ["SCF/IR/SCFOps.td"]),
+            ("amdgpu", "AMDGPU.jl", ["AMDGPU/AMDGPU.td"]),
+            ("cf", "ControlFlow.jl", ["ControlFlow/IR/ControlFlowOps.td"]),
+            ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
+            ("ml_program", "MLProgram.jl", ["MLProgram/IR/MLProgramOps.td"]),
+            ("nvgpu", "NVGPU.jl", ["NVGPU/IR/NVGPU.td"]),
+        ])
+    end
+
+    if v"15" <= version < v"16"
+        append!(dialects, [
+            ("transform", "Transform.jl", [
+                "Transform/IR/TransformOps.td",
+                "Bufferization/TransformOps/BufferizationTransformOps.td",
+                "Linalg/TransformOps/LinalgTransformOps.td",
+                "SCF/TransformOps/SCFTransformOps.td",
+            ]), # more ops files in v16
+        ])
+    end
+
+    if v"16" <= version < v"17"
+        append!(dialects, [
+            ("transform", "Transform.jl", [
+                "Transform/IR/TransformOps.td",
+                "Affine/TranssformOps/AffineTransformOps.td",
+                "Bufferization/TransformOps/BufferizationTransformOps.td",
+                "GPU/TransformOps/GPUTransformOps.td",
+                "Linalg/TransformOps/LinalgTransformOps.td",
+                "MemRef/TransformOps/MemRefTransformOps.td",
+                "SCF/TransformOps/SCFTransformOps.td",
+                "Vector/TransformOps/VectorTransformOps.td",
+            ]), # more ops files in v17
         ])
     end
 
     if version >= v"16"
         append!(dialects, [
-            ("Arith.jl", "Arith/IR/ArithOps.td"),
-            ("Index.jl", "Index/IR/IndexOps.td"),
+            ("arith", "Arith.jl", ["Arith/IR/ArithOps.td"]),
+            ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
+            ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
         ])
     end
 
     if version >= v"17"
         append!(dialects, [
-            ("ArmSME.jl", "ArmSME/IR/ArmSME.td"),
-            ("IRDL.jl", "IRDL/IR/IRDLOps.td"),
-            ("UB.jl", "UB/IR/UBOps.td"),
+            ("arm_sme", "ArmSME.jl", ["ArmSME/IR/ArmSME.td"]),
+            ("irdl", "IRDL.jl", ["IRDL/IR/IRDLOps.td"]),
+            ("ub", "UB.jl", ["UB/IR/UBOps.td"]),
+            ("transform", "Transform.jl", [
+                "Transform/IR/TransformOps.td",
+                "Affine/TranssformOps/AffineTransformOps.td",
+                "Bufferization/TransformOps/BufferizationTransformOps.td",
+                "GPU/TransformOps/GPUTransformOps.td",
+                "Linalg/TransformOps/LinalgTransformOps.td",
+                "Linalg/TransformOps/LinalgMatchOps.td",
+                "MemRef/TransformOps/MemRefTransformOps.td",
+                "NVGPU/TransformOps/NVGPUTransformOps.td",
+                "SCF/TransformOps/SCFTransformOps.td",
+                "Tensor/TransformOps/TensorTransformOps.td",
+                "Vector/TransformOps/VectorTransformOps.td",
+            ])
         ])
     end
 
     if version >= v"18"
         append!(dialects, [
-            ("Mesh.jl", "Mesh/IR/MeshOps.td"),
+            ("mesh", "Mesh.jl", ["Mesh/IR/MeshOps.td"]),
         ])
     end
 
@@ -108,7 +151,7 @@ for (julia_version, llvm_version) in julia_llvm
         dependencies = PkgSpec[
             PkgSpec(; name="LLVM_full_jll", version=llvm_version),
             PkgSpec(; name="mlir_jl_tblgen_jll")
-            ]
+        ]
 
         artifact_paths = setup_dependencies(prefix, dependencies, platform; verbose=true)
 
@@ -142,15 +185,30 @@ for (julia_version, llvm_version) in julia_llvm
         # generate MLIR dialect bindings
         mkpath(joinpath(@__DIR__, "..", "src", "Dialects", string(llvm_version.major)))
 
-        for (binding, td) in mlir_dialects(llvm_version)
-            flags = [
-                "--generator=jl-op-defs",
-                joinpath(include_dir, "mlir", "Dialect", td),
-                "-I", include_dir,
-                "-o", joinpath(@__DIR__, "..", "src", "Dialects", string(llvm_version.major), binding),
-            ]
-            run(`$mlir_jl_tblgen $flags`)
-            println("- Generated \"$binding\" from \"$td\"")
+        for (dialect_name, binding, tds) in mlir_dialects(llvm_version)
+            tempfiles = map(tds) do td
+                tempfile, _ = mktemp()
+                flags = [
+                    "--generator=jl-op-defs",
+                    "--disable-module-wrap",
+                    joinpath(include_dir, "mlir", "Dialect", td),
+                    "-I", include_dir,
+                    "-o", tempfile,
+                ]
+                run(`$mlir_jl_tblgen $flags`)
+                return tempfile
+            end
+
+            output = joinpath(@__DIR__, "..", "src", "Dialects", string(llvm_version.major), binding)
+            open(output, "w") do io
+                println(io, "module $dialect_name")
+                for tempfile in tempfiles
+                    println(io, read(tempfile, String))
+                end
+                println(io, "end")
+            end
+
+            println("- Generated \"$binding\" from $(join(tds, ",", " and "))")
         end
     end
 end
