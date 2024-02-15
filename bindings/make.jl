@@ -201,7 +201,7 @@ for (julia_version, llvm_version) in julia_llvm
 
             output = joinpath(@__DIR__, "..", "src", "Dialects", string(llvm_version.major), binding)
             open(output, "w") do io
-                println(io, "module $dialect_name")
+                println(io, "module $dialect_name\n")
                 for tempfile in tempfiles
                     println(io, read(tempfile, String))
                 end
