@@ -82,7 +82,7 @@ function mlir_dialects(version::VersionNumber)
         append!(dialects, [
             ("transform", "Transform.jl", [
                 "Transform/IR/TransformOps.td",
-                "Affine/TranssformOps/AffineTransformOps.td",
+                "Affine/TransformOps/AffineTransformOps.td",
                 "Bufferization/TransformOps/BufferizationTransformOps.td",
                 "GPU/TransformOps/GPUTransformOps.td",
                 "Linalg/TransformOps/LinalgTransformOps.td",
@@ -108,7 +108,7 @@ function mlir_dialects(version::VersionNumber)
             ("ub", "UB.jl", ["UB/IR/UBOps.td"]),
             ("transform", "Transform.jl", [
                 "Transform/IR/TransformOps.td",
-                "Affine/TranssformOps/AffineTransformOps.td",
+                "Affine/TransformOps/AffineTransformOps.td",
                 "Bufferization/TransformOps/BufferizationTransformOps.td",
                 "GPU/TransformOps/GPUTransformOps.td",
                 "Linalg/TransformOps/LinalgTransformOps.td",
