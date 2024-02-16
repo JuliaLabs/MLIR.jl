@@ -7,30 +7,6 @@ n = 128
 a = rand(Float64, n, n)
 b = rand(Float64, n, n)
 
-function linalg_yield(x::IR.Value; location=IR.Location())
-    IR.create_operation(
-        "linalg.yield", location;
-        operands=[x],
-        owned_regions=IR.Region[],
-        successors=IR.Block[],
-        results=nothing,
-        result_inference=false,
-        attributes=IR.NamedAttribute[operandsegmentsizes([1])],
-    )
-end
-
-# TODO remove this when bindings are regenerated
-function linalg_matmul(c::IR.Value, a::IR.Value, b::IR.Value; region, result::Union{Nothing,IR.MLIRType}=nothing, location=IR.Location())
-    IR.create_operation(
-        "linalg.matmul", location;
-        operands=[a, b, c],
-        owned_regions=IR.Region[region],
-        successors=IR.Block[],
-        results=isnothing(result) ? nothing : MLIRType[result],
-        attributes=IR.NamedAttribute[operandsegmentsizes([2, 1])],
-    )
-end
-
 fptr = IR.context!(IR.Context()) do
     IR.enable_multithreading!(false)
 
@@ -56,7 +32,7 @@ fptr = IR.context!(IR.Context()) do
     op = arith.addf(arg2, IR.get_result(op))
     push!(linalg_block, op)
 
-    op = linalg_yield(IR.get_result(op))
+    op = linalg.yield([IR.get_result(op)])
     push!(linalg_block, op)
 
     linalg_region = IR.Region()
@@ -67,7 +43,7 @@ fptr = IR.context!(IR.Context()) do
     a_ir = IR.push_argument!(block, mattype, IR.Location())
     b_ir = IR.push_argument!(block, mattype, IR.Location())
 
-    op = linalg_matmul(c_ir, a_ir, b_ir; region=linalg_region, result=mattype) # TODO refactor to `linalg.matmul` when bindings are regenerated
+    op = linalg.matmul([a_ir, b_ir], [c_ir]; result_tensors=[mattype], region=linalg_region)
     push!(block, op)
 
     push!(block, func.return_([IR.get_result(op)]))
