@@ -19,9 +19,9 @@ function const_fake_quant(inputs::Value; outputs=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("num_bits", num_bits), ]
-    (outputs != nothing) && push!(results, outputs)
-    (narrow_range != nothing) && push!(attributes, namedattribute("narrow_range", narrow_range))
-    (is_signed != nothing) && push!(attributes, namedattribute("is_signed", is_signed))
+    !isnothing(outputs) && push!(results, outputs)
+    !isnothing(narrow_range) && push!(attributes, namedattribute("narrow_range", narrow_range))
+    !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
     
     create_operation(
         "quant.const_fake_quant", location;
@@ -46,9 +46,9 @@ function const_fake_quant_per_axis(inputs::Value; outputs=nothing::Union{Nothing
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("axis", axis), namedattribute("num_bits", num_bits), ]
-    (outputs != nothing) && push!(results, outputs)
-    (narrow_range != nothing) && push!(attributes, namedattribute("narrow_range", narrow_range))
-    (is_signed != nothing) && push!(attributes, namedattribute("is_signed", is_signed))
+    !isnothing(outputs) && push!(results, outputs)
+    !isnothing(narrow_range) && push!(attributes, namedattribute("narrow_range", narrow_range))
+    !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
     
     create_operation(
         "quant.const_fake_quant_per_axis", location;
@@ -74,7 +74,7 @@ function coupled_ref(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, cou
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("coupledKey", coupledKey), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "quant.coupled_ref", location;
@@ -186,9 +186,9 @@ function stats(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, layerStat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("layerStats", layerStats), ]
-    (result_0 != nothing) && push!(results, result_0)
-    (axisStats != nothing) && push!(attributes, namedattribute("axisStats", axisStats))
-    (axis != nothing) && push!(attributes, namedattribute("axis", axis))
+    !isnothing(result_0) && push!(results, result_0)
+    !isnothing(axisStats) && push!(attributes, namedattribute("axisStats", axisStats))
+    !isnothing(axis) && push!(attributes, namedattribute("axis", axis))
     
     create_operation(
         "quant.stats", location;
@@ -213,7 +213,7 @@ function stats_ref(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, stats
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("statsKey", statsKey), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "quant.stats_ref", location;

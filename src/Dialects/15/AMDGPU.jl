@@ -61,10 +61,10 @@ function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Val
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
-    (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
         "amdgpu.raw_buffer_atomic_fadd", location;
@@ -112,10 +112,10 @@ function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(attributes, operandsegmentsizes([1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
-    (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
         "amdgpu.raw_buffer_load", location;
@@ -151,10 +151,10 @@ function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, s
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
-    (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
         "amdgpu.raw_buffer_store", location;

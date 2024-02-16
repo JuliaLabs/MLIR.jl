@@ -36,8 +36,8 @@ function all_reduce(value::Value; result_0=nothing::Union{Nothing, MLIRType}, op
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result_0 != nothing) && push!(results, result_0)
-    (op != nothing) && push!(attributes, namedattribute("op", op))
+    !isnothing(result_0) && push!(results, result_0)
+    !isnothing(op) && push!(attributes, namedattribute("op", op))
     
     create_operation(
         "gpu.all_reduce", location;
@@ -73,7 +73,7 @@ function alloc(asyncDependencies::Vector{Value}, dynamicSizes::Vector{Value}, sy
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(asyncDependencies), length(dynamicSizes), length(symbolOperands), ]))
-    (asyncToken != nothing) && push!(results, asyncToken)
+    !isnothing(asyncToken) && push!(results, asyncToken)
     
     create_operation(
         "gpu.alloc", location;
@@ -135,7 +135,7 @@ function block_dim(; result_0=nothing::Union{Nothing, MLIRType}, dimension, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "gpu.block_dim", location;
@@ -163,7 +163,7 @@ function block_id(; result_0=nothing::Union{Nothing, MLIRType}, dimension, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "gpu.block_id", location;
@@ -199,7 +199,7 @@ function dealloc(asyncDependencies::Vector{Value}, memref::Value; asyncToken=not
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (asyncToken != nothing) && push!(results, asyncToken)
+    !isnothing(asyncToken) && push!(results, asyncToken)
     
     create_operation(
         "gpu.dealloc", location;
@@ -343,7 +343,7 @@ function global_id(; result_0=nothing::Union{Nothing, MLIRType}, dimension, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "gpu.global_id", location;
@@ -371,7 +371,7 @@ function grid_dim(; result_0=nothing::Union{Nothing, MLIRType}, dimension, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "gpu.grid_dim", location;
@@ -424,7 +424,7 @@ function lane_id(; result=nothing::Union{Nothing, MLIRType}, location=Location()
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "gpu.lane_id", location;
@@ -521,9 +521,9 @@ function launch_func(asyncDependencies::Vector{Value}, gridSizeX::Value, gridSiz
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kernel", kernel), ]
-    (dynamicSharedMemorySize != nothing) && push!(operands, dynamicSharedMemorySize)
+    !isnothing(dynamicSharedMemorySize) && push!(operands, dynamicSharedMemorySize)
     push!(attributes, operandsegmentsizes([length(asyncDependencies), 1, 1, 1, 1, 1, 1, (dynamicSharedMemorySize==nothing) ? 0 : 1length(operands), ]))
-    (asyncToken != nothing) && push!(results, asyncToken)
+    !isnothing(asyncToken) && push!(results, asyncToken)
     
     create_operation(
         "gpu.launch_func", location;
@@ -613,9 +613,9 @@ function launch(asyncDependencies::Vector{Value}, gridSizeX::Value, gridSizeY::V
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (dynamicSharedMemorySize != nothing) && push!(operands, dynamicSharedMemorySize)
+    !isnothing(dynamicSharedMemorySize) && push!(operands, dynamicSharedMemorySize)
     push!(attributes, operandsegmentsizes([length(asyncDependencies), 1, 1, 1, 1, 1, 1, (dynamicSharedMemorySize==nothing) ? 0 : 1]))
-    (asyncToken != nothing) && push!(results, asyncToken)
+    !isnothing(asyncToken) && push!(results, asyncToken)
     
     create_operation(
         "gpu.launch", location;
@@ -649,7 +649,7 @@ function memcpy(asyncDependencies::Vector{Value}, dst::Value, src::Value; asyncT
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (asyncToken != nothing) && push!(results, asyncToken)
+    !isnothing(asyncToken) && push!(results, asyncToken)
     
     create_operation(
         "gpu.memcpy", location;
@@ -683,7 +683,7 @@ function memset(asyncDependencies::Vector{Value}, dst::Value, value::Value; asyn
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (asyncToken != nothing) && push!(results, asyncToken)
+    !isnothing(asyncToken) && push!(results, asyncToken)
     
     create_operation(
         "gpu.memset", location;
@@ -730,7 +730,7 @@ function num_subgroups(; result=nothing::Union{Nothing, MLIRType}, location=Loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "gpu.num_subgroups", location;
@@ -835,8 +835,8 @@ function shuffle(value::Value, offset::Value, width::Value; result=nothing::Unio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mode", mode), ]
-    (result != nothing) && push!(results, result)
-    (valid != nothing) && push!(results, valid)
+    !isnothing(result) && push!(results, result)
+    !isnothing(valid) && push!(results, valid)
     
     create_operation(
         "gpu.shuffle", location;
@@ -864,7 +864,7 @@ function subgroup_id(; result=nothing::Union{Nothing, MLIRType}, location=Locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "gpu.subgroup_id", location;
@@ -902,7 +902,7 @@ function subgroup_mma_compute(opA::Value, opB::Value, opC::Value; res=nothing::U
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "gpu.subgroup_mma_compute", location;
@@ -1078,7 +1078,7 @@ function subgroup_size(; result=nothing::Union{Nothing, MLIRType}, location=Loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "gpu.subgroup_size", location;
@@ -1128,7 +1128,7 @@ function thread_id(; result_0=nothing::Union{Nothing, MLIRType}, dimension, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "gpu.thread_id", location;
@@ -1177,7 +1177,7 @@ function wait(asyncDependencies::Vector{Value}; asyncToken=nothing::Union{Nothin
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (asyncToken != nothing) && push!(results, asyncToken)
+    !isnothing(asyncToken) && push!(results, asyncToken)
     
     create_operation(
         "gpu.wait", location;

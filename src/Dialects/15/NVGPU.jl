@@ -54,7 +54,7 @@ function device_async_copy(dst::Value, dstIndices::Vector{Value}, src::Value, sr
     successors = Block[]
     attributes = NamedAttribute[namedattribute("numElements", numElements), ]
     push!(attributes, operandsegmentsizes([1, length(dstIndices), 1, length(srcIndices), ]))
-    (bypassL1 != nothing) && push!(attributes, namedattribute("bypassL1", bypassL1))
+    !isnothing(bypassL1) && push!(attributes, namedattribute("bypassL1", bypassL1))
     
     create_operation(
         "nvgpu.device_async_copy", location;
@@ -119,7 +119,7 @@ function device_async_wait(asyncDependencies::Value; numGroups=nothing, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (numGroups != nothing) && push!(attributes, namedattribute("numGroups", numGroups))
+    !isnothing(numGroups) && push!(attributes, namedattribute("numGroups", numGroups))
     
     create_operation(
         "nvgpu.device_async_wait", location;

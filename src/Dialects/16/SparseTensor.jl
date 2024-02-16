@@ -112,8 +112,8 @@ function binary(x::Value, y::Value; output::MLIRType, left_identity=nothing, rig
     owned_regions = Region[overlapRegion, leftRegion, rightRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (left_identity != nothing) && push!(attributes, namedattribute("left_identity", left_identity))
-    (right_identity != nothing) && push!(attributes, namedattribute("right_identity", right_identity))
+    !isnothing(left_identity) && push!(attributes, namedattribute("left_identity", left_identity))
+    !isnothing(right_identity) && push!(attributes, namedattribute("right_identity", right_identity))
     
     create_operation(
         "sparse_tensor.binary", location;
@@ -152,7 +152,7 @@ function compress(values::Value, filled::Value, added::Value, count::Value, tens
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "sparse_tensor.compress", location;
@@ -392,7 +392,7 @@ function storage_specifier_get(specifier::Value; result::MLIRType, specifierKind
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("specifierKind", specifierKind), ]
-    (dim != nothing) && push!(attributes, namedattribute("dim", dim))
+    !isnothing(dim) && push!(attributes, namedattribute("dim", dim))
     
     create_operation(
         "sparse_tensor.storage_specifier.get", location;
@@ -438,7 +438,7 @@ function insert(value::Value, tensor::Value, indices::Vector{Value}; result=noth
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "sparse_tensor.insert", location;
@@ -482,8 +482,8 @@ function load(tensor::Value; result=nothing::Union{Nothing, MLIRType}, hasInsert
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
-    (hasInserts != nothing) && push!(attributes, namedattribute("hasInserts", hasInserts))
+    !isnothing(result) && push!(results, result)
+    !isnothing(hasInserts) && push!(attributes, namedattribute("hasInserts", hasInserts))
     
     create_operation(
         "sparse_tensor.load", location;
@@ -524,7 +524,7 @@ function new(source::Value; result::MLIRType, expandSymmetry=nothing, location=L
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (expandSymmetry != nothing) && push!(attributes, namedattribute("expandSymmetry", expandSymmetry))
+    !isnothing(expandSymmetry) && push!(attributes, namedattribute("expandSymmetry", expandSymmetry))
     
     create_operation(
         "sparse_tensor.new", location;
@@ -554,7 +554,7 @@ function number_of_entries(tensor::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "sparse_tensor.number_of_entries", location;
@@ -648,10 +648,10 @@ function push_back(curSize::Value, inBuffer::Value, value::Value, n=nothing::Uni
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (n != nothing) && push!(operands, n)
-    (outBuffer != nothing) && push!(results, outBuffer)
-    (newSize != nothing) && push!(results, newSize)
-    (inbounds != nothing) && push!(attributes, namedattribute("inbounds", inbounds))
+    !isnothing(n) && push!(operands, n)
+    !isnothing(outBuffer) && push!(results, outBuffer)
+    !isnothing(newSize) && push!(results, newSize)
+    !isnothing(inbounds) && push!(attributes, namedattribute("inbounds", inbounds))
     
     create_operation(
         "sparse_tensor.push_back", location;
@@ -705,7 +705,7 @@ function reduce(x::Value, y::Value, identity::Value; output=nothing::Union{Nothi
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (output != nothing) && push!(results, output)
+    !isnothing(output) && push!(results, output)
     
     create_operation(
         "sparse_tensor.reduce", location;
@@ -771,7 +771,7 @@ function select(x::Value; output=nothing::Union{Nothing, MLIRType}, region::Regi
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (output != nothing) && push!(results, output)
+    !isnothing(output) && push!(results, output)
     
     create_operation(
         "sparse_tensor.select", location;
@@ -801,8 +801,8 @@ function storage_specifier_set(specifier::Value, value::Value; result=nothing::U
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("specifierKind", specifierKind), ]
-    (result != nothing) && push!(results, result)
-    (dim != nothing) && push!(attributes, namedattribute("dim", dim))
+    !isnothing(result) && push!(results, result)
+    !isnothing(dim) && push!(attributes, namedattribute("dim", dim))
     
     create_operation(
         "sparse_tensor.storage_specifier.set", location;
@@ -845,9 +845,9 @@ function sort_coo(n::Value, xy::Value, ys::Vector{Value}; nx=nothing, ny=nothing
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (nx != nothing) && push!(attributes, namedattribute("nx", nx))
-    (ny != nothing) && push!(attributes, namedattribute("ny", ny))
-    (stable != nothing) && push!(attributes, namedattribute("stable", stable))
+    !isnothing(nx) && push!(attributes, namedattribute("nx", nx))
+    !isnothing(ny) && push!(attributes, namedattribute("ny", ny))
+    !isnothing(stable) && push!(attributes, namedattribute("stable", stable))
     
     create_operation(
         "sparse_tensor.sort_coo", location;
@@ -903,7 +903,7 @@ function sort(n::Value, xs::Vector{Value}, ys::Vector{Value}; stable=nothing, lo
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([1, length(xs), length(ys), ]))
-    (stable != nothing) && push!(attributes, namedattribute("stable", stable))
+    !isnothing(stable) && push!(attributes, namedattribute("stable", stable))
     
     create_operation(
         "sparse_tensor.sort", location;
@@ -1179,7 +1179,7 @@ function yield(result=nothing::Union{Nothing, Value}; location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(operands, result)
+    !isnothing(result) && push!(operands, result)
     
     create_operation(
         "sparse_tensor.yield", location;

@@ -136,7 +136,7 @@ function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vecto
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
     push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands), ]))
-    (case_values != nothing) && push!(attributes, namedattribute("case_values", case_values))
+    !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
     
     create_operation(
         "cf.switch", location;

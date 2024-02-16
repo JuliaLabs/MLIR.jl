@@ -15,7 +15,7 @@ function avx_intr_dp_ps_256(a::Value, b::Value, c::Value; res=nothing::Union{Not
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx.intr.dp.ps.256", location;
@@ -49,7 +49,7 @@ function avx_intr_dot(a::Value, b::Value; res=nothing::Union{Nothing, MLIRType},
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx.intr.dot", location;
@@ -69,7 +69,7 @@ function avx512_intr_mask_compress(a::Value, src::Value, k::Value; res=nothing::
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx512.intr.mask.compress", location;
@@ -100,9 +100,9 @@ function avx512_mask_compress(k::Value, a::Value, src=nothing::Union{Nothing, Va
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (src != nothing) && push!(operands, src)
-    (dst != nothing) && push!(results, dst)
-    (constant_src != nothing) && push!(attributes, namedattribute("constant_src", constant_src))
+    !isnothing(src) && push!(operands, src)
+    !isnothing(dst) && push!(results, dst)
+    !isnothing(constant_src) && push!(attributes, namedattribute("constant_src", constant_src))
     
     create_operation(
         "x86vector.avx512.mask.compress", location;
@@ -132,7 +132,7 @@ function avx512_mask_rndscale(src::Value, k::Value, a::Value, imm::Value, roundi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (dst != nothing) && push!(results, dst)
+    !isnothing(dst) && push!(results, dst)
     
     create_operation(
         "x86vector.avx512.mask.rndscale", location;
@@ -152,7 +152,7 @@ function avx512_intr_mask_rndscale_pd_512(src::Value, k::Value, a::Value, imm::V
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx512.intr.mask.rndscale.pd.512", location;
@@ -172,7 +172,7 @@ function avx512_intr_mask_rndscale_ps_512(src::Value, k::Value, a::Value, imm::V
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx512.intr.mask.rndscale.ps.512", location;
@@ -202,7 +202,7 @@ function avx512_mask_scalef(src::Value, a::Value, b::Value, k::Value, rounding::
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (dst != nothing) && push!(results, dst)
+    !isnothing(dst) && push!(results, dst)
     
     create_operation(
         "x86vector.avx512.mask.scalef", location;
@@ -222,7 +222,7 @@ function avx512_intr_mask_scalef_pd_512(src::Value, a::Value, b::Value, k::Value
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx512.intr.mask.scalef.pd.512", location;
@@ -242,7 +242,7 @@ function avx512_intr_mask_scalef_ps_512(src::Value, a::Value, b::Value, k::Value
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx512.intr.mask.scalef.ps.512", location;
@@ -262,7 +262,7 @@ function avx_intr_rsqrt_ps_256(a::Value; res=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "x86vector.avx.intr.rsqrt.ps.256", location;
@@ -282,7 +282,7 @@ function avx_rsqrt(a::Value; b=nothing::Union{Nothing, MLIRType}, location=Locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (b != nothing) && push!(results, b)
+    !isnothing(b) && push!(results, b)
     
     create_operation(
         "x86vector.avx.rsqrt", location;

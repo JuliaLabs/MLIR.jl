@@ -111,8 +111,8 @@ function binary(x::Value, y::Value; output::MLIRType, left_identity=nothing, rig
     owned_regions = Region[overlapRegion, leftRegion, rightRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (left_identity != nothing) && push!(attributes, namedattribute("left_identity", left_identity))
-    (right_identity != nothing) && push!(attributes, namedattribute("right_identity", right_identity))
+    !isnothing(left_identity) && push!(attributes, namedattribute("left_identity", left_identity))
+    !isnothing(right_identity) && push!(attributes, namedattribute("right_identity", right_identity))
     
     create_operation(
         "sparse_tensor.binary", location;
@@ -322,8 +322,8 @@ function load(tensor::Value; result=nothing::Union{Nothing, MLIRType}, hasInsert
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
-    (hasInserts != nothing) && push!(attributes, namedattribute("hasInserts", hasInserts))
+    !isnothing(result) && push!(results, result)
+    !isnothing(hasInserts) && push!(attributes, namedattribute("hasInserts", hasInserts))
     
     create_operation(
         "sparse_tensor.load", location;
@@ -442,7 +442,7 @@ function reduce(x::Value, y::Value, identity::Value; output=nothing::Union{Nothi
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (output != nothing) && push!(results, output)
+    !isnothing(output) && push!(results, output)
     
     create_operation(
         "sparse_tensor.reduce", location;

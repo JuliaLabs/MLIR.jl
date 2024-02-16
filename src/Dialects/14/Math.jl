@@ -31,7 +31,7 @@ function abs(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.abs", location;
@@ -81,7 +81,7 @@ function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType},
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.atan2", location;
@@ -124,7 +124,7 @@ function atan(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.atan", location;
@@ -167,7 +167,7 @@ function ceil(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.ceil", location;
@@ -211,7 +211,7 @@ function copysign(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.copysign", location;
@@ -254,7 +254,7 @@ function cos(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.cos", location;
@@ -288,7 +288,7 @@ function ctlz(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.ctlz", location;
@@ -322,7 +322,7 @@ function cttz(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.cttz", location;
@@ -356,7 +356,7 @@ function ctpop(operand::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.ctpop", location;
@@ -399,7 +399,7 @@ function erf(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.erf", location;
@@ -441,7 +441,7 @@ function exp2(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.exp2", location;
@@ -485,7 +485,7 @@ function expm1(operand::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.expm1", location;
@@ -527,7 +527,7 @@ function exp(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.exp", location;
@@ -570,7 +570,7 @@ function floor(operand::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.floor", location;
@@ -618,7 +618,7 @@ function fma(a::Value, b::Value, c::Value; result=nothing::Union{Nothing, MLIRTy
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.fma", location;
@@ -646,7 +646,7 @@ function log10(operand::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.log10", location;
@@ -676,7 +676,7 @@ function log1p(operand::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.log1p", location;
@@ -704,7 +704,7 @@ function log2(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.log2", location;
@@ -732,7 +732,7 @@ function log(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.log", location;
@@ -775,7 +775,7 @@ function powf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.powf", location;
@@ -799,7 +799,7 @@ function rsqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.rsqrt", location;
@@ -842,7 +842,7 @@ function sin(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.sin", location;
@@ -877,7 +877,7 @@ function sqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.sqrt", location;
@@ -920,7 +920,7 @@ function tanh(operand::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "math.tanh", location;

@@ -26,7 +26,7 @@ function add_to_group(operand::Value, group::Value; rank=nothing::Union{Nothing,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (rank != nothing) && push!(results, rank)
+    !isnothing(rank) && push!(results, rank)
     
     create_operation(
         "async.add_to_group", location;
@@ -93,7 +93,7 @@ function await(operand::Value; result=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "async.await", location;
@@ -144,7 +144,7 @@ function coro_begin(id::Value; handle=nothing::Union{Nothing, MLIRType}, locatio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (handle != nothing) && push!(results, handle)
+    !isnothing(handle) && push!(results, handle)
     
     create_operation(
         "async.coro.begin", location;
@@ -208,7 +208,7 @@ function coro_id(; id=nothing::Union{Nothing, MLIRType}, location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (id != nothing) && push!(results, id)
+    !isnothing(id) && push!(results, id)
     
     create_operation(
         "async.coro.id", location;
@@ -229,7 +229,7 @@ function coro_save(handle::Value; state=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (state != nothing) && push!(results, state)
+    !isnothing(state) && push!(results, state)
     
     create_operation(
         "async.coro.save", location;
@@ -289,7 +289,7 @@ function create_group(size::Value; result=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "async.create_group", location;
@@ -393,9 +393,9 @@ function func(; sym_name, function_type, sym_visibility=nothing, arg_attrs=nothi
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
-    (arg_attrs != nothing) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    (res_attrs != nothing) && push!(attributes, namedattribute("res_attrs", res_attrs))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
     
     create_operation(
         "async.func", location;
@@ -466,7 +466,7 @@ function runtime_add_to_group(operand::Value, group::Value; rank=nothing::Union{
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (rank != nothing) && push!(results, rank)
+    !isnothing(rank) && push!(results, rank)
     
     create_operation(
         "async.runtime.add_to_group", location;
@@ -531,7 +531,7 @@ function runtime_create_group(size::Value; result=nothing::Union{Nothing, MLIRTy
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "async.runtime.create_group", location;
@@ -597,7 +597,7 @@ function runtime_is_error(operand::Value; is_error=nothing::Union{Nothing, MLIRT
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (is_error != nothing) && push!(results, is_error)
+    !isnothing(is_error) && push!(results, is_error)
     
     create_operation(
         "async.runtime.is_error", location;
@@ -619,7 +619,7 @@ function runtime_load(storage::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "async.runtime.load", location;
@@ -641,7 +641,7 @@ function runtime_num_worker_threads(; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "async.runtime.num_worker_threads", location;

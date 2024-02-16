@@ -907,7 +907,7 @@ function BitCount(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitCount", location;
@@ -965,7 +965,7 @@ function BitFieldInsert(base::Value, insert::Value, offset::Value, count::Value;
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitFieldInsert", location;
@@ -1023,7 +1023,7 @@ function BitFieldSExtract(base::Value, offset::Value, count::Value; result=nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitFieldSExtract", location;
@@ -1063,7 +1063,7 @@ function BitFieldUExtract(base::Value, offset::Value, count::Value; result=nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitFieldUExtract", location;
@@ -1107,7 +1107,7 @@ function BitReverse(operand::Value; result=nothing::Union{Nothing, MLIRType}, lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitReverse", location;
@@ -1203,7 +1203,7 @@ function BitwiseAnd(operand1::Value, operand2::Value; result=nothing::Union{Noth
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitwiseAnd", location;
@@ -1245,7 +1245,7 @@ function BitwiseOr(operand1::Value, operand2::Value; result=nothing::Union{Nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitwiseOr", location;
@@ -1287,7 +1287,7 @@ function BitwiseXor(operand1::Value, operand2::Value; result=nothing::Union{Noth
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.BitwiseXor", location;
@@ -1338,7 +1338,7 @@ function BranchConditional(condition::Value, trueTargetOperands::Vector{Value}, 
     successors = Block[trueTarget, falseTarget, ]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([1, length(trueTargetOperands), length(falseTargetOperands), ]))
-    (branch_weights != nothing) && push!(attributes, namedattribute("branch_weights", branch_weights))
+    !isnothing(branch_weights) && push!(attributes, namedattribute("branch_weights", branch_weights))
     
     create_operation(
         "spv.BranchConditional", location;
@@ -1414,7 +1414,7 @@ function CL_ceil(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.ceil", location;
@@ -1455,7 +1455,7 @@ function CL_cos(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.cos", location;
@@ -1496,7 +1496,7 @@ function CL_erf(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.erf", location;
@@ -1537,7 +1537,7 @@ function CL_exp(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.exp", location;
@@ -1578,7 +1578,7 @@ function CL_fabs(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.fabs", location;
@@ -1619,7 +1619,7 @@ function CL_floor(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.floor", location;
@@ -1656,7 +1656,7 @@ function CL_fma(x::Value, y::Value, z::Value; result=nothing::Union{Nothing, MLI
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.fma", location;
@@ -1697,7 +1697,7 @@ function CL_log(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.log", location;
@@ -1739,7 +1739,7 @@ function CL_pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.pow", location;
@@ -1779,7 +1779,7 @@ function CL_round(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.round", location;
@@ -1820,7 +1820,7 @@ function CL_rsqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.rsqrt", location;
@@ -1861,7 +1861,7 @@ function CL_s_abs(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.s_abs", location;
@@ -1902,7 +1902,7 @@ function CL_sin(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.sin", location;
@@ -1943,7 +1943,7 @@ function CL_sqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.sqrt", location;
@@ -1984,7 +1984,7 @@ function CL_tanh(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CL.tanh", location;
@@ -2426,7 +2426,7 @@ function CooperativeMatrixLengthNV(; result=nothing::Union{Nothing, MLIRType}, t
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("type", type), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CooperativeMatrixLengthNV", location;
@@ -2495,7 +2495,7 @@ function CooperativeMatrixLoadNV(pointer::Value, stride::Value, columnmajor::Val
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (memory_access != nothing) && push!(attributes, namedattribute("memory_access", memory_access))
+    !isnothing(memory_access) && push!(attributes, namedattribute("memory_access", memory_access))
     
     create_operation(
         "spv.CooperativeMatrixLoadNV", location;
@@ -2558,7 +2558,7 @@ function CooperativeMatrixMulAddNV(a::Value, b::Value, c::Value; result=nothing:
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.CooperativeMatrixMulAddNV", location;
@@ -2613,7 +2613,7 @@ function CooperativeMatrixStoreNV(pointer::Value, object::Value, stride::Value, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (memory_access != nothing) && push!(attributes, namedattribute("memory_access", memory_access))
+    !isnothing(memory_access) && push!(attributes, namedattribute("memory_access", memory_access))
     
     create_operation(
         "spv.CooperativeMatrixStoreNV", location;
@@ -2658,10 +2658,10 @@ function CopyMemory(target::Value, source::Value; memory_access=nothing, alignme
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (memory_access != nothing) && push!(attributes, namedattribute("memory_access", memory_access))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
-    (source_memory_access != nothing) && push!(attributes, namedattribute("source_memory_access", source_memory_access))
-    (source_alignment != nothing) && push!(attributes, namedattribute("source_alignment", source_alignment))
+    !isnothing(memory_access) && push!(attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(source_memory_access) && push!(attributes, namedattribute("source_memory_access", source_memory_access))
+    !isnothing(source_alignment) && push!(attributes, namedattribute("source_alignment", source_alignment))
     
     create_operation(
         "spv.CopyMemory", location;
@@ -2801,7 +2801,7 @@ function FAdd(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FAdd", location;
@@ -2883,7 +2883,7 @@ function FDiv(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FDiv", location;
@@ -2926,7 +2926,7 @@ function FMod(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FMod", location;
@@ -2968,7 +2968,7 @@ function FMul(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FMul", location;
@@ -3008,7 +3008,7 @@ function FNegate(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FNegate", location;
@@ -3298,7 +3298,7 @@ function FRem(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FRem", location;
@@ -3339,7 +3339,7 @@ function FSub(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FSub", location;
@@ -3675,7 +3675,7 @@ function FunctionCall(arguments::Vector{Value}; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.FunctionCall", location;
@@ -3720,7 +3720,7 @@ function GL_Acos(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Acos", location;
@@ -3765,7 +3765,7 @@ function GL_Asin(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Asin", location;
@@ -3810,7 +3810,7 @@ function GL_Atan(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Atan", location;
@@ -3852,7 +3852,7 @@ function GL_Ceil(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Ceil", location;
@@ -3895,7 +3895,7 @@ function GL_Cos(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Cos", location;
@@ -3938,7 +3938,7 @@ function GL_Cosh(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Cosh", location;
@@ -3981,7 +3981,7 @@ function GL_Exp(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Exp", location;
@@ -4022,7 +4022,7 @@ function GL_FAbs(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.FAbs", location;
@@ -4104,7 +4104,7 @@ function GL_FMax(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.FMax", location;
@@ -4146,7 +4146,7 @@ function GL_FMin(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.FMin", location;
@@ -4180,7 +4180,7 @@ function GL_FMix(x::Value, y::Value, a::Value; result=nothing::Union{Nothing, ML
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.FMix", location;
@@ -4221,7 +4221,7 @@ function GL_FSign(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.FSign", location;
@@ -4250,7 +4250,7 @@ function GL_FindUMsb(operand::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.FindUMsb", location;
@@ -4292,7 +4292,7 @@ function GL_Floor(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Floor", location;
@@ -4436,7 +4436,7 @@ function GL_InverseSqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.InverseSqrt", location;
@@ -4486,7 +4486,7 @@ function GL_Ldexp(x::Value, exp::Value; y=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (y != nothing) && push!(results, y)
+    !isnothing(y) && push!(results, y)
     
     create_operation(
         "spv.GL.Ldexp", location;
@@ -4530,7 +4530,7 @@ function GL_Log(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Log", location;
@@ -4575,7 +4575,7 @@ function GL_Pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Pow", location;
@@ -4616,7 +4616,7 @@ function GL_Round(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Round", location;
@@ -4656,7 +4656,7 @@ function GL_SAbs(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.SAbs", location;
@@ -4736,7 +4736,7 @@ function GL_SMax(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.SMax", location;
@@ -4777,7 +4777,7 @@ function GL_SMin(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.SMin", location;
@@ -4817,7 +4817,7 @@ function GL_SSign(operand::Value; result=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.SSign", location;
@@ -4860,7 +4860,7 @@ function GL_Sin(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Sin", location;
@@ -4903,7 +4903,7 @@ function GL_Sinh(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Sinh", location;
@@ -4944,7 +4944,7 @@ function GL_Sqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Sqrt", location;
@@ -4987,7 +4987,7 @@ function GL_Tan(operand::Value; result=nothing::Union{Nothing, MLIRType}, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Tan", location;
@@ -5030,7 +5030,7 @@ function GL_Tanh(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.Tanh", location;
@@ -5110,7 +5110,7 @@ function GL_UMax(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.UMax", location;
@@ -5151,7 +5151,7 @@ function GL_UMin(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GL.UMin", location;
@@ -5201,17 +5201,17 @@ spv.GlobalVariable @var2 bind(1, 2) : !spv.ptr<f32, Uniform>
 spv.GlobalVariable @var3 built_in(\"GlobalInvocationId\") : !spv.ptr<vector<3xi32>, Input>
 ```
 """
-function GlobalVariable(; type, sym_name, initializer=nothing, binding=nothing, descriptor_set=nothing, builtin=nothing, location=Location())
+function GlobalVariable(; type, sym_name, initializer=nothing, location_=nothing, binding=nothing, descriptor_set=nothing, builtin=nothing, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("type", type), namedattribute("sym_name", sym_name), ]
-    (initializer != nothing) && push!(attributes, namedattribute("initializer", initializer))
-    (location != nothing) && push!(attributes, namedattribute("location", location))
-    (binding != nothing) && push!(attributes, namedattribute("binding", binding))
-    (descriptor_set != nothing) && push!(attributes, namedattribute("descriptor_set", descriptor_set))
-    (builtin != nothing) && push!(attributes, namedattribute("builtin", builtin))
+    !isnothing(initializer) && push!(attributes, namedattribute("initializer", initializer))
+    !isnothing(location) && push!(attributes, namedattribute("location", location_))
+    !isnothing(binding) && push!(attributes, namedattribute("binding", binding))
+    !isnothing(descriptor_set) && push!(attributes, namedattribute("descriptor_set", descriptor_set))
+    !isnothing(builtin) && push!(attributes, namedattribute("builtin", builtin))
     
     create_operation(
         "spv.GlobalVariable", location;
@@ -5272,7 +5272,7 @@ function GroupBroadcast(value::Value, localid::Value; result=nothing::Union{Noth
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GroupBroadcast", location;
@@ -5373,7 +5373,7 @@ function GroupNonUniformBroadcast(value::Value, id::Value; result=nothing::Union
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GroupNonUniformBroadcast", location;
@@ -5410,7 +5410,7 @@ function GroupNonUniformElect(; result=nothing::Union{Nothing, MLIRType}, execut
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.GroupNonUniformElect", location;
@@ -5468,7 +5468,7 @@ function GroupNonUniformFAdd(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformFAdd", location;
@@ -5529,7 +5529,7 @@ function GroupNonUniformFMax(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformFMax", location;
@@ -5590,7 +5590,7 @@ function GroupNonUniformFMin(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformFMin", location;
@@ -5648,7 +5648,7 @@ function GroupNonUniformFMul(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformFMul", location;
@@ -5704,7 +5704,7 @@ function GroupNonUniformIAdd(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformIAdd", location;
@@ -5760,7 +5760,7 @@ function GroupNonUniformIMul(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformIMul", location;
@@ -5816,7 +5816,7 @@ function GroupNonUniformSMax(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformSMax", location;
@@ -5872,7 +5872,7 @@ function GroupNonUniformSMin(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformSMin", location;
@@ -5929,7 +5929,7 @@ function GroupNonUniformUMax(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformUMax", location;
@@ -5986,7 +5986,7 @@ function GroupNonUniformUMin(value::Value, cluster_size=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    (cluster_size != nothing) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, cluster_size)
     
     create_operation(
         "spv.GroupNonUniformUMin", location;
@@ -6033,7 +6033,7 @@ function IAdd(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.IAdd", location;
@@ -6121,7 +6121,7 @@ function IMul(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.IMul", location;
@@ -6255,7 +6255,7 @@ function ISub(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.ISub", location;
@@ -6307,7 +6307,7 @@ function ImageDrefGather(sampledimage::Value, coordinate::Value, dref::Value, op
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (imageoperands != nothing) && push!(attributes, namedattribute("imageoperands", imageoperands))
+    !isnothing(imageoperands) && push!(attributes, namedattribute("imageoperands", imageoperands))
     
     create_operation(
         "spv.ImageDrefGather", location;
@@ -6555,8 +6555,8 @@ function Load(ptr::Value; value::MLIRType, memory_access=nothing, alignment=noth
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (memory_access != nothing) && push!(attributes, namedattribute("memory_access", memory_access))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(memory_access) && push!(attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "spv.Load", location;
@@ -7014,8 +7014,8 @@ function module_(; addressing_model, memory_model, vce_triple=nothing, sym_name=
     owned_regions = Region[region_0, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("addressing_model", addressing_model), namedattribute("memory_model", memory_model), ]
-    (vce_triple != nothing) && push!(attributes, namedattribute("vce_triple", vce_triple))
-    (sym_name != nothing) && push!(attributes, namedattribute("sym_name", sym_name))
+    !isnothing(vce_triple) && push!(attributes, namedattribute("vce_triple", vce_triple))
+    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
     
     create_operation(
         "spv.module", location;
@@ -7057,7 +7057,7 @@ function Not(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.Not", location;
@@ -7345,7 +7345,7 @@ function SDiv(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.SDiv", location;
@@ -7554,7 +7554,7 @@ function SMod(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.SMod", location;
@@ -7590,7 +7590,7 @@ function SNegate(operand::Value; result=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.SNegate", location;
@@ -7635,7 +7635,7 @@ function SRem(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.SRem", location;
@@ -7690,7 +7690,7 @@ function Select(condition::Value, true_value::Value, false_value::Value; result=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.Select", location;
@@ -7778,7 +7778,7 @@ function ShiftLeftLogical(operand1::Value, operand2::Value; result=nothing::Unio
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.ShiftLeftLogical", location;
@@ -7827,7 +7827,7 @@ function ShiftRightArithmetic(operand1::Value, operand2::Value; result=nothing::
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.ShiftRightArithmetic", location;
@@ -7877,7 +7877,7 @@ function ShiftRightLogical(operand1::Value, operand2::Value; result=nothing::Uni
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.ShiftRightLogical", location;
@@ -8103,8 +8103,8 @@ function Store(ptr::Value, value::Value; memory_access=nothing, alignment=nothin
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (memory_access != nothing) && push!(attributes, namedattribute("memory_access", memory_access))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(memory_access) && push!(attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     
     create_operation(
         "spv.Store", location;
@@ -8367,7 +8367,7 @@ function UDiv(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.UDiv", location;
@@ -8574,7 +8574,7 @@ function UMod(operand1::Value, operand2::Value; result=nothing::Union{Nothing, M
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.UMod", location;
@@ -8729,7 +8729,7 @@ function Variable(initializer=nothing::Union{Nothing, Value}; pointer::MLIRType,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("storage_class", storage_class), ]
-    (initializer != nothing) && push!(operands, initializer)
+    !isnothing(initializer) && push!(operands, initializer)
     
     create_operation(
         "spv.Variable", location;
@@ -8816,7 +8816,7 @@ function VectorInsertDynamic(vector::Value, component::Value, index::Value; resu
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "spv.VectorInsertDynamic", location;

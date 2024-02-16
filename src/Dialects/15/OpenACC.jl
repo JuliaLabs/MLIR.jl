@@ -29,9 +29,9 @@ function data(ifCond=nothing::Union{Nothing, Value}; copyOperands::Vector{Value}
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
+    !isnothing(ifCond) && push!(operands, ifCond)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1length(copyOperands), length(copyinOperands), length(copyinReadonlyOperands), length(copyoutOperands), length(copyoutZeroOperands), length(createOperands), length(createZeroOperands), length(noCreateOperands), length(presentOperands), length(deviceptrOperands), length(attachOperands), ]))
-    (defaultAttr != nothing) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
+    !isnothing(defaultAttr) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
     
     create_operation(
         "acc.data", location;
@@ -58,12 +58,12 @@ function enter_data(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing:
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
+    !isnothing(ifCond) && push!(operands, ifCond)
+    !isnothing(asyncOperand) && push!(operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(operands, waitDevnum)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1(asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1length(waitOperands), length(copyinOperands), length(createOperands), length(createZeroOperands), length(attachOperands), ]))
-    (async != nothing) && push!(attributes, namedattribute("async", async))
-    (wait != nothing) && push!(attributes, namedattribute("wait", wait))
+    !isnothing(async) && push!(attributes, namedattribute("async", async))
+    !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
     
     create_operation(
         "acc.enter_data", location;
@@ -90,13 +90,13 @@ function exit_data(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
+    !isnothing(ifCond) && push!(operands, ifCond)
+    !isnothing(asyncOperand) && push!(operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(operands, waitDevnum)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1(asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1length(waitOperands), length(copyoutOperands), length(deleteOperands), length(detachOperands), ]))
-    (async != nothing) && push!(attributes, namedattribute("async", async))
-    (wait != nothing) && push!(attributes, namedattribute("wait", wait))
-    (finalize != nothing) && push!(attributes, namedattribute("finalize", finalize))
+    !isnothing(async) && push!(attributes, namedattribute("async", async))
+    !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
+    !isnothing(finalize) && push!(attributes, namedattribute("finalize", finalize))
     
     create_operation(
         "acc.exit_data", location;
@@ -125,8 +125,8 @@ function init(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (deviceNumOperand != nothing) && push!(operands, deviceNumOperand)
-    (ifCond != nothing) && push!(operands, ifCond)
+    !isnothing(deviceNumOperand) && push!(operands, deviceNumOperand)
+    !isnothing(ifCond) && push!(operands, ifCond)
     push!(attributes, operandsegmentsizes([length(deviceTypeOperands), (deviceNumOperand==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1]))
     
     create_operation(
@@ -163,17 +163,17 @@ function loop(gangNum=nothing::Union{Nothing, Value}; gangStatic=nothing::Union{
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (gangNum != nothing) && push!(operands, gangNum)
-    (gangStatic != nothing) && push!(operands, gangStatic)
-    (workerNum != nothing) && push!(operands, workerNum)
-    (vectorLength != nothing) && push!(operands, vectorLength)
+    !isnothing(gangNum) && push!(operands, gangNum)
+    !isnothing(gangStatic) && push!(operands, gangStatic)
+    !isnothing(workerNum) && push!(operands, workerNum)
+    !isnothing(vectorLength) && push!(operands, vectorLength)
     push!(attributes, operandsegmentsizes([(gangNum==nothing) ? 0 : 1(gangStatic==nothing) ? 0 : 1(workerNum==nothing) ? 0 : 1(vectorLength==nothing) ? 0 : 1length(tileOperands), length(privateOperands), length(reductionOperands), ]))
-    (collapse != nothing) && push!(attributes, namedattribute("collapse", collapse))
-    (seq != nothing) && push!(attributes, namedattribute("seq", seq))
-    (independent != nothing) && push!(attributes, namedattribute("independent", independent))
-    (auto_ != nothing) && push!(attributes, namedattribute("auto_", auto_))
-    (reductionOp != nothing) && push!(attributes, namedattribute("reductionOp", reductionOp))
-    (exec_mapping != nothing) && push!(attributes, namedattribute("exec_mapping", exec_mapping))
+    !isnothing(collapse) && push!(attributes, namedattribute("collapse", collapse))
+    !isnothing(seq) && push!(attributes, namedattribute("seq", seq))
+    !isnothing(independent) && push!(attributes, namedattribute("independent", independent))
+    !isnothing(auto_) && push!(attributes, namedattribute("auto_", auto_))
+    !isnothing(reductionOp) && push!(attributes, namedattribute("reductionOp", reductionOp))
+    !isnothing(exec_mapping) && push!(attributes, namedattribute("exec_mapping", exec_mapping))
     
     create_operation(
         "acc.loop", location;
@@ -204,18 +204,18 @@ function parallel(async=nothing::Union{Nothing, Value}; waitOperands::Vector{Val
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (async != nothing) && push!(operands, async)
-    (numGangs != nothing) && push!(operands, numGangs)
-    (numWorkers != nothing) && push!(operands, numWorkers)
-    (vectorLength != nothing) && push!(operands, vectorLength)
-    (ifCond != nothing) && push!(operands, ifCond)
-    (selfCond != nothing) && push!(operands, selfCond)
+    !isnothing(async) && push!(operands, async)
+    !isnothing(numGangs) && push!(operands, numGangs)
+    !isnothing(numWorkers) && push!(operands, numWorkers)
+    !isnothing(vectorLength) && push!(operands, vectorLength)
+    !isnothing(ifCond) && push!(operands, ifCond)
+    !isnothing(selfCond) && push!(operands, selfCond)
     push!(attributes, operandsegmentsizes([(async==nothing) ? 0 : 1length(waitOperands), (numGangs==nothing) ? 0 : 1(numWorkers==nothing) ? 0 : 1(vectorLength==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1(selfCond==nothing) ? 0 : 1length(reductionOperands), length(copyOperands), length(copyinOperands), length(copyinReadonlyOperands), length(copyoutOperands), length(copyoutZeroOperands), length(createOperands), length(createZeroOperands), length(noCreateOperands), length(presentOperands), length(devicePtrOperands), length(attachOperands), length(gangPrivateOperands), length(gangFirstPrivateOperands), ]))
-    (asyncAttr != nothing) && push!(attributes, namedattribute("asyncAttr", asyncAttr))
-    (waitAttr != nothing) && push!(attributes, namedattribute("waitAttr", waitAttr))
-    (selfAttr != nothing) && push!(attributes, namedattribute("selfAttr", selfAttr))
-    (reductionOp != nothing) && push!(attributes, namedattribute("reductionOp", reductionOp))
-    (defaultAttr != nothing) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
+    !isnothing(asyncAttr) && push!(attributes, namedattribute("asyncAttr", asyncAttr))
+    !isnothing(waitAttr) && push!(attributes, namedattribute("waitAttr", waitAttr))
+    !isnothing(selfAttr) && push!(attributes, namedattribute("selfAttr", selfAttr))
+    !isnothing(reductionOp) && push!(attributes, namedattribute("reductionOp", reductionOp))
+    !isnothing(defaultAttr) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
     
     create_operation(
         "acc.parallel", location;
@@ -244,8 +244,8 @@ function shutdown(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::U
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (deviceNumOperand != nothing) && push!(operands, deviceNumOperand)
-    (ifCond != nothing) && push!(operands, ifCond)
+    !isnothing(deviceNumOperand) && push!(operands, deviceNumOperand)
+    !isnothing(ifCond) && push!(operands, ifCond)
     push!(attributes, operandsegmentsizes([length(deviceTypeOperands), (deviceNumOperand==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1]))
     
     create_operation(
@@ -299,13 +299,13 @@ function update(ifCond=nothing::Union{Nothing, Value}; asyncOperand=nothing::Uni
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (ifCond != nothing) && push!(operands, ifCond)
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
+    !isnothing(ifCond) && push!(operands, ifCond)
+    !isnothing(asyncOperand) && push!(operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(operands, waitDevnum)
     push!(attributes, operandsegmentsizes([(ifCond==nothing) ? 0 : 1(asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1length(waitOperands), length(deviceTypeOperands), length(hostOperands), length(deviceOperands), ]))
-    (async != nothing) && push!(attributes, namedattribute("async", async))
-    (wait != nothing) && push!(attributes, namedattribute("wait", wait))
-    (ifPresent != nothing) && push!(attributes, namedattribute("ifPresent", ifPresent))
+    !isnothing(async) && push!(attributes, namedattribute("async", async))
+    !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
+    !isnothing(ifPresent) && push!(attributes, namedattribute("ifPresent", ifPresent))
     
     create_operation(
         "acc.update", location;
@@ -334,11 +334,11 @@ function wait(waitOperands::Vector{Value}, asyncOperand=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (asyncOperand != nothing) && push!(operands, asyncOperand)
-    (waitDevnum != nothing) && push!(operands, waitDevnum)
-    (ifCond != nothing) && push!(operands, ifCond)
+    !isnothing(asyncOperand) && push!(operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(operands, waitDevnum)
+    !isnothing(ifCond) && push!(operands, ifCond)
     push!(attributes, operandsegmentsizes([length(waitOperands), (asyncOperand==nothing) ? 0 : 1(waitDevnum==nothing) ? 0 : 1(ifCond==nothing) ? 0 : 1]))
-    (async != nothing) && push!(attributes, namedattribute("async", async))
+    !isnothing(async) && push!(attributes, namedattribute("async", async))
     
     create_operation(
         "acc.wait", location;

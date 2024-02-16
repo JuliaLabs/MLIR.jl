@@ -294,7 +294,7 @@ function foreach_thread(num_threads::Vector{Value}; results::Vector{MLIRType}, t
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (thread_dim_mapping != nothing) && push!(attributes, namedattribute("thread_dim_mapping", thread_dim_mapping))
+    !isnothing(thread_dim_mapping) && push!(attributes, namedattribute("thread_dim_mapping", thread_dim_mapping))
     
     create_operation(
         "scf.foreach_thread", location;

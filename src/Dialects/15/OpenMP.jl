@@ -44,8 +44,8 @@ function atomic_capture(; hint_val=nothing, memory_order_val=nothing, region::Re
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (hint_val != nothing) && push!(attributes, namedattribute("hint_val", hint_val))
-    (memory_order_val != nothing) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
+    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    !isnothing(memory_order_val) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
     
     create_operation(
         "omp.atomic.capture", location;
@@ -76,8 +76,8 @@ function atomic_read(x::Value, v::Value; hint_val=nothing, memory_order_val=noth
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (hint_val != nothing) && push!(attributes, namedattribute("hint_val", hint_val))
-    (memory_order_val != nothing) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
+    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    !isnothing(memory_order_val) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
     
     create_operation(
         "omp.atomic.read", location;
@@ -123,8 +123,8 @@ function atomic_update(x::Value; hint_val=nothing, memory_order_val=nothing, reg
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (hint_val != nothing) && push!(attributes, namedattribute("hint_val", hint_val))
-    (memory_order_val != nothing) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
+    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    !isnothing(memory_order_val) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
     
     create_operation(
         "omp.atomic.update", location;
@@ -157,8 +157,8 @@ function atomic_write(address::Value, value::Value; hint_val=nothing, memory_ord
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (hint_val != nothing) && push!(attributes, namedattribute("hint_val", hint_val))
-    (memory_order_val != nothing) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
+    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    !isnothing(memory_order_val) && push!(attributes, namedattribute("memory_order_val", memory_order_val))
     
     create_operation(
         "omp.atomic.write", location;
@@ -201,7 +201,7 @@ function cancel(if_expr=nothing::Union{Nothing, Value}; cancellation_construct_t
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("cancellation_construct_type_val", cancellation_construct_type_val), ]
-    (if_expr != nothing) && push!(operands, if_expr)
+    !isnothing(if_expr) && push!(operands, if_expr)
     
     create_operation(
         "omp.cancel", location;
@@ -246,7 +246,7 @@ function critical_declare(; sym_name, hint_val=nothing, location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
-    (hint_val != nothing) && push!(attributes, namedattribute("hint_val", hint_val))
+    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
     
     create_operation(
         "omp.critical.declare", location;
@@ -268,7 +268,7 @@ function critical(; name=nothing, region::Region, location=Location())
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (name != nothing) && push!(attributes, namedattribute("name", name))
+    !isnothing(name) && push!(attributes, namedattribute("name", name))
     
     create_operation(
         "omp.critical", location;
@@ -346,8 +346,8 @@ function ordered(depend_vec_vars::Vector{Value}; depend_type_val=nothing, num_lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (depend_type_val != nothing) && push!(attributes, namedattribute("depend_type_val", depend_type_val))
-    (num_loops_val != nothing) && push!(attributes, namedattribute("num_loops_val", num_loops_val))
+    !isnothing(depend_type_val) && push!(attributes, namedattribute("depend_type_val", depend_type_val))
+    !isnothing(num_loops_val) && push!(attributes, namedattribute("num_loops_val", num_loops_val))
     
     create_operation(
         "omp.ordered", location;
@@ -374,7 +374,7 @@ function ordered_region(; simd=nothing, region::Region, location=Location())
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (simd != nothing) && push!(attributes, namedattribute("simd", simd))
+    !isnothing(simd) && push!(attributes, namedattribute("simd", simd))
     
     create_operation(
         "omp.ordered_region", location;
@@ -422,11 +422,11 @@ function parallel(if_expr_var=nothing::Union{Nothing, Value}; num_threads_var=no
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr_var != nothing) && push!(operands, if_expr_var)
-    (num_threads_var != nothing) && push!(operands, num_threads_var)
+    !isnothing(if_expr_var) && push!(operands, if_expr_var)
+    !isnothing(num_threads_var) && push!(operands, num_threads_var)
     push!(attributes, operandsegmentsizes([(if_expr_var==nothing) ? 0 : 1(num_threads_var==nothing) ? 0 : 1length(allocate_vars), length(allocators_vars), length(reduction_vars), ]))
-    (reductions != nothing) && push!(attributes, namedattribute("reductions", reductions))
-    (proc_bind_val != nothing) && push!(attributes, namedattribute("proc_bind_val", proc_bind_val))
+    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
+    !isnothing(proc_bind_val) && push!(attributes, namedattribute("proc_bind_val", proc_bind_val))
     
     create_operation(
         "omp.parallel", location;
@@ -555,8 +555,8 @@ function sections(reduction_vars::Vector{Value}, allocate_vars::Vector{Value}, a
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(reduction_vars), length(allocate_vars), length(allocators_vars), ]))
-    (reductions != nothing) && push!(attributes, namedattribute("reductions", reductions))
-    (nowait != nothing) && push!(attributes, namedattribute("nowait", nowait))
+    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
+    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
     
     create_operation(
         "omp.sections", location;
@@ -596,9 +596,9 @@ function simdloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Ve
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
+    !isnothing(if_expr) && push!(operands, if_expr)
     push!(attributes, operandsegmentsizes([length(lowerBound), length(upperBound), length(step), (if_expr==nothing) ? 0 : 1]))
-    (inclusive != nothing) && push!(attributes, namedattribute("inclusive", inclusive))
+    !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
     
     create_operation(
         "omp.simdloop", location;
@@ -624,7 +624,7 @@ function single(allocate_vars::Vector{Value}, allocators_vars::Vector{Value}; no
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(allocate_vars), length(allocators_vars), ]))
-    (nowait != nothing) && push!(attributes, namedattribute("nowait", nowait))
+    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
     
     create_operation(
         "omp.single", location;
@@ -660,11 +660,11 @@ function target(if_expr=nothing::Union{Nothing, Value}; device=nothing::Union{No
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (device != nothing) && push!(operands, device)
-    (thread_limit != nothing) && push!(operands, thread_limit)
+    !isnothing(if_expr) && push!(operands, if_expr)
+    !isnothing(device) && push!(operands, device)
+    !isnothing(thread_limit) && push!(operands, thread_limit)
     push!(attributes, operandsegmentsizes([(if_expr==nothing) ? 0 : 1(device==nothing) ? 0 : 1(thread_limit==nothing) ? 0 : 1]))
-    (nowait != nothing) && push!(attributes, namedattribute("nowait", nowait))
+    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
     
     create_operation(
         "omp.target", location;
@@ -705,7 +705,7 @@ function taskgroup(task_reduction_vars::Vector{Value}, allocate_vars::Vector{Val
     successors = Block[]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(task_reduction_vars), length(allocate_vars), length(allocators_vars), ]))
-    (task_reductions != nothing) && push!(attributes, namedattribute("task_reductions", task_reductions))
+    !isnothing(task_reductions) && push!(attributes, namedattribute("task_reductions", task_reductions))
     
     create_operation(
         "omp.taskgroup", location;
@@ -819,18 +819,18 @@ function taskloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Ve
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (final_expr != nothing) && push!(operands, final_expr)
-    (priority != nothing) && push!(operands, priority)
-    (grain_size != nothing) && push!(operands, grain_size)
-    (num_tasks != nothing) && push!(operands, num_tasks)
+    !isnothing(if_expr) && push!(operands, if_expr)
+    !isnothing(final_expr) && push!(operands, final_expr)
+    !isnothing(priority) && push!(operands, priority)
+    !isnothing(grain_size) && push!(operands, grain_size)
+    !isnothing(num_tasks) && push!(operands, num_tasks)
     push!(attributes, operandsegmentsizes([length(lowerBound), length(upperBound), length(step), (if_expr==nothing) ? 0 : 1(final_expr==nothing) ? 0 : 1length(in_reduction_vars), length(reduction_vars), (priority==nothing) ? 0 : 1length(allocate_vars), length(allocators_vars), (grain_size==nothing) ? 0 : 1(num_tasks==nothing) ? 0 : 1]))
-    (inclusive != nothing) && push!(attributes, namedattribute("inclusive", inclusive))
-    (untied != nothing) && push!(attributes, namedattribute("untied", untied))
-    (mergeable != nothing) && push!(attributes, namedattribute("mergeable", mergeable))
-    (in_reductions != nothing) && push!(attributes, namedattribute("in_reductions", in_reductions))
-    (reductions != nothing) && push!(attributes, namedattribute("reductions", reductions))
-    (nogroup != nothing) && push!(attributes, namedattribute("nogroup", nogroup))
+    !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
+    !isnothing(untied) && push!(attributes, namedattribute("untied", untied))
+    !isnothing(mergeable) && push!(attributes, namedattribute("mergeable", mergeable))
+    !isnothing(in_reductions) && push!(attributes, namedattribute("in_reductions", in_reductions))
+    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
+    !isnothing(nogroup) && push!(attributes, namedattribute("nogroup", nogroup))
     
     create_operation(
         "omp.taskloop", location;
@@ -888,13 +888,13 @@ function task(if_expr=nothing::Union{Nothing, Value}; final_expr=nothing::Union{
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (if_expr != nothing) && push!(operands, if_expr)
-    (final_expr != nothing) && push!(operands, final_expr)
-    (priority != nothing) && push!(operands, priority)
+    !isnothing(if_expr) && push!(operands, if_expr)
+    !isnothing(final_expr) && push!(operands, final_expr)
+    !isnothing(priority) && push!(operands, priority)
     push!(attributes, operandsegmentsizes([(if_expr==nothing) ? 0 : 1(final_expr==nothing) ? 0 : 1length(in_reduction_vars), (priority==nothing) ? 0 : 1length(allocate_vars), length(allocators_vars), ]))
-    (untied != nothing) && push!(attributes, namedattribute("untied", untied))
-    (mergeable != nothing) && push!(attributes, namedattribute("mergeable", mergeable))
-    (in_reductions != nothing) && push!(attributes, namedattribute("in_reductions", in_reductions))
+    !isnothing(untied) && push!(attributes, namedattribute("untied", untied))
+    !isnothing(mergeable) && push!(attributes, namedattribute("mergeable", mergeable))
+    !isnothing(in_reductions) && push!(attributes, namedattribute("in_reductions", in_reductions))
     
     create_operation(
         "omp.task", location;
@@ -1069,16 +1069,16 @@ function wsloop(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vect
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (schedule_chunk_var != nothing) && push!(operands, schedule_chunk_var)
+    !isnothing(schedule_chunk_var) && push!(operands, schedule_chunk_var)
     push!(attributes, operandsegmentsizes([length(lowerBound), length(upperBound), length(step), length(linear_vars), length(linear_step_vars), length(reduction_vars), (schedule_chunk_var==nothing) ? 0 : 1]))
-    (reductions != nothing) && push!(attributes, namedattribute("reductions", reductions))
-    (schedule_val != nothing) && push!(attributes, namedattribute("schedule_val", schedule_val))
-    (schedule_modifier != nothing) && push!(attributes, namedattribute("schedule_modifier", schedule_modifier))
-    (simd_modifier != nothing) && push!(attributes, namedattribute("simd_modifier", simd_modifier))
-    (nowait != nothing) && push!(attributes, namedattribute("nowait", nowait))
-    (ordered_val != nothing) && push!(attributes, namedattribute("ordered_val", ordered_val))
-    (order_val != nothing) && push!(attributes, namedattribute("order_val", order_val))
-    (inclusive != nothing) && push!(attributes, namedattribute("inclusive", inclusive))
+    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
+    !isnothing(schedule_val) && push!(attributes, namedattribute("schedule_val", schedule_val))
+    !isnothing(schedule_modifier) && push!(attributes, namedattribute("schedule_modifier", schedule_modifier))
+    !isnothing(simd_modifier) && push!(attributes, namedattribute("simd_modifier", simd_modifier))
+    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
+    !isnothing(ordered_val) && push!(attributes, namedattribute("ordered_val", ordered_val))
+    !isnothing(order_val) && push!(attributes, namedattribute("order_val", order_val))
+    !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
     
     create_operation(
         "omp.wsloop", location;

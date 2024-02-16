@@ -293,7 +293,7 @@ function select(condition::Value, true_value::Value, false_value::Value; result=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "std.select", location;
@@ -370,7 +370,7 @@ function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vecto
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
     push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands), ]))
-    (case_values != nothing) && push!(attributes, namedattribute("case_values", case_values))
+    !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
     
     create_operation(
         "std.switch", location;

@@ -126,7 +126,7 @@ function avg_pool2d(input::Value; output::MLIRType, kernel, stride, pad, quantiz
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kernel", kernel), namedattribute("stride", stride), namedattribute("pad", pad), ]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.avg_pool2d", location;
@@ -354,7 +354,7 @@ function const_(; output=nothing::Union{Nothing, MLIRType}, value, location=Loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
-    (output != nothing) && push!(results, output)
+    !isnothing(output) && push!(results, output)
     
     create_operation(
         "tosa.const", location;
@@ -376,7 +376,7 @@ function conv2d(input::Value, weight::Value, bias::Value; output::MLIRType, pad,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.conv2d", location;
@@ -397,7 +397,7 @@ function conv3d(input::Value, weight::Value, bias::Value; output::MLIRType, pad,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.conv3d", location;
@@ -456,7 +456,7 @@ function depthwise_conv2d(input::Value, weight::Value, bias::Value; output::MLIR
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.depthwise_conv2d", location;
@@ -498,7 +498,7 @@ function equal(input1::Value, input2::Value; output=nothing::Union{Nothing, MLIR
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (output != nothing) && push!(results, output)
+    !isnothing(output) && push!(results, output)
     
     create_operation(
         "tosa.equal", location;
@@ -559,7 +559,7 @@ function fully_connected(input::Value, weight::Value, bias::Value; output::MLIRT
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.fully_connected", location;
@@ -745,7 +745,7 @@ function logical_not(input1::Value; output=nothing::Union{Nothing, MLIRType}, lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (output != nothing) && push!(results, output)
+    !isnothing(output) && push!(results, output)
     
     create_operation(
         "tosa.logical_not", location;
@@ -831,7 +831,7 @@ function matmul(a::Value, b::Value; c::MLIRType, quantization_info=nothing, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.matmul", location;
@@ -938,7 +938,7 @@ function negate(input1::Value; output::MLIRType, quantization_info=nothing, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.negate", location;
@@ -959,8 +959,8 @@ function pad(input1::Value, padding::Value, pad_const=nothing::Union{Nothing, Va
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (pad_const != nothing) && push!(operands, pad_const)
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(pad_const) && push!(operands, pad_const)
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.pad", location;
@@ -1478,7 +1478,7 @@ function transpose_conv2d(input::Value, filter::Value, bias::Value; output::MLIR
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("out_pad", out_pad), namedattribute("stride", stride), namedattribute("out_shape", out_shape), ]
-    (quantization_info != nothing) && push!(attributes, namedattribute("quantization_info", quantization_info))
+    !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     create_operation(
         "tosa.transpose_conv2d", location;

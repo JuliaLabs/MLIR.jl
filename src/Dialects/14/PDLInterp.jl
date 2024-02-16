@@ -28,7 +28,7 @@ function apply_constraint(args::Vector{Value}; name, constParams=nothing, trueDe
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[namedattribute("name", name), ]
-    (constParams != nothing) && push!(attributes, namedattribute("constParams", constParams))
+    !isnothing(constParams) && push!(attributes, namedattribute("constParams", constParams))
     
     create_operation(
         "pdl_interp.apply_constraint", location;
@@ -71,7 +71,7 @@ function apply_rewrite(args::Vector{Value}; results::Vector{MLIRType}, name, con
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("name", name), ]
-    (constParams != nothing) && push!(attributes, namedattribute("constParams", constParams))
+    !isnothing(constParams) && push!(attributes, namedattribute("constParams", constParams))
     
     create_operation(
         "pdl_interp.apply_rewrite", location;
@@ -190,7 +190,7 @@ function check_operand_count(operation::Value; count, compareAtLeast=nothing, tr
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[namedattribute("count", count), ]
-    (compareAtLeast != nothing) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+    !isnothing(compareAtLeast) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
     
     create_operation(
         "pdl_interp.check_operand_count", location;
@@ -253,7 +253,7 @@ function check_result_count(operation::Value; count, compareAtLeast=nothing, tru
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[namedattribute("count", count), ]
-    (compareAtLeast != nothing) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+    !isnothing(compareAtLeast) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
     
     create_operation(
         "pdl_interp.check_result_count", location;
@@ -717,7 +717,7 @@ function get_operands(operation::Value; value::MLIRType, index=nothing, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (index != nothing) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(attributes, namedattribute("index", index))
     
     create_operation(
         "pdl_interp.get_operands", location;
@@ -784,7 +784,7 @@ function get_results(operation::Value; value::MLIRType, index=nothing, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (index != nothing) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(attributes, namedattribute("index", index))
     
     create_operation(
         "pdl_interp.get_results", location;
@@ -936,8 +936,8 @@ function record_match(inputs::Vector{Value}, matchedOps::Vector{Value}; rewriter
     successors = Block[dest, ]
     attributes = NamedAttribute[namedattribute("rewriter", rewriter), namedattribute("benefit", benefit), ]
     push!(attributes, operandsegmentsizes([length(inputs), length(matchedOps), ]))
-    (rootKind != nothing) && push!(attributes, namedattribute("rootKind", rootKind))
-    (generatedOps != nothing) && push!(attributes, namedattribute("generatedOps", generatedOps))
+    !isnothing(rootKind) && push!(attributes, namedattribute("rootKind", rootKind))
+    !isnothing(generatedOps) && push!(attributes, namedattribute("generatedOps", generatedOps))
     
     create_operation(
         "pdl_interp.record_match", location;

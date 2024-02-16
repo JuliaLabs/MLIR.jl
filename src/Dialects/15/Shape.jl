@@ -21,7 +21,7 @@ function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.add", location;
@@ -88,7 +88,7 @@ function assuming_all(inputs::Vector{Value}; result=nothing::Union{Nothing, MLIR
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.assuming_all", location;
@@ -175,7 +175,7 @@ function broadcast(shapes::Vector{Value}; result::MLIRType, error=nothing, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (error != nothing) && push!(attributes, namedattribute("error", error))
+    !isnothing(error) && push!(attributes, namedattribute("error", error))
     
     create_operation(
         "shape.broadcast", location;
@@ -230,7 +230,7 @@ function const_shape(; result=nothing::Union{Nothing, MLIRType}, shape, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("shape", shape), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.const_shape", location;
@@ -255,7 +255,7 @@ function const_size(; result=nothing::Union{Nothing, MLIRType}, value, location=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.const_size", location;
@@ -286,7 +286,7 @@ function const_witness(; result=nothing::Union{Nothing, MLIRType}, passing, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("passing", passing), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.const_witness", location;
@@ -317,7 +317,7 @@ function cstr_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.cstr_broadcastable", location;
@@ -346,7 +346,7 @@ function cstr_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType}
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.cstr_eq", location;
@@ -381,7 +381,7 @@ function cstr_require(pred::Value; result=nothing::Union{Nothing, MLIRType}, msg
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("msg", msg), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.cstr_require", location;
@@ -436,7 +436,7 @@ function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.div", location;
@@ -459,7 +459,7 @@ function from_extent_tensor(input::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.from_extent_tensor", location;
@@ -488,7 +488,7 @@ function from_extents(extents::Vector{Value}; shape=nothing::Union{Nothing, MLIR
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (shape != nothing) && push!(results, shape)
+    !isnothing(shape) && push!(results, shape)
     
     create_operation(
         "shape.from_extents", location;
@@ -511,7 +511,7 @@ function func(; sym_name, function_type, sym_visibility=nothing, body::Region, l
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
         "shape.func", location;
@@ -567,7 +567,7 @@ function get_extent(shape::Value, dim::Value; extent=nothing::Union{Nothing, MLI
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (extent != nothing) && push!(results, extent)
+    !isnothing(extent) && push!(results, extent)
     
     create_operation(
         "shape.get_extent", location;
@@ -592,7 +592,7 @@ function index_to_size(arg::Value; result=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.index_to_size", location;
@@ -626,7 +626,7 @@ function is_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.is_broadcastable", location;
@@ -650,7 +650,7 @@ function max(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.max", location;
@@ -693,8 +693,8 @@ function meet(arg0::Value, arg1::Value; result=nothing::Union{Nothing, MLIRType}
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
-    (error != nothing) && push!(attributes, namedattribute("error", error))
+    !isnothing(result) && push!(results, result)
+    !isnothing(error) && push!(attributes, namedattribute("error", error))
     
     create_operation(
         "shape.meet", location;
@@ -718,7 +718,7 @@ function min(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.min", location;
@@ -744,7 +744,7 @@ function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.mul", location;
@@ -769,7 +769,7 @@ function num_elements(shape::Value; result=nothing::Union{Nothing, MLIRType}, lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.num_elements", location;
@@ -790,7 +790,7 @@ function rank(shape::Value; rank=nothing::Union{Nothing, MLIRType}, location=Loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (rank != nothing) && push!(results, rank)
+    !isnothing(rank) && push!(results, rank)
     
     create_operation(
         "shape.rank", location;
@@ -884,7 +884,7 @@ function shape_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.shape_eq", location;
@@ -906,7 +906,7 @@ function shape_of(arg::Value; result=nothing::Union{Nothing, MLIRType}, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.shape_of", location;
@@ -930,7 +930,7 @@ function size_to_index(arg::Value; result=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.size_to_index", location;
@@ -1076,7 +1076,7 @@ function with_shape(operand::Value, shape::Value; result=nothing::Union{Nothing,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "shape.with_shape", location;

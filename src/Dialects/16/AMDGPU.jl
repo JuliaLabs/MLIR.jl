@@ -70,13 +70,13 @@ function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, m, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("m", m), namedattribute("n", n), namedattribute("k", k), namedattribute("blocks", blocks), ]
-    (cbsz != nothing) && push!(attributes, namedattribute("cbsz", cbsz))
-    (abid != nothing) && push!(attributes, namedattribute("abid", abid))
-    (blgp != nothing) && push!(attributes, namedattribute("blgp", blgp))
-    (reducePrecision != nothing) && push!(attributes, namedattribute("reducePrecision", reducePrecision))
-    (negateA != nothing) && push!(attributes, namedattribute("negateA", negateA))
-    (negateB != nothing) && push!(attributes, namedattribute("negateB", negateB))
-    (negateC != nothing) && push!(attributes, namedattribute("negateC", negateC))
+    !isnothing(cbsz) && push!(attributes, namedattribute("cbsz", cbsz))
+    !isnothing(abid) && push!(attributes, namedattribute("abid", abid))
+    !isnothing(blgp) && push!(attributes, namedattribute("blgp", blgp))
+    !isnothing(reducePrecision) && push!(attributes, namedattribute("reducePrecision", reducePrecision))
+    !isnothing(negateA) && push!(attributes, namedattribute("negateA", negateA))
+    !isnothing(negateB) && push!(attributes, namedattribute("negateB", negateB))
+    !isnothing(negateC) && push!(attributes, namedattribute("negateC", negateC))
     
     create_operation(
         "amdgpu.mfma", location;
@@ -112,10 +112,10 @@ function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Val
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
-    (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
         "amdgpu.raw_buffer_atomic_fadd", location;
@@ -163,10 +163,10 @@ function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(attributes, operandsegmentsizes([1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
-    (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
         "amdgpu.raw_buffer_load", location;
@@ -202,10 +202,10 @@ function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, s
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sgprOffset != nothing) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
-    (boundsCheck != nothing) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    (indexOffset != nothing) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
     
     create_operation(
         "amdgpu.raw_buffer_store", location;

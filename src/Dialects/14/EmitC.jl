@@ -63,8 +63,8 @@ function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee, args=
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
-    (args != nothing) && push!(attributes, namedattribute("args", args))
-    (template_args != nothing) && push!(attributes, namedattribute("template_args", template_args))
+    !isnothing(args) && push!(attributes, namedattribute("args", args))
+    !isnothing(template_args) && push!(attributes, namedattribute("template_args", template_args))
     
     create_operation(
         "emitc.call", location;
@@ -138,7 +138,7 @@ function include(; include, is_standard_include=nothing, location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("include", include), ]
-    (is_standard_include != nothing) && push!(attributes, namedattribute("is_standard_include", is_standard_include))
+    !isnothing(is_standard_include) && push!(attributes, namedattribute("is_standard_include", is_standard_include))
     
     create_operation(
         "emitc.include", location;

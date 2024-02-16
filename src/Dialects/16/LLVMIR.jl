@@ -15,7 +15,7 @@ function ashr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.ashr", location;
@@ -62,7 +62,7 @@ function add(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.add", location;
@@ -149,7 +149,7 @@ function alias_scope_domain(; sym_name, description=nothing, location=Location()
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
-    (description != nothing) && push!(attributes, namedattribute("description", description))
+    !isnothing(description) && push!(attributes, namedattribute("description", description))
     
     create_operation(
         "llvm.alias_scope_domain", location;
@@ -197,7 +197,7 @@ function alias_scope(; sym_name, domain, description=nothing, location=Location(
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("domain", domain), ]
-    (description != nothing) && push!(attributes, namedattribute("description", description))
+    !isnothing(description) && push!(attributes, namedattribute("description", description))
     
     create_operation(
         "llvm.alias_scope", location;
@@ -217,8 +217,8 @@ function alloca(arraySize::Value; res::MLIRType, alignment=nothing, elem_type=no
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
-    (elem_type != nothing) && push!(attributes, namedattribute("elem_type", elem_type))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(elem_type) && push!(attributes, namedattribute("elem_type", elem_type))
     
     create_operation(
         "llvm.alloca", location;
@@ -238,7 +238,7 @@ function and(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.and", location;
@@ -358,10 +358,10 @@ function call(operand_0::Vector{Value}; result=nothing::Union{Nothing, MLIRType}
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
-    (callee != nothing) && push!(attributes, namedattribute("callee", callee))
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    (branch_weights != nothing) && push!(attributes, namedattribute("branch_weights", branch_weights))
+    !isnothing(result) && push!(results, result)
+    !isnothing(callee) && push!(attributes, namedattribute("callee", callee))
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(branch_weights) && push!(attributes, namedattribute("branch_weights", branch_weights))
     
     create_operation(
         "llvm.call", location;
@@ -382,7 +382,7 @@ function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOpe
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands), ]))
-    (branch_weights != nothing) && push!(attributes, namedattribute("branch_weights", branch_weights))
+    !isnothing(branch_weights) && push!(attributes, namedattribute("branch_weights", branch_weights))
     
     create_operation(
         "llvm.cond_br", location;
@@ -447,7 +447,7 @@ function extractelement(vector::Value, position::Value; res=nothing::Union{Nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.extractelement", location;
@@ -486,8 +486,8 @@ function fadd(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.fadd", location;
@@ -507,8 +507,8 @@ function fcmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, pre
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    (res != nothing) && push!(results, res)
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.fcmp", location;
@@ -528,8 +528,8 @@ function fdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.fdiv", location;
@@ -549,8 +549,8 @@ function fmul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.fmul", location;
@@ -570,8 +570,8 @@ function fneg(operand::Value; res=nothing::Union{Nothing, MLIRType}, fastmathFla
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.fneg", location;
@@ -667,8 +667,8 @@ function frem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.frem", location;
@@ -688,8 +688,8 @@ function fsub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, fas
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
-    (fastmathFlags != nothing) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
     
     create_operation(
         "llvm.fsub", location;
@@ -728,7 +728,7 @@ function freeze(val::Value; res=nothing::Union{Nothing, MLIRType}, location=Loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.freeze", location;
@@ -771,8 +771,8 @@ function getelementptr(base::Value, dynamicIndices::Vector{Value}; res::MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("rawConstantIndices", rawConstantIndices), ]
-    (elem_type != nothing) && push!(attributes, namedattribute("elem_type", elem_type))
-    (inbounds != nothing) && push!(attributes, namedattribute("inbounds", inbounds))
+    !isnothing(elem_type) && push!(attributes, namedattribute("elem_type", elem_type))
+    !isnothing(inbounds) && push!(attributes, namedattribute("inbounds", inbounds))
     
     create_operation(
         "llvm.getelementptr", location;
@@ -956,14 +956,14 @@ function mlir_global(; global_type, constant=nothing, sym_name, linkage, dso_loc
     owned_regions = Region[initializer, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global_type", global_type), namedattribute("sym_name", sym_name), namedattribute("linkage", linkage), ]
-    (constant != nothing) && push!(attributes, namedattribute("constant", constant))
-    (dso_local != nothing) && push!(attributes, namedattribute("dso_local", dso_local))
-    (thread_local_ != nothing) && push!(attributes, namedattribute("thread_local_", thread_local_))
-    (value != nothing) && push!(attributes, namedattribute("value", value))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
-    (addr_space != nothing) && push!(attributes, namedattribute("addr_space", addr_space))
-    (unnamed_addr != nothing) && push!(attributes, namedattribute("unnamed_addr", unnamed_addr))
-    (section != nothing) && push!(attributes, namedattribute("section", section))
+    !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
+    !isnothing(dso_local) && push!(attributes, namedattribute("dso_local", dso_local))
+    !isnothing(thread_local_) && push!(attributes, namedattribute("thread_local_", thread_local_))
+    !isnothing(value) && push!(attributes, namedattribute("value", value))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(addr_space) && push!(attributes, namedattribute("addr_space", addr_space))
+    !isnothing(unnamed_addr) && push!(attributes, namedattribute("unnamed_addr", unnamed_addr))
+    !isnothing(section) && push!(attributes, namedattribute("section", section))
     
     create_operation(
         "llvm.mlir.global", location;
@@ -983,7 +983,7 @@ function icmp(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, pre
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.icmp", location;
@@ -1009,11 +1009,11 @@ function inline_asm(operands::Vector{Value}; res=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("asm_string", asm_string), namedattribute("constraints", constraints), ]
-    (res != nothing) && push!(results, res)
-    (has_side_effects != nothing) && push!(attributes, namedattribute("has_side_effects", has_side_effects))
-    (is_align_stack != nothing) && push!(attributes, namedattribute("is_align_stack", is_align_stack))
-    (asm_dialect != nothing) && push!(attributes, namedattribute("asm_dialect", asm_dialect))
-    (operand_attrs != nothing) && push!(attributes, namedattribute("operand_attrs", operand_attrs))
+    !isnothing(res) && push!(results, res)
+    !isnothing(has_side_effects) && push!(attributes, namedattribute("has_side_effects", has_side_effects))
+    !isnothing(is_align_stack) && push!(attributes, namedattribute("is_align_stack", is_align_stack))
+    !isnothing(asm_dialect) && push!(attributes, namedattribute("asm_dialect", asm_dialect))
+    !isnothing(operand_attrs) && push!(attributes, namedattribute("operand_attrs", operand_attrs))
     
     create_operation(
         "llvm.inline_asm", location;
@@ -1033,7 +1033,7 @@ function insertelement(vector::Value, value::Value, position::Value; res=nothing
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.insertelement", location;
@@ -1053,7 +1053,7 @@ function insertvalue(container::Value, value::Value; res=nothing::Union{Nothing,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.insertvalue", location;
@@ -1093,8 +1093,8 @@ function invoke(callee_operands::Vector{Value}, normalDestOperands::Vector{Value
     successors = Block[normalDest, unwindDest, ]
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(callee_operands), length(normalDestOperands), length(unwindDestOperands), ]))
-    (callee != nothing) && push!(attributes, namedattribute("callee", callee))
-    (branch_weights != nothing) && push!(attributes, namedattribute("branch_weights", branch_weights))
+    !isnothing(callee) && push!(attributes, namedattribute("callee", callee))
+    !isnothing(branch_weights) && push!(attributes, namedattribute("branch_weights", branch_weights))
     
     create_operation(
         "llvm.invoke", location;
@@ -1139,16 +1139,16 @@ function func(; sym_name, function_type, linkage=nothing, dso_local=nothing, CCo
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    (linkage != nothing) && push!(attributes, namedattribute("linkage", linkage))
-    (dso_local != nothing) && push!(attributes, namedattribute("dso_local", dso_local))
-    (CConv != nothing) && push!(attributes, namedattribute("CConv", CConv))
-    (personality != nothing) && push!(attributes, namedattribute("personality", personality))
-    (garbageCollector != nothing) && push!(attributes, namedattribute("garbageCollector", garbageCollector))
-    (passthrough != nothing) && push!(attributes, namedattribute("passthrough", passthrough))
-    (arg_attrs != nothing) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    (res_attrs != nothing) && push!(attributes, namedattribute("res_attrs", res_attrs))
-    (function_entry_count != nothing) && push!(attributes, namedattribute("function_entry_count", function_entry_count))
-    (memory != nothing) && push!(attributes, namedattribute("memory", memory))
+    !isnothing(linkage) && push!(attributes, namedattribute("linkage", linkage))
+    !isnothing(dso_local) && push!(attributes, namedattribute("dso_local", dso_local))
+    !isnothing(CConv) && push!(attributes, namedattribute("CConv", CConv))
+    !isnothing(personality) && push!(attributes, namedattribute("personality", personality))
+    !isnothing(garbageCollector) && push!(attributes, namedattribute("garbageCollector", garbageCollector))
+    !isnothing(passthrough) && push!(attributes, namedattribute("passthrough", passthrough))
+    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
+    !isnothing(function_entry_count) && push!(attributes, namedattribute("function_entry_count", function_entry_count))
+    !isnothing(memory) && push!(attributes, namedattribute("memory", memory))
     
     create_operation(
         "llvm.func", location;
@@ -1168,7 +1168,7 @@ function lshr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.lshr", location;
@@ -1188,7 +1188,7 @@ function landingpad(operand_0::Vector{Value}; res::MLIRType, cleanup=nothing, lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (cleanup != nothing) && push!(attributes, namedattribute("cleanup", cleanup))
+    !isnothing(cleanup) && push!(attributes, namedattribute("cleanup", cleanup))
     
     create_operation(
         "llvm.landingpad", location;
@@ -1208,12 +1208,12 @@ function load(addr::Value; res::MLIRType, access_groups=nothing, alias_scopes=no
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (access_groups != nothing) && push!(attributes, namedattribute("access_groups", access_groups))
-    (alias_scopes != nothing) && push!(attributes, namedattribute("alias_scopes", alias_scopes))
-    (noalias_scopes != nothing) && push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
-    (volatile_ != nothing) && push!(attributes, namedattribute("volatile_", volatile_))
-    (nontemporal != nothing) && push!(attributes, namedattribute("nontemporal", nontemporal))
+    !isnothing(access_groups) && push!(attributes, namedattribute("access_groups", access_groups))
+    !isnothing(alias_scopes) && push!(attributes, namedattribute("alias_scopes", alias_scopes))
+    !isnothing(noalias_scopes) && push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(volatile_) && push!(attributes, namedattribute("volatile_", volatile_))
+    !isnothing(nontemporal) && push!(attributes, namedattribute("nontemporal", nontemporal))
     
     create_operation(
         "llvm.load", location;
@@ -1259,7 +1259,7 @@ function mul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.mul", location;
@@ -1312,7 +1312,7 @@ function or(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, locat
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.or", location;
@@ -1370,7 +1370,7 @@ function return_(arg=nothing::Union{Nothing, Value}; location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (arg != nothing) && push!(operands, arg)
+    !isnothing(arg) && push!(operands, arg)
     
     create_operation(
         "llvm.return", location;
@@ -1390,7 +1390,7 @@ function sdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.sdiv", location;
@@ -1448,7 +1448,7 @@ function srem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.srem", location;
@@ -1468,7 +1468,7 @@ function select(condition::Value, trueValue::Value, falseValue::Value; res=nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.select", location;
@@ -1488,7 +1488,7 @@ function shl(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.shl", location;
@@ -1527,12 +1527,12 @@ function store(value::Value, addr::Value; access_groups=nothing, alias_scopes=no
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (access_groups != nothing) && push!(attributes, namedattribute("access_groups", access_groups))
-    (alias_scopes != nothing) && push!(attributes, namedattribute("alias_scopes", alias_scopes))
-    (noalias_scopes != nothing) && push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
-    (alignment != nothing) && push!(attributes, namedattribute("alignment", alignment))
-    (volatile_ != nothing) && push!(attributes, namedattribute("volatile_", volatile_))
-    (nontemporal != nothing) && push!(attributes, namedattribute("nontemporal", nontemporal))
+    !isnothing(access_groups) && push!(attributes, namedattribute("access_groups", access_groups))
+    !isnothing(alias_scopes) && push!(attributes, namedattribute("alias_scopes", alias_scopes))
+    !isnothing(noalias_scopes) && push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
+    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(volatile_) && push!(attributes, namedattribute("volatile_", volatile_))
+    !isnothing(nontemporal) && push!(attributes, namedattribute("nontemporal", nontemporal))
     
     create_operation(
         "llvm.store", location;
@@ -1552,7 +1552,7 @@ function sub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.sub", location;
@@ -1573,8 +1573,8 @@ function switch(value::Value, defaultOperands::Vector{Value}, caseOperands::Vect
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
     push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands), ]))
-    (case_values != nothing) && push!(attributes, namedattribute("case_values", case_values))
-    (branch_weights != nothing) && push!(attributes, namedattribute("branch_weights", branch_weights))
+    !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
+    !isnothing(branch_weights) && push!(attributes, namedattribute("branch_weights", branch_weights))
     
     create_operation(
         "llvm.switch", location;
@@ -1666,7 +1666,7 @@ function tbaa_tag(; sym_name, base_type, access_type, offset, constant=nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("base_type", base_type), namedattribute("access_type", access_type), namedattribute("offset", offset), ]
-    (constant != nothing) && push!(attributes, namedattribute("constant", constant))
+    !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
     
     create_operation(
         "llvm.tbaa_tag", location;
@@ -1720,7 +1720,7 @@ function tbaa_type_desc(; sym_name, identity=nothing, members, offsets, location
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("members", members), namedattribute("offsets", offsets), ]
-    (identity != nothing) && push!(attributes, namedattribute("identity", identity))
+    !isnothing(identity) && push!(attributes, namedattribute("identity", identity))
     
     create_operation(
         "llvm.tbaa_type_desc", location;
@@ -1759,7 +1759,7 @@ function udiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.udiv", location;
@@ -1798,7 +1798,7 @@ function urem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loc
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.urem", location;
@@ -1867,7 +1867,7 @@ function xor(lhs::Value, rhs::Value; res=nothing::Union{Nothing, MLIRType}, loca
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "llvm.xor", location;

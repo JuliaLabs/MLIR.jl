@@ -25,7 +25,7 @@ function vscale(; res=nothing::Union{Nothing, MLIRType}, location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "vector.vscale", location;
@@ -335,7 +335,7 @@ function contract(lhs::Value, rhs::Value, acc::Value, masks::Vector{Value}; resu
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("indexing_maps", indexing_maps), namedattribute("iterator_types", iterator_types), ]
-    (kind != nothing) && push!(attributes, namedattribute("kind", kind))
+    !isnothing(kind) && push!(attributes, namedattribute("kind", kind))
     
     create_operation(
         "vector.contract", location;
@@ -464,7 +464,7 @@ function extractelement(vector::Value, position=nothing::Union{Nothing, Value}; 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (position != nothing) && push!(operands, position)
+    !isnothing(position) && push!(operands, position)
     
     create_operation(
         "vector.extractelement", location;
@@ -552,7 +552,7 @@ function extract(vector::Value; result_0=nothing::Union{Nothing, MLIRType}, posi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
-    (result_0 != nothing) && push!(results, result_0)
+    !isnothing(result_0) && push!(results, result_0)
     
     create_operation(
         "vector.extract", location;
@@ -626,7 +626,7 @@ function fma(lhs::Value, rhs::Value, acc::Value; result=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "vector.fma", location;
@@ -749,8 +749,8 @@ function insertelement(source::Value, dest::Value, position=nothing::Union{Nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (position != nothing) && push!(operands, position)
-    (result != nothing) && push!(results, result)
+    !isnothing(position) && push!(operands, position)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "vector.insertelement", location;
@@ -812,7 +812,7 @@ function insert_map(vector::Value, dest::Value, ids::Vector{Value}; result=nothi
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "vector.insert_map", location;
@@ -842,7 +842,7 @@ function insert(source::Value, dest::Value; res=nothing::Union{Nothing, MLIRType
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "vector.insert", location;
@@ -880,7 +880,7 @@ function insert_strided_slice(source::Value, dest::Value; res=nothing::Union{Not
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("offsets", offsets), namedattribute("strides", strides), ]
-    (res != nothing) && push!(results, res)
+    !isnothing(res) && push!(results, res)
     
     create_operation(
         "vector.insert_strided_slice", location;
@@ -1112,7 +1112,7 @@ function multi_reduction(source::Value, acc::Value; dest=nothing::Union{Nothing,
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kind", kind), namedattribute("reduction_dims", reduction_dims), ]
-    (dest != nothing) && push!(results, dest)
+    !isnothing(dest) && push!(results, dest)
     
     create_operation(
         "vector.multi_reduction", location;
@@ -1178,7 +1178,7 @@ function outerproduct(lhs::Value, rhs::Value, acc::Vector{Value}; result_0::MLIR
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (kind != nothing) && push!(attributes, namedattribute("kind", kind))
+    !isnothing(kind) && push!(attributes, namedattribute("kind", kind))
     
     create_operation(
         "vector.outerproduct", location;
@@ -1255,7 +1255,7 @@ function reduction(vector::Value, acc=nothing::Union{Nothing, Value}; dest::MLIR
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kind", kind), ]
-    (acc != nothing) && push!(operands, acc)
+    !isnothing(acc) && push!(operands, acc)
     
     create_operation(
         "vector.reduction", location;
@@ -1388,8 +1388,8 @@ function scan(source::Value, initial_value::Value; dest=nothing::Union{Nothing, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kind", kind), namedattribute("reduction_dim", reduction_dim), namedattribute("inclusive", inclusive), ]
-    (dest != nothing) && push!(results, dest)
-    (accumulated_value != nothing) && push!(results, accumulated_value)
+    !isnothing(dest) && push!(results, dest)
+    !isnothing(accumulated_value) && push!(results, accumulated_value)
     
     create_operation(
         "vector.scan", location;
@@ -1534,7 +1534,7 @@ function shuffle(v1::Value, v2::Value; vector=nothing::Union{Nothing, MLIRType},
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mask", mask), ]
-    (vector != nothing) && push!(results, vector)
+    !isnothing(vector) && push!(results, vector)
     
     create_operation(
         "vector.shuffle", location;
@@ -1805,9 +1805,9 @@ function transfer_read(source::Value, indices::Vector{Value}, padding::Value, ma
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("permutation_map", permutation_map), ]
-    (mask != nothing) && push!(operands, mask)
+    !isnothing(mask) && push!(operands, mask)
     push!(attributes, operandsegmentsizes([1, length(indices), 1, (mask==nothing) ? 0 : 1]))
-    (in_bounds != nothing) && push!(attributes, namedattribute("in_bounds", in_bounds))
+    !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
     
     create_operation(
         "vector.transfer_read", location;
@@ -1903,10 +1903,10 @@ function transfer_write(vector::Value, source::Value, indices::Vector{Value}, ma
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("permutation_map", permutation_map), ]
-    (mask != nothing) && push!(operands, mask)
+    !isnothing(mask) && push!(operands, mask)
     push!(attributes, operandsegmentsizes([1, 1, length(indices), (mask==nothing) ? 0 : 1]))
-    (result != nothing) && push!(results, result)
-    (in_bounds != nothing) && push!(attributes, namedattribute("in_bounds", in_bounds))
+    !isnothing(result) && push!(results, result)
+    !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
     
     create_operation(
         "vector.transfer_write", location;

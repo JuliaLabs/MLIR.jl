@@ -50,7 +50,7 @@ function func(; sym_name, type, sym_visibility=nothing, body::Region, location=L
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
         "builtin.func", location;
@@ -85,8 +85,8 @@ function module_(; sym_name=nothing, sym_visibility=nothing, body::Region, locat
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
-    (sym_name != nothing) && push!(attributes, namedattribute("sym_name", sym_name))
-    (sym_visibility != nothing) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     
     create_operation(
         "builtin.module", location;

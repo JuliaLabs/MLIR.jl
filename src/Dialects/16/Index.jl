@@ -23,7 +23,7 @@ function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.add", location;
@@ -52,7 +52,7 @@ function and(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.and", location;
@@ -83,7 +83,7 @@ function bool_constant(; result=nothing::Union{Nothing, MLIRType}, value, locati
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.bool.constant", location;
@@ -181,7 +181,7 @@ function ceildivs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.ceildivs", location;
@@ -213,7 +213,7 @@ function ceildivu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTyp
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.ceildivu", location;
@@ -262,7 +262,7 @@ function cmp(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, p
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pred", pred), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.cmp", location;
@@ -290,7 +290,7 @@ function constant(; result=nothing::Union{Nothing, MLIRType}, value, location=Lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value), ]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.constant", location;
@@ -322,7 +322,7 @@ function divs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.divs", location;
@@ -354,7 +354,7 @@ function divu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.divu", location;
@@ -386,7 +386,7 @@ function floordivs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRTy
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.floordivs", location;
@@ -415,7 +415,7 @@ function maxs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.maxs", location;
@@ -445,7 +445,7 @@ function maxu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.maxu", location;
@@ -474,7 +474,7 @@ function mins(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.mins", location;
@@ -504,7 +504,7 @@ function minu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.minu", location;
@@ -532,7 +532,7 @@ function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.mul", location;
@@ -561,7 +561,7 @@ function or(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, lo
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.or", location;
@@ -590,7 +590,7 @@ function rems(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.rems", location;
@@ -620,7 +620,7 @@ function remu(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.remu", location;
@@ -651,7 +651,7 @@ function shl(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.shl", location;
@@ -682,7 +682,7 @@ function shrs(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.shrs", location;
@@ -713,7 +713,7 @@ function shru(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, 
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.shru", location;
@@ -742,7 +742,7 @@ function sizeof(; result=nothing::Union{Nothing, MLIRType}, location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.sizeof", location;
@@ -771,7 +771,7 @@ function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.sub", location;
@@ -800,7 +800,7 @@ function xor(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, l
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    (result != nothing) && push!(results, result)
+    !isnothing(result) && push!(results, result)
     
     create_operation(
         "index.xor", location;
