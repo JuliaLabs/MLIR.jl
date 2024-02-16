@@ -103,7 +103,7 @@ function constant(; result_0::MLIRType, value, location=Location())
 end
 
 """
-`func`
+`func_`
 
 Operations within the function cannot implicitly capture values defined
 outside of the function, i.e. Functions are `IsolatedFromAbove`. All
@@ -141,7 +141,7 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
 func.func @example_fn_attr() attributes {dialectName.attrName = false}
 ```
 """
-function func(; sym_name, function_type, sym_visibility=nothing, body::Region, location=Location())
+function func_(; sym_name, function_type, sym_visibility=nothing, body::Region, location=Location())
     results = MLIRType[]
     operands = Value[]
     owned_regions = Region[body, ]
