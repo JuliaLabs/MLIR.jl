@@ -1,12 +1,17 @@
 using LLVM
 using MLIR.IR
 using MLIR.API
-using MLIR.Dialects: arith, linalg, func, operandsegmentsizes
+using MLIR.Dialects: arith, linalg, func, vector, llvm, operandsegmentsizes
+using MLIR_jll
+using Libdl
 
-n = 2
+n = 1
 a = ones(Float64, n, n)
 b = ones(Float64, n, n)
 c = zeros(Float64, n, n)
+
+# required for vector.print -> imports "printF64", "printNewline" symbols
+dlopen(joinpath(MLIR_jll.artifact_dir, "lib", "libmlir_c_runner_utils.$(dlext)"))
 
 fptr = IR.context!(IR.Context()) do
     IR.enable_multithreading!(false)
@@ -36,11 +41,20 @@ fptr = IR.context!(IR.Context()) do
     arg0 = IR.push_argument!(linalg_block, scalartype, IR.Location())
     arg1 = IR.push_argument!(linalg_block, scalartype, IR.Location())
     arg2 = IR.push_argument!(linalg_block, scalartype, IR.Location())
+
+    push!(linalg_block, vector.print(arg0))
+    push!(linalg_block, vector.print(arg1))
+    push!(linalg_block, vector.print(arg2))
+
     op = arith.mulf(arg0, arg1; result=scalartype)
     push!(linalg_block, op)
 
+    push!(linalg_block, vector.print(IR.get_result(op)))
+
     op = arith.addf(IR.get_result(op), arg2)
     push!(linalg_block, op)
+
+    push!(linalg_block, vector.print(IR.get_result(op)))
 
     op = linalg.yield([IR.get_result(op)])
     push!(linalg_block, op)
@@ -79,6 +93,7 @@ fptr = IR.context!(IR.Context()) do
     API.mlirRegisterAllPasses()
     API.mlirRegisterAllLLVMTranslations(IR.context())
     IR.add_pipeline!(opm, "func.func(convert-linalg-to-loops)")
+    IR.add_pipeline!(opm, "convert-vector-to-llvm") # required for vector.print
     IR.add_pipeline!(opm, "func.func(convert-scf-to-cf)")
     IR.add_pipeline!(opm, "convert-linalg-to-llvm")
     IR.add_pipeline!(opm, "convert-memref-to-llvm")
@@ -98,8 +113,10 @@ end
 
 matmul! = fptr
 
-resptr = ccall(matmul!, Ptr{Float64}, (Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), pointer(a), pointer(b), pointer(c))
+@show pointer(a) pointer(b) pointer(c)
 
-@show a b c
-@show pointer(a) pointer(b) pointer(c) resptr
-@show unsafe_wrap(Array, resptr, (2, 2); own=true)
+@info "before" a b c
+
+ccall(matmul!, Cvoid, (Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), pointer(a), pointer(b), pointer(c))
+
+@info "after" a b c
