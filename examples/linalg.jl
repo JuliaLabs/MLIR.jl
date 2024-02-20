@@ -1,24 +1,37 @@
 using LLVM
 using MLIR.IR
 using MLIR.API
-using MLIR.Dialects: arith, linalg, func, vector, llvm, operandsegmentsizes
+using MLIR.Dialects: arith, linalg, emitc, func, vector, memref, llvm, operandsegmentsizes, namedattribute
 using MLIR_jll
 using Libdl
 
-n = 1
+n = 2
 a = ones(Float64, n, n)
 b = ones(Float64, n, n)
 c = zeros(Float64, n, n)
 
+function cfunc(; sym_name, function_type, sym_visibility=nothing, body::IR.Region, location=IR.Location())
+    results = MLIRType[]
+    operands = IR.Value[]
+    owned_regions = IR.Region[body,]
+    successors = IR.Block[]
+    attributes = IR.NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), namedattribute("llvm.emit_c_interface", API.mlirUnitAttrGet(IR.context()))]
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+
+    IR.create_operation(
+        "func.func", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
+    )
+end
+
 # required for vector.print -> imports "printF64", "printNewline" symbols
-dlopen(joinpath(MLIR_jll.artifact_dir, "lib", "libmlir_c_runner_utils.$(dlext)"))
+# dlopen(joinpath(MLIR_jll.artifact_dir, "lib", "libmlir_c_runner_utils.$(dlext)"))
 
 fptr = IR.context!(IR.Context()) do
     IR.enable_multithreading!(false)
 
-    # for dialect in ["func", "linalg"]
-    #     IR.get_or_load_dialect!(dialect)
-    # end
     registry = API.mlirDialectRegistryCreate()
     API.mlirRegisterAllDialects(registry)
     API.mlirContextAppendDialectRegistry(IR.context(), registry)
@@ -42,19 +55,15 @@ fptr = IR.context!(IR.Context()) do
     arg1 = IR.push_argument!(linalg_block, scalartype, IR.Location())
     arg2 = IR.push_argument!(linalg_block, scalartype, IR.Location())
 
-    push!(linalg_block, vector.print(arg0))
-    push!(linalg_block, vector.print(arg1))
-    push!(linalg_block, vector.print(arg2))
+    # push!(linalg_block, vector.print(arg0))
+    # push!(linalg_block, vector.print(arg1))
+    # push!(linalg_block, vector.print(arg2))
 
     op = arith.mulf(arg0, arg1; result=scalartype)
     push!(linalg_block, op)
 
-    push!(linalg_block, vector.print(IR.get_result(op)))
-
     op = arith.addf(IR.get_result(op), arg2)
     push!(linalg_block, op)
-
-    push!(linalg_block, vector.print(IR.get_result(op)))
 
     op = linalg.yield([IR.get_result(op)])
     push!(linalg_block, op)
@@ -67,7 +76,8 @@ fptr = IR.context!(IR.Context()) do
     b_ir = IR.push_argument!(block, mattype, IR.Location())
     c_ir = IR.push_argument!(block, mattype, IR.Location())
 
-    op = linalg.matmul([a_ir, b_ir], [c_ir]; result_tensors=MLIRType[mattype], region=linalg_region)
+    # call matmul
+    op = linalg.matmul([a_ir, b_ir], [c_ir]; result_tensors=MLIRType[], region=linalg_region)
     push!(block, op)
 
     push!(block, func.return_(IR.Value[]))
@@ -75,8 +85,9 @@ fptr = IR.context!(IR.Context()) do
     region = IR.Region()
     push!(region, block)
 
-    ftype = MLIRType(API.mlirFunctionTypeGet(IR.context(), 3, [mattype, mattype, mattype], 0, IR.Value[]))
-    f = func.func_(;
+    # create "matmul!" function
+    ftype = MLIRType(API.mlirFunctionTypeGet(IR.context(), 3, [mattype, mattype, mattype], 0, IR.MLIRType[]))
+    f = cfunc(;
         sym_name=IR.Attribute("matmul!"),
         function_type=IR.Attribute(ftype),
         body=region,
@@ -92,8 +103,9 @@ fptr = IR.context!(IR.Context()) do
 
     API.mlirRegisterAllPasses()
     API.mlirRegisterAllLLVMTranslations(IR.context())
+    # IR.add_pipeline!(opm, "one-shot-bufferize") # if using `tensor` types
     IR.add_pipeline!(opm, "func.func(convert-linalg-to-loops)")
-    IR.add_pipeline!(opm, "convert-vector-to-llvm") # required for vector.print
+    # IR.add_pipeline!(opm, "convert-vector-to-llvm") # required for vector.print
     IR.add_pipeline!(opm, "func.func(convert-scf-to-cf)")
     IR.add_pipeline!(opm, "convert-linalg-to-llvm")
     IR.add_pipeline!(opm, "convert-memref-to-llvm")
@@ -108,7 +120,8 @@ fptr = IR.context!(IR.Context()) do
     else
         API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
     end
-    API.mlirExecutionEngineLookup(jit, "matmul!")
+    # API.mlirExecutionEngineLookup(jit, "matmul!")
+    API.mlirExecutionEngineLookup(jit, "_mlir_ciface_matmul!")
 end
 
 matmul! = fptr
@@ -117,6 +130,24 @@ matmul! = fptr
 
 @info "before" a b c
 
-ccall(matmul!, Cvoid, (Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), pointer(a), pointer(b), pointer(c))
+struct MemRefDescritor{T,N}
+    allocated::Ptr{T}
+    aligned::Ptr{T}
+    offset::Int
+    sizes::NTuple{N,Int}
+    strides::NTuple{N,Int}
+end
+
+function MemRefDescritor(arr::Array{T,N}) where {T,N}
+    MemRefDescritor(
+        pointer(arr),
+        pointer(arr),
+        0,
+        size(arr),
+        strides(arr),
+    )
+end
+
+ccall(matmul!, Cvoid, (MemRefDescritor{Float64,2}, MemRefDescritor{Float64,2}, MemRefDescritor{Float64,2}), MemRefDescritor(a), MemRefDescritor(b), MemRefDescritor(c))
 
 @info "after" a b c
