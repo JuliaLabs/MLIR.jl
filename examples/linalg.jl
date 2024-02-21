@@ -6,8 +6,8 @@ using MLIR_jll
 using Libdl
 
 n = 2
-a = ones(Float64, n, n)
-b = ones(Float64, n, n)
+a = rand(Float64, n, n)
+b = rand(Float64, n, n)
 c = zeros(Float64, n, n)
 
 function cfunc(; sym_name, function_type, sym_visibility=nothing, body::IR.Region, location=IR.Location())
@@ -47,8 +47,11 @@ fptr = IR.context!(IR.Context()) do
 
     # Create a function    
     scalartype = MLIRType(Float64)
+
     # mattype = MLIRType(API.mlirRankedTensorTypeGet(2, [n, n], scalartype, API.mlirAttributeGetNull()))
-    mattype = MLIRType(API.mlirMemRefTypeContiguousGet(scalartype, 2, [n, n], API.mlirAttributeGetNull()))
+    # mattype = MLIRType(API.mlirMemRefTypeContiguousGet(scalartype, 2, [n, n], API.mlirAttributeGetNull()))
+    layout_map_col_major = API.mlirAffineMapAttrGet(API.mlirAffineMapPermutationGet(IR.context(), 2, pointer([1, 0])))
+    mattype = MLIRType(API.mlirMemRefTypeGet(scalartype, 2, [n, n], layout_map_col_major, API.mlirAttributeGetNull()))
 
     linalg_block = IR.Block()
     arg0 = IR.push_argument!(linalg_block, scalartype, IR.Location())
@@ -126,8 +129,6 @@ end
 
 matmul! = fptr
 
-@show pointer(a) pointer(b) pointer(c)
-
 @info "before" a b c
 
 struct MemRefDescritor{T,N}
@@ -151,3 +152,5 @@ end
 ccall(matmul!, Cvoid, (MemRefDescritor{Float64,2}, MemRefDescritor{Float64,2}, MemRefDescritor{Float64,2}), MemRefDescritor(a), MemRefDescritor(b), MemRefDescritor(c))
 
 @info "after" a b c
+
+@info "" a * b (a' * b')'
