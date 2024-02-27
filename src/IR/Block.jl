@@ -84,3 +84,33 @@ function Base.show(io::IO, block::Block)
     ref = Ref(io)
     API.mlirBlockPrint(block, c_print_callback, ref)
 end
+
+"""
+    BlockIterator(region::Region)
+
+Iterates over all blocks in the given region.
+"""
+struct BlockIterator
+    region::Region
+end
+
+function Base.iterate(it::BlockIterator)
+    reg = it.region
+    raw_block = API.mlirRegionGetFirstBlock(reg)
+    if mlirIsNull(raw_block)
+        nothing
+    else
+        b = Block(raw_block, false)
+        (b, b)
+    end
+end
+
+function Base.iterate(it::BlockIterator, block)
+    raw_block = API.mlirBlockGetNextInRegion(block)
+    if mlirIsNull(raw_block)
+        nothing
+    else
+        b = Block(raw_block, false)
+        (b, b)
+    end
+end
