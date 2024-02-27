@@ -9,6 +9,11 @@ struct Context
     end
 end
 
+"""
+    Context()
+
+Creates an MLIR context and transfers its ownership to the caller.
+"""
 function Context()
     context = API.mlirContextCreate()
     context = Context(context)

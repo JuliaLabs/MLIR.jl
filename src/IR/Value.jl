@@ -8,18 +8,45 @@ struct Value
 end
 
 Base.convert(::Core.Type{API.MlirValue}, value::Value) = value.value
-Base.size(value::Value) = Base.size(get_type(value))
-Base.ndims(value::Value) = Base.ndims(get_type(value))
+Base.size(value::Value) = Base.size(Type(value))
+Base.ndims(value::Value) = Base.ndims(Type(value))
 
+"""
+    ==(value1, value2)
+
+Returns 1 if two values are equal, 0 otherwise.
+"""
 Base.:(==)(a::Value, b::Value) = API.mlirValueEqual(a, b)
+
+"""
+    is_block_arg(value)
+
+Returns 1 if the value is a block argument, 0 otherwise.
+"""
 is_block_arg(value::Value) = API.mlirValueIsABlockArgument(value)
+
+"""
+    is_op_res(value)
+
+Returns 1 if the value is an operation result, 0 otherwise.
+"""
 is_op_res(value::Value) = API.mlirValueIsAOpResult(value)
 
+"""
+    block_owner(value)
+
+Returns the block in which this value is defined as an argument. Asserts if the value is not a block argument.
+"""
 function block_owner(value::Value)
     @assert is_block_arg(value) "could not get owner, value is not a block argument"
     Block(API.mlirBlockArgumentGetOwner(value), false)
 end
 
+"""
+    op_owner(value)
+
+Returns an operation that produced this value as its result. Asserts if the value is not an op result.
+"""
 function op_owner(value::Value)
     @assert is_op_res(value) "could not get owner, value is not an op result"
     Operation(API.mlirOpResultGetOwner(value), false)
@@ -39,11 +66,21 @@ function owner(value::Value)
     end
 end
 
+"""
+    block_arg_num(value)
+
+Returns the position of the value in the argument list of its block.
+"""
 function block_arg_num(value::Value)
     @assert is_block_arg(value) "could not get arg number, value is not a block argument"
     API.mlirBlockArgumentGetArgNumber(value)
 end
 
+"""
+    op_res_num(value)
+
+Returns the position of the value in the list of results of the operation that produced it.
+"""
 function op_res_num(value::Value)
     @assert is_op_res(value) "could not get result number, value is not an op result"
     API.mlirOpResultGetResultNumber(value)
@@ -59,8 +96,18 @@ function position(value::Value)
     end
 end
 
+"""
+    Type(value)
+
+Returns the type of the value.
+"""
 Type(value::Value) = Type(API.mlirValueGetType(value))
 
+"""
+    set_type!(value, type)
+
+Sets the type of the block argument to the given type.
+"""
 function set_type!(value, type)
     @assert is_a_block_argument(value) "could not set type, value is not a block argument"
     API.mlirBlockArgumentSetType(value, type)

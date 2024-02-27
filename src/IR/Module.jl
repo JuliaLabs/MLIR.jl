@@ -7,13 +7,24 @@ mutable struct Module
     end
 end
 
+"""
+    Module(location=Location())
+
+Creates a new, empty module and transfers ownership to the caller.
+"""
 Module(loc::Location=Location()) = Module(API.mlirModuleCreateEmpty(loc))
 
 Module(op::Operation) = Module(API.mlirModuleFromOperation(lose_ownership!(op)))
 
 Base.convert(::Type{API.MlirModule}, module_::Module) = module_.module_
 
+"""
+    parse(::Type{Module}, module; context=context())
+
+Parses a module from the string and transfers ownership to the caller.
+"""
 Base.parse(::Type{Module}, module_; context::Context=context()) = Module(API.mlirModuleCreateParse(context, module_))
+
 macro mlir_str(code)
     quote
         ctx = Context()
@@ -21,11 +32,26 @@ macro mlir_str(code)
     end
 end
 
+"""
+    context(module)
+
+Gets the context that a module was created with.
+"""
 context(module_::Module) = Context(API.mlirModuleGetContext(module_))
+
+"""
+    body(module)
+
+Gets the body of the module, i.e. the only block it contains.
+"""
 body(module_) = Block(API.mlirModuleGetBody(module_), false)
 
+"""
+    Operation(module)
+
+Views the module as a generic operation.
+"""
 Operation(module_::Module) = Operation(API.mlirModuleGetOperation(module_), false)
-Module(op::Operation) = Module(API.mlirModuleFromOperation(op))
 
 # get_first_child_op(mod::Module) = get_first_child_op(get_operation(mod))
 
