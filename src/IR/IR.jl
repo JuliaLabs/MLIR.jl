@@ -27,6 +27,7 @@ include("Block.jl")
 include("Region.jl")
 include("Module.jl")
 include("TypeID.jl")
+include("Iterators.jl")
 
 include("Pass.jl")
 

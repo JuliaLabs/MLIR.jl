@@ -85,32 +85,3 @@ function lose_ownership!(region::Region)
     @atomic region.owned = false
     region
 end
-
-"""
-    RegionIterator(::Operation)
-
-Iterates over all sub-regions for the given operation.
-"""
-struct RegionIterator
-    op::Operation
-end
-
-function Base.iterate(it::RegionIterator)
-    raw_region = API.mlirOperationGetFirstRegion(it.op)
-    if mlirRegionIsNull(raw_region)
-        nothing
-    else
-        region = Region(raw_region, false)
-        (region, region)
-    end
-end
-
-function Base.iterate(it::RegionIterator, region)
-    raw_region = API.mlirRegionGetNextInOperation(region)
-    if mlirRegionIsNull(raw_region)
-        nothing
-    else
-        region = Region(raw_region, false)
-        (region, region)
-    end
-end

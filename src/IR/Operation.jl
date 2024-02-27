@@ -302,32 +302,3 @@ Returns whether the given fully-qualified operation (i.e. 'dialect.operation') i
 This will return true if the dialect is loaded and the operation is registered within the dialect.
 """
 is_registered(opname; context::Context=context()) = API.mlirContextIsRegisteredOperation(context, opname)
-
-"""
-    OperationIterator(block::Block)
-
-Iterates over all operations for the given block.
-"""
-struct OperationIterator
-    block::Block
-end
-
-function Base.iterate(it::OperationIterator)
-    raw_op = API.mlirBlockGetFirstOperation(it.block)
-    if mlirOperationIsNull(raw_op)
-        nothing
-    else
-        op = Operation(raw_op, false)
-        (op, op)
-    end
-end
-
-function Base.iterate(::OperationIterator, op)
-    raw_op = API.mlirOperationGetNextInBlock(op)
-    if mlirOperationIsNull(raw_op)
-        nothing
-    else
-        op = Operation(raw_op, false)
-        (op, op)
-    end
-end
