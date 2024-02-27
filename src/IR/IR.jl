@@ -26,6 +26,7 @@ include("Operation.jl")
 include("Block.jl")
 include("Region.jl")
 include("Module.jl")
+include("TypeID.jl")
 
 include("Pass.jl")
 

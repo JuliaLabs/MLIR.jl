@@ -93,7 +93,7 @@ location(operation::Operation) = Location(API.mlirOperationGetLocation(operation
 
 Gets the type id of the operation. Returns null if the operation does not have a registered operation description.
 """
-typeid(op::Operation) = API.mlirOperationGetTypeID(op)
+typeid(op::Operation) = TypeID(API.mlirOperationGetTypeID(op))
 
 """
     name(op)
