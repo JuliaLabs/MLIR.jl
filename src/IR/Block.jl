@@ -111,7 +111,7 @@ function Base.iterate(it::BlockIterator)
     end
 end
 
-function Base.iterate(it::BlockIterator, block)
+function Base.iterate(::BlockIterator, block)
     raw_block = API.mlirBlockGetNextInRegion(block)
     if mlirBlockIsNull(raw_block)
         nothing
