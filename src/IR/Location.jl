@@ -1,5 +1,5 @@
 struct Location
-    location::MlirLocation
+    location::API.MlirLocation
 
     function Location(location)
         @assert !API.mlirLocationIsNull(location) "cannot create Location with null MlirLocation"
@@ -24,12 +24,12 @@ end
 # TODO rename to merge?
 fuse(locations::Vector{Location}, metadata; context::Context=context()) = Location(API.mlirLocationFusedGet(context, length(locations), pointer(locations), metadata))
 
-Base.convert(::Type{MlirLocation}, location::Location) = location.location
+Base.convert(::Core.Type{API.MlirLocation}, location::Location) = location.location
 Base.:(==)(a::Location, b::Location) = API.mlirLocationEqual(a, b)
 context(location::Location) = Context(API.mlirLocationGetContext(location))
 
 function Base.show(io::IO, location::Location)
-    c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
+    c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
     print(io, "Location(#= ")
     API.mlirLocationPrint(location, c_print_callback, ref)
