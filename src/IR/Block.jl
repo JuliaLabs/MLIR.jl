@@ -40,7 +40,13 @@ function get_argument(block::Block, i)
 end
 push_argument!(block::Block, type, loc) = Value(API.mlirBlockAddArgument(block, type, loc))
 
-first_op(block::Block) = Operation(API.mlirBlockGetFirstOperation(block))
+function first_op(block::Block)
+    op = API.mlirBlockGetFirstOperation(block)
+    mlirOperationIsNull(op) && return nothing
+    Operation(op)
+end
+Base.first(block::Block) = first_op(block)
+
 function terminator(block::Block)
     op = API.mlirBlockGetTerminator(block)
     mlirOperationIsNull(op) && return nothing
