@@ -16,14 +16,14 @@ Module(loc::Location=Location()) = Module(API.mlirModuleCreateEmpty(loc))
 
 Module(op::Operation) = Module(API.mlirModuleFromOperation(lose_ownership!(op)))
 
-Base.convert(::Type{API.MlirModule}, module_::Module) = module_.module_
+Base.convert(::Core.Type{API.MlirModule}, module_::Module) = module_.module_
 
 """
     parse(::Type{Module}, module; context=context())
 
 Parses a module from the string and transfers ownership to the caller.
 """
-Base.parse(::Type{Module}, module_; context::Context=context()) = Module(API.mlirModuleCreateParse(context, module_))
+Base.parse(::Core.Type{Module}, module_; context::Context=context()) = Module(API.mlirModuleCreateParse(context, module_))
 
 macro mlir_str(code)
     quote

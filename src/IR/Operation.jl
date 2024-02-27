@@ -252,7 +252,7 @@ function lose_ownership!(operation::Operation)
 end
 
 function Base.show(io::IO, operation::Operation)
-    c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
+    c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
 
     buffer = IOBuffer()
     ref = Ref(buffer)
