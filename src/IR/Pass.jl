@@ -8,11 +8,11 @@ mutable struct ExternalPassHandle
 end
 
 mutable struct PassManager
-    pass::MlirPassManager
+    pass::API.MlirPassManager
     allocator::TypeIDAllocator
     passes::Dict{TypeID,ExternalPassHandle}
 
-    function PassManager(pm::MlirPassManager)
+    function PassManager(pm::API.MlirPassManager)
         @assert !API.mlirPassManagerIsNull(pm) "cannot create PassManager with null MlirPassManager"
         finalizer(new(pm, TypeIDAllocator(), Dict{TypeID,ExternalPassHandle}())) do pm
             API.mlirPassManagerDestroy(pm.pass)
@@ -39,12 +39,12 @@ function run!(pm::PassManager, module_)
     module_
 end
 
-Base.convert(::Type{MlirPassManager}, pass::PassManager) = pass.pass
+Base.convert(::Core.Type{API.MlirPassManager}, pass::PassManager) = pass.pass
 
 ### Op Pass Manager
 
 struct OpPassManager
-    op_pass::MlirOpPassManager
+    op_pass::API.MlirOpPassManager
     pass::PassManager
 
     function OpPassManager(op_pass, pass)
@@ -57,10 +57,10 @@ OpPassManager(pm::PassManager) = OpPassManager(API.mlirPassManagerGetAsOpPassMan
 OpPassManager(pm::PassManager, opname) = OpPassManager(API.mlirPassManagerGetNestedUnder(pm, opname), pm)
 OpPassManager(opm::OpPassManager, opname) = OpPassManager(API.mlirOpPassManagerGetNestedUnder(opm, opname), opm.pass)
 
-Base.convert(::Type{MlirOpPassManager}, op_pass::OpPassManager) = op_pass.op_pass
+Base.convert(::Core.Type{API.MlirOpPassManager}, op_pass::OpPassManager) = op_pass.op_pass
 
 function Base.show(io::IO, op_pass::OpPassManager)
-    c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
+    c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
     println(io, "OpPassManager(\"\"\"")
     API.mlirPrintPassPipeline(op_pass, c_print_callback, ref)
@@ -80,7 +80,7 @@ end
 function add_pipeline!(op_pass::OpPassManager, pipeline)
     @static if isdefined(API, :mlirOpPassManagerAddPipeline)
         io = IOBuffer()
-        c_print_callback = @cfunction(print_callback, Cvoid, (MlirStringRef, Any))
+        c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
         result = API.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, Ref(io))
         if mlirLogicalResultIsFailure(result)
             exc = AddPipelineException(String(take!(io)))
@@ -153,14 +153,14 @@ end
     end
     function create_external_pass!(manager, pass, name, argument,
         description, opname=opname(pass),
-        dependent_dialects=MlirDialectHandle[])
+        dependent_dialects=API.MlirDialectHandle[])
         passid = TypeID(manager.allocator)
         callbacks = API.MlirExternalPassCallbacks(
             @cfunction(_pass_construct, Cvoid, (Any,)),
             @cfunction(_pass_destruct, Cvoid, (Any,)),
-            @cfunction(_pass_initialize, API.MlirLogicalResult, (MlirContext, Any,)),
+            @cfunction(_pass_initialize, API.MlirLogicalResult, (API.MlirContext, Any,)),
             @cfunction(_pass_clone, Any, (Any,)),
-            @cfunction(_pass_run, Cvoid, (MlirOperation, API.MlirExternalPass, Any))
+            @cfunction(_pass_run, Cvoid, (API.MlirOperation, API.MlirExternalPass, Any))
         )
         pass_handle = manager.passes[passid] = ExternalPassHandle(nothing, pass)
         userdata = Base.pointer_from_objref(pass_handle)

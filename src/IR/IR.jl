@@ -51,7 +51,7 @@ end
 
 ### Identifier
 
-Base.String(ident::MlirIdentifier) = String(API.mlirIdentifierStr(ident))
+Base.String(ident::API.MlirIdentifier) = String(API.mlirIdentifierStr(ident))
 
 ### Logical Result
 
