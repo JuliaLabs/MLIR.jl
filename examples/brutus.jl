@@ -27,8 +27,8 @@ const uge = 9
 end
 
 function cmpi_pred(predicate)
-    function (ops...; location = Location())
-        arith.cmpi(ops...; result=IR.MLIRType(Bool), predicate, location)
+    function (ops...; location=Location())
+        arith.cmpi(ops...; result=IR.Type(Bool), predicate, location)
     end
 end
 
@@ -48,7 +48,7 @@ const intrinsics_to_mlir = Dict([
         mT = IR.get_type(arg)
         T = IR.julia_type(mT)
         ones = push!(block, arith.constant(value=typemax(UInt64) % T;
-                                           result=mT, location)) |> IR.get_result
+            result=mT, location)) |> IR.get_result
         push!(block, arith.xori(arg, ones; location))
     end,
 ])
@@ -63,7 +63,7 @@ function prepare_block(ir, bb)
         inst isa Core.PhiNode || continue
 
         type = stmt[:type]
-        IR.push_argument!(b, MLIRType(type), Location())
+        IR.push_argument!(b, IR.Type(type), Location())
     end
 
     return b
@@ -119,7 +119,7 @@ function code_mlir(f, types)
     current_block = entry_block = blocks[begin]
 
     for argtype in types.parameters
-        IR.push_argument!(entry_block, MLIRType(argtype), Location())
+        IR.push_argument!(entry_block, IR.Type(argtype), Location())
     end
 
     function get_value(x)::Value
@@ -129,7 +129,7 @@ function code_mlir(f, types)
         elseif x isa Core.Argument
             IR.get_argument(entry_block, x.n - 1)
         elseif x isa BrutusScalar
-            IR.get_result(push!(current_block, arith.constant(;value=x)))
+            IR.get_result(push!(current_block, arith.constant(; value=x)))
         else
             error("could not use value $x inside MLIR")
         end
@@ -149,7 +149,7 @@ function code_mlir(f, types)
                 if !(val_type <: BrutusScalar)
                     error("type $val_type is not supported")
                 end
-                out_type = MLIRType(val_type)
+                out_type = IR.Type(val_type)
 
                 called_func = first(inst.args)
                 if called_func isa GlobalRef # TODO: should probably use something else here
@@ -205,13 +205,13 @@ function code_mlir(f, types)
 
     LLVM15 = LLVM.version() >= v"15"
 
-    input_types = MLIRType[
+    input_types = IR.Type[
         IR.get_type(IR.get_argument(entry_block, i))
         for i in 1:IR.num_arguments(entry_block)
     ]
-    result_types = [MLIRType(ret)]
+    result_types = [IR.Type(ret)]
 
-    ftype = MLIRType(input_types => result_types)
+    ftype = IR.Type(input_types => result_types)
     op = IR.create_operation(
         "func.func",
         Location();
