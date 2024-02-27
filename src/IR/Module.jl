@@ -53,8 +53,6 @@ Views the module as a generic operation.
 """
 Operation(module_::Module) = Operation(API.mlirModuleGetOperation(module_), false)
 
-# get_first_child_op(mod::Module) = get_first_child_op(get_operation(mod))
-
 function Base.show(io::IO, module_::Module)
     println(io, "Module:")
     show(io, get_operation(module_))
