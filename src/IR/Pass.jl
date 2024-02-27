@@ -13,7 +13,7 @@ mutable struct PassManager
     passes::Dict{TypeID,ExternalPassHandle}
 
     PassManager(pm::MlirPassManager) = begin
-        @assert !mlirIsNull(pm) "cannot create PassManager with null MlirPassManager"
+        @assert !API.mlirPassManagerIsNull(pm) "cannot create PassManager with null MlirPassManager"
         finalizer(new(pm, TypeIDAllocator(), Dict{TypeID,ExternalPassHandle}())) do pm
             API.mlirPassManagerDestroy(pm.pass)
         end
@@ -49,7 +49,7 @@ struct OpPassManager
     pass::PassManager
 
     OpPassManager(op_pass, pass) = begin
-        @assert !mlirIsNull(op_pass) "cannot create OpPassManager with null MlirOpPassManager"
+        @assert !API.mlirPassManagerIsNull(op_pass) "cannot create OpPassManager with null MlirOpPassManager"
         new(op_pass, pass)
     end
 end

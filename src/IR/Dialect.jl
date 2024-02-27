@@ -63,7 +63,7 @@ end
 
 function DialectRegistry()
     registry = API.mlirDialectRegistryCreate()
-    @assert !mlirDialectRegistryIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
+    @assert !API.mlirDialectRegistryIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
     finalizer(DialectRegistry(registry)) do registry
         API.mlirDialectRegistryDestroy(registry.registry)
     end
