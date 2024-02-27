@@ -70,7 +70,7 @@ end
 
 function enable_multithreading!(enable::Bool=true; context::Context=context())
     API.mlirContextEnableMultithreading(context, enable)
-    context()
+    context
 end
 
 Base.:(==)(a::Context, b::Context) = API.mlirContextEqual(a, b)
