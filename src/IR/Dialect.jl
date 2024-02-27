@@ -50,8 +50,6 @@ function get_or_load_dialect!(handle::DialectHandle; context::Context=context())
     Dialect(dialect)
 end
 
-get_or_load_dialect!(dialect::String; context::Context=context()) = get_or_load_dialect!(DialectHandle(Symbol(dialect)); context)
-
 register_dialect!(handle::DialectHandle; context::Context=context()) = API.mlirDialectHandleRegisterDialect(handle, context)
 load_dialect!(handle::DialectHandle; context::Context=context()) = Dialect(API.mlirDialectHandleLoadDialect(handle, context))
 
