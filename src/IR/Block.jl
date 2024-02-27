@@ -103,7 +103,7 @@ end
 function Base.iterate(it::BlockIterator)
     reg = it.region
     raw_block = API.mlirRegionGetFirstBlock(reg)
-    if mlirIsNull(raw_block)
+    if mlirBlockIsNull(raw_block)
         nothing
     else
         b = Block(raw_block, false)
@@ -113,7 +113,7 @@ end
 
 function Base.iterate(it::BlockIterator, block)
     raw_block = API.mlirBlockGetNextInRegion(block)
-    if mlirIsNull(raw_block)
+    if mlirBlockIsNull(raw_block)
         nothing
     else
         b = Block(raw_block, false)
