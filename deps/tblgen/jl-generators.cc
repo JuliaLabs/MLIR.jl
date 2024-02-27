@@ -170,7 +170,7 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
   const char *moduleTemplate;
   if (disableModuleWrap)
   {
-    moduleTemplate = R"(import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+    moduleTemplate = R"(import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -181,7 +181,7 @@ import ...API
   {
     moduleTemplate = R"(module {0}
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -196,7 +196,7 @@ function {0}({1}location=Location())
     {2}
 end
 )";      // 0: functionname, 1: functionarguments, 2: functionbody
-  const char *functionbodytemplate = R"(results = MLIRType[{0}]
+  const char *functionbodytemplate = R"(results = IR.Type[{0}]
     operands = Value[{1}]
     owned_regions = Region[{2}]
     successors = Block[{3}]
@@ -321,7 +321,7 @@ end
         resultname = "result_" + std::to_string(i);
       }
       resultname = sanitizeName(resultname);
-      std::string type = "MLIRType";
+      std::string type = "IR.Type";
 
       bool optional = named_result.isOptional() || inferrable;
       bool variadic = named_result.isVariadic();
