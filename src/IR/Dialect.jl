@@ -7,7 +7,7 @@ struct Dialect
     end
 end
 
-Base.convert(::Type{API.MlirDialect}, dialect::Dialect) = dialect.dialect
+Base.convert(::Core.Type{API.MlirDialect}, dialect::Dialect) = dialect.dialect
 Base.:(==)(a::Dialect, b::Dialect) = API.mlirDialectEqual(a, b)
 
 context(dialect::Dialect) = Context(API.mlirDialectGetContext(dialect))
@@ -40,7 +40,7 @@ function DialectHandle(s::Symbol)
     DialectHandle(getproperty(API, s)())
 end
 
-Base.convert(::Type{API.MlirDialectHandle}, handle::DialectHandle) = handle.handle
+Base.convert(::Core.Type{API.MlirDialectHandle}, handle::DialectHandle) = handle.handle
 
 namespace(handle::DialectHandle) = String(API.mlirDialectHandleGetNamespace(handle))
 
@@ -69,7 +69,7 @@ function DialectRegistry()
     end
 end
 
-Base.convert(::Type{API.MlirDialectRegistry}, registry::DialectRegistry) = registry.registry
+Base.convert(::Core.Type{API.MlirDialectRegistry}, registry::DialectRegistry) = registry.registry
 Base.push!(registry::DialectRegistry, handle::DialectHandle) = API.mlirDialectHandleInsertDialect(handle, registry)
 
 # TODO is `append!` the right name?
