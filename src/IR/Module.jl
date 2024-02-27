@@ -1,7 +1,7 @@
 mutable struct Module
     module_::API.MlirModule
 
-    Module(module_) = begin
+    function Module(module_)
         @assert !API.mlirModuleIsNull(module_) "cannot create Module with null MlirModule"
         finalizer(API.mlirModuleDestroy, new(module_))
     end

@@ -2,7 +2,7 @@ mutable struct Block
     block::API.MlirBlock
     @atomic owned::Bool
 
-    Block(block::API.MlirBlock, owned::Bool=true) = begin
+    function Block(block::API.MlirBlock, owned::Bool=true)
         @assert !API.mlirBlockIsNull(block) "cannot create Block with null MlirBlock"
         finalizer(new(block, owned)) do block
             if block.owned

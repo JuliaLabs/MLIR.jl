@@ -1,7 +1,7 @@
 struct Value
     value::API.MlirValue
 
-    Value(value) = begin
+    function Value(value)
         @assert !API.mlirValueIsNull(value) "cannot create Value with null MlirValue"
         new(value)
     end

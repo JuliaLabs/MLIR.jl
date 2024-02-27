@@ -59,15 +59,16 @@ load_dialect!(ctx::Context, handle::DialectHandle) = Dialect(API.mlirDialectHand
 
 mutable struct DialectRegistry
     registry::API.MlirDialectRegistry
-end
 
-function DialectRegistry()
-    registry = API.mlirDialectRegistryCreate()
-    @assert !API.mlirDialectRegistryIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
-    finalizer(DialectRegistry(registry)) do registry
-        API.mlirDialectRegistryDestroy(registry.registry)
+    function DialectRegistry(registry)
+        @assert !API.mlirDialectRegistryIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
+        finalizer(DialectRegistry(registry)) do registry
+            API.mlirDialectRegistryDestroy(registry.registry)
+        end
     end
 end
+
+DialectRegistry() = DialectRegistry(API.mlirDialectRegistryCreate())
 
 Base.convert(::Core.Type{API.MlirDialectRegistry}, registry::DialectRegistry) = registry.registry
 Base.push!(registry::DialectRegistry, handle::DialectHandle) = API.mlirDialectHandleInsertDialect(handle, registry)

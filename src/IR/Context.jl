@@ -4,7 +4,7 @@ struct Context
     context::API.MlirContext
 
     function Context(context)
-        @assert !API.mlirIsNull(context) "cannot create Context with null MlirContext"
+        @assert !API.mlirContextIsNull(context) "cannot create Context with null MlirContext"
         new(context)
     end
 end

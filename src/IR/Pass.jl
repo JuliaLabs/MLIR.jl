@@ -12,7 +12,7 @@ mutable struct PassManager
     allocator::TypeIDAllocator
     passes::Dict{TypeID,ExternalPassHandle}
 
-    PassManager(pm::MlirPassManager) = begin
+    function PassManager(pm::MlirPassManager)
         @assert !API.mlirPassManagerIsNull(pm) "cannot create PassManager with null MlirPassManager"
         finalizer(new(pm, TypeIDAllocator(), Dict{TypeID,ExternalPassHandle}())) do pm
             API.mlirPassManagerDestroy(pm.pass)
@@ -29,8 +29,7 @@ function enable_verifier!(pm, enable=true)
     pm
 end
 
-PassManager() =
-    PassManager(API.mlirPassManagerCreate(context()))
+PassManager(; context::Context=context()) = PassManager(API.mlirPassManagerCreate(context))
 
 function run!(pm::PassManager, module_)
     status = API.mlirPassManagerRun(pm, module_)
@@ -48,7 +47,7 @@ struct OpPassManager
     op_pass::MlirOpPassManager
     pass::PassManager
 
-    OpPassManager(op_pass, pass) = begin
+    function OpPassManager(op_pass, pass)
         @assert !API.mlirPassManagerIsNull(op_pass) "cannot create OpPassManager with null MlirOpPassManager"
         new(op_pass, pass)
     end
