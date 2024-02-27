@@ -1,4 +1,4 @@
-export Context, context, context!, activate!, deactivate!, dispose, enable_multithreading!
+export Context, context, context!, activate!, deactivate!, dispose!, enable_multithreading!
 
 struct Context
     context::API.MlirContext
