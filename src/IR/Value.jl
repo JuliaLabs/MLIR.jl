@@ -101,14 +101,14 @@ end
 
 Returns the type of the value.
 """
-Type(value::Value) = Type(API.mlirValueGetType(value))
+type(value::Value) = Type(API.mlirValueGetType(value))
 
 """
     set_type!(value, type)
 
 Sets the type of the block argument to the given type.
 """
-function set_type!(value, type)
+function type!(value, type)
     @assert is_a_block_argument(value) "could not set type, value is not a block argument"
     API.mlirBlockArgumentSetType(value, type)
     value
