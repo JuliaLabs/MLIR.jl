@@ -17,6 +17,7 @@ function print_callback(str::API.MlirStringRef, userdata)
 end
 
 include("Context.jl")
+include("Identifier.jl")
 include("Dialect.jl")
 include("Location.jl")
 include("Type.jl")
@@ -48,10 +49,6 @@ end
 function Base.String(str::API.MlirStringRef)
     Base.unsafe_string(pointer(str.data), str.length)
 end
-
-### Identifier
-
-Base.String(ident::API.MlirIdentifier) = String(API.mlirIdentifierStr(ident))
 
 ### Logical Result
 
