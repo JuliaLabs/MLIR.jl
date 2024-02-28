@@ -229,6 +229,12 @@ function Base.show(io::IO, map::AffineMap)
     print(io, " =#)")
 end
 
+walk(f, other) = f(other)
+function walk(f, expr::Expr)
+    expr = f(expr)
+    Expr(expr.head, map(arg -> walk(f, arg), expr.args)...)
+end
+
 """
     @affinemap (d1, d2, d3, ...)[s1, s2, ...] -> (d0 + d1, ...)
 
@@ -274,6 +280,8 @@ macro affinemap(ex)
         values[s] = Expr(:call, IR.AffineDimensionExpr, i - 1)
     end
 
+    known_binops = [:+, :-, :*, :÷, :%, :fld, :cld]
+
     affine_exprs = Expr(:vect, map(rhs.args) do ex
         walk(ex) do v
             if v isa Integer
@@ -282,7 +290,7 @@ macro affinemap(ex)
                 v
             elseif haskey(values, v)
                 values[v]
-            elseif v isa Symbol
+            elseif v isa Symbol && v ∉ known_binops
                 error("unknown item $v")
             else
                 v
