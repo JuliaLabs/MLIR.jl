@@ -54,14 +54,6 @@ function Base.String(str::API.MlirStringRef)
     Base.unsafe_string(pointer(str.data), str.length)
 end
 
-### Logical Result
-
-mlirLogicalResultSuccess() = API.MlirLogicalResult(1)
-mlirLogicalResultFailure() = API.MlirLogicalResult(0)
-
-mlirLogicalResultIsSuccess(result) = result.value != 0
-mlirLogicalResultIsFailure(result) = result.value == 0
-
 ### Utils
 
 function visit(f, op)
