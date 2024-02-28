@@ -116,6 +116,17 @@ Gets the operation that owns this operation, returning null if the operation is 
 """
 parent_op(operation::Operation) = Operation(API.mlirOperationGetParentOperation(operation), false)
 
+"""
+    rmfromparent(op)
+
+Removes the given operation from its parent block. The operation is not destroyed.
+The ownership of the operation is transferred to the caller.
+"""
+function rmfromparent!(operation::Operation)
+    API.mlirOperationRemoveFromParent(operation)
+    @atomic operation.owned = true
+end
+
 dialect(operation::Operation) = first(split(name(operation), '.')) |> Symbol
 
 """
