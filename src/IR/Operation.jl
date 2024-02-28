@@ -279,7 +279,7 @@ Moves the given operation immediately after the other operation in its parent bl
 """
 function move_after!(operation::Operation, other::Operation)
     lose_ownership!(operation)
-    API.mlirOperationMoveBefore(operation, other)
+    API.mlirOperationMoveAfter(operation, other)
 end
 
 """
