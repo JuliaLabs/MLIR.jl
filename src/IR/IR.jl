@@ -31,6 +31,7 @@ include("TypeID.jl")
 include("Iterators.jl")
 include("SymbolTable.jl")
 include("AffineExpr.jl")
+include("AffineMap.jl")
 include("IntegerSet.jl")
 
 include("Pass.jl")
