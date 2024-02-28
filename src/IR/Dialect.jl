@@ -17,13 +17,13 @@ function Base.show(io::IO, dialect::Dialect)
     print(io, "Dialect(\"", namespace(dialect), "\")")
 end
 
-allow_unregistered_dialects(context::Context=context()) = API.mlirContextGetAllowUnregisteredDialects(context)
+allow_unregistered_dialects(; context::Context=context()) = API.mlirContextGetAllowUnregisteredDialects(context)
 allow_unregistered_dialects!(allow::Bool=true; context::Context=context()) = API.mlirContextSetAllowUnregisteredDialects(context, allow)
 
-num_registered_dialects(ctx::Context=context()) = API.mlirContextGetNumRegisteredDialects(ctx)
-num_loaded_dialects(ctx::Context=context()) = API.mlirContextGetNumLoadedDialects(ctx)
+num_registered_dialects(; context::Context=context()) = API.mlirContextGetNumRegisteredDialects(context)
+num_loaded_dialects(; context::Context=context()) = API.mlirContextGetNumLoadedDialects(context)
 
-load_all_available_dialects(ctx::Context=context()) = API.mlirContextLoadAllAvailableDialects(ctx)
+load_all_available_dialects(; context::Context=context()) = API.mlirContextLoadAllAvailableDialects(context)
 
 function get_or_load_dialect!(name::String; context::Context=context())
     dialect = API.mlirContextGetOrLoadDialect(context, name)
@@ -70,4 +70,4 @@ Base.convert(::Core.Type{API.MlirDialectRegistry}, registry::DialectRegistry) = 
 Base.push!(registry::DialectRegistry, handle::DialectHandle) = API.mlirDialectHandleInsertDialect(handle, registry)
 
 # TODO is `append!` the right name?
-Base.append!(ctx::Context, registry::DialectRegistry) = API.mlirContextAppendDialectRegistry(ctx, registry)
+Base.append!(registry::DialectRegistry; context::Context) = API.mlirContextAppendDialectRegistry(context, registry)

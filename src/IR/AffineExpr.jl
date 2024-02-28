@@ -110,7 +110,7 @@ Checks whether the given affine expression is a constant expression.
 isconstantexpr(expr::AffineExpr) = API.mlirAffineExprIsAConstant(expr)
 
 """
-    ConstantExpr(ctx, constant::Int)
+    ConstantExpr(constant::Int; context=context())
 
 Creates an affine constant expression with 'constant' in the context.
 """
