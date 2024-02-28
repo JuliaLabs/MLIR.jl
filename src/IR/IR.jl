@@ -30,6 +30,7 @@ include("Module.jl")
 include("TypeID.jl")
 include("Iterators.jl")
 include("SymbolTable.jl")
+include("IntegerSet.jl")
 
 include("Pass.jl")
 
