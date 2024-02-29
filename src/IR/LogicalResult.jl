@@ -9,7 +9,7 @@ struct LogicalResult
     result::API.MlirLogicalResult
 end
 
-Base.convert(::Type{API.MlirLogicalResult}, result::LogicalResult) = result.result
+Base.convert(::Core.Type{API.MlirLogicalResult}, result::LogicalResult) = result.result
 
 """
     success()
