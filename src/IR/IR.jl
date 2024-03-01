@@ -4,7 +4,7 @@ using ..API
 
 # do not export `Type`, as it is already defined in Core
 # also, use `Core.Type` inside this module to avoid clash with MLIR `Type`
-export Attribute, Block, Context, Dialect, Location, Module, Operation, Region, Value
+export Attribute, Block, Context, Dialect, Location, Operation, Region, Value
 export activate!, deactivate!, dispose!, enable_multithreading!, context!
 export context, type, type!, location, typeid, block, dialect
 export nattrs, attr, attr!, rmattr!, nregions, region, nresults, result, noperands, operand, operand!, nsuccessors, successor
