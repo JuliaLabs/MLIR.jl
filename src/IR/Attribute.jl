@@ -454,7 +454,7 @@ function Base.fill(value::Float64, shaped_type::Type)
     API.mlirDenseElementsAttrDoubleSplatGet(value, shaped_type)
 end
 
-function Base.fill(value::Union{Attribute,Bool,UInt8,Int8,UInt32,Int32,UInt64,Int64,Float32,Float64}, shape)
+function Base.fill(::Core.Type{Attribute}, value, shape)
     shaped_type = TensorType(length(shape), collect(shape), Type(typeof(value)))
     Base.fill(value, shaped_type)
 end
