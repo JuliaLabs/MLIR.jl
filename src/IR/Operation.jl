@@ -125,6 +125,7 @@ The ownership of the operation is transferred to the caller.
 function rmfromparent!(operation::Operation)
     API.mlirOperationRemoveFromParent(operation)
     @atomic operation.owned = true
+    operation
 end
 
 dialect(operation::Operation) = first(split(name(operation), '.')) |> Symbol
