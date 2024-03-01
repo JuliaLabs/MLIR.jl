@@ -10,6 +10,10 @@ export context, type, type!, location, typeid, block, dialect
 export nattrs, attr, attr!, rmattr!, nregions, region, nresults, result, noperands, operand, operand!, nsuccessors, successor
 export BlockIterator, RegionIterator, OperationIterator
 
+function mlirIsNull(val)
+    val.ptr == C_NULL
+end
+
 function print_callback(str::API.MlirStringRef, userdata)
     data = unsafe_wrap(Array, Base.convert(Ptr{Cchar}, str.data), str.length; own=false)
     write(userdata isa Base.RefValue ? userdata[] : userdata, data)

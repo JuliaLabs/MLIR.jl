@@ -2,7 +2,7 @@ struct AffineMap
     map::API.MlirAffineMap
 
     function AffineMap(map::API.MlirAffineMap)
-        @assert !API.mlirAffineMapIsNull(map) "cannot create AffineMap with null MlirAffineMap"
+        @assert !mlirIsNull(map) "cannot create AffineMap with null MlirAffineMap"
         new(map)
     end
 end

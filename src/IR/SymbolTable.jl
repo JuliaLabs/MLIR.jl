@@ -2,7 +2,7 @@ struct SymbolTable
     st::API.MlirSymbolTable
 
     function SymbolTable(st)
-        @assert !API.mlirSymbolTableIsNull(st) "cannot create SymbolTable with null MlirSymbolTable"
+        @assert !mlirIsNull(st) "cannot create SymbolTable with null MlirSymbolTable"
         finalizer(API.mlirSymbolTableDestroy, new(st))
     end
 end

@@ -2,7 +2,7 @@ struct Dialect
     dialect::API.MlirDialect
 
     function Dialect(dialect)
-        @assert !API.mlirDialectIsNull(dialect) "cannot create Dialect from null MlirDialect"
+        @assert !mlirIsNull(dialect) "cannot create Dialect from null MlirDialect"
         new(dialect)
     end
 end
@@ -27,7 +27,7 @@ load_all_available_dialects(; context::Context=context()) = API.mlirContextLoadA
 
 function get_or_load_dialect!(name::String; context::Context=context())
     dialect = API.mlirContextGetOrLoadDialect(context, name)
-    API.mlirDialectIsNull(dialect) && error("could not load dialect $name")
+    mlirIsNull(dialect) && error("could not load dialect $name")
     Dialect(dialect)
 end
 
@@ -46,7 +46,7 @@ namespace(handle::DialectHandle) = String(API.mlirDialectHandleGetNamespace(hand
 
 function get_or_load_dialect!(handle::DialectHandle; context::Context=context())
     dialect = API.mlirDialectHandleLoadDialect(handle, context)
-    API.mlirDialectIsNull(dialect) && error("could not load dialect from handle $handle")
+    mlirIsNull(dialect) && error("could not load dialect from handle $handle")
     Dialect(dialect)
 end
 
@@ -57,7 +57,7 @@ mutable struct DialectRegistry
     registry::API.MlirDialectRegistry
 
     function DialectRegistry(registry)
-        @assert !API.mlirDialectRegistryIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
+        @assert !mlirIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
         finalizer(DialectRegistry(registry)) do registry
             API.mlirDialectRegistryDestroy(registry.registry)
         end

@@ -2,7 +2,7 @@ struct IntegerSet
     set::API.MlirIntegerSet
 
     function IntegerSet(set)
-        @assert !API.mlirIntegerSetIsNull(set) "cannot create IntegerSet with null MlirIntegerSet"
+        @assert !mlirIsNull(set) "cannot create IntegerSet with null MlirIntegerSet"
         new(set)
     end
 end

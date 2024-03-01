@@ -2,7 +2,7 @@ struct Type
     type::API.MlirType
 
     function Type(type)
-        @assert !API.mlirTypeIsNull(type) "cannot create Type with null MlirType"
+        @assert !mlirIsNull(type) "cannot create Type with null MlirType"
         new(type)
     end
 end
@@ -364,7 +364,7 @@ Gets the 'encoding' attribute from the ranked tensor type, returning a `nothing`
 function encoding(type::Type)
     @assert isrankedtensor(type) "expected a ranked tensor type"
     attr = API.mlirRankedTensorTypeGetEncoding(type)
-    API.mlirAttributeIsNull(attr) ? nothing : Attribute(attr)
+    mlirIsNull(attr) ? nothing : Attribute(attr)
 end
 
 # Memref type

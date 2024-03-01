@@ -3,7 +3,7 @@ mutable struct Operation
     @atomic owned::Bool
 
     function Operation(operation, owned=true)
-        @assert !API.mlirOperationIsNull(operation) "cannot create Operation with null MlirOperation"
+        @assert !mlirIsNull(operation) "cannot create Operation with null MlirOperation"
         finalizer(new(operation, owned)) do op
             if op.owned
                 API.mlirOperationDestroy(op.operation)
@@ -56,7 +56,7 @@ function create_operation(
             API.mlirOperationStateEnableResultTypeInference(state)
         end
         op = API.mlirOperationCreate(state)
-        if API.mlirOperationIsNull(op)
+        if mlirIsNull(op)
             error("Create Operation '$name' failed")
         end
         Operation(op, true)
@@ -233,7 +233,7 @@ Returns an attribute attached to the operation given its name.
 """
 function attr(operation::Operation, name::AbstractString)
     raw_attr = API.mlirOperationGetAttributeByName(operation, name)
-    if API.mlirAttributeIsNull(raw_attr)
+    if mlirIsNull(raw_attr)
         return nothing
     end
     Attribute(raw_attr)

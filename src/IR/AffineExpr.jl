@@ -2,7 +2,7 @@ struct AffineExpr
     expr::API.MlirAffineExpr
 
     function AffineExpr(expr)
-        @assert !API.mlirAffineExprIsNull(expr) "cannot create AffineExpr with null MlirAffineExpr"
+        @assert !mlirIsNull(expr) "cannot create AffineExpr with null MlirAffineExpr"
         new(expr)
     end
 end

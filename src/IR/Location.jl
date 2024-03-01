@@ -2,7 +2,7 @@ struct Location
     location::API.MlirLocation
 
     function Location(location)
-        @assert !API.mlirLocationIsNull(location) "cannot create Location with null MlirLocation"
+        @assert !mlirIsNull(location) "cannot create Location with null MlirLocation"
         new(location)
     end
 end

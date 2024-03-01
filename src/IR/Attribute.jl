@@ -682,7 +682,7 @@ end
 Associates an attribute with the name. Takes ownership of neither.
 """
 function NamedAttribute(name, attribute; context=context(attribute))
-    @assert !API.mlirAttributeIsNull(attribute.attribute)
+    @assert !mlirIsNull(attribute.attribute)
     name = API.mlirIdentifierGet(context, name)
     NamedAttribute(API.mlirNamedAttributeGet(name, attribute))
 end

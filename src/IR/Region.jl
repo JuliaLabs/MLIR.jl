@@ -3,7 +3,7 @@ mutable struct Region
     @atomic owned::Bool
 
     function Region(region, owned=true)
-        @assert !API.mlirRegionIsNull(region)
+        @assert !mlirIsNull(region)
         finalizer(new(region, owned)) do region
             if region.owned
                 API.mlirRegionDestroy(region.region)

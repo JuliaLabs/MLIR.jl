@@ -2,7 +2,7 @@ mutable struct Module
     module_::API.MlirModule
 
     function Module(module_)
-        @assert !API.mlirModuleIsNull(module_) "cannot create Module with null MlirModule"
+        @assert !mlirIsNull(module_) "cannot create Module with null MlirModule"
         finalizer(API.mlirModuleDestroy, new(module_))
     end
 end

@@ -2,7 +2,7 @@ struct TypeID
     typeid::API.MlirTypeID
 
     function TypeID(typeid)
-        @assert !API.mlirTypeIDIsNull(typeid) "cannot create TypeID with null MlirTypeID"
+        @assert !mlirIsNull(typeid) "cannot create TypeID with null MlirTypeID"
         new(typeid)
     end
 end
