@@ -73,7 +73,7 @@ nargs(block::Block) = API.mlirBlockGetNumArguments(block)
 Returns `i`-th argument of the block.
 """
 function argument(block::Block, i)
-    i ∉ 1:num_arguments(block) && throw(BoundsError(block, i))
+    i ∉ 1:nargs(block) && throw(BoundsError(block, i))
     Value(API.mlirBlockGetArgument(block, i - 1))
 end
 

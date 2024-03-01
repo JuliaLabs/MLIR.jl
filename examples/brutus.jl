@@ -48,7 +48,7 @@ const intrinsics_to_mlir = Dict([
         mT = IR.get_type(arg)
         T = IR.julia_type(mT)
         ones = push!(block, arith.constant(value=typemax(UInt64) % T;
-            result=mT, location)) |> IR.get_result
+            result=mT, location)) |> IR.result
         push!(block, arith.xori(arg, ones; location))
     end,
 ])
@@ -127,9 +127,9 @@ function code_mlir(f, types)
             @assert isassigned(values, x.id) "value $x was not assigned"
             values[x.id]
         elseif x isa Core.Argument
-            IR.get_argument(entry_block, x.n - 1)
+            IR.argument(entry_block, x.n - 1)
         elseif x isa BrutusScalar
-            IR.get_result(push!(current_block, arith.constant(; value=x)))
+            IR.result(push!(current_block, arith.constant(; value=x)))
         else
             error("could not use value $x inside MLIR")
         end
@@ -160,11 +160,11 @@ function code_mlir(f, types)
                 args = get_value.(@view inst.args[begin+1:end])
 
                 location = Location(string(line.file), line.line, 0)
-                res = IR.get_result(fop!(current_block, args; location))
+                res = IR.result(fop!(current_block, args; location))
 
                 values[sidx] = res
             elseif inst isa PhiNode
-                values[sidx] = IR.get_argument(current_block, n_phi_nodes += 1)
+                values[sidx] = IR.argument(current_block, n_phi_nodes += 1)
             elseif inst isa PiNode
                 values[sidx] = get_value(inst.val)
             elseif inst isa GotoNode
@@ -206,8 +206,8 @@ function code_mlir(f, types)
     LLVM15 = LLVM.version() >= v"15"
 
     input_types = IR.Type[
-        IR.get_type(IR.get_argument(entry_block, i))
-        for i in 1:IR.num_arguments(entry_block)
+        IR.get_type(IR.argument(entry_block, i))
+        for i in 1:IR.nargs(entry_block)
     ]
     result_types = [IR.Type(ret)]
 
