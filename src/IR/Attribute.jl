@@ -16,7 +16,7 @@ Base.convert(::Core.Type{API.MlirAttribute}, attribute::Attribute) = attribute.a
 
 Parses an attribute. The attribute is owned by the context.
 """
-Base.parse(::Core.Type{Attribute}, str; context::Context=context) = Attribute(API.mlirAttributeParseGet(context, str))
+Base.parse(::Core.Type{Attribute}, str; context::Context=context()) = Attribute(API.mlirAttributeParseGet(context, str))
 
 """
     ==(a1, a2)
