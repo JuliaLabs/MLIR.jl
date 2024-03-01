@@ -35,13 +35,13 @@ function create_operation(
         if !isnothing(owned_regions)
             lose_ownership!.(owned_regions)
             GC.@preserve owned_regions begin
-                mlir_regions = Base.unsafe_convert.(MlirRegion, owned_regions)
+                mlir_regions = Base.unsafe_convert.(API.MlirRegion, owned_regions)
                 API.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
             end
         end
         if !isnothing(successors)
             GC.@preserve successors begin
-                mlir_blocks = Base.unsafe_convert.(MlirBlock, successors)
+                mlir_blocks = Base.unsafe_convert.(API.MlirBlock, successors)
                 API.mlirOperationStateAddSuccessors(
                     state,
                     length(mlir_blocks),
@@ -163,7 +163,7 @@ function result(operation::Operation, i=1)
     i ∉ 1:nresults(operation) && throw(BoundsError(operation, i))
     Value(API.mlirOperationGetResult(operation, i - 1))
 end
-results(operation) = [get_result(operation, i) for i in 1:nresults(operation)]
+results(operation) = [result(operation, i) for i in 1:nresults(operation)]
 
 """
     noperands(op)

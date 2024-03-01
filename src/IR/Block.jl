@@ -61,18 +61,18 @@ function next_in_region(block::Block)
 end
 
 """
-    num_args(block)
+    nargs(block)
 
 Returns the number of arguments of the block.
 """
-num_args(block::Block) = API.mlirBlockGetNumArguments(block)
+nargs(block::Block) = API.mlirBlockGetNumArguments(block)
 
 """
-    get_argument(block, i)
+    argument(block, i)
 
 Returns `i`-th argument of the block.
 """
-function get_argument(block::Block, i)
+function argument(block::Block, i)
     i ∉ 1:num_arguments(block) && throw(BoundsError(block, i))
     Value(API.mlirBlockGetArgument(block, i - 1))
 end

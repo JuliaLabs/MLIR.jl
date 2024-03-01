@@ -40,13 +40,13 @@ function activate!(ctx::Context)
     stack = get!(task_local_storage(), :mlir_context_stack) do
         Context[]
     end
-    push!(stack, ctx)
+    Base.push!(stack, ctx)
     return
 end
 
 function deactivate!(ctx::Context)
     context() == ctx || error("Deactivating wrong context")
-    pop!(task_local_storage(:mlir_context_stack))
+    Base.pop!(task_local_storage(:mlir_context_stack))
 end
 
 function dispose!(ctx::Context)
@@ -54,7 +54,7 @@ function dispose!(ctx::Context)
     API.mlirContextDestroy(ctx.context)
 end
 
-_has_context() = haskey(task_local_storage(), :mlir_context_stack) && !isempty(task_local_storage(:mlir_context_stack))
+_has_context() = haskey(task_local_storage(), :mlir_context_stack) && !Base.isempty(task_local_storage(:mlir_context_stack))
 
 function context(; throw_error::Core.Bool=true)
     if !_has_context()
