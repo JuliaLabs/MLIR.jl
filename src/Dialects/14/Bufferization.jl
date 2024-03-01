@@ -1,6 +1,6 @@
 module bufferization
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -21,13 +21,13 @@ views or create an actual copy. Mutating the source or result
 of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
-function clone(input::Value; output::MLIRType, location=Location())
-    results = MLIRType[output, ]
-    operands = Value[input, ]
+function clone(input::Value; output::IR.Type, location=Location())
+    results = IR.Type[output,]
+    operands = Value[input,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "bufferization.clone", location;
         operands, owned_regions, successors, attributes,
@@ -53,13 +53,13 @@ This operation is a specialized variant of the built-in
 unrealized_conversion_cast and is intended for use in the context of
 gradual bufferization.
 """
-function to_memref(tensor::Value; memref::MLIRType, location=Location())
-    results = MLIRType[memref, ]
-    operands = Value[tensor, ]
+function to_memref(tensor::Value; memref::IR.Type, location=Location())
+    results = IR.Type[memref,]
+    operands = Value[tensor,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "bufferization.to_memref", location;
         operands, owned_regions, successors, attributes,
@@ -89,13 +89,13 @@ involving tensors and memrefs.
 If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
-function to_tensor(memref::Value; result::MLIRType, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[memref, ]
+function to_tensor(memref::Value; result::IR.Type, location=Location())
+    results = IR.Type[result,]
+    operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "bufferization.to_tensor", location;
         operands, owned_regions, successors, attributes,

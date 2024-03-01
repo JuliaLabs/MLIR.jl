@@ -1,6 +1,6 @@
 module arm_neon
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -16,13 +16,13 @@ vector to the destination SIMD&FP register.
 Source:
 https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsics
 """
-function intr_smull(a::Value, b::Value; res::MLIRType, location=Location())
-    results = MLIRType[res, ]
-    operands = Value[a, b, ]
+function intr_smull(a::Value, b::Value; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[a, b,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arm_neon.intr.smull", location;
         operands, owned_regions, successors, attributes,
@@ -43,13 +43,13 @@ corresponding entry of `a`:
 res[i] := a[i] + dot_product(b[i, ...], c[i, ...])
 ```
 """
-function _2d_sdot(a::Value, b::Value, c::Value; res::MLIRType, location=Location())
-    results = MLIRType[res, ]
-    operands = Value[a, b, c, ]
+function _2d_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[a, b, c,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arm_neon.2d.sdot", location;
         operands, owned_regions, successors, attributes,
@@ -68,13 +68,13 @@ where vector operands are partitioned into groups of four elements.
 Source:
 https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsics
 """
-function intr_sdot(a::Value, b::Value, c::Value; res::MLIRType, location=Location())
-    results = MLIRType[res, ]
-    operands = Value[a, b, c, ]
+function intr_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[a, b, c,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arm_neon.intr.sdot", location;
         operands, owned_regions, successors, attributes,

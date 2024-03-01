@@ -1,6 +1,6 @@
 module complex
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -16,13 +16,13 @@ The `abs` op takes a single complex number and computes its absolute value.
 %a = complex.abs %b : complex<f32>
 ```
 """
-function abs(complex::Value; result::MLIRType, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[complex, ]
+function abs(complex::Value; result::IR.Type, location=Location())
+    results = IR.Type[result,]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "complex.abs", location;
         operands, owned_regions, successors, attributes,
@@ -42,14 +42,14 @@ The `add` operation takes two complex numbers and returns their sum.
 %a = complex.add %b, %c : complex<f32>
 ```
 """
-function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.add", location;
         operands, owned_regions, successors, attributes,
@@ -70,13 +70,13 @@ attribute containing the real and imaginary parts.
 %a = complex.constant [0.1, -1.0] : complex<f64>
 ```
 """
-function constant(; complex::MLIRType, value, location=Location())
-    results = MLIRType[complex, ]
+function constant(; complex::IR.Type, value, location=Location())
+    results = IR.Type[complex,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
+    attributes = NamedAttribute[namedattribute("value", value),]
+
     create_operation(
         "complex.constant", location;
         operands, owned_regions, successors, attributes,
@@ -97,13 +97,13 @@ floating-point operands, the real and the imaginary part.
 %a = complex.create %b, %c : complex<f32>
 ```
 """
-function create(real::Value, imaginary::Value; complex::MLIRType, location=Location())
-    results = MLIRType[complex, ]
-    operands = Value[real, imaginary, ]
+function create(real::Value, imaginary::Value; complex::IR.Type, location=Location())
+    results = IR.Type[complex,]
+    operands = Value[real, imaginary,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "complex.create", location;
         operands, owned_regions, successors, attributes,
@@ -122,14 +122,14 @@ division:
 %a = complex.div %b, %c : complex<f32>
 ```
 """
-function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.div", location;
         operands, owned_regions, successors, attributes,
@@ -149,14 +149,14 @@ The `eq` op takes two complex numbers and returns whether they are equal.
 %a = complex.eq %b, %c : complex<f32>
 ```
 """
-function eq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function eq(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.eq", location;
         operands, owned_regions, successors, attributes,
@@ -178,14 +178,14 @@ it, i.e. `exp(x)` or `e^(x)`, where `x` is the input value.
 %a = complex.exp %b : complex<f32>
 ```
 """
-function exp(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[complex, ]
+function exp(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.exp", location;
         operands, owned_regions, successors, attributes,
@@ -205,13 +205,13 @@ The `im` op takes a single complex number and extracts the imaginary part.
 %a = complex.im %b : complex<f32>
 ```
 """
-function im(complex::Value; imaginary::MLIRType, location=Location())
-    results = MLIRType[imaginary, ]
-    operands = Value[complex, ]
+function im(complex::Value; imaginary::IR.Type, location=Location())
+    results = IR.Type[imaginary,]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "complex.im", location;
         operands, owned_regions, successors, attributes,
@@ -234,14 +234,14 @@ approximately equal to 2.718281.
 %a = complex.log1p %b : complex<f32>
 ```
 """
-function log1p(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[complex, ]
+function log1p(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.log1p", location;
         operands, owned_regions, successors, attributes,
@@ -263,14 +263,14 @@ logarithm of it, i.e. `log(x)` or `log_e(x)`, where `x` is the input value.
 %a = complex.log %b : complex<f32>
 ```
 """
-function log(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[complex, ]
+function log(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.log", location;
         operands, owned_regions, successors, attributes,
@@ -288,14 +288,14 @@ The `mul` operation takes two complex numbers and returns their product:
 %a = complex.mul %b, %c : complex<f32>
 ```
 """
-function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.mul", location;
         operands, owned_regions, successors, attributes,
@@ -315,14 +315,14 @@ The `neg` op takes a single complex number `complex` and returns `-complex`.
 %a = complex.neg %b : complex<f32>
 ```
 """
-function neg(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[complex, ]
+function neg(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.neg", location;
         operands, owned_regions, successors, attributes,
@@ -343,14 +343,14 @@ equal.
 %a = complex.neq %b, %c : complex<f32>
 ```
 """
-function neq(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function neq(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.neq", location;
         operands, owned_regions, successors, attributes,
@@ -370,13 +370,13 @@ The `re` op takes a single complex number and extracts the real part.
 %a = complex.re %b : complex<f32>
 ```
 """
-function re(complex::Value; real::MLIRType, location=Location())
-    results = MLIRType[real, ]
-    operands = Value[complex, ]
+function re(complex::Value; real::IR.Type, location=Location())
+    results = IR.Type[real,]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "complex.re", location;
         operands, owned_regions, successors, attributes,
@@ -397,14 +397,14 @@ it, i.e. `y = sign(x) = x / |x|` if `x != 0`, otherwise `y = 0`.
 %a = complex.sign %b : complex<f32>
 ```
 """
-function sign(complex::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[complex, ]
+function sign(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.sign", location;
         operands, owned_regions, successors, attributes,
@@ -424,14 +424,14 @@ The `sub` operation takes two complex numbers and returns their difference.
 %a = complex.sub %b, %c : complex<f32>
 ```
 """
-function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function sub(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "complex.sub", location;
         operands, owned_regions, successors, attributes,

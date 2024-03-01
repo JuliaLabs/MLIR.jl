@@ -1,6 +1,6 @@
 module cf
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -20,18 +20,18 @@ assert %b, \"Expected ... to be true\"
 ```
 """
 function assert(arg::Value; msg, location=Location())
-    results = MLIRType[]
-    operands = Value[arg, ]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("msg", msg), ]
-    
-    create_operation(
-        "cf.assert", location;
-        operands, owned_regions, successors, attributes,
-        results=results,
-        result_inference=false
-    )
+  results = IR.Type[]
+  operands = Value[arg,]
+  owned_regions = Region[]
+  successors = Block[]
+  attributes = NamedAttribute[namedattribute("msg", msg),]
+
+  create_operation(
+    "cf.assert", location;
+    operands, owned_regions, successors, attributes,
+    results=results,
+    result_inference=false
+  )
 end
 
 """
@@ -52,18 +52,18 @@ target block.
 ```
 """
 function br(destOperands::Vector{Value}; dest::Block, location=Location())
-    results = MLIRType[]
-    operands = Value[destOperands..., ]
-    owned_regions = Region[]
-    successors = Block[dest, ]
-    attributes = NamedAttribute[]
-    
-    create_operation(
-        "cf.br", location;
-        operands, owned_regions, successors, attributes,
-        results=results,
-        result_inference=false
-    )
+  results = IR.Type[]
+  operands = Value[destOperands...,]
+  owned_regions = Region[]
+  successors = Block[dest,]
+  attributes = NamedAttribute[]
+
+  create_operation(
+    "cf.br", location;
+    operands, owned_regions, successors, attributes,
+    results=results,
+    result_inference=false
+  )
 end
 
 """
@@ -95,19 +95,19 @@ func.func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
 ```
 """
 function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; trueDest::Block, falseDest::Block, location=Location())
-    results = MLIRType[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
-    owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands), ]))
-    
-    create_operation(
-        "cf.cond_br", location;
-        operands, owned_regions, successors, attributes,
-        results=results,
-        result_inference=false
-    )
+  results = IR.Type[]
+  operands = Value[condition, trueDestOperands..., falseDestOperands...,]
+  owned_regions = Region[]
+  successors = Block[trueDest, falseDest,]
+  attributes = NamedAttribute[]
+  push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands),]))
+
+  create_operation(
+    "cf.cond_br", location;
+    operands, owned_regions, successors, attributes,
+    results=results,
+    result_inference=false
+  )
 end
 
 """
@@ -130,20 +130,20 @@ switch %flag : i32, [
 ```
 """
 function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
-    results = MLIRType[]
-    operands = Value[flag, defaultOperands..., caseOperands..., ]
-    owned_regions = Region[]
-    successors = Block[defaultDestination, caseDestinations..., ]
-    attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
-    push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands), ]))
-    !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
-    
-    create_operation(
-        "cf.switch", location;
-        operands, owned_regions, successors, attributes,
-        results=results,
-        result_inference=false
-    )
+  results = IR.Type[]
+  operands = Value[flag, defaultOperands..., caseOperands...,]
+  owned_regions = Region[]
+  successors = Block[defaultDestination, caseDestinations...,]
+  attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments),]
+  push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands),]))
+  !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
+
+  create_operation(
+    "cf.switch", location;
+    operands, owned_regions, successors, attributes,
+    results=results,
+    result_inference=false
+  )
 end
 
 end # cf
