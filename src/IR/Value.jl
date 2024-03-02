@@ -97,7 +97,7 @@ function position(value::Value)
 end
 
 """
-    Type(value)
+    type(value)
 
 Returns the type of the value.
 """
