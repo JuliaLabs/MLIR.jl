@@ -569,7 +569,7 @@ end
 
 Checks whether the given attribute is an opaque elements attribute.
 """
-isopaqueelements(attr::Attribute) = API.mlirAttributeIsAOpaqueElements(attr)
+@llvmversioned max=v"15" isopaqueelements(attr::Attribute) = API.mlirAttributeIsAOpaqueElements(attr)
 
 """
     issparseelements(attr)
