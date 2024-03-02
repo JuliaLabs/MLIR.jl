@@ -270,7 +270,12 @@ function Base.show(io::IO, operation::Operation)
     ref = Ref(buffer)
 
     flags = API.mlirOpPrintingFlagsCreate()
-    get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true, true)
+
+    if LLVM.version() >= v"16"
+        API.mlirOpPrintingFlagsEnableDebugInfo(flags, get(io, :debug, false), true)
+    else
+        get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true)
+    end
     API.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
     API.mlirOpPrintingFlagsDestroy(flags)
 
