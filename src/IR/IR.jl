@@ -85,6 +85,6 @@ function verifyall(operation::Operation; debug=false)
         end
     end
 end
-verifyall(module_::IR.Module) = get_operation(module_) |> verifyall
+verifyall(module_::IR.Module) = Operation(module_) |> verifyall
 
 end # module IR
