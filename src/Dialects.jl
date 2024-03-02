@@ -11,13 +11,7 @@ function namedattribute(name, val::NamedAttribute)
     return val
 end
 
-operandsegmentsizes(segments) =
-    namedattribute("operand_segment_sizes",
-        LLVM.version() >= v"16" ?
-            DenseArrayAttribute(Int32.(segments)) :
-            Attribute(Int32.(segments))
-    )
-
+operandsegmentsizes(segments) = namedattribute("operand_segment_sizes", Attribute(Int32.(segments)))
 
 let
     ver = string(LLVM.version().major)
