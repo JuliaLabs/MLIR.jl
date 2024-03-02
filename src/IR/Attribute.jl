@@ -600,13 +600,13 @@ Checks whether the given attribute is a dense array attribute.
 
 Create a dense array attribute with the given elements.
 """
-@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Bool}; context::Context=context()) = Attribute(mlirDenseBoolArrayGet(context, length(values), pointer(values)))
-@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int8}; context::Context=context()) = Attribute(mlirDenseI8ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int16}; context::Context=context()) = Attribute(mlirDenseI16ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int32}; context::Context=context()) = Attribute(mlirDenseI32ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int64}; context::Context=context()) = Attribute(mlirDenseI64ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Float32}; context::Context=context()) = Attribute(mlirDenseF32ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Float64}; context::Context=context()) = Attribute(mlirDenseF64ArrayGet(context, length(values), pointer(values)))
+@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Bool}; context::Context=context()) = Attribute(API.mlirDenseBoolArrayGet(context, length(values), pointer(values)))
+@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int8}; context::Context=context()) = Attribute(API.mlirDenseI8ArrayGet(context, length(values), pointer(values)))
+@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int16}; context::Context=context()) = Attribute(API.mlirDenseI16ArrayGet(context, length(values), pointer(values)))
+@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int32}; context::Context=context()) = Attribute(API.mlirDenseI32ArrayGet(context, length(values), pointer(values)))
+@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int64}; context::Context=context()) = Attribute(API.mlirDenseI64ArrayGet(context, length(values), pointer(values)))
+@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Float32}; context::Context=context()) = Attribute(API.mlirDenseF32ArrayGet(context, length(values), pointer(values)))
+@llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Float64}; context::Context=context()) = Attribute(API.mlirDenseF64ArrayGet(context, length(values), pointer(values)))
 
 @llvmversioned min=v"16" Attribute(values::AbstractArray) = DenseArrayAttribute(values)
 
