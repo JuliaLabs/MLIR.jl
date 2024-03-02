@@ -460,7 +460,7 @@ function Base.fill(::Core.Type{Attribute}, value, shape)
 end
 
 """
-    Attribute(array::AbstractArray)
+    DenseElementsAttribute(array::AbstractArray)
 
 Creates a dense elements attribute with the given shaped type from elements of a specific type. Expects the element type of the shaped type to match the data element type.
 """
@@ -527,7 +527,7 @@ function DenseElementsAttribute(values::AbstractArray{Float16})
 end
 
 """
-    Attribute(array::AbstractArray{String})
+    DenseElementsAttribute(array::AbstractArray{String})
 
 Creates a dense elements attribute with the given shaped type from string elements.
 """
