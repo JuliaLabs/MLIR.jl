@@ -129,6 +129,20 @@ end
 
 # Floating point types
 """
+    Float8E5M2(; context=context())
+
+Creates an f8E5M2 type in the given context. The type is owned by the context.
+"""
+@llvmversioned min=v"16" Float8E5M2(; context::Context=context()) = Type(API.mlirFloat8E5M2TypeGet(context))
+
+"""
+    Float8E4M3FN(; context=context())
+
+Creates an f8E4M3FN type in the given context. The type is owned by the context.
+"""
+@llvmversioned min=v"16" Float8E4M3FN(; context::Context=context()) = Type(API.mlirFloat8E4M3FNTypeGet(context))
+
+"""
 BFloat16Type(; context=context())
 
 Creates a bf16 type in the given context. The type is owned by the context.
@@ -155,6 +169,20 @@ Type(::Core.Type{Float32}; context::Context=context()) = Type(API.mlirF32TypeGet
 Creates a f64 type in the given context. The type is owned by the context.
 """
 Type(::Core.Type{Float64}; context::Context=context()) = Type(API.mlirF64TypeGet(context))
+
+"""
+    isf8e5m2(type)
+
+Checks whether the given type is an f8E5M2 type.
+"""
+@llvmversioned min=v"16" isf8e5m2(type::Type) = API.mlirTypeIsAFloat8E5M2(type)
+
+"""
+    isf8e4m3fn(type)
+
+Checks whether the given type is an f8E4M3FN type.
+"""
+@llvmversioned min=v"16" isf8e4m3fn(type::Type) = API.mlirTypeIsAFloat8E4M3FN(type)
 
 """
     isbf16(type)
