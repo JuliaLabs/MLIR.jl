@@ -1,8 +1,8 @@
 struct OpOperand
-    op::API.MlirOpOperation
+    op::API.MlirOpOperand
 
-    function OpOperand(op::API.MlirOpOperation)
-        @assert mlirIsNull(op) "cannot create OpOperand with null MlirOpOperation"
+    function OpOperand(op::API.MlirOpOperand)
+        @assert mlirIsNull(op) "cannot create OpOperand with null MlirOpOperand"
         new(op)
     end
 end
