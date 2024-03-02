@@ -50,11 +50,11 @@ parent_region(block::Block) = Region(API.mlirBlockGetParentRegion(block))
 Base.parent(block::Block) = parent_region(block)
 
 """
-    next_in_region(block)
+    next(block)
 
 Returns the block immediately following the given block in its parent region or `nothing` if last.
 """
-function next_in_region(block::Block)
+function next(block::Block)
     block = API.mlirBlockGetNextInRegion(block)
     mlirBlockIsNull(block) && return nothing
     Block(block)
