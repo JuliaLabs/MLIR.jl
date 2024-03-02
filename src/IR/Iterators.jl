@@ -10,7 +10,7 @@ end
 function Base.iterate(it::BlockIterator)
     reg = it.region
     raw_block = API.mlirRegionGetFirstBlock(reg)
-    if mlirBlockIsNull(raw_block)
+    if mlirIsNull(raw_block)
         nothing
     else
         b = Block(raw_block, false)
@@ -20,7 +20,7 @@ end
 
 function Base.iterate(::BlockIterator, block)
     raw_block = API.mlirBlockGetNextInRegion(block)
-    if mlirBlockIsNull(raw_block)
+    if mlirIsNull(raw_block)
         nothing
     else
         b = Block(raw_block, false)
@@ -39,7 +39,7 @@ end
 
 function Base.iterate(it::RegionIterator)
     raw_region = API.mlirOperationGetFirstRegion(it.op)
-    if mlirRegionIsNull(raw_region)
+    if mlirIsNull(raw_region)
         nothing
     else
         region = Region(raw_region, false)
@@ -49,7 +49,7 @@ end
 
 function Base.iterate(it::RegionIterator, region)
     raw_region = API.mlirRegionGetNextInOperation(region)
-    if mlirRegionIsNull(raw_region)
+    if mlirIsNull(raw_region)
         nothing
     else
         region = Region(raw_region, false)
@@ -68,7 +68,7 @@ end
 
 function Base.iterate(it::OperationIterator)
     raw_op = API.mlirBlockGetFirstOperation(it.block)
-    if mlirOperationIsNull(raw_op)
+    if mlirIsNull(raw_op)
         nothing
     else
         op = Operation(raw_op, false)
@@ -78,7 +78,7 @@ end
 
 function Base.iterate(::OperationIterator, op)
     raw_op = API.mlirOperationGetNextInBlock(op)
-    if mlirOperationIsNull(raw_op)
+    if mlirIsNull(raw_op)
         nothing
     else
         op = Operation(raw_op, false)

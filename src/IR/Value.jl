@@ -55,11 +55,11 @@ end
 function owner(value::Value)
     if is_block_arg(value)
         raw_block = API.mlirBlockArgumentGetOwner(value)
-        mlirValueIsNull(raw_block) && return nothing
+        mlirIsNull(raw_block) && return nothing
         return Block(raw_block, false)
     elseif is_op_res(value)
         raw_op = API.mlirOpResultGetOwner(value)
-        mlirValueIsNull(raw_op) && return nothing
+        mlirIsNull(raw_op) && return nothing
         return Operation(raw_op, false)
     else
         error("Value is neither a block argument nor an op result")

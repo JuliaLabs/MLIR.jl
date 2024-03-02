@@ -75,7 +75,7 @@ Gets the first block in the region.
 """
 function first_block(region::Region)
     block = mlirRegionGetFirstBlock(region)
-    mlirBlockIsNull(block) && return nothing
+    mlirIsNull(block) && return nothing
     Block(block, false)
 end
 Base.first(region::Region) = first_block(region)

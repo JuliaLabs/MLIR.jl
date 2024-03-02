@@ -56,7 +56,7 @@ Returns the block immediately following the given block in its parent region or 
 """
 function next(block::Block)
     block = API.mlirBlockGetNextInRegion(block)
-    mlirBlockIsNull(block) && return nothing
+    mlirIsNull(block) && return nothing
     Block(block)
 end
 
@@ -91,7 +91,7 @@ Returns the first operation in the block or `nothing` if empty.
 """
 function first_op(block::Block)
     op = API.mlirBlockGetFirstOperation(block)
-    mlirOperationIsNull(op) && return nothing
+    mlirIsNull(op) && return nothing
     Operation(op, false)
 end
 Base.first(block::Block) = first_op(block)
@@ -103,7 +103,7 @@ Returns the terminator operation in the block or `nothing` if no terminator.
 """
 function terminator(block::Block)
     op = API.mlirBlockGetTerminator(block)
-    mlirOperationIsNull(op) && return nothing
+    mlirIsNull(op) && return nothing
     Operation(op, false)
 end
 
