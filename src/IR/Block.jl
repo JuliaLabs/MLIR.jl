@@ -92,7 +92,7 @@ Returns the first operation in the block or `nothing` if empty.
 function first_op(block::Block)
     op = API.mlirBlockGetFirstOperation(block)
     mlirOperationIsNull(op) && return nothing
-    Operation(op)
+    Operation(op, false)
 end
 Base.first(block::Block) = first_op(block)
 
@@ -104,7 +104,7 @@ Returns the terminator operation in the block or `nothing` if no terminator.
 function terminator(block::Block)
     op = API.mlirBlockGetTerminator(block)
     mlirOperationIsNull(op) && return nothing
-    Operation(op)
+    Operation(op, false)
 end
 
 """
