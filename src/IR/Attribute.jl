@@ -143,24 +143,24 @@ Creates an integer attribute of the given type with the given integer value.
 """
 Attribute(i::T) where {T<:Integer} = Attribute(API.mlirIntegerAttrGet(Type(T), Int64(i)))
 
-# TODO mlirIntegerAttrGetValueInt
-
 """
-    Int(attr)
+    Int64(attr)
 
 Returns the value stored in the given integer attribute, assuming the value is of signed type and fits into a signed 64-bit integer.
 """
-function Base.Int(attr::Attribute)
+function Base.Int64(attr::Attribute)
     @assert isinteger(attr) "attribute $(attr) is not an integer attribute"
     API.mlirIntegerAttrGetValueInt(attr)
 end
 
+# TODO mlirIntegerAttrGetValueSInt
+
 """
-    UInt(attr)
+    UInt64(attr)
 
 Returns the value stored in the given integer attribute, assuming the value is of unsigned type and fits into an unsigned 64-bit integer.
 """
-function Base.UInt(attr::Attribute)
+function Base.UInt64(attr::Attribute)
     @assert isinteger(attr) "attribute $(attr) is not an integer attribute"
     API.mlirIntegerAttrGetValueUInt(attr)
 end
