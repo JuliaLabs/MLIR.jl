@@ -260,7 +260,7 @@ macro affinemap(expr)
 
     lhs, rhs = expr.args
     rhs = Meta.isexpr(rhs, :block) ? only(rhs.args) : rhs
-    @assert Meta.isexpr(lhs, :tuple) "invalid expression lhs $(lhs) (expected tuple)"
+
     @assert Meta.isexpr(rhs, :tuple) "invalid expression rhs $(rhs) (expected tuple)"
 
     dims, syms = if Meta.isexpr(lhs, :ref)
