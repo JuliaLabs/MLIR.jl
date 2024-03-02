@@ -564,12 +564,12 @@ end
 
 # TODO mlirDenseElementsAttrGetRawData
 
-"""
+@llvmversioned max=v"15" """
     isopaqueelements(attr)
 
 Checks whether the given attribute is an opaque elements attribute.
 """
-@llvmversioned max=v"15" isopaqueelements(attr::Attribute) = API.mlirAttributeIsAOpaqueElements(attr)
+isopaqueelements(attr::Attribute) = API.mlirAttributeIsAOpaqueElements(attr)
 
 """
     issparseelements(attr)
@@ -582,11 +582,13 @@ issparseelements(attr::Attribute) = API.mlirAttributeIsASparseElements(attr)
 # TODO mlirSparseElementsAttrGetIndices
 # TODO mlirSparseElementsAttrGetValues
 
-"""
+@llvmversioned min=v"16" """
     isdensearray(attr, ::Core.Type{T})
 
 Checks whether the given attribute is a dense array attribute.
 """
+function isdensearray end
+
 @llvmversioned min=v"16" isdensearray(attr::Attribute, ::Core.Type{Bool}) = API.mlirAttributeIsADenseBoolArray(attr)
 @llvmversioned min=v"16" isdensearray(attr::Attribute, ::Core.Type{Int8}) = API.mlirAttributeIsADenseI8Array(attr)
 @llvmversioned min=v"16" isdensearray(attr::Attribute, ::Core.Type{Int16}) = API.mlirAttributeIsADenseI16Array(attr)
@@ -595,11 +597,13 @@ Checks whether the given attribute is a dense array attribute.
 @llvmversioned min=v"16" isdensearray(attr::Attribute, ::Core.Type{Float32}) = API.mlirAttributeIsADenseF32Array(attr)
 @llvmversioned min=v"16" isdensearray(attr::Attribute, ::Core.Type{Float64}) = API.mlirAttributeIsADenseF64Array(attr)
 
-"""
+@llvmversioned min=v"16" """
     DenseArrayAttribute(array; context=context())
 
 Create a dense array attribute with the given elements.
 """
+function DenseArrayAttribute end
+
 @llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Bool}; context::Context=context()) = Attribute(API.mlirDenseBoolArrayGet(context, length(values), pointer(values)))
 @llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int8}; context::Context=context()) = Attribute(API.mlirDenseI8ArrayGet(context, length(values), pointer(values)))
 @llvmversioned min=v"16" DenseArrayAttribute(values::AbstractArray{Int16}; context::Context=context()) = Attribute(API.mlirDenseI16ArrayGet(context, length(values), pointer(values)))
