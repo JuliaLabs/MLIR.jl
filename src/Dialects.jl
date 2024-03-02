@@ -1,7 +1,7 @@
 module Dialects
 
 import LLVM
-import ..IR: Attribute, NamedAttribute, DenseArrayAttribute, context
+import ..IR: Attribute, NamedAttribute, context
 import ..API
 
 namedattribute(name, val) = namedattribute(name, Attribute(val))
