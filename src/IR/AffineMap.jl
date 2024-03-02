@@ -274,11 +274,11 @@ macro affinemap(expr)
     @assert all(x -> x isa Symbol, syms) "invalid symbols $syms"
 
     dimexprs = map(enumerate(dims)) do (i, dim)
-        :($dim = IR.AffineDimensionExpr($i))
+        :($dim = AffineDimensionExpr($i))
     end
 
     symexprs = map(enumerate(syms)) do (i, sym)
-        :($sym = IR.SymbolExpr($i))
+        :($sym = SymbolExpr($i))
     end
 
     known_binops = [:+, :-, :*, :÷, :%, :fld, :cld]
