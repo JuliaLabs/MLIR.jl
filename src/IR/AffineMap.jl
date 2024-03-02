@@ -254,30 +254,31 @@ julia> IR.context!(IR.Context()) do
 MLIR.IR.AffineMap(#= (d0, d1)[s0] -> (d0 + s0, d1 mod 10) =#)
 ```
 """
-macro affinemap(ex)
-    @assert Meta.isexpr(ex, :(->), 2) "invalid affine expression $ex"
-    Base.remove_linenums!(ex)
+macro affinemap(expr)
+    @assert Meta.isexpr(expr, :(->), 2) "invalid affine expression $expr"
+    Base.remove_linenums!(expr)
 
-    lhs, rhs = ex.args
-    rhs = Meta.isexpr(rhs, :block) ? rhs.args[end] : rhs
-    if Meta.isexpr(lhs, :ref)
-        lhs, symbols... = lhs.args
-    else
-        symbols = []
-    end
+    lhs, rhs = expr.args
+    rhs = Meta.isexpr(rhs, :block) ? only(rhs.args) : rhs
     @assert Meta.isexpr(lhs, :tuple) "invalid expression lhs $(lhs) (expected tuple)"
     @assert Meta.isexpr(rhs, :tuple) "invalid expression rhs $(rhs) (expected tuple)"
 
-    dimensions = lhs.args
-    values = Dict{Symbol,Expr}()
-
-    for (i, s) in enumerate(symbols)
-        @assert s isa Symbol "invalid symbol $s in expression"
-        values[s] = Expr(:call, IR.SymbolExpr, i - 1)
+    dims, syms = if Meta.isexpr(lhs, :ref)
+        collection, key... = lhs.args
+        collection.args, key
+    else
+        lhs.args, Symbol[]
     end
-    for (i, s) in enumerate(dimensions)
-        @assert s isa Symbol "invalid dimension $s in expression"
-        values[s] = Expr(:call, IR.AffineDimensionExpr, i - 1)
+
+    @assert all(x -> x isa Symbol, dims) "invalid dimensions $dims"
+    @assert all(x -> x isa Symbol, syms) "invalid symbols $syms"
+
+    dimexprs = map(enumerate(dims)) do (i, dim)
+        :($dim = IR.AffineDimensionExpr($i))
+    end
+
+    symexprs = map(enumerate(syms)) do (i, sym)
+        :($sym = IR.SymbolExpr($i))
     end
 
     known_binops = [:+, :-, :*, :÷, :%, :fld, :cld]
@@ -285,18 +286,25 @@ macro affinemap(ex)
     affine_exprs = Expr(:vect, map(rhs.args) do ex
         walk(ex) do v
             if v isa Integer
-                Expr(:call, IR.ConstantExpr, Int64(v))
+                Expr(:call, ConstantExpr, Int64(v))
             elseif Meta.isexpr(v, :call)
                 v
-            elseif haskey(values, v)
-                values[v]
-            elseif v isa Symbol && v ∉ known_binops
-                error("unknown item $v")
+            elseif v isa Symbol
+                if v in dims || v in syms || v in known_binops
+                    v
+                else
+                    error("unknown item $v")
+                end
             else
                 v
             end
         end
     end...)
 
-    return Expr(:call, IR.AffineMap, length(dimensions), length(symbols), affine_exprs)
+    quote
+        $(dimexprs...)
+        $(symexprs...)
+
+        AffineMap($(length(dims)), $(length(syms)), $(affine_exprs))
+    end
 end

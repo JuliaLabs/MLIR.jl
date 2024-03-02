@@ -9,6 +9,7 @@ export activate!, deactivate!, dispose!, enable_multithreading!, context!
 export context, type, type!, location, typeid, block, dialect
 export nattrs, attr, attr!, rmattr!, nregions, region, nresults, result, noperands, operand, operand!, nsuccessors, successor
 export BlockIterator, RegionIterator, OperationIterator
+export @affinemap
 
 function mlirIsNull(val)
     val.ptr == C_NULL
