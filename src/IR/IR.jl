@@ -1,6 +1,7 @@
 module IR
 
 using ..API
+using LLVM: LLVM
 
 # do not export `Type`, as it is already defined in Core
 # also, use `Core.Type` inside this module to avoid clash with MLIR `Type`
@@ -32,6 +33,11 @@ include("Module.jl")
 include("Block.jl")
 include("Region.jl")
 include("Value.jl")
+
+if LLVM.version() >= v"16"
+    include("OpOperand.jl")
+end
+
 include("Identifier.jl")
 include("SymbolTable.jl")
 include("AffineExpr.jl")
