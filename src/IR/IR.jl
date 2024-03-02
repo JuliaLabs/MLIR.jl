@@ -22,6 +22,22 @@ function print_callback(str::API.MlirStringRef, userdata)
     return Cvoid()
 end
 
+macro llvmversioned(pred, expr)
+    @assert Meta.isexpr(pred, :(=)) "Expected an expression as the first argument"
+
+    predname, version = pred.args
+    @assert predname in (:min, :max) "Expected 'min' or 'max' as the first argument"
+
+    @assert Meta.isexpr(version, :macrocall) && version.args[1] == Symbol("@v_str") "Expected a VersionNumber"
+    version = eval(version)
+
+    if predname == :min && LLVM.version() >= version || predname == :max && LLVM.version() <= version
+        esc(expr)
+    else
+        esc(:(nothing))
+    end
+end
+
 include("LogicalResult.jl")
 include("Context.jl")
 include("Dialect.jl")
@@ -33,11 +49,7 @@ include("Module.jl")
 include("Block.jl")
 include("Region.jl")
 include("Value.jl")
-
-if LLVM.version() >= v"16"
-    include("OpOperand.jl")
-end
-
+@llvmversioned min=v"16" include("OpOperand.jl")
 include("Identifier.jl")
 include("SymbolTable.jl")
 include("AffineExpr.jl")
