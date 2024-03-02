@@ -28,7 +28,7 @@ Base.parse(::Core.Type{Module}, module_; context::Context=context()) = Module(AP
 macro mlir_str(code)
     quote
         ctx = Context()
-        parse(Module, code)
+        parse(Module, $code)
     end
 end
 
@@ -55,5 +55,5 @@ Operation(module_::Module) = Operation(API.mlirModuleGetOperation(module_), fals
 
 function Base.show(io::IO, module_::Module)
     println(io, "Module:")
-    show(io, get_operation(module_))
+    show(io, Operation(module_))
 end
