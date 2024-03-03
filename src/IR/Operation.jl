@@ -319,3 +319,5 @@ Returns whether the given fully-qualified operation (i.e. 'dialect.operation') i
 This will return true if the dialect is loaded and the operation is registered within the dialect.
 """
 is_registered(opname; context::Context=context()) = API.mlirContextIsRegisteredOperation(context, opname)
+
+# TODO mlirOperationWriteBytecode (LLVM 16)
