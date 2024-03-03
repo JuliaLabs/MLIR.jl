@@ -78,11 +78,11 @@ function argument(block::Block, i)
 end
 
 """
-    push_argument!(block, type, loc)
+    push_argument!(block, type; location=Location())
 
 Appends an argument of the specified type to the block. Returns the newly added argument.
 """
-push_argument!(block::Block, type, loc) = Value(API.mlirBlockAddArgument(block, type, loc))
+push_argument!(block::Block, type; location::Location=Location()) = Value(API.mlirBlockAddArgument(block, type, location))
 
 """
     first_op(block)
