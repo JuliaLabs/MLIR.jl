@@ -58,6 +58,7 @@ include("Attribute.jl")
 include("IntegerSet.jl")
 include("Iterators.jl")
 
+include("ExecutionEngine.jl")
 include("Pass.jl")
 
 # MlirStringRef is a non-owning reference to a string,
