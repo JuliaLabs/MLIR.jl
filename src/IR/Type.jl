@@ -333,13 +333,15 @@ isvector(type::Type) = API.mlirTypeIsAVector(type)
 
 # Tensor type
 """
-    TensorType(rank, shape, elementType, encoding=Attribute(); location=Location(), check=false)
+    TensorType(shape, elementType, encoding=Attribute(); location=Location(), check=false)
 
 Creates a tensor type of a fixed rank with the given shape, element type, and optional encoding in the same context as the element type.
 The type is owned by the context. Tensor types without any specific encoding field should assign [`mlirAttributeGetNull`](@ref) to this parameter.
 If `check=true`, emits appropriate diagnostics on illegal arguments.
 """
-function TensorType(rank, shape, elem_type, encoding=Attribute(); location::Location=Location(), check::Bool=false)
+function TensorType(shape, elem_type, encoding=Attribute(); location::Location=Location(), check::Bool=false)
+    rank = length(shape)
+    shape = shape isa AbstractVector ? shape : collect(shape)
     Type(check ? API.mlirRankedTensorTypeGetChecked(location, rank, shape, elem_type, encoding) : API.mlirRankedTensorTypeGet(rank, shape, elem_type, encoding))
 end
 

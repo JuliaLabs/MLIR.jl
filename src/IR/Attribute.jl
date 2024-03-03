@@ -455,7 +455,7 @@ function Base.fill(value::Float64, shaped_type::Type)
 end
 
 function Base.fill(::Core.Type{Attribute}, value, shape)
-    shaped_type = TensorType(length(shape), collect(shape), Type(typeof(value)))
+    shaped_type = TensorType(shape, Type(typeof(value)))
     Base.fill(value, shaped_type)
 end
 
@@ -465,64 +465,64 @@ end
 Creates a dense elements attribute with the given shaped type from elements of a specific type. Expects the element type of the shaped type to match the data element type.
 """
 function DenseElementsAttribute(values::AbstractVector{Bool})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Bool))
+    shaped_type = TensorType(size(values), Type(Bool))
     Attribute(API.mlirDenseElementsAttrBoolGet(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt8})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(UInt8))
+    shaped_type = TensorType(size(values), Type(UInt8))
     Attribute(API.mlirDenseElementsAttrUInt8Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int8})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Int8))
+    shaped_type = TensorType(size(values), Type(Int8))
     Attribute(API.mlirDenseElementsAttrInt8Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt16})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(UInt16))
+    shaped_type = TensorType(size(values), Type(UInt16))
     Attribute(API.mlirDenseElementsAttrUInt16Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int16})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Int16))
+    shaped_type = TensorType(size(values), Type(Int16))
     Attribute(API.mlirDenseElementsAttrInt16Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt32})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(UInt32))
+    shaped_type = TensorType(size(values), Type(UInt32))
     Attribute(API.mlirDenseElementsAttrUInt32Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int32})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Int32))
+    shaped_type = TensorType(size(values), Type(Int32))
     Attribute(API.mlirDenseElementsAttrInt32Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt64})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(UInt64))
+    shaped_type = TensorType(size(values), Type(UInt64))
     Attribute(API.mlirDenseElementsAttrUInt64Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int64})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Int64))
+    shaped_type = TensorType(size(values), Type(Int64))
     Attribute(API.mlirDenseElementsAttrInt64Get(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{Float32})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Float32))
+    shaped_type = TensorType(size(values), Type(Float32))
     Attribute(API.mlirDenseElementsAttrFloatGet(shaped_type, length(values), pointer(values)))
 end
 
 function DenseElementsAttribute(values::AbstractArray{Float64})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Float64))
+    shaped_type = TensorType(size(values), Type(Float64))
     Attribute(API.mlirDenseElementsAttrDoubleGet(shaped_type, length(values), pointer(values)))
 end
 
 # TODO mlirDenseElementsAttrBFloat16Get
 
 function DenseElementsAttribute(values::AbstractArray{Float16})
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(Float16))
+    shaped_type = TensorType(size(values), Type(Float16))
     Attribute(API.mlirDenseElementsAttrFloat16Get(shaped_type, length(values), pointer(values)))
 end
 
@@ -533,7 +533,7 @@ Creates a dense elements attribute with the given shaped type from string elemen
 """
 function DenseElementsAttribute(values::AbstractArray{String})
     # TODO may fail because `Type(String)` is not defined
-    shaped_type = TensorType(ndims(values), collect(size(values)), Type(String))
+    shaped_type = TensorType(size(values), Type(String))
     Attribute(API.mlirDenseElementsAttrStringGet(shaped_type, length(values), pointer(values)))
 end
 
@@ -548,7 +548,7 @@ function Base.reshape(attr::Attribute, shape)
     @assert isdenseelements(attr) "attribute $(attr) is not a dense elements attribute"
     @assert length(attr) == prod(shape) "new shape $(shape) has a different number of elements than the original attribute"
     element_type = eltype(type(attr))
-    shaped_type = TensorType(length(shape), collect(shape), element_type)
+    shaped_type = TensorType(shape, element_type)
     Attribute(API.mlirDenseElementsAttrReshape(attr, shaped_type))
 end
 
