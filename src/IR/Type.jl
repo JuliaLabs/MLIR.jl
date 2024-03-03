@@ -221,7 +221,7 @@ isf64(type::Type) = API.mlirTypeIsAF64(type)
 
 # Complex types
 """
-    Complex(elementType)
+    Type(Complex{T}) where {T}
 
 Creates a complex type with the given element type in the same context as the element type. The type is owned by the context.
 """
