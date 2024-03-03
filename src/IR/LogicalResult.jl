@@ -16,25 +16,25 @@ Base.convert(::Core.Type{API.MlirLogicalResult}, result::LogicalResult) = result
 
 Creates a logical result representing a success.
 """
-success() = LogicalResult(API.mlirLogicalResultSuccess())
+success() = LogicalResult(API.MlirLogicalResult(1))
 
 """
     failure()
 
 Creates a logical result representing a failure.
 """
-failure() = LogicalResult(API.mlirLogicalResultFailure())
+failure() = LogicalResult(API.MlirLogicalResult(0))
 
 """
     issuccess(res)
 
 Checks if the given logical result represents a success.
 """
-issuccess(result::LogicalResult) = API.mlirLogicalResultIsSuccess(result)
+issuccess(result::LogicalResult) = result.result.value != 0
 
 """
     isfailure(res)
 
 Checks if the given logical result represents a failure.
 """
-isfailure(result::LogicalResult) = API.mlirLogicalResultIsFailure(result)
+isfailure(result::LogicalResult) = result.result.value == 0
