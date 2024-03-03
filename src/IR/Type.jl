@@ -80,7 +80,7 @@ Type(T::Core.Type{<:Integer}; context::Context=context()) = Type(API.mlirInteger
 
 Creates a signed integer type of the given bitwidth in the context. The type is owned by the context.
 """
-Type(T::Core.Type{<:Signed}; context::Context=context()) = Type(API.mlirIntegerTypeSignedGet(context, sizeof(T) * 8))
+Type(T::Core.Type{<:Signed}; context::Context=context()) = Type(API.mlirIntegerTypeGet(context, sizeof(T) * 8))
 
 """
     Type(T::Core.Type{<:Unsigned}; context=context()
