@@ -32,8 +32,8 @@ end
 PassManager(; context::Context=context()) = PassManager(API.mlirPassManagerCreate(context))
 
 function run!(pm::PassManager, module_)
-    status = API.mlirPassManagerRun(pm, module_)
-    if mlirLogicalResultIsFailure(status)
+    status = LogicalResult(API.mlirPassManagerRun(pm, module_))
+    if isfailure(status)
         throw("failed to run pass manager on module")
     end
     module_
@@ -81,14 +81,14 @@ function add_pipeline!(op_pass::OpPassManager, pipeline)
     @static if isdefined(API, :mlirOpPassManagerAddPipeline)
         io = IOBuffer()
         c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
-        result = API.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, Ref(io))
-        if mlirLogicalResultIsFailure(result)
+        result = LogicalResult(API.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, Ref(io)))
+        if isfailure(result)
             exc = AddPipelineException(String(take!(io)))
             throw(exc)
         end
     else
-        result = API.mlirParsePassPipeline(op_pass, pipeline)
-        if mlirLogicalResultIsFailure(result)
+        result = LogicalResult(API.mlirParsePassPipeline(op_pass, pipeline))
+        if isfailure(result)
             throw(AddPipelineException(" " * pipeline))
         end
     end
@@ -127,9 +127,9 @@ end
     function _pass_initialize(ctx, handle::ExternalPassHandle)
         try
             handle.ctx = Context(ctx)
-            mlirLogicalResultSuccess()
+            success()
         catch
-            mlirLogicalResultFailure()
+            failure()
         end
     end
 
