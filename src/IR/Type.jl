@@ -67,6 +67,13 @@ Checks whether the given type is an index type.
 """
 isindex(type::Type) = API.mlirTypeIsAIndex(type)
 
+"""
+    Type(T::Core.Type{Bool}; context=context()
+
+Creates a 1-bit signless integer type in the context. The type is owned by the context.
+"""
+Type(::Core.Type{Bool}; context::Context=context()) = Type(API.mlirIntegerTypeGet(context, 1))
+
 # Integer types
 """
     Type(T::Core.Type{<:Integer}; context=context()
@@ -627,7 +634,7 @@ end
 function julia_type(type::Type)
     if isinteger(type)
         width = bitwidth(type)
-        if issigned(type) || issignless(type)
+        if issignless(type) || issigned(type)
             if width == 1
                 return Bool
             elseif width == 8
