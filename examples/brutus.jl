@@ -45,7 +45,7 @@ const intrinsics_to_mlir = Dict([
     Base.mul_float => single_op_wrapper(arith.mulf),
     Base.not_int => function (block, args; location=Location())
         arg = only(args)
-        mT = IR.get_type(arg)
+        mT = IR.type(arg)
         T = IR.julia_type(mT)
         ones = push!(block, arith.constant(value=typemax(UInt64) % T;
             result=mT, location)) |> IR.result
@@ -107,9 +107,10 @@ function code_mlir(f, types)
 
     values = Vector{Value}(undef, length(ir.stmts))
 
-    for dialect in ("func", "cf")
-        IR.get_or_load_dialect!(dialect)
+    for dialect in (:func, :cf)
+        IR.register_dialect!(IR.DialectHandle(dialect))
     end
+    IR.load_all_available_dialects()
 
     blocks = [
         prepare_block(ir, bb)
@@ -142,7 +143,7 @@ function code_mlir(f, types)
         for sidx in bb.stmts
             stmt = ir.stmts[sidx]
             inst = stmt[:inst]
-            line = ir.linetable[stmt[:line]]
+            line = ir.linetable[stmt[:line] + 1]
 
             if Meta.isexpr(inst, :call)
                 val_type = stmt[:type]
@@ -185,7 +186,7 @@ function code_mlir(f, types)
                 cond_br = cf.cond_br(cond, true_args, false_args; trueDest=other_dest, falseDest=dest, location)
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
-                line = ir.linetable[stmt[:line]]
+                line = ir.linetable[stmt[:line]+1]
                 location = Location(string(line.file), line.line, 0)
                 push!(current_block, func.return_([get_value(inst.val)]; location))
             elseif Meta.isexpr(inst, :code_coverage_effect)
@@ -203,21 +204,19 @@ function code_mlir(f, types)
         push!(region, b)
     end
 
-    LLVM15 = LLVM.version() >= v"15"
-
     input_types = IR.Type[
-        IR.get_type(IR.argument(entry_block, i))
+        IR.type(IR.argument(entry_block, i))
         for i in 1:IR.nargs(entry_block)
     ]
     result_types = [IR.Type(ret)]
 
-    ftype = IR.Type(input_types => result_types)
+    ftype = IR.FunctionType(input_types, result_types)
     op = IR.create_operation(
         "func.func",
         Location();
         attributes=[
-            NamedAttribute("sym_name", IR.Attribute(string(func_name))),
-            NamedAttribute("function_type", IR.Attribute(ftype)),
+            IR.NamedAttribute("sym_name", IR.Attribute(string(func_name))),
+            IR.NamedAttribute("function_type", IR.Attribute(ftype)),
         ],
         owned_regions=Region[region],
         result_inference=false,
@@ -277,7 +276,7 @@ fptr = IR.context!(IR.Context()) do
     op = Brutus.code_mlir(pow, Tuple{Int,Int})
 
     mod = IR.Module(Location())
-    body = IR.get_body(mod)
+    body = IR.body(mod)
     push!(body, op)
 
     pm = IR.PassManager()
