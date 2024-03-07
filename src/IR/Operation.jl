@@ -12,57 +12,6 @@ mutable struct Operation
     end
 end
 
-function create_operation(
-    name, loc;
-    results=nothing,
-    operands=nothing,
-    owned_regions=nothing,
-    successors=nothing,
-    attributes=nothing,
-    result_inference=isnothing(results)
-)
-    GC.@preserve name loc begin
-        state = Ref(API.mlirOperationStateGet(name, loc))
-        if !isnothing(results)
-            if result_inference
-                error("Result inference and provided results conflict")
-            end
-            API.mlirOperationStateAddResults(state, length(results), results)
-        end
-        if !isnothing(operands)
-            API.mlirOperationStateAddOperands(state, length(operands), operands)
-        end
-        if !isnothing(owned_regions)
-            lose_ownership!.(owned_regions)
-            GC.@preserve owned_regions begin
-                mlir_regions = Base.unsafe_convert.(API.MlirRegion, owned_regions)
-                API.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
-            end
-        end
-        if !isnothing(successors)
-            GC.@preserve successors begin
-                mlir_blocks = Base.unsafe_convert.(API.MlirBlock, successors)
-                API.mlirOperationStateAddSuccessors(
-                    state,
-                    length(mlir_blocks),
-                    mlir_blocks,
-                )
-            end
-        end
-        if !isnothing(attributes)
-            API.mlirOperationStateAddAttributes(state, length(attributes), attributes)
-        end
-        if result_inference
-            API.mlirOperationStateEnableResultTypeInference(state)
-        end
-        op = API.mlirOperationCreate(state)
-        if mlirIsNull(op)
-            error("Create Operation '$name' failed")
-        end
-        Operation(op, true)
-    end
-end
-
 Base.cconvert(::Core.Type{API.MlirOperation}, operation::Operation) = operation
 Base.unsafe_convert(::Core.Type{API.MlirOperation}, operation::Operation) = operation.operation
 Base.:(==)(op::Operation, other::Operation) = API.mlirOperationEqual(op, other)
@@ -321,3 +270,54 @@ This will return true if the dialect is loaded and the operation is registered w
 is_registered(opname; context::Context=context()) = API.mlirContextIsRegisteredOperation(context, opname)
 
 # TODO mlirOperationWriteBytecode (LLVM 16)
+
+function create_operation(
+    name, loc;
+    results=nothing,
+    operands=nothing,
+    owned_regions=nothing,
+    successors=nothing,
+    attributes=nothing,
+    result_inference=isnothing(results)
+)
+    GC.@preserve name loc begin
+        state = Ref(API.mlirOperationStateGet(name, loc))
+        if !isnothing(results)
+            if result_inference
+                error("Result inference and provided results conflict")
+            end
+            API.mlirOperationStateAddResults(state, length(results), results)
+        end
+        if !isnothing(operands)
+            API.mlirOperationStateAddOperands(state, length(operands), operands)
+        end
+        if !isnothing(owned_regions)
+            lose_ownership!.(owned_regions)
+            GC.@preserve owned_regions begin
+                mlir_regions = Base.unsafe_convert.(API.MlirRegion, owned_regions)
+                API.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
+            end
+        end
+        if !isnothing(successors)
+            GC.@preserve successors begin
+                mlir_blocks = Base.unsafe_convert.(API.MlirBlock, successors)
+                API.mlirOperationStateAddSuccessors(
+                    state,
+                    length(mlir_blocks),
+                    mlir_blocks,
+                )
+            end
+        end
+        if !isnothing(attributes)
+            API.mlirOperationStateAddAttributes(state, length(attributes), attributes)
+        end
+        if result_inference
+            API.mlirOperationStateEnableResultTypeInference(state)
+        end
+        op = API.mlirOperationCreate(state)
+        if mlirIsNull(op)
+            error("Create Operation '$name' failed")
+        end
+        Operation(op, true)
+    end
+end
