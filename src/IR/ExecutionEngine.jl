@@ -36,7 +36,7 @@ Lookup a native function in the execution engine by name, returns nullptr if the
 """
 function lookup(jit::ExecutionEngine, name::String; packed::Bool = false)
     fn = packed ? API.mlirExecutionEngineLookupPacked(jit, name) : API.mlirExecutionEngineLookup(jit, name)
-    isnothing(fn) ? nothing : fn
+    fn == C_NULL ? nothing : fn
 end
 
 # TODO mlirExecutionEngineRegisterSymbol
