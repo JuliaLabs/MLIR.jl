@@ -1,6 +1,6 @@
 module bufferization
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -56,17 +56,17 @@ return %0 : tensor<?x?xf32, #SparseMatrix>
   : tensor<?x?xf32, #SparseMatrix>
 ```
 """
-function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing, Value}; size_hint=nothing::Union{Nothing, Value}, result::MLIRType, memory_space=nothing, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[dynamic_sizes..., ]
+function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing,Value}; size_hint=nothing::Union{Nothing,Value}, result::IR.Type, memory_space=nothing, location=Location())
+    results = IR.Type[result,]
+    operands = Value[dynamic_sizes...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(copy) && push!(operands, copy)
     !isnothing(size_hint) && push!(operands, size_hint)
-    push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy==nothing) ? 0 : 1(size_hint==nothing) ? 0 : 1]))
+    push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy == nothing) ? 0 : 1(size_hint == nothing) ? 0 : 1]))
     !isnothing(memory_space) && push!(attributes, namedattribute("memory_space", memory_space))
-    
+
     create_operation(
         "bufferization.alloc_tensor", location;
         operands, owned_regions, successors, attributes,
@@ -91,13 +91,13 @@ views or create an actual copy. Mutating the source or result
 of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
-function clone(input::Value; output::MLIRType, location=Location())
-    results = MLIRType[output, ]
-    operands = Value[input, ]
+function clone(input::Value; output::IR.Type, location=Location())
+    results = IR.Type[output,]
+    operands = Value[input,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "bufferization.clone", location;
         operands, owned_regions, successors, attributes,
@@ -133,12 +133,12 @@ bufferization.dealloc_tensor %tensor : tensor<1024x1024xf64, #CSR>
 ```
 """
 function dealloc_tensor(tensor::Value; location=Location())
-    results = MLIRType[]
-    operands = Value[tensor, ]
+    results = IR.Type[]
+    operands = Value[tensor,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "bufferization.dealloc_tensor", location;
         operands, owned_regions, successors, attributes,
@@ -164,13 +164,13 @@ This operation is a specialized variant of the built-in
 `unrealized_conversion_cast` and is intended for use in the context of
 gradual bufferization.
 """
-function to_memref(tensor::Value; memref::MLIRType, location=Location())
-    results = MLIRType[memref, ]
-    operands = Value[tensor, ]
+function to_memref(tensor::Value; memref::IR.Type, location=Location())
+    results = IR.Type[memref,]
+    operands = Value[tensor,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "bufferization.to_memref", location;
         operands, owned_regions, successors, attributes,
@@ -200,14 +200,14 @@ involving tensors and memrefs.
 If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
-function to_tensor(memref::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[memref, ]
+function to_tensor(memref::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "bufferization.to_tensor", location;
         operands, owned_regions, successors, attributes,

@@ -1,6 +1,6 @@
 module math
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -25,14 +25,14 @@ a vector whose element type is float, or a tensor of floats.
 %x = math.abs %y : tensor<4x?xf8>
 ```
 """
-function abs(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function abs(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.abs", location;
         operands, owned_regions, successors, attributes,
@@ -75,14 +75,14 @@ See also https://en.wikipedia.org/wiki/Atan2
 %x = math.atan2 %y, %z : tensor<4x?xf32>
 ```
 """
-function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.atan2", location;
         operands, owned_regions, successors, attributes,
@@ -118,14 +118,14 @@ floats.  It has no standard attributes.
 %x = math.atan %y : tensor<4x?xf8>
 ```
 """
-function atan(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function atan(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.atan", location;
         operands, owned_regions, successors, attributes,
@@ -161,14 +161,14 @@ It has no standard attributes.
 %x = math.ceil %y : tensor<4x?xf8>
 ```
 """
-function ceil(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function ceil(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.ceil", location;
         operands, owned_regions, successors, attributes,
@@ -205,14 +205,14 @@ attributes.
 %x = math.copysign %y, %z : tensor<4x?xf8>
 ```
 """
-function copysign(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function copysign(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.copysign", location;
         operands, owned_regions, successors, attributes,
@@ -248,14 +248,14 @@ It has no standard attributes.
 %x = math.cos %y : tensor<4x?xf8>
 ```
 """
-function cos(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function cos(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.cos", location;
         operands, owned_regions, successors, attributes,
@@ -282,14 +282,14 @@ The `ctlz` operation computes the number of leading zeros of an integer value.
 %x = math.ctlz %y : tensor<4x?xi8>
 ```
 """
-function ctlz(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function ctlz(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.ctlz", location;
         operands, owned_regions, successors, attributes,
@@ -316,14 +316,14 @@ The `cttz` operation computes the number of trailing zeros of an integer value.
 %x = math.cttz %y : tensor<4x?xi8>
 ```
 """
-function cttz(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function cttz(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.cttz", location;
         operands, owned_regions, successors, attributes,
@@ -350,14 +350,14 @@ The `ctpop` operation computes the number of set bits of an integer value.
 %x = math.ctpop %y : tensor<4x?xi8>
 ```
 """
-function ctpop(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function ctpop(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.ctpop", location;
         operands, owned_regions, successors, attributes,
@@ -393,14 +393,14 @@ no standard attributes.
 %x = math.erf %y : tensor<4x?xf8>
 ```
 """
-function erf(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function erf(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.erf", location;
         operands, owned_regions, successors, attributes,
@@ -435,14 +435,14 @@ float, or a tensor of floats. It has no standard attributes.
 %x = math.exp2 %y : tensor<4x?xf8>
 ```
 """
-function exp2(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function exp2(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.exp2", location;
         operands, owned_regions, successors, attributes,
@@ -479,14 +479,14 @@ float, or a tensor of floats. It has no standard attributes.
 %x = math.expm1 %y : tensor<4x?xf8>
 ```
 """
-function expm1(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function expm1(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.expm1", location;
         operands, owned_regions, successors, attributes,
@@ -521,14 +521,14 @@ float, or a tensor of floats. It has no standard attributes.
 %x = math.exp %y : tensor<4x?xf8>
 ```
 """
-function exp(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function exp(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.exp", location;
         operands, owned_regions, successors, attributes,
@@ -564,14 +564,14 @@ It has no standard attributes.
 %x = math.floor %y : tensor<4x?xf8>
 ```
 """
-function floor(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function floor(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.floor", location;
         operands, owned_regions, successors, attributes,
@@ -612,14 +612,14 @@ The semantics of the operation correspond to those of the `llvm.fma`
 particular case of lowering to LLVM, this is guaranteed to lower
 to the `llvm.fma.*` intrinsic.
 """
-function fma(a::Value, b::Value, c::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[a, b, c, ]
+function fma(a::Value, b::Value, c::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[a, b, c,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.fma", location;
         operands, owned_regions, successors, attributes,
@@ -640,14 +640,14 @@ returns one result of the same type.
 %y = math.log10 %x : f64
 ```
 """
-function log10(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function log10(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.log10", location;
         operands, owned_regions, successors, attributes,
@@ -670,14 +670,14 @@ log1p(x) := log(1 + x)
 %y = math.log1p %x : f64
 ```
 """
-function log1p(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function log1p(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.log1p", location;
         operands, owned_regions, successors, attributes,
@@ -698,14 +698,14 @@ returns one result of the same type.
 %y = math.log2 %x : f64
 ```
 """
-function log2(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function log2(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.log2", location;
         operands, owned_regions, successors, attributes,
@@ -726,14 +726,14 @@ returns one result of the same type.
 %y = math.log %x : f64
 ```
 """
-function log(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function log(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.log", location;
         operands, owned_regions, successors, attributes,
@@ -769,14 +769,14 @@ floating point tensor.
 %x = math.powf %y, %z : tensor<4x?xbf16>
 ```
 """
-function powf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function powf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.powf", location;
         operands, owned_regions, successors, attributes,
@@ -793,14 +793,14 @@ one operand and returns one result of the same type. This type may be a
 float scalar type, a vector whose element type is float, or a tensor of
 floats. It has no standard attributes.
 """
-function rsqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function rsqrt(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.rsqrt", location;
         operands, owned_regions, successors, attributes,
@@ -836,14 +836,14 @@ It has no standard attributes.
 %x = math.sin %y : tensor<4x?xf8>
 ```
 """
-function sin(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function sin(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.sin", location;
         operands, owned_regions, successors, attributes,
@@ -871,14 +871,14 @@ attributes.
 %x = math.sqrt %y : tensor<4x?xf32>
 ```
 """
-function sqrt(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function sqrt(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.sqrt", location;
         operands, owned_regions, successors, attributes,
@@ -914,14 +914,14 @@ no standard attributes.
 %x = math.tanh %y : tensor<4x?xf8>
 ```
 """
-function tanh(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function tanh(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "math.tanh", location;
         operands, owned_regions, successors, attributes,

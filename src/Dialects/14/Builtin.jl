@@ -1,6 +1,6 @@
 module builtin
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -45,13 +45,13 @@ func @example_fn_attr() attributes {dialectName.attrName = false}
 ```
 """
 function func(; sym_name, type, sym_visibility=nothing, body::Region, location=Location())
-    results = MLIRType[]
+    results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body, ]
+    owned_regions = Region[body,]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
+    attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type),]
     !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
-    
+
     create_operation(
         "builtin.func", location;
         operands, owned_regions, successors, attributes,
@@ -80,14 +80,14 @@ module {
 ```
 """
 function module_(; sym_name=nothing, sym_visibility=nothing, body::Region, location=Location())
-    results = MLIRType[]
+    results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body, ]
+    owned_regions = Region[body,]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
     !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
-    
+
     create_operation(
         "builtin.module", location;
         operands, owned_regions, successors, attributes,
@@ -130,13 +130,13 @@ operands of arity 0-N.
 %result3 = unrealized_conversion_cast %operand, %operand : !foo.type, !foo.type to !bar.tuple_type<!foo.type, !foo.type>
 ```
 """
-function unrealized_conversion_cast(inputs::Vector{Value}; outputs::Vector{MLIRType}, location=Location())
-    results = MLIRType[outputs..., ]
-    operands = Value[inputs..., ]
+function unrealized_conversion_cast(inputs::Vector{Value}; outputs::Vector{IR.Type}, location=Location())
+    results = IR.Type[outputs...,]
+    operands = Value[inputs...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "builtin.unrealized_conversion_cast", location;
         operands, owned_regions, successors, attributes,

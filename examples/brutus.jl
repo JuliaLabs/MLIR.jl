@@ -27,8 +27,8 @@ const uge = 9
 end
 
 function cmpi_pred(predicate)
-    function (ops...; location = Location())
-        arith.cmpi(ops...; result=IR.MLIRType(Bool), predicate, location)
+    function (ops...; location=Location())
+        arith.cmpi(ops...; result=IR.Type(Bool), predicate, location)
     end
 end
 
@@ -45,10 +45,10 @@ const intrinsics_to_mlir = Dict([
     Base.mul_float => single_op_wrapper(arith.mulf),
     Base.not_int => function (block, args; location=Location())
         arg = only(args)
-        mT = IR.get_type(arg)
+        mT = IR.type(arg)
         T = IR.julia_type(mT)
         ones = push!(block, arith.constant(value=typemax(UInt64) % T;
-                                           result=mT, location)) |> IR.get_result
+            result=mT, location)) |> IR.result
         push!(block, arith.xori(arg, ones; location))
     end,
 ])
@@ -63,7 +63,7 @@ function prepare_block(ir, bb)
         inst isa Core.PhiNode || continue
 
         type = stmt[:type]
-        IR.push_argument!(b, MLIRType(type), Location())
+        IR.push_argument!(b, IR.Type(type))
     end
 
     return b
@@ -107,9 +107,10 @@ function code_mlir(f, types)
 
     values = Vector{Value}(undef, length(ir.stmts))
 
-    for dialect in ("func", "cf")
-        IR.get_or_load_dialect!(dialect)
+    for dialect in (:func, :cf)
+        IR.register_dialect!(IR.DialectHandle(dialect))
     end
+    IR.load_all_available_dialects()
 
     blocks = [
         prepare_block(ir, bb)
@@ -119,7 +120,7 @@ function code_mlir(f, types)
     current_block = entry_block = blocks[begin]
 
     for argtype in types.parameters
-        IR.push_argument!(entry_block, MLIRType(argtype), Location())
+        IR.push_argument!(entry_block, IR.Type(argtype))
     end
 
     function get_value(x)::Value
@@ -127,9 +128,9 @@ function code_mlir(f, types)
             @assert isassigned(values, x.id) "value $x was not assigned"
             values[x.id]
         elseif x isa Core.Argument
-            IR.get_argument(entry_block, x.n - 1)
+            IR.argument(entry_block, x.n - 1)
         elseif x isa BrutusScalar
-            IR.get_result(push!(current_block, arith.constant(;value=x)))
+            IR.result(push!(current_block, arith.constant(; value=x)))
         else
             error("could not use value $x inside MLIR")
         end
@@ -142,14 +143,14 @@ function code_mlir(f, types)
         for sidx in bb.stmts
             stmt = ir.stmts[sidx]
             inst = stmt[:inst]
-            line = ir.linetable[stmt[:line]]
+            line = ir.linetable[stmt[:line] + 1]
 
             if Meta.isexpr(inst, :call)
                 val_type = stmt[:type]
                 if !(val_type <: BrutusScalar)
                     error("type $val_type is not supported")
                 end
-                out_type = MLIRType(val_type)
+                out_type = IR.Type(val_type)
 
                 called_func = first(inst.args)
                 if called_func isa GlobalRef # TODO: should probably use something else here
@@ -160,11 +161,11 @@ function code_mlir(f, types)
                 args = get_value.(@view inst.args[begin+1:end])
 
                 location = Location(string(line.file), line.line, 0)
-                res = IR.get_result(fop!(current_block, args; location))
+                res = IR.result(fop!(current_block, args; location))
 
                 values[sidx] = res
             elseif inst isa PhiNode
-                values[sidx] = IR.get_argument(current_block, n_phi_nodes += 1)
+                values[sidx] = IR.argument(current_block, n_phi_nodes += 1)
             elseif inst isa PiNode
                 values[sidx] = get_value(inst.val)
             elseif inst isa GotoNode
@@ -185,7 +186,7 @@ function code_mlir(f, types)
                 cond_br = cf.cond_br(cond, true_args, false_args; trueDest=other_dest, falseDest=dest, location)
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
-                line = ir.linetable[stmt[:line]]
+                line = ir.linetable[stmt[:line]+1]
                 location = Location(string(line.file), line.line, 0)
                 push!(current_block, func.return_([get_value(inst.val)]; location))
             elseif Meta.isexpr(inst, :code_coverage_effect)
@@ -203,21 +204,19 @@ function code_mlir(f, types)
         push!(region, b)
     end
 
-    LLVM15 = LLVM.version() >= v"15"
-
-    input_types = MLIRType[
-        IR.get_type(IR.get_argument(entry_block, i))
-        for i in 1:IR.num_arguments(entry_block)
+    input_types = IR.Type[
+        IR.type(IR.argument(entry_block, i))
+        for i in 1:IR.nargs(entry_block)
     ]
-    result_types = [MLIRType(ret)]
+    result_types = [IR.Type(ret)]
 
-    ftype = MLIRType(input_types => result_types)
+    ftype = IR.FunctionType(input_types, result_types)
     op = IR.create_operation(
         "func.func",
         Location();
         attributes=[
-            NamedAttribute("sym_name", IR.Attribute(string(func_name))),
-            NamedAttribute("function_type", IR.Attribute(ftype)),
+            IR.NamedAttribute("sym_name", IR.Attribute(string(func_name))),
+            IR.NamedAttribute("function_type", IR.Attribute(ftype)),
         ],
         owned_regions=Region[region],
         result_inference=false,
@@ -277,7 +276,7 @@ fptr = IR.context!(IR.Context()) do
     op = Brutus.code_mlir(pow, Tuple{Int,Int})
 
     mod = IR.Module(Location())
-    body = IR.get_body(mod)
+    body = IR.body(mod)
     push!(body, op)
 
     pm = IR.PassManager()

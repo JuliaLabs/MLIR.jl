@@ -1,6 +1,6 @@
 module emitc
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -23,13 +23,13 @@ can be applied to a single operand.
 
 ```
 """
-function apply(operand::Value; result::MLIRType, applicableOperator, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[operand, ]
+function apply(operand::Value; result::IR.Type, applicableOperator, location=Location())
+    results = IR.Type[result,]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator), ]
-    
+    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
+
     create_operation(
         "emitc.apply", location;
         operands, owned_regions, successors, attributes,
@@ -57,15 +57,15 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee, args=nothing, template_args=nothing, location=Location())
-    results = MLIRType[result_0..., ]
-    operands = Value[operands..., ]
+function call(operands::Vector{Value}; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
+    results = IR.Type[result_0...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee), ]
+    attributes = NamedAttribute[namedattribute("callee", callee),]
     !isnothing(args) && push!(attributes, namedattribute("args", args))
     !isnothing(template_args) && push!(attributes, namedattribute("template_args", template_args))
-    
+
     create_operation(
         "emitc.call", location;
         operands, owned_regions, successors, attributes,
@@ -95,13 +95,13 @@ attribute and the EmitC opaque type.
     : () -> !emitc.opaque<\"int32_t*\">
 ```
 """
-function constant(; result_0::MLIRType, value, location=Location())
-    results = MLIRType[result_0, ]
+function constant(; result_0::IR.Type, value, location=Location())
+    results = IR.Type[result_0,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
+    attributes = NamedAttribute[namedattribute("value", value),]
+
     create_operation(
         "emitc.constant", location;
         operands, owned_regions, successors, attributes,
@@ -133,13 +133,13 @@ emitc.include \"myheader.h\"
 ```
 """
 function include(; include, is_standard_include=nothing, location=Location())
-    results = MLIRType[]
+    results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("include", include), ]
+    attributes = NamedAttribute[namedattribute("include", include),]
     !isnothing(is_standard_include) && push!(attributes, namedattribute("is_standard_include", is_standard_include))
-    
+
     create_operation(
         "emitc.include", location;
         operands, owned_regions, successors, attributes,

@@ -2,7 +2,8 @@
 
 ## Design
 
-### String and MlirStringRef.
+### String and MlirStringRef
+
 `MlirStringRef` is a non-owning pointer, the caller is in charge of performing necessary
 copies or ensuring that the pointee outlives all uses of `MlirStringRef`.
 Since Julia is a GC'd language special care must be taken around the live-time of Julia

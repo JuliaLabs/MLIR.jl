@@ -1,6 +1,6 @@
 module arith
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -29,14 +29,14 @@ floating point tensor.
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
 """
-function addf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function addf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.addf", location;
         operands, owned_regions, successors, attributes,
@@ -66,14 +66,14 @@ has no standard attributes.
 %x = arith.addi %y, %z : tensor<4x?xi8>
 ```
 """
-function addi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function addi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.addi", location;
         operands, owned_regions, successors, attributes,
@@ -103,14 +103,14 @@ has no standard attributes.
 %x = arith.andi %y, %z : tensor<4x?xi8>
 ```
 """
-function andi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function andi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.andi", location;
         operands, owned_regions, successors, attributes,
@@ -137,13 +137,13 @@ endianness for the source and target types (e.g. float is big-endian and
 integer is little-endian) a proper lowering would add operations to swap the
 order of words in addition to the bitcast.
 """
-function bitcast(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function bitcast(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.bitcast", location;
         operands, owned_regions, successors, attributes,
@@ -167,14 +167,14 @@ value divided by -1) is TBD; do NOT assume any specific behavior.
 %a = arith.ceildivsi %b, %c : i64
 ```
 """
-function ceildivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function ceildivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.ceildivsi", location;
         operands, owned_regions, successors, attributes,
@@ -200,14 +200,14 @@ behavior.
 %a = arith.ceildivui %b, %c : i64
 ```
 """
-function ceildivui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function ceildivui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.ceildivui", location;
         operands, owned_regions, successors, attributes,
@@ -243,13 +243,13 @@ attribute by the parser.
 %r3 = \"arith.cmpf\"(%0, %1) {predicate: 0} : (f8, f8) -> i1
 ```
 """
-function cmpf(lhs::Value, rhs::Value; result::MLIRType, predicate, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[lhs, rhs, ]
+function cmpf(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
+    results = IR.Type[result,]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    
+    attributes = NamedAttribute[namedattribute("predicate", predicate),]
+
     create_operation(
         "arith.cmpf", location;
         operands, owned_regions, successors, attributes,
@@ -323,13 +323,13 @@ complement or large positives
     : (vector<4xi64>, vector<4xi64>) -> vector<4xi1>
 ```
 """
-function cmpi(lhs::Value, rhs::Value; result::MLIRType, predicate, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[lhs, rhs, ]
+function cmpi(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
+    results = IR.Type[result,]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    
+    attributes = NamedAttribute[namedattribute("predicate", predicate),]
+
     create_operation(
         "arith.cmpi", location;
         operands, owned_regions, successors, attributes,
@@ -355,14 +355,14 @@ forms simple integer and floating point constants.
 %1 = \"arith.constant\"() {value = 42 : i32} : () -> i32
 ```
 """
-function constant(; result=nothing::Union{Nothing, MLIRType}, value, location=Location())
-    results = MLIRType[]
+function constant(; result=nothing::Union{Nothing,IR.Type}, value, location=Location())
+    results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
+    attributes = NamedAttribute[namedattribute("value", value),]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.constant", location;
         operands, owned_regions, successors, attributes,
@@ -375,14 +375,14 @@ end
 `divf`
 
 """
-function divf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function divf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.divf", location;
         operands, owned_regions, successors, attributes,
@@ -413,14 +413,14 @@ value divided by -1) is TBD; do NOT assume any specific behavior.
 %x = arith.divsi %y, %z : tensor<4x?xi8>
 ```
 """
-function divsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function divsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.divsi", location;
         operands, owned_regions, successors, attributes,
@@ -452,14 +452,14 @@ behavior.
 %x = arith.divui %y, %z : tensor<4x?xi8>
 ```
 """
-function divui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function divui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.divui", location;
         operands, owned_regions, successors, attributes,
@@ -475,13 +475,13 @@ Cast a floating-point value to a larger floating-point-typed value.
 The destination type must to be strictly wider than the source type.
 When operating on vectors, casts elementwise.
 """
-function extf(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function extf(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.extf", location;
         operands, owned_regions, successors, attributes,
@@ -510,13 +510,13 @@ of the most-significant bit of the input.
 %5 = arith.extsi %0 : vector<2 x i32> to vector<2 x i64>
 ```
 """
-function extsi(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function extsi(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.extsi", location;
         operands, owned_regions, successors, attributes,
@@ -544,13 +544,13 @@ The top-most (N - M) bits of the output are filled with zeros.
   %5 = arith.extui %0 : vector<2 x i32> to vector<2 x i64>
 ```
 """
-function extui(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function extui(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.extui", location;
         operands, owned_regions, successors, attributes,
@@ -566,13 +566,13 @@ Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) signed integer value. When operating on vectors, casts
 elementwise.
 """
-function fptosi(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function fptosi(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.fptosi", location;
         operands, owned_regions, successors, attributes,
@@ -588,13 +588,13 @@ Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) unsigned integer value. When operating on vectors, casts
 elementwise.
 """
-function fptoui(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function fptoui(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.fptoui", location;
         operands, owned_regions, successors, attributes,
@@ -619,14 +619,14 @@ value divided by -1) is TBD; do NOT assume any specific behavior.
 
 ```
 """
-function floordivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function floordivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.floordivsi", location;
         operands, owned_regions, successors, attributes,
@@ -643,13 +643,13 @@ vectors. Index is an integer of platform-specific bit width. If casting to
 a wider integer, the value is sign-extended. If casting to a narrower
 integer, the value is truncated.
 """
-function index_cast(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function index_cast(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.index_cast", location;
         operands, owned_regions, successors, attributes,
@@ -677,14 +677,14 @@ If one of the arguments is NaN, then the result is also NaN.
 %a = arith.maxf %b, %c : f64
 ```
 """
-function maxf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function maxf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.maxf", location;
         operands, owned_regions, successors, attributes,
@@ -697,14 +697,14 @@ end
 `maxsi`
 
 """
-function maxsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function maxsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.maxsi", location;
         operands, owned_regions, successors, attributes,
@@ -717,14 +717,14 @@ end
 `maxui`
 
 """
-function maxui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function maxui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.maxui", location;
         operands, owned_regions, successors, attributes,
@@ -752,14 +752,14 @@ If one of the arguments is NaN, then the result is also NaN.
 %a = arith.minf %b, %c : f64
 ```
 """
-function minf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function minf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.minf", location;
         operands, owned_regions, successors, attributes,
@@ -772,14 +772,14 @@ end
 `minsi`
 
 """
-function minsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function minsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.minsi", location;
         operands, owned_regions, successors, attributes,
@@ -792,14 +792,14 @@ end
 `minui`
 
 """
-function minui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function minui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.minui", location;
         operands, owned_regions, successors, attributes,
@@ -832,14 +832,14 @@ floating point tensor.
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
 """
-function mulf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function mulf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.mulf", location;
         operands, owned_regions, successors, attributes,
@@ -852,14 +852,14 @@ end
 `muli`
 
 """
-function muli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function muli(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.muli", location;
         operands, owned_regions, successors, attributes,
@@ -889,14 +889,14 @@ It has no standard attributes.
 %x = arith.negf %y : tensor<4x?xf8>
 ```
 """
-function negf(operand::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[operand, ]
+function negf(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.negf", location;
         operands, owned_regions, successors, attributes,
@@ -926,14 +926,14 @@ standard attributes.
 %x = arith.ori %y, %z : tensor<4x?xi8>
 ```
 """
-function ori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function ori(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.ori", location;
         operands, owned_regions, successors, attributes,
@@ -946,14 +946,14 @@ end
 `remf`
 
 """
-function remf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function remf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.remf", location;
         operands, owned_regions, successors, attributes,
@@ -984,14 +984,14 @@ behavior.
 %x = arith.remsi %y, %z : tensor<4x?xi8>
 ```
 """
-function remsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function remsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.remsi", location;
         operands, owned_regions, successors, attributes,
@@ -1022,14 +1022,14 @@ behavior.
 %x = arith.remui %y, %z : tensor<4x?xi8>
 ```
 """
-function remui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function remui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.remui", location;
         operands, owned_regions, successors, attributes,
@@ -1046,13 +1046,13 @@ floating-point value. If the value cannot be exactly represented, it is
 rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
 """
-function sitofp(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function sitofp(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.sitofp", location;
         operands, owned_regions, successors, attributes,
@@ -1075,14 +1075,14 @@ amount. The low order bits are filled with zeros.
 %3 = arith.shli %1, %2 : (i8, i8) -> i8    // %3 is 0b00101000
 ```
 """
-function shli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function shli(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.shli", location;
         operands, owned_regions, successors, attributes,
@@ -1109,14 +1109,14 @@ value (which means that the sign of the value is preserved).
 %5 = arith.shrsi %4, %2 : (i8, i8) -> i8   // %5 is 0b00001100
 ```
 """
-function shrsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function shrsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.shrsi", location;
         operands, owned_regions, successors, attributes,
@@ -1140,14 +1140,14 @@ always filled with zeros.
 %3 = arith.shrui %1, %2 : (i8, i8) -> i8   // %3 is 0b00010100
 ```
 """
-function shrui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function shrui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.shrui", location;
         operands, owned_regions, successors, attributes,
@@ -1180,14 +1180,14 @@ floating point tensor.
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
 """
-function subf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function subf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.subf", location;
         operands, owned_regions, successors, attributes,
@@ -1200,14 +1200,14 @@ end
 `subi`
 
 """
-function subi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function subi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.subi", location;
         operands, owned_regions, successors, attributes,
@@ -1224,13 +1224,13 @@ The destination type must be strictly narrower than the source type.
 If the value cannot be exactly represented, it is rounded using the default
 rounding mode. When operating on vectors, casts elementwise.
 """
-function truncf(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function truncf(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.truncf", location;
         operands, owned_regions, successors, attributes,
@@ -1257,13 +1257,13 @@ The top-most (N - M) bits of the input are discarded.
   %5 = arith.trunci %0 : vector<2 x i32> to vector<2 x i16>
 ```
 """
-function trunci(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function trunci(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.trunci", location;
         operands, owned_regions, successors, attributes,
@@ -1280,13 +1280,13 @@ floating-point value. If the value cannot be exactly represented, it is
 rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
 """
-function uitofp(in::Value; out::MLIRType, location=Location())
-    results = MLIRType[out, ]
-    operands = Value[in, ]
+function uitofp(in::Value; out::IR.Type, location=Location())
+    results = IR.Type[out,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "arith.uitofp", location;
         operands, owned_regions, successors, attributes,
@@ -1316,14 +1316,14 @@ has no standard attributes.
 %x = arith.xori %y, %z : tensor<4x?xi8>
 ```
 """
-function xori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[lhs, rhs, ]
+function xori(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[lhs, rhs,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.xori", location;
         operands, owned_regions, successors, attributes,
@@ -1362,14 +1362,14 @@ or tensor is chosen.
 %vx = arith.select %cond, %vtrue, %vfalse : vector<42xf32>
 ```
 """
-function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[condition, true_value, false_value, ]
+function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[condition, true_value, false_value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "arith.select", location;
         operands, owned_regions, successors, attributes,

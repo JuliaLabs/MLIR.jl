@@ -1,6 +1,6 @@
 module quant
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -13,16 +13,16 @@ same uniform quantization simulation as is done by the TensorFlow
 fake_quant_with_min_max_args op. See the fakeQuantAttrsToType() utility
 method and the quant-convert-simulated-quantization pass for further details.
 """
-function const_fake_quant(inputs::Value; outputs=nothing::Union{Nothing, MLIRType}, min, max, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
-    results = MLIRType[]
-    operands = Value[inputs, ]
+function const_fake_quant(inputs::Value; outputs=nothing::Union{Nothing,IR.Type}, min, max, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
+    results = IR.Type[]
+    operands = Value[inputs,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("num_bits", num_bits), ]
+    attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("num_bits", num_bits),]
     !isnothing(outputs) && push!(results, outputs)
     !isnothing(narrow_range) && push!(attributes, namedattribute("narrow_range", narrow_range))
     !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
-    
+
     create_operation(
         "quant.const_fake_quant", location;
         operands, owned_regions, successors, attributes,
@@ -40,16 +40,16 @@ fake_quant_with_min_max_vars_per_channel op. See the fakeQuantAttrsToType()
 utility method and the quant-convert-simulated-quantization pass for further
 details.
 """
-function const_fake_quant_per_axis(inputs::Value; outputs=nothing::Union{Nothing, MLIRType}, min, max, axis, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
-    results = MLIRType[]
-    operands = Value[inputs, ]
+function const_fake_quant_per_axis(inputs::Value; outputs=nothing::Union{Nothing,IR.Type}, min, max, axis, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
+    results = IR.Type[]
+    operands = Value[inputs,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("axis", axis), namedattribute("num_bits", num_bits), ]
+    attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("axis", axis), namedattribute("num_bits", num_bits),]
     !isnothing(outputs) && push!(results, outputs)
     !isnothing(narrow_range) && push!(attributes, namedattribute("narrow_range", narrow_range))
     !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
-    
+
     create_operation(
         "quant.const_fake_quant_per_axis", location;
         operands, owned_regions, successors, attributes,
@@ -68,14 +68,14 @@ external connections. In such a case, during analysis, all coupled_ref
 nodes in a module which share a coupledKey will be considered to be
 directly connected as via an identity op for the purpose of type inference.
 """
-function coupled_ref(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, coupledKey, location=Location())
-    results = MLIRType[]
-    operands = Value[arg, ]
+function coupled_ref(arg::Value; result_0=nothing::Union{Nothing,IR.Type}, coupledKey, location=Location())
+    results = IR.Type[]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("coupledKey", coupledKey), ]
+    attributes = NamedAttribute[namedattribute("coupledKey", coupledKey),]
     !isnothing(result_0) && push!(results, result_0)
-    
+
     create_operation(
         "quant.coupled_ref", location;
         operands, owned_regions, successors, attributes,
@@ -88,13 +88,13 @@ end
 `dcast`
 
 """
-function dcast(arg::Value; result_0::MLIRType, location=Location())
-    results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+function dcast(arg::Value; result_0::IR.Type, location=Location())
+    results = IR.Type[result_0,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "quant.dcast", location;
         operands, owned_regions, successors, attributes,
@@ -107,13 +107,13 @@ end
 `qcast`
 
 """
-function qcast(arg::Value; result_0::MLIRType, location=Location())
-    results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+function qcast(arg::Value; result_0::IR.Type, location=Location())
+    results = IR.Type[result_0,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "quant.qcast", location;
         operands, owned_regions, successors, attributes,
@@ -126,13 +126,13 @@ end
 `region`
 
 """
-function region(inputs::Vector{Value}; outputs::Vector{MLIRType}, input_specs, output_specs, logical_kernel, body::Region, location=Location())
-    results = MLIRType[outputs..., ]
-    operands = Value[inputs..., ]
-    owned_regions = Region[body, ]
+function region(inputs::Vector{Value}; outputs::Vector{IR.Type}, input_specs, output_specs, logical_kernel, body::Region, location=Location())
+    results = IR.Type[outputs...,]
+    operands = Value[inputs...,]
+    owned_regions = Region[body,]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("input_specs", input_specs), namedattribute("output_specs", output_specs), namedattribute("logical_kernel", logical_kernel), ]
-    
+    attributes = NamedAttribute[namedattribute("input_specs", input_specs), namedattribute("output_specs", output_specs), namedattribute("logical_kernel", logical_kernel),]
+
     create_operation(
         "quant.region", location;
         operands, owned_regions, successors, attributes,
@@ -146,12 +146,12 @@ end
 
 """
 function return_(results::Vector{Value}; location=Location())
-    results = MLIRType[]
-    operands = Value[results..., ]
+    results = IR.Type[]
+    operands = Value[results...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "quant.return", location;
         operands, owned_regions, successors, attributes,
@@ -180,16 +180,16 @@ Currently, only dim=2 is supported, which is interpreted as [min, max].
 <?x?x3x2>, axis=2 => N=6
 ```
 """
-function stats(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, layerStats, axisStats=nothing, axis=nothing, location=Location())
-    results = MLIRType[]
-    operands = Value[arg, ]
+function stats(arg::Value; result_0=nothing::Union{Nothing,IR.Type}, layerStats, axisStats=nothing, axis=nothing, location=Location())
+    results = IR.Type[]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("layerStats", layerStats), ]
+    attributes = NamedAttribute[namedattribute("layerStats", layerStats),]
     !isnothing(result_0) && push!(results, result_0)
     !isnothing(axisStats) && push!(attributes, namedattribute("axisStats", axisStats))
     !isnothing(axis) && push!(attributes, namedattribute("axis", axis))
-    
+
     create_operation(
         "quant.stats", location;
         operands, owned_regions, successors, attributes,
@@ -207,14 +207,14 @@ Such statistics will be stored with the provided key, allowing this node
 to later be converted to a \'stats\' op if statistics with that key have been
 encountered.
 """
-function stats_ref(arg::Value; result_0=nothing::Union{Nothing, MLIRType}, statsKey, location=Location())
-    results = MLIRType[]
-    operands = Value[arg, ]
+function stats_ref(arg::Value; result_0=nothing::Union{Nothing,IR.Type}, statsKey, location=Location())
+    results = IR.Type[]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("statsKey", statsKey), ]
+    attributes = NamedAttribute[namedattribute("statsKey", statsKey),]
     !isnothing(result_0) && push!(results, result_0)
-    
+
     create_operation(
         "quant.stats_ref", location;
         operands, owned_regions, successors, attributes,
@@ -227,13 +227,13 @@ end
 `scast`
 
 """
-function scast(arg::Value; result_0::MLIRType, location=Location())
-    results = MLIRType[result_0, ]
-    operands = Value[arg, ]
+function scast(arg::Value; result_0::IR.Type, location=Location())
+    results = IR.Type[result_0,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "quant.scast", location;
         operands, owned_regions, successors, attributes,

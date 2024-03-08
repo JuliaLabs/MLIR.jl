@@ -1,6 +1,6 @@
 module std
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -20,12 +20,12 @@ assert %b, \"Expected ... to be true\"
 ```
 """
 function assert(arg::Value; msg, location=Location())
-    results = MLIRType[]
-    operands = Value[arg, ]
+    results = IR.Type[]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("msg", msg), ]
-    
+    attributes = NamedAttribute[namedattribute("msg", msg),]
+
     create_operation(
         "std.assert", location;
         operands, owned_regions, successors, attributes,
@@ -52,12 +52,12 @@ the block successor.
 ```
 """
 function br(destOperands::Vector{Value}; dest::Block, location=Location())
-    results = MLIRType[]
-    operands = Value[destOperands..., ]
+    results = IR.Type[]
+    operands = Value[destOperands...,]
     owned_regions = Region[]
-    successors = Block[dest, ]
+    successors = Block[dest,]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "std.br", location;
         operands, owned_regions, successors, attributes,
@@ -84,13 +84,13 @@ Function values can be created with the
         : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
 """
-function call_indirect(callee::Value, callee_operands::Vector{Value}; results::Vector{MLIRType}, location=Location())
-    results = MLIRType[results..., ]
-    operands = Value[callee, callee_operands..., ]
+function call_indirect(callee::Value, callee_operands::Vector{Value}; results::Vector{IR.Type}, location=Location())
+    results = IR.Type[results...,]
+    operands = Value[callee, callee_operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "std.call_indirect", location;
         operands, owned_regions, successors, attributes,
@@ -113,13 +113,13 @@ symbol reference attribute named \"callee\".
 %2 = call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(operands::Vector{Value}; result_0::Vector{MLIRType}, callee, location=Location())
-    results = MLIRType[result_0..., ]
-    operands = Value[operands..., ]
+function call(operands::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location())
+    results = IR.Type[result_0...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee), ]
-    
+    attributes = NamedAttribute[namedattribute("callee", callee),]
+
     create_operation(
         "std.call", location;
         operands, owned_regions, successors, attributes,
@@ -157,13 +157,13 @@ func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
 ```
 """
 function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; trueDest::Block, falseDest::Block, location=Location())
-    results = MLIRType[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
+    results = IR.Type[]
+    operands = Value[condition, trueDestOperands..., falseDestOperands...,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
+    successors = Block[trueDest, falseDest,]
     attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands), ]))
-    
+    push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands),]))
+
     create_operation(
         "std.cond_br", location;
         operands, owned_regions, successors, attributes,
@@ -207,13 +207,13 @@ the compiler is multithreaded, and disallowing SSA values to directly
 reference a function simplifies this
 ([rationale](../Rationale/Rationale.md#multithreading-the-compiler)).
 """
-function constant(; result_0::MLIRType, value, location=Location())
-    results = MLIRType[result_0, ]
+function constant(; result_0::IR.Type, value, location=Location())
+    results = IR.Type[result_0,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
+    attributes = NamedAttribute[namedattribute("value", value),]
+
     create_operation(
         "std.constant", location;
         operands, owned_regions, successors, attributes,
@@ -240,12 +240,12 @@ func @foo() : (i32, f8) {
 ```
 """
 function return_(operands::Vector{Value}; location=Location())
-    results = MLIRType[]
-    operands = Value[operands..., ]
+    results = IR.Type[]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "std.return", location;
         operands, owned_regions, successors, attributes,
@@ -287,14 +287,14 @@ to implement `min` and `max` with signed or unsigned comparison semantics.
 %vx = std.select %cond, %vtrue, %vfalse : vector<42xf32>
 ```
 """
-function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[condition, true_value, false_value, ]
+function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[condition, true_value, false_value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "std.select", location;
         operands, owned_regions, successors, attributes,
@@ -329,13 +329,13 @@ tensors in the same way dynamically shaped memrefs are handled.
 %t = splat %s [%m, %n] : tensor<?x?xi32>
 ```
 """
-function splat(input::Value; aggregate::MLIRType, location=Location())
-    results = MLIRType[aggregate, ]
-    operands = Value[input, ]
+function splat(input::Value; aggregate::IR.Type, location=Location())
+    results = IR.Type[aggregate,]
+    operands = Value[input,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "std.splat", location;
         operands, owned_regions, successors, attributes,
@@ -364,14 +364,14 @@ switch %flag : i32, [
 ```
 """
 function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
-    results = MLIRType[]
-    operands = Value[flag, defaultOperands..., caseOperands..., ]
+    results = IR.Type[]
+    operands = Value[flag, defaultOperands..., caseOperands...,]
     owned_regions = Region[]
-    successors = Block[defaultDestination, caseDestinations..., ]
-    attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
-    push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands), ]))
+    successors = Block[defaultDestination, caseDestinations...,]
+    attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments),]
+    push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands),]))
     !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
-    
+
     create_operation(
         "std.switch", location;
         operands, owned_regions, successors, attributes,

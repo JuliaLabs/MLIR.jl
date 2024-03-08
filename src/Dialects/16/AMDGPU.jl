@@ -1,6 +1,6 @@
 module amdgpu
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -21,12 +21,12 @@ operations on global memory can be issued far in advance of when their results
 are used (for example, by writing them to LDS).
 """
 function lds_barrier(; location=Location())
-    results = MLIRType[]
+    results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "amdgpu.lds_barrier", location;
         operands, owned_regions, successors, attributes,
@@ -64,12 +64,12 @@ order (that is, v[0] will go to arg[7:0], v[1] to arg[15:8] and so on).
 The negateA, negateB, and negateC flags are only supported for double-precision
 operations on gfx940+.
 """
-function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, m, n, k, blocks, cbsz=nothing, abid=nothing, blgp=nothing, reducePrecision=nothing, negateA=nothing, negateB=nothing, negateC=nothing, location=Location())
-    results = MLIRType[destD, ]
-    operands = Value[sourceA, sourceB, destC, ]
+function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::IR.Type, m, n, k, blocks, cbsz=nothing, abid=nothing, blgp=nothing, reducePrecision=nothing, negateA=nothing, negateB=nothing, negateC=nothing, location=Location())
+    results = IR.Type[destD,]
+    operands = Value[sourceA, sourceB, destC,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("m", m), namedattribute("n", n), namedattribute("k", k), namedattribute("blocks", blocks), ]
+    attributes = NamedAttribute[namedattribute("m", m), namedattribute("n", n), namedattribute("k", k), namedattribute("blocks", blocks),]
     !isnothing(cbsz) && push!(attributes, namedattribute("cbsz", cbsz))
     !isnothing(abid) && push!(attributes, namedattribute("abid", abid))
     !isnothing(blgp) && push!(attributes, namedattribute("blgp", blgp))
@@ -77,7 +77,7 @@ function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::MLIRType, m, 
     !isnothing(negateA) && push!(attributes, namedattribute("negateA", negateA))
     !isnothing(negateB) && push!(attributes, namedattribute("negateB", negateB))
     !isnothing(negateC) && push!(attributes, namedattribute("negateC", negateC))
-    
+
     create_operation(
         "amdgpu.mfma", location;
         operands, owned_regions, successors, attributes,
@@ -106,17 +106,17 @@ Out of bounds atomic operations are ignored in hardware.
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
 """
-function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
-    results = MLIRType[]
-    operands = Value[value, memref, indices..., ]
+function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing,Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
+    results = IR.Type[]
+    operands = Value[value, memref, indices...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
-    push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
+    push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]))
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
-    
+
     create_operation(
         "amdgpu.raw_buffer_atomic_fadd", location;
         operands, owned_regions, successors, attributes,
@@ -157,17 +157,17 @@ are translated to intrinsic arguments as follows:
   to 2 to disable bounds checks, otherwise it is 3
 - The cache coherency bits are off
 """
-function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; value::MLIRType, boundsCheck=nothing, indexOffset=nothing, location=Location())
-    results = MLIRType[value, ]
-    operands = Value[memref, indices..., ]
+function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing,Value}; value::IR.Type, boundsCheck=nothing, indexOffset=nothing, location=Location())
+    results = IR.Type[value,]
+    operands = Value[memref, indices...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
-    push!(attributes, operandsegmentsizes([1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
+    push!(attributes, operandsegmentsizes([1, length(indices), (sgprOffset == nothing) ? 0 : 1]))
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
-    
+
     create_operation(
         "amdgpu.raw_buffer_load", location;
         operands, owned_regions, successors, attributes,
@@ -196,17 +196,17 @@ components is partically completed is chipset-dependent.
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
 """
-function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
-    results = MLIRType[]
-    operands = Value[value, memref, indices..., ]
+function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing,Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
+    results = IR.Type[]
+    operands = Value[value, memref, indices...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
-    push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset==nothing) ? 0 : 1]))
+    push!(attributes, operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]))
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
-    
+
     create_operation(
         "amdgpu.raw_buffer_store", location;
         operands, owned_regions, successors, attributes,

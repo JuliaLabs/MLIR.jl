@@ -1,6 +1,6 @@
 module tensor
 
-import ...IR: NamedAttribute, MLIRType, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -28,13 +28,13 @@ converting to a mismatching constant dimension.
 %5 = tensor.cast %4 : tensor<?x?xf32> to tensor<*xf32>
 ```
 """
-function cast(source::Value; dest::MLIRType, location=Location())
-    results = MLIRType[dest, ]
-    operands = Value[source, ]
+function cast(source::Value; dest::IR.Type, location=Location())
+    results = IR.Type[dest,]
+    operands = Value[source,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.cast", location;
         operands, owned_regions, successors, attributes,
@@ -68,13 +68,13 @@ Examples:
     : tensor<?x?x?xf32> into tensor<?x?xf32>
 ```
 """
-function collapse_shape(src::Value; result::MLIRType, reassociation, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[src, ]
+function collapse_shape(src::Value; result::IR.Type, reassociation, location=Location())
+    results = IR.Type[result,]
+    operands = Value[src,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
-    
+    attributes = NamedAttribute[namedattribute("reassociation", reassociation),]
+
     create_operation(
         "tensor.collapse_shape", location;
         operands, owned_regions, successors, attributes,
@@ -108,14 +108,14 @@ The specified tensor type is that of the first operand.
 %y = \"tensor.dim\"(%A, %c1) : (memref<4x?xf32>, index) -> index
 ```
 """
-function dim(source::Value, index::Value; result=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[source, index, ]
+function dim(source::Value, index::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[source, index,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-    
+
     create_operation(
         "tensor.dim", location;
         operands, owned_regions, successors, attributes,
@@ -149,13 +149,13 @@ Examples:
     : tensor<?x?xf32> into tensor<?x?x?xf32>
 ```
 """
-function expand_shape(src::Value; result::MLIRType, reassociation, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[src, ]
+function expand_shape(src::Value; result::IR.Type, reassociation, location=Location())
+    results = IR.Type[result,]
+    operands = Value[src,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
-    
+    attributes = NamedAttribute[namedattribute("reassociation", reassociation),]
+
     create_operation(
         "tensor.expand_shape", location;
         operands, owned_regions, successors, attributes,
@@ -182,13 +182,13 @@ indices should all be of `index` type.
 %6 = tensor.extract %ut[%1, %2] : tensor<*xi32>
 ```
 """
-function extract(tensor::Value, indices::Vector{Value}; result::MLIRType, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[tensor, indices..., ]
+function extract(tensor::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+    results = IR.Type[result,]
+    operands = Value[tensor, indices...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.extract", location;
         operands, owned_regions, successors, attributes,
@@ -258,14 +258,14 @@ dims, to map the rank-reduced type to the source type by dropping ones:
   tensor<8x16x4xf32> to tensor<1x?xf32>
 ```
 """
-function extract_slice(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+function extract_slice(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
+    results = IR.Type[result,]
+    operands = Value[source, offsets..., sizes..., strides...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
-    push!(attributes, operandsegmentsizes([1, length(offsets), length(sizes), length(strides), ]))
-    
+    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides),]
+    push!(attributes, operandsegmentsizes([1, length(offsets), length(sizes), length(strides),]))
+
     create_operation(
         "tensor.extract_slice", location;
         operands, owned_regions, successors, attributes,
@@ -292,13 +292,13 @@ will result in a tensor
 [[%a, %b, %c]
  [%d, %e, %f]]
 """
-function from_elements(elements::Vector{Value}; result::MLIRType, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[elements..., ]
+function from_elements(elements::Vector{Value}; result::IR.Type, location=Location())
+    results = IR.Type[result,]
+    operands = Value[elements...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.from_elements", location;
         operands, owned_regions, successors, attributes,
@@ -329,13 +329,13 @@ a \"parallel map\" operation.
   } : tensor<?x3x?f32>
 ```
 """
-function generate(dynamicExtents::Vector{Value}; result::MLIRType, body::Region, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[dynamicExtents..., ]
-    owned_regions = Region[body, ]
+function generate(dynamicExtents::Vector{Value}; result::IR.Type, body::Region, location=Location())
+    results = IR.Type[result,]
+    operands = Value[dynamicExtents...,]
+    owned_regions = Region[body,]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.generate", location;
         operands, owned_regions, successors, attributes,
@@ -365,13 +365,13 @@ indices should all be of `index` type.
 %6 = tensor.insert %ut into %dest[%1, %2] : tensor<*xi32>
 ```
 """
-function insert(scalar::Value, dest::Value, indices::Vector{Value}; result::MLIRType, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[scalar, dest, indices..., ]
+function insert(scalar::Value, dest::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+    results = IR.Type[result,]
+    operands = Value[scalar, dest, indices...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.insert", location;
         operands, owned_regions, successors, attributes,
@@ -435,14 +435,14 @@ Unlike ExtractSliceOp however, there is no need for a specific inference.
   tensor<1x?xf32> into tensor<8x16x4xf32>
 ```
 """
-function insert_slice(source::Value, dest::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::MLIRType, static_offsets, static_sizes, static_strides, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[source, dest, offsets..., sizes..., strides..., ]
+function insert_slice(source::Value, dest::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
+    results = IR.Type[result,]
+    operands = Value[source, dest, offsets..., sizes..., strides...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
-    push!(attributes, operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides), ]))
-    
+    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides),]
+    push!(attributes, operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides),]))
+
     create_operation(
         "tensor.insert_slice", location;
         operands, owned_regions, successors, attributes,
@@ -523,15 +523,15 @@ Example 4:
   } : tensor<2x3xf32> to tensor<2x3xf32>
 ```
 """
-function pad(source::Value, low::Vector{Value}, high::Vector{Value}; result::MLIRType, static_low, static_high, nofold=nothing, region::Region, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[source, low..., high..., ]
-    owned_regions = Region[region, ]
+function pad(source::Value, low::Vector{Value}, high::Vector{Value}; result::IR.Type, static_low, static_high, nofold=nothing, region::Region, location=Location())
+    results = IR.Type[result,]
+    operands = Value[source, low..., high...,]
+    owned_regions = Region[region,]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("static_low", static_low), namedattribute("static_high", static_high), ]
-    push!(attributes, operandsegmentsizes([1, length(low), length(high), ]))
+    attributes = NamedAttribute[namedattribute("static_low", static_low), namedattribute("static_high", static_high),]
+    push!(attributes, operandsegmentsizes([1, length(low), length(high),]))
     !isnothing(nofold) && push!(attributes, namedattribute("nofold", nofold))
-    
+
     create_operation(
         "tensor.pad", location;
         operands, owned_regions, successors, attributes,
@@ -602,13 +602,13 @@ The same verification discussion and mechanisms apply as for ExtractSliceOp.
 Unlike ExtractSliceOp however, there is no need for a specific inference.
 """
 function parallel_insert_slice(source::Value, dest::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; static_offsets, static_sizes, static_strides, location=Location())
-    results = MLIRType[]
-    operands = Value[source, dest, offsets..., sizes..., strides..., ]
+    results = IR.Type[]
+    operands = Value[source, dest, offsets..., sizes..., strides...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
-    push!(attributes, operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides), ]))
-    
+    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides),]
+    push!(attributes, operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides),]))
+
     create_operation(
         "tensor.parallel_insert_slice", location;
         operands, owned_regions, successors, attributes,
@@ -629,14 +629,14 @@ The `tensor.rank` operation takes a tensor operand and returns its rank.
 %1 = tensor.rank %arg1 : tensor<?x?xf32>
 ```
 """
-function rank(tensor::Value; result_0=nothing::Union{Nothing, MLIRType}, location=Location())
-    results = MLIRType[]
-    operands = Value[tensor, ]
+function rank(tensor::Value; result_0=nothing::Union{Nothing,IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[tensor,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result_0) && push!(results, result_0)
-    
+
     create_operation(
         "tensor.rank", location;
         operands, owned_regions, successors, attributes,
@@ -679,13 +679,13 @@ Result type is unranked.
          : (tensor<*xf32>, tensor<?xi32>) -> tensor<*xf32>
 ```
 """
-function reshape(source::Value, shape::Value; result::MLIRType, location=Location())
-    results = MLIRType[result, ]
-    operands = Value[source, shape, ]
+function reshape(source::Value, shape::Value; result::IR.Type, location=Location())
+    results = IR.Type[result,]
+    operands = Value[source, shape,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.reshape", location;
         operands, owned_regions, successors, attributes,
@@ -719,13 +719,13 @@ TODO: This operation is easy to extend to broadcast to dynamically shaped
 %t = tensor.splat %s [%m, %n] : tensor<?x?xf32>
 ```
 """
-function splat(input::Value; aggregate::MLIRType, location=Location())
-    results = MLIRType[aggregate, ]
-    operands = Value[input, ]
+function splat(input::Value; aggregate::IR.Type, location=Location())
+    results = IR.Type[aggregate,]
+    operands = Value[input,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.splat", location;
         operands, owned_regions, successors, attributes,
@@ -742,12 +742,12 @@ is used to create dynamically sized tensors
 (see `tensor.generate` and `tensor.pad` ops).
 """
 function yield(value::Value; location=Location())
-    results = MLIRType[]
-    operands = Value[value, ]
+    results = IR.Type[]
+    operands = Value[value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
+
     create_operation(
         "tensor.yield", location;
         operands, owned_regions, successors, attributes,
