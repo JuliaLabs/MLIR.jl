@@ -4,7 +4,9 @@ using MLIR.IR, LLVM
 @testset "operation introspection" begin
     IR.context!(IR.Context()) do
         IR.get_or_load_dialect!(IR.DialectHandle(:linalg))
-        IR.load_all_available_dialects()
+        if LLVM.version() >= v"15"
+            IR.load_all_available_dialects()
+        end
         op = arith.constant(; value=true, result=IR.Type(Bool))
 
         @test IR.name(op) == "arith.constant"
