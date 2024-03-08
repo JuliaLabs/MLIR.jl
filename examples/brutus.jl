@@ -63,7 +63,7 @@ function prepare_block(ir, bb)
         inst isa Core.PhiNode || continue
 
         type = stmt[:type]
-        IR.push_argument!(b, IR.Type(type), Location())
+        IR.push_argument!(b, IR.Type(type))
     end
 
     return b
@@ -120,7 +120,7 @@ function code_mlir(f, types)
     current_block = entry_block = blocks[begin]
 
     for argtype in types.parameters
-        IR.push_argument!(entry_block, IR.Type(argtype), Location())
+        IR.push_argument!(entry_block, IR.Type(argtype))
     end
 
     function get_value(x)::Value
