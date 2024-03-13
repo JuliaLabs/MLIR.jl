@@ -31,3 +31,42 @@ end
         @test_throws AssertionError IR.Module(arith.constant(; value=true, result=IR.Type(Bool)))
     end
 end
+
+@testset "Iterators" begin
+    IR.context!(IR.Context()) do
+        mod = if LLVM.version() >= v"15"
+            IR.load_all_available_dialects()
+            IR.get_or_load_dialect!(IR.DialectHandle(:func))
+            parse(IR.Module, """
+            module {
+                func.func @f() {
+                    return
+                }
+            }
+            """)
+        else
+            IR.get_or_load_dialect!(IR.DialectHandle(:std))
+            parse(IR.Module, """
+            module {
+                func @f() {
+                    std.return
+                }
+            }
+            """)
+        end
+        b = IR.body(mod)
+        ops = collect(IR.OperationIterator(b))
+        @test ops isa Vector{Operation}
+        @test length(ops) == 1
+
+        op = only(ops)
+        regions = collect(IR.RegionIterator(op))
+        @test regions isa Vector{Region}
+        @test length(regions) == 1
+
+        region = only(regions)
+        blocks = collect(IR.BlockIterator(region))
+        @test blocks isa Vector{Block}
+        @test length(blocks) == 1
+    end
+end

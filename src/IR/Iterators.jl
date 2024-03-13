@@ -7,6 +7,9 @@ struct BlockIterator
     region::Region
 end
 
+Base.IteratorSize(::Core.Type{BlockIterator}) = Base.SizeUnknown()
+Base.eltype(::BlockIterator) = Block
+
 function Base.iterate(it::BlockIterator)
     reg = it.region
     raw_block = API.mlirRegionGetFirstBlock(reg)
@@ -37,6 +40,9 @@ struct RegionIterator
     op::Operation
 end
 
+Base.eltype(::RegionIterator) = Region
+Base.length(it::RegionIterator) = nregions(it.op)
+
 function Base.iterate(it::RegionIterator)
     raw_region = API.mlirOperationGetFirstRegion(it.op)
     if mlirIsNull(raw_region)
@@ -65,6 +71,9 @@ Iterates over all operations for the given block.
 struct OperationIterator
     block::Block
 end
+
+Base.IteratorSize(::Core.Type{OperationIterator}) = Base.SizeUnknown()
+Base.eltype(::OperationIterator) = Operation
 
 function Base.iterate(it::OperationIterator)
     raw_op = API.mlirBlockGetFirstOperation(it.block)
