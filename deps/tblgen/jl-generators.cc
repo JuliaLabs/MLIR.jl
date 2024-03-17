@@ -170,7 +170,7 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
   const char *moduleTemplate;
   if (disableModuleWrap)
   {
-    moduleTemplate = R"(import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+    moduleTemplate = R"(import ...IR: IR, NamedAttribute, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -181,7 +181,7 @@ import ...API
   {
     moduleTemplate = R"(module {0}
 
-import ...IR: NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -197,7 +197,7 @@ function {0}({1}location=Location())
 end
 )";      // 0: functionname, 1: functionarguments, 2: functionbody
   const char *functionbodytemplate = R"(results = IR.Type[{0}]
-    operands = Value[{1}]
+    operands = API.MlirValue[{1}]
     owned_regions = Region[{2}]
     successors = Block[{3}]
     attributes = NamedAttribute[{4}]
@@ -250,23 +250,15 @@ end
       }
       operandname = sanitizeName(operandname);
 
-      std::string type = "Value";
-
       bool optional = named_operand.isOptional();
       bool variadic = named_operand.isVariadic();
-
-      if (variadic)
-      {
-        type = "Vector{" + type + "}";
-      }
 
       std::string separator = ", ";
       if (optional)
       {
-        optionals += llvm::formatv(R"(!isnothing({0}) && push!(operands, {0}{1})
+        optionals += llvm::formatv(R"(({0} != nothing) && push!(operands, get_value{2}({0}){1})
     )",
-                                   operandname, (variadic ? "..." : ""));
-        type = "Union{Nothing, " + type + "}";
+                                   operandname, (variadic ? "..." : ""), (variadic ? "." : ""));
         defaultvalue = "=nothing";
 
         if (!alreadykeyword) {
@@ -276,11 +268,11 @@ end
       }
       else
       {
-        operandcontainer += operandname + (variadic ? "..." : "") + ", ";
+        operandcontainer += llvm::formatv(R"(get_value{0}({1}){2}, )", (variadic ? "." : ""), operandname, (variadic ? "..." : ""));
         separator = (!alreadykeyword && i == op.getNumOperands() - 1) ? "; " : ", ";
       }
 
-      operandarguments += operandname + defaultvalue + "::" + type + separator;
+      operandarguments += operandname + defaultvalue + separator;
     }
     if (operandarguments == "") {
       operandarguments = "; ";
