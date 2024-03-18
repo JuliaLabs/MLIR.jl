@@ -141,7 +141,7 @@ isinteger(attr::Attribute) = API.mlirAttributeIsAInteger(attr)
 
 Creates an integer attribute of the given type with the given integer value.
 """
-Attribute(i::T) where {T<:Integer} = Attribute(API.mlirIntegerAttrGet(Type(T), Int64(i)))
+Attribute(i::T, t=Type(T)) where {T<:Integer} = Attribute(API.mlirIntegerAttrGet(t, Int64(i)))
 
 """
     Int64(attr)
