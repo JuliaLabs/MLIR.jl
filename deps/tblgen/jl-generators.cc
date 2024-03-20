@@ -256,7 +256,7 @@ end
       std::string separator = ", ";
       if (optional)
       {
-        optionals += llvm::formatv(R"(({0} != nothing) && push!(operands, get_value{2}({0}){1})
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(operands, value{2}({0}){1})
     )",
                                    operandname, (variadic ? "..." : ""), (variadic ? "." : ""));
         defaultvalue = "=nothing";
