@@ -11,7 +11,6 @@ Base.convert(::Core.Type{API.MlirValue}, value::Value) = value.value
 Base.size(value::Value) = Base.size(Type(value))
 Base.ndims(value::Value) = Base.ndims(Type(value))
 
-
 abstract type MLIRValueTrait end
 struct Convertible <: MLIRValueTrait end
 struct NonConvertible <: MLIRValueTrait end
