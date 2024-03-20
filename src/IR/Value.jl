@@ -11,15 +11,15 @@ Base.convert(::Core.Type{API.MlirValue}, value::Value) = value.value
 Base.size(value::Value) = Base.size(Type(value))
 Base.ndims(value::Value) = Base.ndims(Type(value))
 
-abstract type MLIRValueTrait end
-struct Convertible <: MLIRValueTrait end
-struct NonConvertible <: MLIRValueTrait end
+abstract type ValueTrait end
+struct Convertible <: ValueTrait end
+struct NonConvertible <: ValueTrait end
 
-MLIRValueTrait(T) = NonConvertible()
-get_value(x::Value) = x
-get_value(x::T) where T = get_value(MLIRValueTrait(T), x)
-get_value(::Convertible, x) = x.value
-get_value(::NonConvertible, x::T) where T = error("Type $T does not have the Convertible MLIRValueTrait")
+ValueTrait(T) = NonConvertible()
+value(x::Value) = x
+value(x::T) where T = value(ValueTrait(T), x)
+value(::Convertible, x) = x.value
+value(::NonConvertible, x::T) where T = error("Type $T does not have the Convertible ValueTrait")
 
 """
     ==(value1, value2)

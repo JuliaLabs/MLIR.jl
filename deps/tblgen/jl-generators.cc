@@ -170,7 +170,7 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
   const char *moduleTemplate;
   if (disableModuleWrap)
   {
-    moduleTemplate = R"(import ...IR: IR, NamedAttribute, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
+    moduleTemplate = R"(import ...IR: IR, NamedAttribute, value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -181,7 +181,7 @@ import ...API
   {
     moduleTemplate = R"(module {0}
 
-import ...IR: NamedAttribute, get_value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: NamedAttribute, value, Location, Block, Region, Attribute, create_operation, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -268,7 +268,7 @@ end
       }
       else
       {
-        operandcontainer += llvm::formatv(R"(get_value{0}({1}){2}, )", (variadic ? "." : ""), operandname, (variadic ? "..." : ""));
+        operandcontainer += llvm::formatv(R"(value{0}({1}){2}, )", (variadic ? "." : ""), operandname, (variadic ? "..." : ""));
         separator = (!alreadykeyword && i == op.getNumOperands() - 1) ? "; " : ", ";
       }
 
