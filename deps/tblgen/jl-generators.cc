@@ -107,6 +107,7 @@ namespace
         leading_spaces_str += "[ ]";
       description = std::regex_replace(description, std::regex("\n" + leading_spaces_str), "\n");
     }
+    description = std::regex_replace(description, std::regex(R"(\\)"), R"(\\)");
     description = std::regex_replace(description, std::regex("(['\"$])"), "\\$1");
     description = std::regex_replace(description, std::regex("(^|\n)(Example|Syntax):"), "$1# $2");
 
@@ -141,7 +142,7 @@ namespace
     }
     // check if name colides with Julia keywords, generated module name, or "location":
     // https://docs.julialang.org/en/v1/base/base/#Keywords
-    std::vector<std::string> reservedKeywords = {"location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
+    std::vector<std::string> reservedKeywords = {"include", "location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
     if (modulename.has_value()) {
       reservedKeywords.push_back(modulename.value());
     }
