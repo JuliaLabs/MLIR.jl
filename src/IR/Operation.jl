@@ -172,7 +172,7 @@ nattrs(operation::Operation) = API.mlirOperationGetNumAttributes(operation)
 Return `i`-th attribute of the operation.
 """
 function attr(operation::Operation, i)
-    i ∉ 1:nattributes(operation) && throw(BoundsError(operation, i))
+    i ∉ 1:nattrs(operation) && throw(BoundsError(operation, i))
     NamedAttribute(API.mlirOperationGetAttribute(operation, i - 1))
 end
 
