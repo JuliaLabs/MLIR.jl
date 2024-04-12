@@ -167,8 +167,9 @@ for (julia_version, llvm_version) in julia_llvm
             options["general"]["output_file_path"] = output_file_path
 
             libmlir_header_dir = joinpath(include_dir, "mlir-c")
-            args = Generators.get_default_args()
-            append!(args, ["-I", include_dir, "-x", "c++"])
+            args = Generators.get_default_args(get_triple(); is_cxx=true)
+            push!(args, "-I$include_dir")
+            push!(args, "-xc++")
 
             headers = detect_headers(libmlir_header_dir, args, Dict(), endswith("Python/Interop.h"))
             ctx = create_context(headers, args, options)
