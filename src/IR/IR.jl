@@ -30,7 +30,7 @@ macro llvmversioned(pred, expr)
     @assert Meta.isexpr(version, :macrocall) && version.args[1] == Symbol("@v_str") "Expected a VersionNumber"
     version = eval(version)
 
-    if predname == :min && Base.libllvm_version >= version || predname == :max && VersionNumber(Base.libllvm_version.major) <= version
+    if predname == :min && libmlir_version >= version || predname == :max && VersionNumber(libmlir_version.major) <= version
         esc(expr)
     else
         esc(:(nothing))
