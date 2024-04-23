@@ -1,15 +1,12 @@
 module MLIR
 
-import LLVM
-
 module API
 using CEnum
 
 # MLIR C API
-import ..LLVM
 using MLIR_jll
 let
-    ver = string(LLVM.version().major)
+    ver = string(Base.libllvm_version.major)
     dir = joinpath(@__DIR__, "API", ver)
     if !isdir(dir)
         error("""The MLIR API bindings for v$ver do not exist.
