@@ -1,7 +1,6 @@
 module IR
 
 using ..API
-using LLVM: LLVM
 
 # do not export `Type`, as it is already defined in Core
 # also, use `Core.Type` inside this module to avoid clash with MLIR `Type`
@@ -31,7 +30,7 @@ macro llvmversioned(pred, expr)
     @assert Meta.isexpr(version, :macrocall) && version.args[1] == Symbol("@v_str") "Expected a VersionNumber"
     version = eval(version)
 
-    if predname == :min && LLVM.version() >= version || predname == :max && VersionNumber(LLVM.version().major) <= version
+    if predname == :min && Base.libllvm_version >= version || predname == :max && VersionNumber(Base.libllvm_version.major) <= version
         esc(expr)
     else
         esc(:(nothing))

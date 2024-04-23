@@ -1,6 +1,5 @@
 module Dialects
 
-import LLVM
 import ..IR: Attribute, NamedAttribute, context
 import ..API
 
@@ -14,7 +13,7 @@ end
 operandsegmentsizes(segments) = namedattribute("operand_segment_sizes", Attribute(Int32.(segments)))
 
 let
-    ver = string(LLVM.version().major)
+    ver = string(Base.libllvm_version.major)
     dir = joinpath(@__DIR__, "Dialects", ver)
     if !isdir(dir)
         error("""The MLIR dialect bindings for v$ver do not exist.
