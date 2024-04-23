@@ -220,7 +220,7 @@ function Base.show(io::IO, operation::Operation)
 
     flags = API.mlirOpPrintingFlagsCreate()
 
-    if Base.libllvm_version >= v"16"
+    if libmlir_version >= v"16"
         API.mlirOpPrintingFlagsEnableDebugInfo(flags, get(io, :debug, false), true)
     else
         get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true)

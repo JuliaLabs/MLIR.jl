@@ -1,12 +1,16 @@
 module MLIR
 
+using Preferences
+
+libmlir_version = VersionNumber(@load_preference(:libmlir_version, Base.libllvm_version_string))
+
 module API
 using CEnum
 
 # MLIR C API
 using MLIR_jll
 let
-    ver = string(Base.libllvm_version.major)
+    ver = string(libmlir_version.major)
     dir = joinpath(@__DIR__, "API", ver)
     if !isdir(dir)
         error("""The MLIR API bindings for v$ver do not exist.
