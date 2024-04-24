@@ -1,6 +1,6 @@
 module IR
 
-using ..MLIR: libmlir_version
+using ..MLIR: MLIR_VERSION
 using ..API
 
 # do not export `Type`, as it is already defined in Core
@@ -31,7 +31,7 @@ macro llvmversioned(pred, expr)
     @assert Meta.isexpr(version, :macrocall) && version.args[1] == Symbol("@v_str") "Expected a VersionNumber"
     version = eval(version)
 
-    if predname == :min && libmlir_version >= version || predname == :max && VersionNumber(libmlir_version.major) <= version
+    if predname == :min && MLIR_VERSION[] >= version || predname == :max && VersionNumber(MLIR_VERSION[].major) <= version
         esc(expr)
     else
         esc(:(nothing))

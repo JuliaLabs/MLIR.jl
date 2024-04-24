@@ -1,6 +1,6 @@
 module API
 
-using ..MLIR: libmlir_version
+using ..MLIR: MLIR_VERSION
 
 using CEnum
 

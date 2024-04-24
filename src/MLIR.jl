@@ -2,7 +2,7 @@ module MLIR
 
 using Preferences
 
-libmlir_version = VersionNumber(@load_preference("libmlir_version", Base.libllvm_version_string))
+const MLIR_VERSION = ScopedValue(VersionNumber(@load_preference("MLIR_VERSION", Base.libllvm_version_string)))
 
 include("API.jl")
 include("IR/IR.jl")

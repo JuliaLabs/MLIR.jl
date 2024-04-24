@@ -621,7 +621,7 @@ function Base.length(attr::Attribute)
         API.mlirDictionaryAttrGetNumElements(attr)
     elseif iselements(attr)
         API.mlirElementsAttrGetNumElements(attr)
-    elseif libmlir_version >= v"16"
+    elseif MLIR_VERSION[] >= v"16"
         _isdensearray = any(T -> isdensearray(attr, T), [Bool, Int8, Int16, Int32, Int64, Float32, Float64])
         if _isdensearray
             API.mlirDenseBoolArrayGetNumElements(attr)
@@ -667,7 +667,7 @@ function Base.getindex(attr::Attribute, i)
         else
             throw("unsupported element type $(elem_type)")
         end
-    elseif libmlir_version >= v"16"
+    elseif MLIR_VERSION[] >= v"16"
         if isdensearray(attr, Bool)
             API.mlirDenseBoolArrayGetElement(attr, i)
         elseif isdensearray(attr, Int8)
