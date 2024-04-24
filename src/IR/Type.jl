@@ -135,19 +135,25 @@ function bitwidth(type::Type)
 end
 
 # Floating point types
-@llvmversioned min = v"16" """
+"""
       Float8E5M2(; context=context())
 
   Creates an f8E5M2 type in the given context. The type is owned by the context.
   """
-Float8E5M2(; context::Context=context()) = Type(API.Dispatcher.mlirFloat8E5M2TypeGet(context))
+function Float8E5M2(; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`Float8E5M2()` requires MLIR version 16 or later"))
+    Type(API.Dispatcher.mlirFloat8E5M2TypeGet(context))
+end
 
-@llvmversioned min = v"16" """
+"""
       Float8E4M3FN(; context=context())
 
   Creates an f8E4M3FN type in the given context. The type is owned by the context.
   """
-Float8E4M3FN(; context::Context=context()) = Type(API.Dispatcher.mlirFloat8E4M3FNTypeGet(context))
+function Float8E4M3FN(; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`Float8E4M3FN()` requires MLIR version 16 or later"))
+    Type(API.Dispatcher.mlirFloat8E4M3FNTypeGet(context))
+end
 
 """
 BFloat16Type(; context=context())
@@ -177,19 +183,25 @@ Creates a f64 type in the given context. The type is owned by the context.
 """
 Type(::Core.Type{Float64}; context::Context=context()) = Type(API.Dispatcher.mlirF64TypeGet(context))
 
-@llvmversioned min = v"16" """
+"""
       isf8e5m2(type)
 
   Checks whether the given type is an f8E5M2 type.
   """
-isf8e5m2(type::Type) = API.Dispatcher.mlirTypeIsAFloat8E5M2(type)
+function isf8e5m2(type::Type)
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isf8e5m2()` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirTypeIsAFloat8E5M2(type)
+end
 
-@llvmversioned min = v"16" """
+"""
       isf8e4m3fn(type)
 
   Checks whether the given type is an f8E4M3FN type.
   """
-isf8e4m3fn(type::Type) = API.Dispatcher.mlirTypeIsAFloat8E4M3FN(type)
+function isf8e4m3fn(type::Type)
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isf8e4m3fn()` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirTypeIsAFloat8E4M3FN(type)
+end
 
 """
     isbf16(type)

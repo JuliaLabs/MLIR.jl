@@ -25,12 +25,15 @@ Create a new top-level PassManager.
 """
 PassManager(; context::Context=context()) = PassManager(API.Dispatcher.mlirPassManagerCreate(context))
 
-@llvmversioned min = v"16" """
+"""
       PassManager(anchorOp; context=context())
 
   Create a new top-level PassManager anchored on `anchorOp`.
   """
-PassManager(anchor_op::Operation; context::Context=context()) = PassManager(API.Dispatcher.mlirPassManagerCreateOnOperation(context, anchor_op))
+function PassManager(anchor_op::Operation; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`PassManager(::Operation)` requires MLIR version 16 or later"))
+    PassManager(API.Dispatcher.mlirPassManagerCreateOnOperation(context, anchor_op))
+end
 
 Base.convert(::Core.Type{API.MlirPassManager}, pass::PassManager) = pass.pass
 
@@ -159,12 +162,13 @@ function Base.parse(opm::OpPassManager, pipeline::String)
     opm
 end
 
-@llvmversioned min = v"16" """
+"""
       add_pipeline!(passManager, pipelineElements, callback, userData)
 
   Parse a sequence of textual MLIR pass pipeline elements and add them to the provided OpPassManager. If parsing fails an error message is reported using the provided callback.
   """
 function add_pipeline!(op_pass::OpPassManager, pipeline)
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`add_pipeline!(::OpPassManager)` requires MLIR version 16 or later"))
     @static if isdefined(API, :mlirOpPassManagerAddPipeline)
         io = IOBuffer()
         c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))

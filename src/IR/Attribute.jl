@@ -537,7 +537,14 @@ function DenseElementsAttribute(values::AbstractArray{String})
     Attribute(API.Dispatcher.mlirDenseElementsAttrStringGet(shaped_type, length(values), pointer(values)))
 end
 
-@llvmversioned max = v"15" Attribute(values::AbstractArray) = DenseElementsAttribute(values)
+function Attribute(values::AbstractArray)
+    MLIR_VERSION[] >= v"15" || throw(UndefVarError("`Attribute(::AbstractArray)` requires MLIR version 15 or later"))
+    if MLIR_VERSION < v"16"
+        DenseElementsAttribute(values)
+    else
+        DenseArrayAttribute(values)
+    end
+end
 
 """
     Base.reshape(attr, shapedType)
@@ -564,12 +571,15 @@ end
 
 # TODO mlirDenseElementsAttrGetRawData
 
-@llvmversioned max = v"15" """
+"""
       isopaqueelements(attr)
 
   Checks whether the given attribute is an opaque elements attribute.
   """
-isopaqueelements(attr::Attribute) = API.Dispatcher.mlirAttributeIsAOpaqueElements(attr)
+function isopaqueelements(attr::Attribute)
+    MLIR_VERSION[] >= v"15" || throw(UndefVarError("`isopaqueelements(::Attribute)` requires MLIR version 15 or later"))
+    API.Dispatcher.mlirAttributeIsAOpaqueElements(attr)
+end
 
 """
     issparseelements(attr)
@@ -582,37 +592,90 @@ issparseelements(attr::Attribute) = API.Dispatcher.mlirAttributeIsASparseElement
 # TODO mlirSparseElementsAttrGetIndices
 # TODO mlirSparseElementsAttrGetValues
 
-@llvmversioned min = v"16" """
+"""
       isdensearray(attr, ::Core.Type{T})
 
   Checks whether the given attribute is a dense array attribute.
   """
 function isdensearray end
 
-@llvmversioned min = v"16" isdensearray(attr::Attribute, ::Core.Type{Bool}) = API.Dispatcher.mlirAttributeIsADenseBoolArray(attr)
-@llvmversioned min = v"16" isdensearray(attr::Attribute, ::Core.Type{Int8}) = API.Dispatcher.mlirAttributeIsADenseI8Array(attr)
-@llvmversioned min = v"16" isdensearray(attr::Attribute, ::Core.Type{Int16}) = API.Dispatcher.mlirAttributeIsADenseI16Array(attr)
-@llvmversioned min = v"16" isdensearray(attr::Attribute, ::Core.Type{Int32}) = API.Dispatcher.mlirAttributeIsADenseI32Array(attr)
-@llvmversioned min = v"16" isdensearray(attr::Attribute, ::Core.Type{Int64}) = API.Dispatcher.mlirAttributeIsADenseI64Array(attr)
-@llvmversioned min = v"16" isdensearray(attr::Attribute, ::Core.Type{Float32}) = API.Dispatcher.mlirAttributeIsADenseF32Array(attr)
-@llvmversioned min = v"16" isdensearray(attr::Attribute, ::Core.Type{Float64}) = API.Dispatcher.mlirAttributeIsADenseF64Array(attr)
+function isdensearray(attr::Attribute, ::Core.Type{Bool})
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isdensearray(::Attribute, ::Core.Type{Bool})` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirAttributeIsADenseBoolArray(attr)
+end
 
-@llvmversioned min = v"16" """
+function isdensearray(attr::Attribute, ::Core.Type{Int8})
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isdensearray(::Attribute, ::Core.Type{Int8})` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirAttributeIsADenseI8Array(attr)
+end
+
+function isdensearray(attr::Attribute, ::Core.Type{Int16})
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isdensearray(::Attribute, ::Core.Type{Int16})` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirAttributeIsADenseI16Array(attr)
+end
+
+function isdensearray(attr::Attribute, ::Core.Type{Int32})
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isdensearray(::Attribute, ::Core.Type{Int32})` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirAttributeIsADenseI32Array(attr)
+end
+
+function isdensearray(attr::Attribute, ::Core.Type{Int64})
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isdensearray(::Attribute, ::Core.Type{Int64})` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirAttributeIsADenseI64Array(attr)
+end
+
+function isdensearray(attr::Attribute, ::Core.Type{Float32})
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isdensearray(::Attribute, ::Core.Type{Float32})` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirAttributeIsADenseF32Array(attr)
+end
+
+function isdensearray(attr::Attribute, ::Core.Type{Float64})
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`isdensearray(::Attribute, ::Core.Type{Float64})` requires MLIR version 16 or later"))
+    API.Dispatcher.mlirAttributeIsADenseF64Array(attr)
+end
+
+
+"""
       DenseArrayAttribute(array; context=context())
 
   Create a dense array attribute with the given elements.
   """
 function DenseArrayAttribute end
 
-@llvmversioned min = v"16" DenseArrayAttribute(values::AbstractArray{Bool}; context::Context=context()) = Attribute(API.Dispatcher.mlirDenseBoolArrayGet(context, length(values), pointer(values)))
-@llvmversioned min = v"16" DenseArrayAttribute(values::AbstractArray{Int8}; context::Context=context()) = Attribute(API.Dispatcher.mlirDenseI8ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min = v"16" DenseArrayAttribute(values::AbstractArray{Int16}; context::Context=context()) = Attribute(API.Dispatcher.mlirDenseI16ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min = v"16" DenseArrayAttribute(values::AbstractArray{Int32}; context::Context=context()) = Attribute(API.Dispatcher.mlirDenseI32ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min = v"16" DenseArrayAttribute(values::AbstractArray{Int64}; context::Context=context()) = Attribute(API.Dispatcher.mlirDenseI64ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min = v"16" DenseArrayAttribute(values::AbstractArray{Float32}; context::Context=context()) = Attribute(API.Dispatcher.mlirDenseF32ArrayGet(context, length(values), pointer(values)))
-@llvmversioned min = v"16" DenseArrayAttribute(values::AbstractArray{Float64}; context::Context=context()) = Attribute(API.Dispatcher.mlirDenseF64ArrayGet(context, length(values), pointer(values)))
+function DenseArrayAttribute(values::AbstractArray{Bool}; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`DenseArrayAttribute(::AbstractArray{Bool})` requires MLIR version 16 or later"))
+    Attribute(API.Dispatcher.mlirDenseBoolArrayGet(context, length(values), pointer(values)))
+end
 
-@llvmversioned min = v"16" Attribute(values::AbstractArray) = DenseArrayAttribute(values)
+function DenseArrayAttribute(values::AbstractArray{Int8}; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`DenseArrayAttribute(::AbstractArray{Int8})` requires MLIR version 16 or later"))
+    Attribute(API.Dispatcher.mlirDenseI8ArrayGet(context, length(values), pointer(values)))
+end
+
+function DenseArrayAttribute(values::AbstractArray{Int16}; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`DenseArrayAttribute(::AbstractArray{Int16})` requires MLIR version 16 or later"))
+    Attribute(API.Dispatcher.mlirDenseI16ArrayGet(context, length(values), pointer(values)))
+end
+
+function DenseArrayAttribute(values::AbstractArray{Int32}; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`DenseArrayAttribute(::AbstractArray{Int32})` requires MLIR version 16 or later"))
+    Attribute(API.Dispatcher.mlirDenseI32ArrayGet(context, length(values), pointer(values)))
+end
+
+function DenseArrayAttribute(values::AbstractArray{Int64}; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`DenseArrayAttribute(::AbstractArray{Int64})` requires MLIR version 16 or later"))
+    Attribute(API.Dispatcher.mlirDenseI64ArrayGet(context, length(values), pointer(values)))
+end
+
+function DenseArrayAttribute(values::AbstractArray{Float32}; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`DenseArrayAttribute(::AbstractArray{Float32})` requires MLIR version 16 or later"))
+    Attribute(API.Dispatcher.mlirDenseF32ArrayGet(context, length(values), pointer(values)))
+end
+
+function DenseArrayAttribute(values::AbstractArray{Float64}; context::Context=context())
+    MLIR_VERSION[] >= v"16" || throw(UndefVarError("`DenseArrayAttribute(::AbstractArray{Float64})` requires MLIR version 16 or later"))
+    Attribute(API.Dispatcher.mlirDenseF64ArrayGet(context, length(values), pointer(values)))
+end
 
 function Base.length(attr::Attribute)
     if isarray(attr)

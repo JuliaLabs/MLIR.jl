@@ -1,62 +1,5 @@
 using CEnum
 
-const IS_LIBC_MUSL = occursin("musl", Base.MACHINE)
-
-if Sys.islinux() && Sys.ARCH === :aarch64 && !IS_LIBC_MUSL
-    const __off_t = Clong
-    const off_t = __off_t
-elseif Sys.islinux() && Sys.ARCH === :aarch64 && IS_LIBC_MUSL
-    const off_t = Clong
-elseif Sys.islinux() && startswith(string(Sys.ARCH), "arm") && !IS_LIBC_MUSL
-    const __off_t = Clong
-    const off_t = __off_t
-elseif Sys.islinux() && startswith(string(Sys.ARCH), "arm") && IS_LIBC_MUSL
-    const off_t = Clonglong
-elseif Sys.islinux() && Sys.ARCH === :i686 && !IS_LIBC_MUSL
-    const __off_t = Clong
-    const off_t = __off_t
-elseif Sys.islinux() && Sys.ARCH === :i686 && IS_LIBC_MUSL
-    const off_t = Clonglong
-elseif Sys.iswindows() && Sys.ARCH === :i686
-    const off32_t = Clong
-    const off_t = off32_t
-elseif Sys.islinux() && Sys.ARCH === :powerpc64le
-    const __off_t = Clong
-    const off_t = __off_t
-elseif Sys.isapple()
-    const __darwin_off_t = Int64
-    const off_t = __darwin_off_t
-elseif Sys.islinux() && Sys.ARCH === :x86_64 && !IS_LIBC_MUSL
-    const __off_t = Clong
-    const off_t = __off_t
-elseif Sys.islinux() && Sys.ARCH === :x86_64 && IS_LIBC_MUSL
-    const off_t = Clong
-elseif Sys.isbsd() && !Sys.isapple()
-    const __off_t = Int64
-    const off_t = __off_t
-elseif Sys.iswindows() && Sys.ARCH === :x86_64
-    const off32_t = Clong
-    const off_t = off32_t
-end
-
-
-const intptr_t = Clong
-
-"""
-    MlirStringRef
-
-A pointer to a sized fragment of a string, not necessarily null-terminated. Does not own the underlying string. This is equivalent to llvm::StringRef.
-
-| Field  | Note                          |
-| :----- | :---------------------------- |
-| data   | Pointer to the first symbol.  |
-| length | Length of the fragment.       |
-"""
-struct MlirStringRef
-    data::Cstring
-    length::Csize_t
-end
-
 """
     mlirStringRefCreate(str, length)
 
@@ -93,15 +36,6 @@ This function is called back by the functions that need to return a reference to
 const MlirStringCallback = Ptr{Cvoid}
 
 """
-    MlirLogicalResult
-
-A logical result value, essentially a boolean with named states. LLVM convention for using boolean values to designate success or failure of an operation is a moving target, so MLIR opted for an explicit class. Instances of [`MlirLogicalResult`](@ref) must only be inspected using the associated functions.
-"""
-struct MlirLogicalResult
-    value::Int8
-end
-
-"""
     mlirLogicalResultIsSuccess(res)
 
 Checks if the given logical result represents a success.
@@ -135,84 +69,6 @@ Creates a logical result representing a failure.
 """
 function mlirLogicalResultFailure()
     @ccall MLIR_C_PATH[].mlirLogicalResultFailure()::MlirLogicalResult
-end
-
-struct MlirContext
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirDialect
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirDialectRegistry
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirOperation
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirOpPrintingFlags
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirBlock
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirRegion
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirSymbolTable
-    ptr::Ptr{Cvoid}
-end
-
-"""
-    MlirAttribute
-"""
-struct MlirAttribute
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirIdentifier
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirLocation
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirModule
-    ptr::Ptr{Cvoid}
-end
-
-"""
-    MlirType
-"""
-struct MlirType
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirTypeID
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirValue
-    ptr::Ptr{Cvoid}
-end
-
-"""
-    MlirNamedAttribute
-
-Named MLIR attribute.
-
-A named attribute is essentially a (name, attribute) pair where the name is a string.
-"""
-struct MlirNamedAttribute
-    name::MlirIdentifier
-    attribute::MlirAttribute
 end
 
 """
@@ -537,29 +393,6 @@ Views the generic operation as a module. The returned module is null when the in
 """
 function mlirModuleFromOperation(op)
     @ccall MLIR_C_PATH[].mlirModuleFromOperation(op::MlirOperation)::MlirModule
-end
-
-"""
-    MlirOperationState
-
-An auxiliary class for constructing operations.
-
-This class contains all the information necessary to construct the operation. It owns the MlirRegions it has pointers to and does not own anything else. By default, the state can be constructed from a name and location, the latter being also used to access the context, and has no other components. These components can be added progressively until the operation is constructed. Users are not expected to rely on the internals of this class and should use mlirOperationState* functions instead.
-"""
-struct MlirOperationState
-    name::MlirStringRef
-    location::MlirLocation
-    nResults::intptr_t
-    results::Ptr{MlirType}
-    nOperands::intptr_t
-    operands::Ptr{MlirValue}
-    nRegions::intptr_t
-    regions::Ptr{MlirRegion}
-    nSuccessors::intptr_t
-    successors::Ptr{MlirBlock}
-    nAttributes::intptr_t
-    attributes::Ptr{MlirNamedAttribute}
-    enableResultTypeInference::Bool
 end
 
 """
@@ -1615,10 +1448,6 @@ function mlirSymbolTableWalkSymbolTables(from, allSymUsesVisible, callback, user
     @ccall MLIR_C_PATH[].mlirSymbolTableWalkSymbolTables(from::MlirOperation, allSymUsesVisible::Bool, callback::Ptr{Cvoid}, userData::Ptr{Cvoid})::Cvoid
 end
 
-struct MlirAffineExpr
-    ptr::Ptr{Cvoid}
-end
-
 """
     mlirAffineExprGetContext(affineExpr)
 
@@ -1707,10 +1536,6 @@ Checks whether the given affine expression involves AffineDimExpr 'position'.
 """
 function mlirAffineExprIsFunctionOfDim(affineExpr, position)
     @ccall MLIR_C_PATH[].mlirAffineExprIsFunctionOfDim(affineExpr::MlirAffineExpr, position::intptr_t)::Bool
-end
-
-struct MlirAffineMap
-    ptr::Ptr{Cvoid}
 end
 
 """
@@ -3532,18 +3357,6 @@ function mlirFunctionTypeGetResult(type, pos)
     @ccall MLIR_C_PATH[].mlirFunctionTypeGetResult(type::MlirType, pos::intptr_t)::MlirType
 end
 
-struct MlirPass
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirPassManager
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirOpPassManager
-    ptr::Ptr{Cvoid}
-end
-
 """
     mlirPassManagerCreate(ctx)
 
@@ -4060,15 +3873,6 @@ function mlirIsGlobalDebugEnabled()
 end
 
 """
-    MlirDiagnostic
-
-An opaque reference to a diagnostic, always owned by the diagnostics engine (context). Must not be stored outside of the diagnostic handler.
-"""
-struct MlirDiagnostic
-    ptr::Ptr{Cvoid}
-end
-
-"""
     MlirDiagnosticSeverity
 
 Severity of a diagnostic.
@@ -4161,10 +3965,6 @@ Emits an error at the given location through the diagnostics engine. Used for te
 """
 function mlirEmitError(location, message)
     @ccall MLIR_C_PATH[].mlirEmitError(location::MlirLocation, message::Cstring)::Cvoid
-end
-
-struct MlirDialectHandle
-    ptr::Ptr{Cvoid}
 end
 
 """
@@ -5080,10 +4880,6 @@ function mlirGetDialectHandle__tensor__()
     @ccall MLIR_C_PATH[].mlirGetDialectHandle__tensor__()::MlirDialectHandle
 end
 
-struct MlirExecutionEngine
-    ptr::Ptr{Cvoid}
-end
-
 """
     mlirExecutionEngineCreate(op, optLevel, numPaths, sharedLibPaths)
 
@@ -5154,10 +4950,6 @@ Dump as an object in `fileName`.
 """
 function mlirExecutionEngineDumpToObjectFile(jit, fileName)
     @ccall MLIR_C_PATH[].mlirExecutionEngineDumpToObjectFile(jit::MlirExecutionEngine, fileName::MlirStringRef)::Cvoid
-end
-
-struct MlirIntegerSet
-    ptr::Ptr{Cvoid}
 end
 
 """
