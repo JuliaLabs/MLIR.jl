@@ -2,7 +2,7 @@ module MLIR
 
 using Preferences
 
-libmlir_version = VersionNumber(@load_preference(:libmlir_version, Base.libllvm_version_string))
+libmlir_version = VersionNumber(@load_preference("libmlir_version", Base.libllvm_version_string))
 
 module API
 using CEnum
