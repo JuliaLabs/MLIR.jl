@@ -1,6 +1,6 @@
 module arith
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -37,7 +37,7 @@ function addf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.addf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -74,7 +74,7 @@ function addi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.addi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -111,7 +111,7 @@ function andi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.andi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -144,7 +144,7 @@ function bitcast(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.bitcast", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -175,7 +175,7 @@ function ceildivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.ceildivsi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -208,7 +208,7 @@ function ceildivui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.ceildivui", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -250,7 +250,7 @@ function cmpf(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Locat
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
 
-    create_operation(
+    IR.create_operation(
         "arith.cmpf", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -330,7 +330,7 @@ function cmpi(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Locat
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
 
-    create_operation(
+    IR.create_operation(
         "arith.cmpi", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -362,7 +362,7 @@ function constant(; result::IR.Type, value, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value),]
 
-    create_operation(
+    IR.create_operation(
         "arith.constant", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -382,7 +382,7 @@ function divf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.divf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -420,7 +420,7 @@ function divsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.divsi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -459,7 +459,7 @@ function divui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.divui", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -481,7 +481,7 @@ function extf(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.extf", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -516,7 +516,7 @@ function extsi(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.extsi", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -550,7 +550,7 @@ function extui(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.extui", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -572,7 +572,7 @@ function fptosi(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.fptosi", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -594,7 +594,7 @@ function fptoui(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.fptoui", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -626,7 +626,7 @@ function floordivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Typ
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.floordivsi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -649,7 +649,7 @@ function index_cast(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.index_cast", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -684,7 +684,7 @@ function maxf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.maxf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -704,7 +704,7 @@ function maxsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.maxsi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -724,7 +724,7 @@ function maxui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.maxui", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -759,7 +759,7 @@ function minf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.minf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -779,7 +779,7 @@ function minsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.minsi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -799,7 +799,7 @@ function minui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.minui", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -839,7 +839,7 @@ function mulf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.mulf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -859,7 +859,7 @@ function muli(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.muli", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -896,7 +896,7 @@ function negf(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.negf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -933,7 +933,7 @@ function ori(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, loc
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.ori", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -953,7 +953,7 @@ function remf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.remf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -991,7 +991,7 @@ function remsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.remsi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -1029,7 +1029,7 @@ function remui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.remui", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -1052,7 +1052,7 @@ function sitofp(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.sitofp", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1082,7 +1082,7 @@ function shli(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.shli", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -1116,7 +1116,7 @@ function shrsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.shrsi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -1147,7 +1147,7 @@ function shrui(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.shrui", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -1187,7 +1187,7 @@ function subf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.subf", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -1207,7 +1207,7 @@ function subi(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.subi", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -1230,7 +1230,7 @@ function truncf(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.truncf", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1263,7 +1263,7 @@ function trunci(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.trunci", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1286,7 +1286,7 @@ function uitofp(in::Value; out::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arith.uitofp", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1323,7 +1323,7 @@ function xori(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "arith.xori", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),

@@ -1,6 +1,6 @@
 module func
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -29,7 +29,7 @@ function call_indirect(callee::Value, callee_operands::Vector{Value}; results::V
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "func.call_indirect", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -58,7 +58,7 @@ function call(operands::Vector{Value}; result_0::Vector{IR.Type}, callee, locati
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee),]
 
-    create_operation(
+    IR.create_operation(
         "func.call", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -94,7 +94,7 @@ function constant(; result_0::IR.Type, value, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value),]
 
-    create_operation(
+    IR.create_operation(
         "func.constant", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -151,7 +151,7 @@ function func_(; sym_name, function_type, sym_visibility=nothing, arg_attrs=noth
     !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
     !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
 
-    create_operation(
+    IR.create_operation(
         "func.func", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -183,7 +183,7 @@ function return_(operands::Vector{Value}; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "func.return", location;
         operands, owned_regions, successors, attributes,
         results=results,

@@ -1,6 +1,6 @@
 module affine
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -34,7 +34,7 @@ function apply(mapOperands::Vector{Value}; result_0::IR.Type, map, location=Loca
   successors = Block[]
   attributes = NamedAttribute[namedattribute("map", map),]
 
-  create_operation(
+  IR.create_operation(
     "affine.apply", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -72,7 +72,7 @@ function delinearize_index(linear_index::Value, basis::Vector{Value}; multi_inde
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.delinearize_index", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -194,7 +194,7 @@ function for_(operand_0::Vector{Value}; results::Vector{IR.Type}, region::Region
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.for", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -279,7 +279,7 @@ function if_(operand_0::Vector{Value}; results::Vector{IR.Type}, thenRegion::Reg
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.if", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -316,7 +316,7 @@ function load(memref::Value, indices::Vector{Value}; result::IR.Type, location=L
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.load", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -343,7 +343,7 @@ function max(operands::Vector{Value}; result_0::IR.Type, map, location=Location(
   successors = Block[]
   attributes = NamedAttribute[namedattribute("map", map),]
 
-  create_operation(
+  IR.create_operation(
     "affine.max", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -380,7 +380,7 @@ function min(operands::Vector{Value}; result_0::IR.Type, map, location=Location(
   successors = Block[]
   attributes = NamedAttribute[namedattribute("map", map),]
 
-  create_operation(
+  IR.create_operation(
     "affine.min", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -460,7 +460,7 @@ function parallel(mapOperands::Vector{Value}; results::Vector{IR.Type}, reductio
   successors = Block[]
   attributes = NamedAttribute[namedattribute("reductions", reductions), namedattribute("lowerBoundsMap", lowerBoundsMap), namedattribute("lowerBoundsGroups", lowerBoundsGroups), namedattribute("upperBoundsMap", upperBoundsMap), namedattribute("upperBoundsGroups", upperBoundsGroups), namedattribute("steps", steps),]
 
-  create_operation(
+  IR.create_operation(
     "affine.parallel", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -493,7 +493,7 @@ function prefetch(memref::Value, indices::Vector{Value}; isWrite, localityHint, 
   successors = Block[]
   attributes = NamedAttribute[namedattribute("isWrite", isWrite), namedattribute("localityHint", localityHint), namedattribute("isDataCache", isDataCache),]
 
-  create_operation(
+  IR.create_operation(
     "affine.prefetch", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -530,7 +530,7 @@ function store(value::Value, memref::Value, indices::Vector{Value}; location=Loc
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.store", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -584,7 +584,7 @@ function vector_load(memref::Value, indices::Vector{Value}; result::IR.Type, loc
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.vector_load", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -640,7 +640,7 @@ function vector_store(value::Value, memref::Value, indices::Vector{Value}; locat
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.vector_store", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -669,7 +669,7 @@ function yield(operands::Vector{Value}; location=Location())
   successors = Block[]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "affine.yield", location;
     operands, owned_regions, successors, attributes,
     results=results,

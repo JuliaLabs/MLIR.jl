@@ -1,6 +1,6 @@
 module nvgpu
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -65,7 +65,7 @@ function device_async_copy(dst::Value, dstIndices::Vector{Value}, src::Value, sr
     push!(attributes, operandsegmentsizes([1, length(dstIndices), 1, length(srcIndices), (srcElements == nothing) ? 0 : 1]))
     !isnothing(bypassL1) && push!(attributes, namedattribute("bypassL1", bypassL1))
 
-    create_operation(
+    IR.create_operation(
         "nvgpu.device_async_copy", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -100,7 +100,7 @@ function device_async_create_group(inputTokens::Vector{Value}; asyncToken::IR.Ty
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "nvgpu.device_async_create_group", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -131,7 +131,7 @@ function device_async_wait(asyncDependencies::Value; numGroups=nothing, location
     attributes = NamedAttribute[]
     !isnothing(numGroups) && push!(attributes, namedattribute("numGroups", numGroups))
 
-    create_operation(
+    IR.create_operation(
         "nvgpu.device_async_wait", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -164,7 +164,7 @@ function ldmatrix(srcMemref::Value, indices::Vector{Value}; res::IR.Type, transp
     successors = Block[]
     attributes = NamedAttribute[namedattribute("transpose", transpose), namedattribute("numTiles", numTiles),]
 
-    create_operation(
+    IR.create_operation(
         "nvgpu.ldmatrix", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -205,7 +205,7 @@ function mma_sp_sync(matrixA::Value, matrixB::Value, matrixC::Value, sparseMetad
     !isnothing(sparsitySelector) && push!(attributes, namedattribute("sparsitySelector", sparsitySelector))
     !isnothing(tf32Enabled) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
 
-    create_operation(
+    IR.create_operation(
         "nvgpu.mma.sp.sync", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -243,7 +243,7 @@ function mma_sync(matrixA::Value, matrixB::Value, matrixC::Value; res::IR.Type, 
     attributes = NamedAttribute[namedattribute("mmaShape", mmaShape),]
     !isnothing(tf32Enabled) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
 
-    create_operation(
+    IR.create_operation(
         "nvgpu.mma.sync", location;
         operands, owned_regions, successors, attributes,
         results=results,

@@ -1,6 +1,6 @@
 module cf
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -26,7 +26,7 @@ function assert(arg::Value; msg, location=Location())
   successors = Block[]
   attributes = NamedAttribute[namedattribute("msg", msg),]
 
-  create_operation(
+  IR.create_operation(
     "cf.assert", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -58,7 +58,7 @@ function br(destOperands::Vector{Value}; dest::Block, location=Location())
   successors = Block[dest,]
   attributes = NamedAttribute[]
 
-  create_operation(
+  IR.create_operation(
     "cf.br", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -102,7 +102,7 @@ function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOpe
   attributes = NamedAttribute[]
   push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands),]))
 
-  create_operation(
+  IR.create_operation(
     "cf.cond_br", location;
     operands, owned_regions, successors, attributes,
     results=results,
@@ -138,7 +138,7 @@ function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vecto
   push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands),]))
   !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
 
-  create_operation(
+  IR.create_operation(
     "cf.switch", location;
     operands, owned_regions, successors, attributes,
     results=results,

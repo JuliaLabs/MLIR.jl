@@ -1,6 +1,6 @@
 module linalg
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -50,7 +50,7 @@ function index(; result=nothing::Union{Nothing,IR.Type}, dim, location=Location(
     attributes = NamedAttribute[namedattribute("dim", dim),]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "linalg.index", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -78,7 +78,7 @@ function yield(values::Vector{Value}; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "linalg.yield", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -86,7 +86,7 @@ function yield(values::Vector{Value}; location=Location())
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -105,7 +105,7 @@ function batch_matmul(inputs::Vector{Value}, outputs::Vector{Value}; result_tens
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.batch_matmul", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -129,7 +129,7 @@ function batch_matmul_transpose_b(inputs::Vector{Value}, outputs::Vector{Value};
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.batch_matmul_transpose_b", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -151,7 +151,7 @@ function batch_matvec(inputs::Vector{Value}, outputs::Vector{Value}; result_tens
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.batch_matvec", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -175,7 +175,7 @@ function batch_reduce_matmul(inputs::Vector{Value}, outputs::Vector{Value}; resu
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.batch_reduce_matmul", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -203,7 +203,7 @@ function broadcast(input::Value, init::Value; result::Vector{IR.Type}, dimension
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimensions", dimensions),]
 
-    create_operation(
+    IR.create_operation(
         "linalg.broadcast", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -231,7 +231,7 @@ function conv_1d_ncw_fcw(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_1d_ncw_fcw", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -255,7 +255,7 @@ function conv_1d_nwc_wcf(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_1d_nwc_wcf", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -277,7 +277,7 @@ function conv_1d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_1d", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -305,7 +305,7 @@ function conv_2d_nchw_fchw(inputs::Vector{Value}, outputs::Vector{Value}; result
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_2d_nchw_fchw", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -333,7 +333,7 @@ function conv_2d_ngchw_fgchw(inputs::Vector{Value}, outputs::Vector{Value}; resu
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_2d_ngchw_fgchw", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -361,7 +361,7 @@ function conv_2d_nhwc_fhwc(inputs::Vector{Value}, outputs::Vector{Value}; result
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_2d_nhwc_fhwc", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -389,7 +389,7 @@ function conv_2d_nhwc_hwcf(inputs::Vector{Value}, outputs::Vector{Value}; result
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_2d_nhwc_hwcf", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -418,7 +418,7 @@ function conv_2d_nhwc_hwcf_q(inputs::Vector{Value}, outputs::Vector{Value}; resu
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_2d_nhwc_hwcf_q", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -440,7 +440,7 @@ function conv_2d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_2d", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -464,7 +464,7 @@ function conv_3d_ndhwc_dhwcf(inputs::Vector{Value}, outputs::Vector{Value}; resu
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_3d_ndhwc_dhwcf", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -489,7 +489,7 @@ function conv_3d_ndhwc_dhwcf_q(inputs::Vector{Value}, outputs::Vector{Value}; re
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_3d_ndhwc_dhwcf_q", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -511,7 +511,7 @@ function conv_3d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.conv_3d", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -534,7 +534,7 @@ function copy(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vec
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
     !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
 
-    create_operation(
+    IR.create_operation(
         "linalg.copy", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -559,7 +559,7 @@ function depthwise_conv_1d_nwc_wc(inputs::Vector{Value}, outputs::Vector{Value};
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_1d_nwc_wc", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -583,7 +583,7 @@ function depthwise_conv_1d_nwc_wcm(inputs::Vector{Value}, outputs::Vector{Value}
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_1d_nwc_wcm", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -608,7 +608,7 @@ function depthwise_conv_2d_nchw_chw(inputs::Vector{Value}, outputs::Vector{Value
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_2d_nchw_chw", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -633,7 +633,7 @@ function depthwise_conv_2d_nhwc_hwc(inputs::Vector{Value}, outputs::Vector{Value
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwc", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -657,7 +657,7 @@ function depthwise_conv_2d_nhwc_hwc_q(inputs::Vector{Value}, outputs::Vector{Val
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwc_q", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -681,7 +681,7 @@ function depthwise_conv_2d_nhwc_hwcm(inputs::Vector{Value}, outputs::Vector{Valu
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwcm", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -705,7 +705,7 @@ function depthwise_conv_2d_nhwc_hwcm_q(inputs::Vector{Value}, outputs::Vector{Va
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwcm_q", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -730,7 +730,7 @@ function depthwise_conv_3d_ndhwc_dhwc(inputs::Vector{Value}, outputs::Vector{Val
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_3d_ndhwc_dhwc", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -754,7 +754,7 @@ function depthwise_conv_3d_ndhwc_dhwcm(inputs::Vector{Value}, outputs::Vector{Va
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.depthwise_conv_3d_ndhwc_dhwcm", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -776,7 +776,7 @@ function dot(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vect
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.dot", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -800,7 +800,7 @@ function elemwise_binary(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(fun) && push!(attributes, namedattribute("fun", fun))
     !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
 
-    create_operation(
+    IR.create_operation(
         "linalg.elemwise_binary", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -824,7 +824,7 @@ function elemwise_unary(inputs::Vector{Value}, outputs::Vector{Value}; result_te
     !isnothing(fun) && push!(attributes, namedattribute("fun", fun))
     !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
 
-    create_operation(
+    IR.create_operation(
         "linalg.elemwise_unary", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -847,7 +847,7 @@ function fill(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Vec
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.fill", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -874,7 +874,7 @@ function fill_rng_2d(inputs::Vector{Value}, outputs::Vector{Value}; result_tenso
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.fill_rng_2d", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -991,7 +991,7 @@ function generic(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::
     !isnothing(doc) && push!(attributes, namedattribute("doc", doc))
     !isnothing(library_call) && push!(attributes, namedattribute("library_call", library_call))
 
-    create_operation(
+    IR.create_operation(
         "linalg.generic", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1033,7 +1033,7 @@ function map(inputs::Vector{Value}, init::Value; result::Vector{IR.Type}, mapper
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "linalg.map", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1056,7 +1056,7 @@ function matmul(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::V
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
     !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
 
-    create_operation(
+    IR.create_operation(
         "linalg.matmul", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1079,7 +1079,7 @@ function matmul_transpose_b(inputs::Vector{Value}, outputs::Vector{Value}; resul
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
     !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
 
-    create_operation(
+    IR.create_operation(
         "linalg.matmul_transpose_b", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1101,7 +1101,7 @@ function matmul_unsigned(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.matmul_unsigned", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1123,7 +1123,7 @@ function matvec(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::V
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.matvec", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1150,7 +1150,7 @@ function mmt4d(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::Ve
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.mmt4d", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1174,7 +1174,7 @@ function pooling_nchw_max(inputs::Vector{Value}, outputs::Vector{Value}; result_
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nchw_max", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1202,7 +1202,7 @@ function pooling_nchw_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nchw_sum", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1226,7 +1226,7 @@ function pooling_ncw_max(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_ncw_max", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1254,7 +1254,7 @@ function pooling_ncw_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_ncw_sum", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1278,7 +1278,7 @@ function pooling_ndhwc_max(inputs::Vector{Value}, outputs::Vector{Value}; result
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_ndhwc_max", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1302,7 +1302,7 @@ function pooling_ndhwc_min(inputs::Vector{Value}, outputs::Vector{Value}; result
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_ndhwc_min", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1326,7 +1326,7 @@ function pooling_ndhwc_sum(inputs::Vector{Value}, outputs::Vector{Value}; result
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_ndhwc_sum", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1350,7 +1350,7 @@ function pooling_nhwc_max(inputs::Vector{Value}, outputs::Vector{Value}; result_
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nhwc_max", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1374,7 +1374,7 @@ function pooling_nhwc_max_unsigned(inputs::Vector{Value}, outputs::Vector{Value}
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nhwc_max_unsigned", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1398,7 +1398,7 @@ function pooling_nhwc_min(inputs::Vector{Value}, outputs::Vector{Value}; result_
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nhwc_min", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1422,7 +1422,7 @@ function pooling_nhwc_min_unsigned(inputs::Vector{Value}, outputs::Vector{Value}
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nhwc_min_unsigned", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1450,7 +1450,7 @@ function pooling_nhwc_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nhwc_sum", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1474,7 +1474,7 @@ function pooling_nwc_max(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nwc_max", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1498,7 +1498,7 @@ function pooling_nwc_max_unsigned(inputs::Vector{Value}, outputs::Vector{Value};
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nwc_max_unsigned", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1522,7 +1522,7 @@ function pooling_nwc_min(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nwc_min", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1546,7 +1546,7 @@ function pooling_nwc_min_unsigned(inputs::Vector{Value}, outputs::Vector{Value};
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nwc_min_unsigned", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1574,7 +1574,7 @@ function pooling_nwc_sum(inputs::Vector{Value}, outputs::Vector{Value}; result_t
     !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
     !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
 
-    create_operation(
+    IR.create_operation(
         "linalg.pooling_nwc_sum", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1598,7 +1598,7 @@ function quantized_batch_matmul(inputs::Vector{Value}, outputs::Vector{Value}; r
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.quantized_batch_matmul", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1622,7 +1622,7 @@ function quantized_matmul(inputs::Vector{Value}, outputs::Vector{Value}; result_
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.quantized_matmul", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1668,7 +1668,7 @@ function reduce(inputs::Vector{Value}, inits::Vector{Value}; result_0::Vector{IR
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimensions", dimensions),]
 
-    create_operation(
+    IR.create_operation(
         "linalg.reduce", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1700,7 +1700,7 @@ function transpose(input::Value, init::Value; result::Vector{IR.Type}, permutati
     successors = Block[]
     attributes = NamedAttribute[namedattribute("permutation", permutation),]
 
-    create_operation(
+    IR.create_operation(
         "linalg.transpose", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -1722,7 +1722,7 @@ function vecmat(inputs::Vector{Value}, outputs::Vector{Value}; result_tensors::V
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([length(inputs), length(outputs),]))
 
-    create_operation(
+    IR.create_operation(
         "linalg.vecmat", location;
         operands, owned_regions, successors, attributes,
         results=results,

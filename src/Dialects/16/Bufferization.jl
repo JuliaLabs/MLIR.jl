@@ -1,6 +1,6 @@
 module bufferization
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -67,7 +67,7 @@ function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing,
     push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy == nothing) ? 0 : 1(size_hint == nothing) ? 0 : 1]))
     !isnothing(memory_space) && push!(attributes, namedattribute("memory_space", memory_space))
 
-    create_operation(
+    IR.create_operation(
         "bufferization.alloc_tensor", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -98,7 +98,7 @@ function clone(input::Value; output::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "bufferization.clone", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -139,7 +139,7 @@ function dealloc_tensor(tensor::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "bufferization.dealloc_tensor", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -171,7 +171,7 @@ function to_memref(tensor::Value; memref::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "bufferization.to_memref", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -208,7 +208,7 @@ function to_tensor(memref::Value; result=nothing::Union{Nothing,IR.Type}, locati
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "bufferization.to_tensor", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),

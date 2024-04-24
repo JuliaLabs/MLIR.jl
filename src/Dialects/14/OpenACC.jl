@@ -1,6 +1,6 @@
 module acc
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -33,7 +33,7 @@ function data(ifCond=nothing::Union{Nothing,Value}; copyOperands::Vector{Value},
     push!(attributes, operandsegmentsizes([(ifCond == nothing) ? 0 : 1length(copyOperands), length(copyinOperands), length(copyinReadonlyOperands), length(copyoutOperands), length(copyoutZeroOperands), length(createOperands), length(createZeroOperands), length(noCreateOperands), length(presentOperands), length(deviceptrOperands), length(attachOperands),]))
     !isnothing(defaultAttr) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
 
-    create_operation(
+    IR.create_operation(
         "acc.data", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -65,7 +65,7 @@ function enter_data(ifCond=nothing::Union{Nothing,Value}; asyncOperand=nothing::
     !isnothing(async) && push!(attributes, namedattribute("async", async))
     !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
 
-    create_operation(
+    IR.create_operation(
         "acc.enter_data", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -98,7 +98,7 @@ function exit_data(ifCond=nothing::Union{Nothing,Value}; asyncOperand=nothing::U
     !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
     !isnothing(finalize) && push!(attributes, namedattribute("finalize", finalize))
 
-    create_operation(
+    IR.create_operation(
         "acc.exit_data", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -129,7 +129,7 @@ function init(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::Union
     !isnothing(ifCond) && push!(operands, ifCond)
     push!(attributes, operandsegmentsizes([length(deviceTypeOperands), (deviceNumOperand == nothing) ? 0 : 1(ifCond == nothing) ? 0 : 1]))
 
-    create_operation(
+    IR.create_operation(
         "acc.init", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -175,7 +175,7 @@ function loop(gangNum=nothing::Union{Nothing,Value}; gangStatic=nothing::Union{N
     !isnothing(reductionOp) && push!(attributes, namedattribute("reductionOp", reductionOp))
     !isnothing(exec_mapping) && push!(attributes, namedattribute("exec_mapping", exec_mapping))
 
-    create_operation(
+    IR.create_operation(
         "acc.loop", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -217,7 +217,7 @@ function parallel(async=nothing::Union{Nothing,Value}; waitOperands::Vector{Valu
     !isnothing(reductionOp) && push!(attributes, namedattribute("reductionOp", reductionOp))
     !isnothing(defaultAttr) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
 
-    create_operation(
+    IR.create_operation(
         "acc.parallel", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -248,7 +248,7 @@ function shutdown(deviceTypeOperands::Vector{Value}, deviceNumOperand=nothing::U
     !isnothing(ifCond) && push!(operands, ifCond)
     push!(attributes, operandsegmentsizes([length(deviceTypeOperands), (deviceNumOperand == nothing) ? 0 : 1(ifCond == nothing) ? 0 : 1]))
 
-    create_operation(
+    IR.create_operation(
         "acc.shutdown", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -271,7 +271,7 @@ function terminator(; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "acc.terminator", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -307,7 +307,7 @@ function update(ifCond=nothing::Union{Nothing,Value}; asyncOperand=nothing::Unio
     !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
     !isnothing(ifPresent) && push!(attributes, namedattribute("ifPresent", ifPresent))
 
-    create_operation(
+    IR.create_operation(
         "acc.update", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -340,7 +340,7 @@ function wait(waitOperands::Vector{Value}, asyncOperand=nothing::Union{Nothing,V
     push!(attributes, operandsegmentsizes([length(waitOperands), (asyncOperand == nothing) ? 0 : 1(waitDevnum == nothing) ? 0 : 1(ifCond == nothing) ? 0 : 1]))
     !isnothing(async) && push!(attributes, namedattribute("async", async))
 
-    create_operation(
+    IR.create_operation(
         "acc.wait", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -362,7 +362,7 @@ function yield(operands::Vector{Value}; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "acc.yield", location;
         operands, owned_regions, successors, attributes,
         results=results,

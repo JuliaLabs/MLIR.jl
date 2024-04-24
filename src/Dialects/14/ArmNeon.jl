@@ -1,6 +1,6 @@
 module arm_neon
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -23,7 +23,7 @@ function intr_smull(a::Value, b::Value; res::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arm_neon.intr.smull", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -50,7 +50,7 @@ function _2d_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location(
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arm_neon.2d.sdot", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -75,7 +75,7 @@ function intr_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "arm_neon.intr.sdot", location;
         operands, owned_regions, successors, attributes,
         results=results,

@@ -1,6 +1,6 @@
 module ml_program
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -35,7 +35,7 @@ function func(; sym_name, function_type, arg_attrs=nothing, res_attrs=nothing, s
     !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
     !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
 
-    create_operation(
+    IR.create_operation(
         "ml_program.func", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -64,7 +64,7 @@ function global_load_const(; result::IR.Type, global_, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_),]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.global_load_const", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -99,7 +99,7 @@ function global_load_graph(consumeTokens::Vector{Value}; result::IR.Type, produc
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_),]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.global_load_graph", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -134,7 +134,7 @@ function global_load(; result::IR.Type, global_, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_),]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.global_load", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -182,7 +182,7 @@ function global_(; sym_name, type, is_mutable=nothing, value=nothing, sym_visibi
     !isnothing(value) && push!(attributes, namedattribute("value", value))
     !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
 
-    create_operation(
+    IR.create_operation(
         "ml_program.global", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -217,7 +217,7 @@ function global_store_graph(value::Value, consumeTokens::Vector{Value}; produceT
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_),]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.global_store_graph", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -252,7 +252,7 @@ function global_store(value::Value; global_, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_),]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.global_store", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -276,7 +276,7 @@ function output(operands::Vector{Value}; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.output", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -300,7 +300,7 @@ function return_(operands::Vector{Value}; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.return", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -338,7 +338,7 @@ function subgraph(; sym_name, function_type, arg_attrs=nothing, res_attrs=nothin
     !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
     !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
 
-    create_operation(
+    IR.create_operation(
         "ml_program.subgraph", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -359,7 +359,7 @@ function token(; token::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "ml_program.token", location;
         operands, owned_regions, successors, attributes,
         results=results,
