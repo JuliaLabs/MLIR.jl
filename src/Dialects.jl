@@ -1,6 +1,6 @@
 module Dialects
 
-import ..IR: Attribute, NamedAttribute, context
+import ..IR: IR, Attribute, NamedAttribute, context
 import ..API
 
 namedattribute(name, val) = namedattribute(name, Attribute(val))
@@ -12,16 +12,15 @@ end
 
 operandsegmentsizes(segments) = namedattribute("operand_segment_sizes", Attribute(Int32.(segments)))
 
-let
-    ver = string(libmlir_version.major)
-    dir = joinpath(@__DIR__, "Dialects", ver)
-    if !isdir(dir)
-        error("""The MLIR dialect bindings for v$ver do not exist.
-                You might need a newer version of MLIR.jl for this version of Julia.""")
+# generate versioned API modules
+for version in Base.Filesystem.readdir(joinpath(@__DIR__, "Dialects"))
+    includes = map(readdir(joinpath(@__DIR__, "Dialects", version); join=true)) do path
+        :(include($path))
     end
 
-    for path in readdir(dir; join=true)
-        include(path)
+    @eval module $(Symbol(:v, version))
+    import ..Dialects
+    $(includes...)
     end
 end
 

@@ -1,5 +1,6 @@
 module IR
 
+using ..MLIR: libmlir_version
 using ..API
 
 # do not export `Type`, as it is already defined in Core
