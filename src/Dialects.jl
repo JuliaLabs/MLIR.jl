@@ -1,5 +1,6 @@
 module Dialects
 
+using ..MLIR: VersionDispatcher
 import ..IR: IR, Attribute, NamedAttribute, context
 import ..API
 
@@ -23,5 +24,7 @@ for version in Base.Filesystem.readdir(joinpath(@__DIR__, "Dialects"))
     $(includes...)
     end
 end
+
+const Dispatcher = VersionDispatcher(@__MODULE__)
 
 end # module Dialects

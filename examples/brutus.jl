@@ -285,18 +285,18 @@ fptr = IR.context!(IR.Context()) do
     # IR.enable_ir_printing!(pm)
     IR.enable_verifier!(pm, true)
 
-    MLIR.API.mlirRegisterAllPasses()
-    MLIR.API.mlirRegisterAllLLVMTranslations(IR.context())
+    MLIR.API.Dispatcher.mlirRegisterAllPasses()
+    MLIR.API.Dispatcher.mlirRegisterAllLLVMTranslations(IR.context())
     IR.add_pipeline!(opm, "convert-arith-to-llvm,convert-func-to-llvm")
 
     IR.run!(pm, mod)
 
     jit = if LLVM.version() >= v"16"
-        MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL, false)
+        MLIR.API.Dispatcher.mlirExecutionEngineCreate(mod, 0, 0, C_NULL, false)
     else
-        MLIR.API.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
+        MLIR.API.Dispatcher.mlirExecutionEngineCreate(mod, 0, 0, C_NULL)
     end
-    MLIR.API.mlirExecutionEngineLookup(jit, "pow")
+    MLIR.API.Dispatcher.mlirExecutionEngineLookup(jit, "pow")
 end
 
 x, y = 3, 4

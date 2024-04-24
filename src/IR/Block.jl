@@ -6,7 +6,7 @@ mutable struct Block
         @assert !mlirIsNull(block) "cannot create Block with null MlirBlock"
         finalizer(new(block, owned)) do block
             if block.owned
-                API.mlirBlockDestroy(block.block)
+                API.Dispatcher.mlirBlockDestroy(block.block)
             end
         end
     end
@@ -21,7 +21,7 @@ Creates a new empty block with the given argument types and transfers ownership 
 """
 function Block(args::Vector{Type}, locs::Vector{Location})
     @assert length(args) == length(locs) "there should be one args for each locs (got $(length(args)) & $(length(locs)))"
-    Block(API.mlirBlockCreate(length(args), args, locs))
+    Block(API.Dispatcher.mlirBlockCreate(length(args), args, locs))
 end
 
 """
@@ -29,7 +29,7 @@ end
 
 Checks whether two blocks handles point to the same block. This does not perform deep comparison.
 """
-Base.:(==)(a::Block, b::Block) = API.mlirBlockEqual(a, b)
+Base.:(==)(a::Block, b::Block) = API.Dispatcher.mlirBlockEqual(a, b)
 Base.cconvert(::Core.Type{API.MlirBlock}, block::Block) = block
 Base.unsafe_convert(::Core.Type{API.MlirBlock}, block::Block) = block.block
 
@@ -38,14 +38,14 @@ Base.unsafe_convert(::Core.Type{API.MlirBlock}, block::Block) = block.block
 
 Returns the closest surrounding operation that contains this block.
 """
-parent_op(block::Block) = Operation(API.mlirBlockGetParentOperation(block))
+parent_op(block::Block) = Operation(API.Dispatcher.mlirBlockGetParentOperation(block))
 
 """
     parent_region(block)
 
 Returns the region that contains this block.
 """
-parent_region(block::Block) = Region(API.mlirBlockGetParentRegion(block))
+parent_region(block::Block) = Region(API.Dispatcher.mlirBlockGetParentRegion(block))
 
 Base.parent(block::Block) = parent_region(block)
 
@@ -55,7 +55,7 @@ Base.parent(block::Block) = parent_region(block)
 Returns the block immediately following the given block in its parent region or `nothing` if last.
 """
 function next(block::Block)
-    block = API.mlirBlockGetNextInRegion(block)
+    block = API.Dispatcher.mlirBlockGetNextInRegion(block)
     mlirIsNull(block) && return nothing
     Block(block)
 end
@@ -65,7 +65,7 @@ end
 
 Returns the number of arguments of the block.
 """
-nargs(block::Block) = API.mlirBlockGetNumArguments(block)
+nargs(block::Block) = API.Dispatcher.mlirBlockGetNumArguments(block)
 
 """
     argument(block, i)
@@ -74,7 +74,7 @@ Returns `i`-th argument of the block.
 """
 function argument(block::Block, i)
     i ∉ 1:nargs(block) && throw(BoundsError(block, i))
-    Value(API.mlirBlockGetArgument(block, i - 1))
+    Value(API.Dispatcher.mlirBlockGetArgument(block, i - 1))
 end
 
 """
@@ -82,7 +82,7 @@ end
 
 Appends an argument of the specified type to the block. Returns the newly added argument.
 """
-push_argument!(block::Block, type; location::Location=Location()) = Value(API.mlirBlockAddArgument(block, type, location))
+push_argument!(block::Block, type; location::Location=Location()) = Value(API.Dispatcher.mlirBlockAddArgument(block, type, location))
 
 """
     first_op(block)
@@ -90,7 +90,7 @@ push_argument!(block::Block, type; location::Location=Location()) = Value(API.ml
 Returns the first operation in the block or `nothing` if empty.
 """
 function first_op(block::Block)
-    op = API.mlirBlockGetFirstOperation(block)
+    op = API.Dispatcher.mlirBlockGetFirstOperation(block)
     mlirIsNull(op) && return nothing
     Operation(op, false)
 end
@@ -102,7 +102,7 @@ Base.first(block::Block) = first_op(block)
 Returns the terminator operation in the block or `nothing` if no terminator.
 """
 function terminator(block::Block)
-    op = API.mlirBlockGetTerminator(block)
+    op = API.Dispatcher.mlirBlockGetTerminator(block)
     mlirIsNull(op) && return nothing
     Operation(op, false)
 end
@@ -113,7 +113,7 @@ end
 Takes an operation owned by the caller and appends it to the block.
 """
 function Base.push!(block::Block, op::Operation)
-    API.mlirBlockAppendOwnedOperation(block, lose_ownership!(op))
+    API.Dispatcher.mlirBlockAppendOwnedOperation(block, lose_ownership!(op))
     op
 end
 
@@ -124,7 +124,7 @@ Takes an operation owned by the caller and inserts it as `index` to the block.
 This is an expensive operation that scans the block linearly, prefer insertBefore/After instead.
 """
 function Base.insert!(block::Block, index, op::Operation)
-    API.mlirBlockInsertOwnedOperation(block, index - 1, lose_ownership!(op))
+    API.Dispatcher.mlirBlockInsertOwnedOperation(block, index - 1, lose_ownership!(op))
     op
 end
 
@@ -139,7 +139,7 @@ end
 Takes an operation owned by the caller and inserts it after the (non-owned) reference operation in the given block. If the reference is null, prepends the operation. Otherwise, the reference must belong to the block.
 """
 function insert_after!(block::Block, reference::Operation, op::Operation)
-    API.mlirBlockInsertOwnedOperationAfter(block, reference, lose_ownership!(op))
+    API.Dispatcher.mlirBlockInsertOwnedOperationAfter(block, reference, lose_ownership!(op))
     op
 end
 
@@ -149,13 +149,13 @@ end
 Takes an operation owned by the caller and inserts it before the (non-owned) reference operation in the given block. If the reference is null, appends the operation. Otherwise, the reference must belong to the block.
 """
 function insert_before!(block::Block, reference::Operation, op::Operation)
-    API.mlirBlockInsertOwnedOperationBefore(block, reference, lose_ownership!(op))
+    API.Dispatcher.mlirBlockInsertOwnedOperationBefore(block, reference, lose_ownership!(op))
     op
 end
 
 function lose_ownership!(block::Block)
     @assert block.owned
-    # API.mlirBlockDetach(block)
+    # API.Dispatcher.mlirBlockDetach(block)
     @atomic block.owned = false
     block
 end
@@ -163,5 +163,5 @@ end
 function Base.show(io::IO, block::Block)
     c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
-    API.mlirBlockPrint(block, c_print_callback, ref)
+    API.Dispatcher.mlirBlockPrint(block, c_print_callback, ref)
 end

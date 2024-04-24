@@ -13,7 +13,7 @@ end
 Creates an MLIR context and transfers its ownership to the caller.
 """
 function Context()
-    context = API.mlirContextCreate()
+    context = API.Dispatcher.mlirContextCreate()
     context = Context(context)
     activate!(context)
     context
@@ -49,7 +49,7 @@ end
 
 function dispose!(ctx::Context)
     deactivate!(ctx)
-    API.mlirContextDestroy(ctx.context)
+    API.Dispatcher.mlirContextDestroy(ctx.context)
 end
 
 _has_context() = haskey(task_local_storage(), :mlir_context_stack) && !Base.isempty(task_local_storage(:mlir_context_stack))
@@ -72,8 +72,8 @@ function context!(f, ctx::Context)
 end
 
 function enable_multithreading!(enable::Bool=true; context::Context=context())
-    API.mlirContextEnableMultithreading(context, enable)
+    API.Dispatcher.mlirContextEnableMultithreading(context, enable)
     context
 end
 
-Base.:(==)(a::Context, b::Context) = API.mlirContextEqual(a, b)
+Base.:(==)(a::Context, b::Context) = API.Dispatcher.mlirContextEqual(a, b)

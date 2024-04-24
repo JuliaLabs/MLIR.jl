@@ -5,53 +5,53 @@ import LLVM
 
 function registerAllUpstreamDialects!(ctx)
     if LLVM.version() >= v"15"
-        registry = MLIR.API.mlirDialectRegistryCreate()
-        MLIR.API.mlirRegisterAllDialects(registry)
-        MLIR.API.mlirContextAppendDialectRegistry(ctx, registry)
-        MLIR.API.mlirDialectRegistryDestroy(registry)
+        registry = MLIR.API.Dispatcher.mlirDialectRegistryCreate()
+        MLIR.API.Dispatcher.mlirRegisterAllDialects(registry)
+        MLIR.API.Dispatcher.mlirContextAppendDialectRegistry(ctx, registry)
+        MLIR.API.Dispatcher.mlirDialectRegistryDestroy(registry)
     else
-        MLIR.API.mlirRegisterAllDialects(ctx)
+        MLIR.API.Dispatcher.mlirRegisterAllDialects(ctx)
     end
 
     return nothing
 end
 
 function lowerModuleToLLVM(ctx, mod)
-    pm = MLIR.API.mlirPassManagerCreate(ctx)
+    pm = MLIR.API.Dispatcher.mlirPassManagerCreate(ctx)
     if LLVM.version() >= v"15"
         op = "func.func"
     else
         op = "builtin.func"
     end
-    opm = MLIR.API.mlirPassManagerGetNestedUnder(pm, op)
+    opm = MLIR.API.Dispatcher.mlirPassManagerGetNestedUnder(pm, op)
     if LLVM.version() >= v"15"
-        MLIR.API.mlirPassManagerAddOwnedPass(pm,
-            MLIR.API.mlirCreateConversionConvertFuncToLLVM()
+        MLIR.API.Dispatcher.mlirPassManagerAddOwnedPass(pm,
+            MLIR.API.Dispatcher.mlirCreateConversionConvertFuncToLLVM()
         )
     else
-        MLIR.API.mlirPassManagerAddOwnedPass(pm,
-            MLIR.API.mlirCreateConversionConvertStandardToLLVM()
+        MLIR.API.Dispatcher.mlirPassManagerAddOwnedPass(pm,
+            MLIR.API.Dispatcher.mlirCreateConversionConvertStandardToLLVM()
         )
     end
 
     if LLVM.version() >= v"16"
-        MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
-            MLIR.API.mlirCreateConversionArithToLLVMConversionPass()
+        MLIR.API.Dispatcher.mlirOpPassManagerAddOwnedPass(opm,
+            MLIR.API.Dispatcher.mlirCreateConversionArithToLLVMConversionPass()
         )
     else
-        MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
-            MLIR.API.mlirCreateConversionConvertArithmeticToLLVM()
+        MLIR.API.Dispatcher.mlirOpPassManagerAddOwnedPass(opm,
+            MLIR.API.Dispatcher.mlirCreateConversionConvertArithmeticToLLVM()
         )
     end
-    status = MLIR.API.mlirPassManagerRun(pm, mod)
+    status = MLIR.API.Dispatcher.mlirPassManagerRun(pm, mod)
     # undefined symbol: mlirLogicalResultIsFailure
     if status.value == 0
         error("Unexpected failure running pass failure")
     end
-    MLIR.API.mlirPassManagerDestroy(pm)
+    MLIR.API.Dispatcher.mlirPassManagerDestroy(pm)
 end
 
-ctx = MLIR.API.mlirContextCreate()
+ctx = MLIR.API.Dispatcher.mlirContextCreate()
 registerAllUpstreamDialects!(ctx)
 
 if LLVM.version() >= v"15"
@@ -73,18 +73,18 @@ else
         }
         """
 end
-mod = MLIR.API.mlirModuleCreateParse(ctx, ir)
+mod = MLIR.API.Dispatcher.mlirModuleCreateParse(ctx, ir)
 lowerModuleToLLVM(ctx, mod)
 
-MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
+MLIR.API.Dispatcher.mlirRegisterAllLLVMTranslations(ctx)
 
 # TODO add C-API for translateModuleToLLVMIR
 
 jit = if LLVM.version() >= v"16"
-    MLIR.API.mlirExecutionEngineCreate(
+    MLIR.API.Dispatcher.mlirExecutionEngineCreate(
         mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL, #= enableObjectDump =# false)
 else
-    MLIR.API.mlirExecutionEngineCreate(
+    MLIR.API.Dispatcher.mlirExecutionEngineCreate(
         mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
 end
 
@@ -92,7 +92,7 @@ if jit == C_NULL
     error("Execution engine creation failed")
 end
 
-addr = MLIR.API.mlirExecutionEngineLookup(jit, "add")
+addr = MLIR.API.Dispatcher.mlirExecutionEngineLookup(jit, "add")
 
 if addr == C_NULL
     error("Lookup failed")
@@ -100,6 +100,6 @@ end
 
 @test ccall(addr, Cint, (Cint,), 42) == 84
 
-MLIR.API.mlirExecutionEngineDestroy(jit)
-MLIR.API.mlirModuleDestroy(mod)
-MLIR.API.mlirContextDestroy(ctx)
+MLIR.API.Dispatcher.mlirExecutionEngineDestroy(jit)
+MLIR.API.Dispatcher.mlirModuleDestroy(mod)
+MLIR.API.Dispatcher.mlirContextDestroy(ctx)

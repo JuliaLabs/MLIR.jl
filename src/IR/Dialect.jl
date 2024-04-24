@@ -8,25 +8,25 @@ struct Dialect
 end
 
 Base.convert(::Core.Type{API.MlirDialect}, dialect::Dialect) = dialect.dialect
-Base.:(==)(a::Dialect, b::Dialect) = API.mlirDialectEqual(a, b)
+Base.:(==)(a::Dialect, b::Dialect) = API.Dispatcher.mlirDialectEqual(a, b)
 
-context(dialect::Dialect) = Context(API.mlirDialectGetContext(dialect))
-namespace(dialect::Dialect) = String(API.mlirDialectGetNamespace(dialect))
+context(dialect::Dialect) = Context(API.Dispatcher.mlirDialectGetContext(dialect))
+namespace(dialect::Dialect) = String(API.Dispatcher.mlirDialectGetNamespace(dialect))
 
 function Base.show(io::IO, dialect::Dialect)
     print(io, "Dialect(\"", namespace(dialect), "\")")
 end
 
-allow_unregistered_dialects(; context::Context=context()) = API.mlirContextGetAllowUnregisteredDialects(context)
-allow_unregistered_dialects!(allow::Bool=true; context::Context=context()) = API.mlirContextSetAllowUnregisteredDialects(context, allow)
+allow_unregistered_dialects(; context::Context=context()) = API.Dispatcher.mlirContextGetAllowUnregisteredDialects(context)
+allow_unregistered_dialects!(allow::Bool=true; context::Context=context()) = API.Dispatcher.mlirContextSetAllowUnregisteredDialects(context, allow)
 
-num_registered_dialects(; context::Context=context()) = API.mlirContextGetNumRegisteredDialects(context)
-num_loaded_dialects(; context::Context=context()) = API.mlirContextGetNumLoadedDialects(context)
+num_registered_dialects(; context::Context=context()) = API.Dispatcher.mlirContextGetNumRegisteredDialects(context)
+num_loaded_dialects(; context::Context=context()) = API.Dispatcher.mlirContextGetNumLoadedDialects(context)
 
-load_all_available_dialects(; context::Context=context()) = API.mlirContextLoadAllAvailableDialects(context)
+load_all_available_dialects(; context::Context=context()) = API.Dispatcher.mlirContextLoadAllAvailableDialects(context)
 
 function get_or_load_dialect!(name::String; context::Context=context())
-    dialect = API.mlirContextGetOrLoadDialect(context, name)
+    dialect = API.Dispatcher.mlirContextGetOrLoadDialect(context, name)
     mlirIsNull(dialect) && error("could not load dialect $name")
     Dialect(dialect)
 end
@@ -42,16 +42,16 @@ end
 
 Base.convert(::Core.Type{API.MlirDialectHandle}, handle::DialectHandle) = handle.handle
 
-namespace(handle::DialectHandle) = String(API.mlirDialectHandleGetNamespace(handle))
+namespace(handle::DialectHandle) = String(API.Dispatcher.mlirDialectHandleGetNamespace(handle))
 
 function get_or_load_dialect!(handle::DialectHandle; context::Context=context())
-    dialect = API.mlirDialectHandleLoadDialect(handle, context)
+    dialect = API.Dispatcher.mlirDialectHandleLoadDialect(handle, context)
     mlirIsNull(dialect) && error("could not load dialect from handle $handle")
     Dialect(dialect)
 end
 
-register_dialect!(handle::DialectHandle; context::Context=context()) = API.mlirDialectHandleRegisterDialect(handle, context)
-load_dialect!(handle::DialectHandle; context::Context=context()) = Dialect(API.mlirDialectHandleLoadDialect(handle, context))
+register_dialect!(handle::DialectHandle; context::Context=context()) = API.Dispatcher.mlirDialectHandleRegisterDialect(handle, context)
+load_dialect!(handle::DialectHandle; context::Context=context()) = Dialect(API.Dispatcher.mlirDialectHandleLoadDialect(handle, context))
 
 mutable struct DialectRegistry
     registry::API.MlirDialectRegistry
@@ -59,15 +59,15 @@ mutable struct DialectRegistry
     function DialectRegistry(registry)
         @assert !mlirIsNull(registry) "cannot create DialectRegistry with null MlirDialectRegistry"
         finalizer(DialectRegistry(registry)) do registry
-            API.mlirDialectRegistryDestroy(registry.registry)
+            API.Dispatcher.mlirDialectRegistryDestroy(registry.registry)
         end
     end
 end
 
-DialectRegistry() = DialectRegistry(API.mlirDialectRegistryCreate())
+DialectRegistry() = DialectRegistry(API.Dispatcher.mlirDialectRegistryCreate())
 
 Base.convert(::Core.Type{API.MlirDialectRegistry}, registry::DialectRegistry) = registry.registry
-Base.push!(registry::DialectRegistry, handle::DialectHandle) = API.mlirDialectHandleInsertDialect(handle, registry)
+Base.push!(registry::DialectRegistry, handle::DialectHandle) = API.Dispatcher.mlirDialectHandleInsertDialect(handle, registry)
 
 # TODO is `append!` the right name?
-Base.append!(registry::DialectRegistry; context::Context) = API.mlirContextAppendDialectRegistry(context, registry)
+Base.append!(registry::DialectRegistry; context::Context) = API.Dispatcher.mlirContextAppendDialectRegistry(context, registry)

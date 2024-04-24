@@ -79,7 +79,7 @@ function Base.String(str::API.MlirStringRef)
     Base.unsafe_string(pointer(str.data), str.length)
 end
 
-Base.String(str::API.MlirIdentifier) = String(API.mlirIdentifierStr(str))
+Base.String(str::API.MlirIdentifier) = String(API.Dispatcher.mlirIdentifierStr(str))
 
 ### Utils
 

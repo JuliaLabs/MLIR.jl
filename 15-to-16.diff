@@ -1,0 +1,485 @@
+1032a1037,1045
+> end
+> 
+> """
+>     mlirOperationWriteBytecode(op, callback, userData)
+> 
+> Same as [`mlirOperationPrint`](@ref) but writing the bytecode format out.
+> """
+> function mlirOperationWriteBytecode(op, callback, userData)
+>     @ccall MLIR_C_PATH[].mlirOperationWriteBytecode(op::MlirOperation, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
+3023,3024c3189,3191
+> function mlirUnmanagedDenseBoolResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseBoolResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Cint})::MlirAttribute
+> end
+3026c3193,3232
+> function mlirUnmanagedDenseUInt8ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseUInt8ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt8})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseInt8ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseInt8ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int8})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseUInt16ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseUInt16ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt16})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseInt16ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseInt16ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int16})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseUInt32ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseUInt32ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt32})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseInt32ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseInt32ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int32})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseUInt64ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseUInt64ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt64})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseInt64ResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseInt64ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int64})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseFloatResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseFloatResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Cfloat})::MlirAttribute
+> end
+> 
+> function mlirUnmanagedDenseDoubleResourceElementsAttrGet(shapedType, name, numElements, elements)
+>     @ccall MLIR_C_PATH[].mlirUnmanagedDenseDoubleResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Cdouble})::MlirAttribute
+> end
+> 
+3028,3029c3234,3271
+>     mlirDenseBoolResourceElementsAttrGetValue(attr, pos)
+> 
+> Returns the pos-th value (flat contiguous indexing) of a specific type contained by the given dense resource elements attribute.
+> """
+> function mlirDenseBoolResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseBoolResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Bool
+> end
+> 
+> function mlirDenseInt8ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseInt8ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int8
+> end
+> 
+> function mlirDenseUInt8ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseUInt8ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt8
+> end
+> 
+> function mlirDenseInt16ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseInt16ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int16
+> end
+> 
+> function mlirDenseUInt16ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseUInt16ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt16
+> end
+> 
+> function mlirDenseInt32ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseInt32ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int32
+> end
+> 
+> function mlirDenseUInt32ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseUInt32ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt32
+> end
+> 
+> function mlirDenseInt64ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseInt64ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int64
+> end
+> 
+> function mlirDenseUInt64ResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseUInt64ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt64
+3031a3274,3281
+> function mlirDenseFloatResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseFloatResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Cfloat
+> end
+> 
+> function mlirDenseDoubleResourceElementsAttrGetValue(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirDenseDoubleResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Cdouble
+> end
+> 
+3067a3318,3337
+> function mlirAttributeIsAStridedLayout(attr)
+>     @ccall MLIR_C_PATH[].mlirAttributeIsAStridedLayout(attr::MlirAttribute)::Bool
+> end
+> 
+> function mlirStridedLayoutAttrGet(ctx, offset, numStrides, strides)
+>     @ccall MLIR_C_PATH[].mlirStridedLayoutAttrGet(ctx::MlirContext, offset::Int64, numStrides::intptr_t, strides::Ptr{Int64})::MlirAttribute
+> end
+> 
+> function mlirStridedLayoutAttrGetOffset(attr)
+>     @ccall MLIR_C_PATH[].mlirStridedLayoutAttrGetOffset(attr::MlirAttribute)::Int64
+> end
+> 
+> function mlirStridedLayoutAttrGetNumStrides(attr)
+>     @ccall MLIR_C_PATH[].mlirStridedLayoutAttrGetNumStrides(attr::MlirAttribute)::intptr_t
+> end
+> 
+> function mlirStridedLayoutAttrGetStride(attr, pos)
+>     @ccall MLIR_C_PATH[].mlirStridedLayoutAttrGetStride(attr::MlirAttribute, pos::intptr_t)::Int64
+> end
+> 
+3882a4207,4214
+> function mlirCreateConversionArithToLLVMConversionPass()
+>     @ccall MLIR_C_PATH[].mlirCreateConversionArithToLLVMConversionPass()::MlirPass
+> end
+> 
+> function mlirRegisterConversionArithToLLVMConversionPass()
+>     @ccall MLIR_C_PATH[].mlirRegisterConversionArithToLLVMConversionPass()::Cvoid
+> end
+> 
+3907,3908c4239,4240
+< function mlirCreateConversionConvertArithmeticToLLVM()
+<     @ccall MLIR_C_PATH[].mlirCreateConversionConvertArithmeticToLLVM()::MlirPass
+---
+> function mlirCreateConversionConvertArithToSPIRV()
+>     @ccall MLIR_C_PATH[].mlirCreateConversionConvertArithToSPIRV()::MlirPass
+3911,3912c4243,4244
+< function mlirRegisterConversionConvertArithmeticToLLVM()
+<     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertArithmeticToLLVM()::Cvoid
+---
+> function mlirRegisterConversionConvertArithToSPIRV()
+>     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertArithToSPIRV()::Cvoid
+3915,3922d4246
+< function mlirCreateConversionConvertArithmeticToSPIRV()
+<     @ccall MLIR_C_PATH[].mlirCreateConversionConvertArithmeticToSPIRV()::MlirPass
+< end
+< 
+< function mlirRegisterConversionConvertArithmeticToSPIRV()
+<     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertArithmeticToSPIRV()::Cvoid
+< end
+< 
+4035,4036c4359,4360
+< function mlirCreateConversionConvertLinalgToLLVM()
+<     @ccall MLIR_C_PATH[].mlirCreateConversionConvertLinalgToLLVM()::MlirPass
+---
+> function mlirCreateConversionConvertIndexToLLVMPass()
+>     @ccall MLIR_C_PATH[].mlirCreateConversionConvertIndexToLLVMPass()::MlirPass
+4039,4040c4363,4364
+< function mlirRegisterConversionConvertLinalgToLLVM()
+<     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertLinalgToLLVM()::Cvoid
+---
+> function mlirRegisterConversionConvertIndexToLLVMPass()
+>     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertIndexToLLVMPass()::Cvoid
+4043,4044c4367,4368
+< function mlirCreateConversionConvertLinalgToSPIRV()
+<     @ccall MLIR_C_PATH[].mlirCreateConversionConvertLinalgToSPIRV()::MlirPass
+---
+> function mlirCreateConversionConvertLinalgToLLVM()
+>     @ccall MLIR_C_PATH[].mlirCreateConversionConvertLinalgToLLVM()::MlirPass
+4047,4048c4371,4372
+< function mlirRegisterConversionConvertLinalgToSPIRV()
+<     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertLinalgToSPIRV()::Cvoid
+---
+> function mlirRegisterConversionConvertLinalgToLLVM()
+>     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertLinalgToLLVM()::Cvoid
+4058a4383,4390
+> function mlirCreateConversionConvertMathToFuncs()
+>     @ccall MLIR_C_PATH[].mlirCreateConversionConvertMathToFuncs()::MlirPass
+> end
+> 
+> function mlirRegisterConversionConvertMathToFuncs()
+>     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertMathToFuncs()::Cvoid
+> end
+> 
+4083,4090d4414
+< function mlirCreateConversionConvertMemRefToLLVM()
+<     @ccall MLIR_C_PATH[].mlirCreateConversionConvertMemRefToLLVM()::MlirPass
+< end
+< 
+< function mlirRegisterConversionConvertMemRefToLLVM()
+<     @ccall MLIR_C_PATH[].mlirRegisterConversionConvertMemRefToLLVM()::Cvoid
+< end
+< 
+4248a4573,4580
+> end
+> 
+> function mlirCreateConversionMapMemRefStorageClass()
+>     @ccall MLIR_C_PATH[].mlirCreateConversionMapMemRefStorageClass()::MlirPass
+> end
+> 
+> function mlirRegisterConversionMapMemRefStorageClass()
+>     @ccall MLIR_C_PATH[].mlirRegisterConversionMapMemRefStorageClass()::Cvoid
+4250a4583,4590
+> function mlirCreateConversionMemRefToLLVMConversionPass()
+>     @ccall MLIR_C_PATH[].mlirCreateConversionMemRefToLLVMConversionPass()::MlirPass
+> end
+> 
+> function mlirRegisterConversionMemRefToLLVMConversionPass()
+>     @ccall MLIR_C_PATH[].mlirRegisterConversionMemRefToLLVMConversionPass()::Cvoid
+> end
+> 
+4444a4785,4792
+> function mlirCreateAsyncAsyncFuncToAsyncRuntime()
+>     @ccall MLIR_C_PATH[].mlirCreateAsyncAsyncFuncToAsyncRuntime()::MlirPass
+> end
+> 
+> function mlirRegisterAsyncAsyncFuncToAsyncRuntime()
+>     @ccall MLIR_C_PATH[].mlirRegisterAsyncAsyncFuncToAsyncRuntime()::Cvoid
+> end
+> 
+4500a4849,4856
+> function mlirCreateGPUGPULowerMemorySpaceAttributesPass()
+>     @ccall MLIR_C_PATH[].mlirCreateGPUGPULowerMemorySpaceAttributesPass()::MlirPass
+> end
+> 
+> function mlirRegisterGPUGPULowerMemorySpaceAttributesPass()
+>     @ccall MLIR_C_PATH[].mlirRegisterGPUGPULowerMemorySpaceAttributesPass()::Cvoid
+> end
+> 
+4647,4654d5002
+< function mlirCreateLinalgLinalgInitTensorToAllocTensor()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgInitTensorToAllocTensor()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgInitTensorToAllocTensor()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgInitTensorToAllocTensor()::Cvoid
+< end
+< 
+4693,4756d5040
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyDecomposePass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyDecomposePass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyDecomposePass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyDecomposePass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyEnablePass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyEnablePass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyEnablePass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyEnablePass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyGeneralizePass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyGeneralizePass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyGeneralizePass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyGeneralizePass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyInterchangePass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyInterchangePass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyInterchangePass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyInterchangePass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyLowerVectorsPass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyLowerVectorsPass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyLowerVectorsPass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyLowerVectorsPass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyPadPass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyPadPass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyPadPass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyPadPass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyPeelPass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyPeelPass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyPeelPass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyPeelPass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyRemoveMarkersPass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyRemoveMarkersPass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyRemoveMarkersPass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyRemoveMarkersPass()::Cvoid
+4759,4788c5043,5044
+< function mlirCreateLinalgLinalgStrategyTileAndFusePass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyTileAndFusePass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyTileAndFusePass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyTileAndFusePass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyTilePass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyTilePass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyTilePass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyTilePass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgStrategyVectorizePass()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgStrategyVectorizePass()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgStrategyVectorizePass()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgStrategyVectorizePass()::Cvoid
+< end
+< 
+< function mlirCreateLinalgLinalgTiling()
+<     @ccall MLIR_C_PATH[].mlirCreateLinalgLinalgTiling()::MlirPass
+< end
+< 
+< function mlirRegisterLinalgLinalgTiling()
+<     @ccall MLIR_C_PATH[].mlirRegisterLinalgLinalgTiling()::Cvoid
+---
+> function mlirGetDialectHandle__ml_program__()
+>     @ccall MLIR_C_PATH[].mlirGetDialectHandle__ml_program__()::MlirDialectHandle
+5186c5442
+< Dimension level types that define sparse tensors: - MLIR\\_SPARSE\\_TENSOR\\_DIM\\_LEVEL\\_DENSE - dimension is dense, every entry is stored - MLIR\\_SPARSE\\_TENSOR\\_DIM\\_LEVEL\\_COMPRESSED - dimension is sparse, only nonzeros are stored. - MLIR\\_SPARSE\\_TENSOR\\_DIM\\_LEVEL\\_SINGLETON - dimension contains single coordinate, no siblings.
+---
+> Dimension level types (and properties) that define sparse tensors. See the documentation in SparseTensorAttrDefs.td for their meaning.
+5191,5193c5447,5455
+<     MLIR_SPARSE_TENSOR_DIM_LEVEL_DENSE = 0x0000000000000000
+<     MLIR_SPARSE_TENSOR_DIM_LEVEL_COMPRESSED = 0x0000000000000001
+<     MLIR_SPARSE_TENSOR_DIM_LEVEL_SINGLETON = 0x0000000000000002
+---
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_DENSE = 0x0000000000000004
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_COMPRESSED = 0x0000000000000008
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_COMPRESSED_NU = 0x0000000000000009
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_COMPRESSED_NO = 0x000000000000000a
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_COMPRESSED_NU_NO = 0x000000000000000b
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_SINGLETON = 0x0000000000000010
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_SINGLETON_NU = 0x0000000000000011
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_SINGLETON_NO = 0x0000000000000012
+>     MLIR_SPARSE_TENSOR_DIM_LEVEL_SINGLETON_NU_NO = 0x0000000000000013
+5206c5468
+<     mlirSparseTensorEncodingAttrGet(ctx, numDimLevelTypes, dimLevelTypes, dimOrdering, pointerBitWidth, indexBitWidth)
+---
+>     mlirSparseTensorEncodingAttrGet(ctx, numDimLevelTypes, dimLevelTypes, dimOrdering, higherOrdering, pointerBitWidth, indexBitWidth)
+5210,5211c5472,5473
+< function mlirSparseTensorEncodingAttrGet(ctx, numDimLevelTypes, dimLevelTypes, dimOrdering, pointerBitWidth, indexBitWidth)
+<     @ccall MLIR_C_PATH[].mlirSparseTensorEncodingAttrGet(ctx::MlirContext, numDimLevelTypes::intptr_t, dimLevelTypes::Ptr{MlirSparseTensorDimLevelType}, dimOrdering::MlirAffineMap, pointerBitWidth::Cint, indexBitWidth::Cint)::MlirAttribute
+---
+> function mlirSparseTensorEncodingAttrGet(ctx, numDimLevelTypes, dimLevelTypes, dimOrdering, higherOrdering, pointerBitWidth, indexBitWidth)
+>     @ccall MLIR_C_PATH[].mlirSparseTensorEncodingAttrGet(ctx::MlirContext, numDimLevelTypes::intptr_t, dimLevelTypes::Ptr{MlirSparseTensorDimLevelType}, dimOrdering::MlirAffineMap, higherOrdering::MlirAffineMap, pointerBitWidth::Cint, indexBitWidth::Cint)::MlirAttribute
+5241a5504,5512
+>     mlirSparseTensorEncodingAttrGetHigherOrdering(attr)
+> 
+> Returns the higher ordering in a sparse\\_tensor.encoding attribute.
+> """
+> function mlirSparseTensorEncodingAttrGetHigherOrdering(attr)
+>     @ccall MLIR_C_PATH[].mlirSparseTensorEncodingAttrGetHigherOrdering(attr::MlirAttribute)::MlirAffineMap
+> end
+> 
+> """
+5263,5264c5534,5535
+< function mlirCreateSparseTensorSparseTensorConversion()
+<     @ccall MLIR_C_PATH[].mlirCreateSparseTensorSparseTensorConversion()::MlirPass
+---
+> function mlirCreateSparseTensorPostSparsificationRewrite()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorPostSparsificationRewrite()::MlirPass
+5267,5268c5538,5539
+< function mlirRegisterSparseTensorSparseTensorConversion()
+<     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorSparseTensorConversion()::Cvoid
+---
+> function mlirRegisterSparseTensorPostSparsificationRewrite()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorPostSparsificationRewrite()::Cvoid
+5271,5272c5542,5543
+< function mlirCreateSparseTensorSparsification()
+<     @ccall MLIR_C_PATH[].mlirCreateSparseTensorSparsification()::MlirPass
+---
+> function mlirCreateSparseTensorPreSparsificationRewrite()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorPreSparsificationRewrite()::MlirPass
+5275,5276c5546,5595
+< function mlirRegisterSparseTensorSparsification()
+<     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorSparsification()::Cvoid
+---
+> function mlirRegisterSparseTensorPreSparsificationRewrite()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorPreSparsificationRewrite()::Cvoid
+> end
+> 
+> function mlirCreateSparseTensorSparseBufferRewrite()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorSparseBufferRewrite()::MlirPass
+> end
+> 
+> function mlirRegisterSparseTensorSparseBufferRewrite()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorSparseBufferRewrite()::Cvoid
+> end
+> 
+> function mlirCreateSparseTensorSparseTensorCodegen()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorSparseTensorCodegen()::MlirPass
+> end
+> 
+> function mlirRegisterSparseTensorSparseTensorCodegen()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorSparseTensorCodegen()::Cvoid
+> end
+> 
+> function mlirCreateSparseTensorSparseTensorConversionPass()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorSparseTensorConversionPass()::MlirPass
+> end
+> 
+> function mlirRegisterSparseTensorSparseTensorConversionPass()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorSparseTensorConversionPass()::Cvoid
+> end
+> 
+> function mlirCreateSparseTensorSparseVectorization()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorSparseVectorization()::MlirPass
+> end
+> 
+> function mlirRegisterSparseTensorSparseVectorization()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorSparseVectorization()::Cvoid
+> end
+> 
+> function mlirCreateSparseTensorSparsificationPass()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorSparsificationPass()::MlirPass
+> end
+> 
+> function mlirRegisterSparseTensorSparsificationPass()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorSparsificationPass()::Cvoid
+> end
+> 
+> function mlirCreateSparseTensorStorageSpecifierToLLVM()
+>     @ccall MLIR_C_PATH[].mlirCreateSparseTensorStorageSpecifierToLLVM()::MlirPass
+> end
+> 
+> function mlirRegisterSparseTensorStorageSpecifierToLLVM()
+>     @ccall MLIR_C_PATH[].mlirRegisterSparseTensorStorageSpecifierToLLVM()::Cvoid
+5280a5600,5619
+> end
+> 
+> function mlirGetDialectHandle__transform__()
+>     @ccall MLIR_C_PATH[].mlirGetDialectHandle__transform__()::MlirDialectHandle
+> end
+> 
+> function mlirTypeIsATransformAnyOpType(type)
+>     @ccall MLIR_C_PATH[].mlirTypeIsATransformAnyOpType(type::MlirType)::Bool
+> end
+> 
+> function mlirTransformAnyOpTypeGet(ctx)
+>     @ccall MLIR_C_PATH[].mlirTransformAnyOpTypeGet(ctx::MlirContext)::MlirType
+> end
+> 
+> function mlirTypeIsATransformOperationType(type)
+>     @ccall MLIR_C_PATH[].mlirTypeIsATransformOperationType(type::MlirType)::Bool
+> end
+> 
+> function mlirTransformOperationTypeGet(ctx, operationName)
+>     @ccall MLIR_C_PATH[].mlirTransformOperationTypeGet(ctx::MlirContext, operationName::MlirStringRef)::MlirType
+5282a5622,5625
+> function mlirTransformOperationTypeGetOperationName(type)
+>     @ccall MLIR_C_PATH[].mlirTransformOperationTypeGetOperationName(type::MlirType)::MlirStringRef
+> end
+> 
+5612a5956,5963
+> function mlirCreateTransformsGenerateRuntimeVerification()
+>     @ccall MLIR_C_PATH[].mlirCreateTransformsGenerateRuntimeVerification()::MlirPass
+> end
+> 
+> function mlirRegisterTransformsGenerateRuntimeVerification()
+>     @ccall MLIR_C_PATH[].mlirRegisterTransformsGenerateRuntimeVerification()::Cvoid
+> end
+> 

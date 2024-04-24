@@ -1,6 +1,6 @@
 module API
 
-using ..MLIR: MLIR_VERSION, MLIR_C_PATH
+using ..MLIR: MLIR_VERSION, MLIR_C_PATH, VersionDispatcher
 using CEnum
 
 # generate versioned API modules
@@ -51,5 +51,7 @@ for (type, mods) in type_versions
     # when @ccall-ing, `convert` will be called and different versions might be used
     @eval const $type = $(mods[1]).$type
 end
+
+const Dispatcher = VersionDispatcher(@__MODULE__)
 
 end

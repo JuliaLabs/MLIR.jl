@@ -1,0 +1,294 @@
+┌ Warning: Unable to determine HTML(edit_link = ...) from remote HEAD branch, defaulting to "master".
+│ Failed to parse the `git remote` output. Set JULIA_DEBUG=Documenter to see the output.
+│ Unless this is due to a configuration error, the relevant variable should be set explicitly.
+└ @ Documenter.Utilities ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:832
+[ Info: SetupBuildDirectory: setting up build directory.
+[ Info: Doctest: running doctests.
+[ Info: ExpandTemplates: expanding markdown templates.
+[ Info: CrossReferences: building cross-references.
+┌ Warning: no doc found for reference '[`MlirPass`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirPass`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirAttribute`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirType`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirType`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirType`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirType`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirType`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+┌ Warning: no doc found for reference '[`MlirType`](@ref)' in src/api.md.
+└ @ Documenter.CrossReferences ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+[ Info: CheckDocument: running document checks.
+┌ Warning: 4 docstrings not included in the manual:
+│ 
+│     MLIR.IR.verifyall :: Tuple{MLIR.IR.Operation}
+│     MLIR.IR.OperationIterator
+│     MLIR.IR.BlockIterator
+│     MLIR.IR.RegionIterator
+│ 
+│ These are docstrings in the checked modules (configured with the modules keyword)
+│ that are not included in @docs or @autodocs blocks.
+└ @ Documenter.DocChecks ~/.julia/packages/Documenter/bYYzK/src/Utilities/Utilities.jl:34
+[ Info: Populate: populating indices.
+[ Info: RenderDocument: rendering document.
+[ Info: HTMLWriter: rendering HTML pages.
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "AutomaticAllocationScope")
+│   link.url = "../Traits.md/#automaticallocationscope"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "symbols"
+│   link.url = "Affine.md/#dimensions-and-symbols"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "affine.apply")
+│   link.url = "Affine.md/#affineapply-affineapplyop"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "restrictions on dimensions and symbols"
+│   link.url = "Affine.md/#restrictions-on-dimensions-and-symbols"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "symbols"
+│   link.url = "Affine.md/#restrictions-on-dimensions-and-symbols"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "affine.apply")
+│   link.url = "Affine.md/#affineapply-affineapplyop"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "affine.apply")
+│   link.url = "Affine.md/#affineapply-affineapplyop"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/memref.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "restrictions on dimensions and symbols"
+│   link.url = "Affine.md/#restrictions-on-dimensions-and-symbols"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/builtin.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "graph region"
+│   link.url = "../LangRef.md#control-flow-and-ssacfg-regions"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/builtin.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "IsolatedFromAbove"
+│   link.url = "../Traits.md#isolatedfromabove"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/builtin.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "symbol name"
+│   link.url = "../SymbolsAndSymbolTables.md"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/func.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "rationale"
+│   link.url = "../Rationale/Rationale.md#multithreading-the-compiler"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/arith.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "rationale"
+│   link.url = "../Rationale/Rationale.md#splitting-floating-point-vs-integer-operations"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/arith.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "rationale"
+│   link.url = "../Rationale/Rationale.md#specifying-comparison-kind-as-attribute"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/arith.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "rationale"
+│   link.url = "../Rationale/Rationale.md#specifying-sign-in-integer-comparison-operations"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/affine.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "index")
+│   link.url = "Builtin.md/#indextype"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/affine.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "MemRef"
+│   link.url = "Builtin.md/#memreftype"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/affine.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "vector"
+│   link.url = "Builtin.md/#vectortype"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/affine.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "vector.transfer_read"
+│   link.url = "../Vector/#vectortransfer_read-vectortransferreadop"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/affine.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "vector"
+│   link.url = "Builtin.md/#vectortype"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/affine.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "MemRef"
+│   link.url = "Builtin.md/#memreftype"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/affine.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "vector.transfer_write"
+│   link.url = "../Vector/#vectortransfer_write-vectortransferwriteop"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirPass")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirPass")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirAttribute")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirType")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirType")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirType")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirType")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirType")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in api.md
+│   link.text =
+│    1-element Vector{Any}:
+│     Markdown.Code("", "MlirType")
+│   link.url = "@ref"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "MemRef"
+│   link.url = "../LangRef.md#memref-type"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "Tensor"
+│   link.url = "../LangRef.md#tensor-type"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "vector"
+│   link.url = "../LangRef.md#vector-type"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "attribute"
+│   link.url = "../LangRef.md#attributes"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "affine-map"
+│   link.url = "Affine.md#affine-maps"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "vector"
+│   link.url = "../LangRef.md#vector-type"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "MemRef"
+│   link.url = "../LangRef.md#memref-type"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "Tensor"
+│   link.url = "../LangRef.md#tensor-type"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "attribute"
+│   link.url = "../LangRef.md#attributes"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/vector.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "affine-map"
+│   link.url = "Affine.md#affine-maps"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: invalid local link: unresolved path in dialects/spirv.md
+│   link.text =
+│    1-element Vector{Any}:
+│     "0, N - 1"
+│   link.url = "inclusive"
+└ @ Documenter.Writers.HTMLWriter ~/.julia/packages/Documenter/bYYzK/src/Writers/HTMLWriter.jl:2081
+┌ Warning: Documenter could not auto-detect the building environment Skipping deployment.
+└ @ Documenter ~/.julia/packages/Documenter/bYYzK/src/deployconfig.jl:75
