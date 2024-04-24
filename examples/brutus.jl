@@ -7,9 +7,12 @@ but from C++.
 module Brutus
 
 import LLVM
-using MLIR.IR
-using MLIR.Dialects: arith, func, cf
 using Core: PhiNode, GotoNode, GotoIfNot, SSAValue, Argument, ReturnNode, PiNode
+using MLIR.IR
+using MLIR.Dialects: Dispatcher
+const arith = Dispatcher.arith
+const func = Dispatcher.func
+const cf = Dispatcher.cf
 
 const BrutusScalar = Union{Bool,Int64,Int32,Float32,Float64}
 
@@ -143,7 +146,7 @@ function code_mlir(f, types)
         for sidx in bb.stmts
             stmt = ir.stmts[sidx]
             inst = stmt[:inst]
-            line = ir.linetable[stmt[:line] + 1]
+            line = ir.linetable[stmt[:line]+1]
 
             if Meta.isexpr(inst, :call)
                 val_type = stmt[:type]

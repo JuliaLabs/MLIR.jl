@@ -1,11 +1,12 @@
 module API
 
-using ..MLIR: MLIR_VERSION, MLIR_C_PATH, VersionDispatcher
+using ..MLIR: VersionDispatcher
 using CEnum
 
 # generate versioned API modules
 for dir in Base.Filesystem.readdir(joinpath(@__DIR__, "API"))
     @eval module $(Symbol(:v, dir))
+    using ...MLIR: MLIR_VERSION, MLIR_C_PATH
     include(joinpath(@__DIR__, "API", $dir, "libMLIR_h.jl"))
     end
 end
