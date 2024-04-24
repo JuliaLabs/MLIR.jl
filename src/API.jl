@@ -1,11 +1,7 @@
 module API
 
-using ..MLIR: MLIR_VERSION
-
+using ..MLIR: MLIR_VERSION, MLIR_C_PATH
 using CEnum
-
-# MLIR C API
-using MLIR_jll
 
 # generate versioned API modules
 for dir in Base.Filesystem.readdir(joinpath(@__DIR__, "API"))
