@@ -10,6 +10,6 @@ const MLIR_C_PATH = ScopedValue(@load_preference("MLIR_C_PATH", MLIR_jll.mlir_c)
 include("Dispatcher.jl")
 include("API/API.jl")
 include("IR/IR.jl")
-include("Dialects.jl")
+include("Dialects/Dialects.jl")
 
 end # module MLIR

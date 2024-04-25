@@ -14,8 +14,9 @@ end
 operandsegmentsizes(segments) = namedattribute("operand_segment_sizes", Attribute(Int32.(segments)))
 
 # generate versioned API modules
-for version in Base.Filesystem.readdir(joinpath(@__DIR__, "Dialects"))
-    includes = map(readdir(joinpath(@__DIR__, "Dialects", version); join=true)) do path
+for version in Base.Filesystem.readdir(joinpath(@__DIR__))
+    isdir(joinpath(@__DIR__, version)) || continue
+    includes = map(readdir(joinpath(@__DIR__, version); join=true)) do path
         :(include($path))
     end
 
