@@ -539,7 +539,7 @@ end
 
 function Attribute(values::AbstractArray)
     MLIR_VERSION[] >= v"15" || throw(UndefVarError("`Attribute(::AbstractArray)` requires MLIR version 15 or later"))
-    if MLIR_VERSION < v"16"
+    if MLIR_VERSION[] < v"16"
         DenseElementsAttribute(values)
     else
         DenseArrayAttribute(values)

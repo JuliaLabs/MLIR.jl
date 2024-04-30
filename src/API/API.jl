@@ -1,5 +1,7 @@
 module API
 
+using ..MLIR: MLIR_VERSION
+
 include("Types.jl")
 using .Types
 
