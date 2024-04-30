@@ -1,6 +1,6 @@
 module IR
 
-using ..MLIR: MLIR_VERSION
+using ..MLIR: MLIR_VERSION, MLIRException
 using ..API
 
 # do not export `Type`, as it is already defined in Core
