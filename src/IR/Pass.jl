@@ -168,8 +168,7 @@ end
   Parse a sequence of textual MLIR pass pipeline elements and add them to the provided OpPassManager. If parsing fails an error message is reported using the provided callback.
   """
 function add_pipeline!(op_pass::OpPassManager, pipeline)
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`add_pipeline!(::OpPassManager)` requires MLIR version 16 or later"))
-    @static if isdefined(API, :mlirOpPassManagerAddPipeline)
+    if MLIR_VERSION[] >= v"16"
         io = IOBuffer()
         c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
         result = LogicalResult(API.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, Ref(io)))
@@ -186,68 +185,65 @@ function add_pipeline!(op_pass::OpPassManager, pipeline)
     op_pass
 end
 
-@static if isdefined(API, :mlirCreateExternalPass)
+### Pass
 
-    ### Pass
+# AbstractPass interface:
+opname(::AbstractPass) = ""
+function pass_run(::Context, ::P, op) where {P<:AbstractPass}
+    error("pass $P does not implement `MLIR.pass_run`")
+end
 
-    # AbstractPass interface:
-    opname(::AbstractPass) = ""
-    function pass_run(::Context, ::P, op) where {P<:AbstractPass}
-        error("pass $P does not implement `MLIR.pass_run`")
+function _pass_construct(ptr::ExternalPassHandle)
+    nothing
+end
+
+function _pass_destruct(ptr::ExternalPassHandle)
+    nothing
+end
+
+function _pass_initialize(ctx, handle::ExternalPassHandle)
+    try
+        handle.ctx = Context(ctx)
+        success()
+    catch
+        failure()
     end
+end
 
-    function _pass_construct(ptr::ExternalPassHandle)
-        nothing
-    end
+function _pass_clone(handle::ExternalPassHandle)
+    ExternalPassHandle(handle.ctx, deepcopy(handle.pass))
+end
 
-    function _pass_destruct(ptr::ExternalPassHandle)
-        nothing
+function _pass_run(rawop, external_pass, handle::ExternalPassHandle)
+    op = Operation(rawop, false)
+    try
+        pass_run(handle.ctx, handle.pass, op)
+    catch ex
+        @error "Something went wrong running pass" exception = (ex, catch_backtrace())
+        API.mlirExternalPassSignalFailure(external_pass)
     end
+    nothing
+end
 
-    function _pass_initialize(ctx, handle::ExternalPassHandle)
-        try
-            handle.ctx = Context(ctx)
-            success()
-        catch
-            failure()
-        end
-    end
-
-    function _pass_clone(handle::ExternalPassHandle)
-        ExternalPassHandle(handle.ctx, deepcopy(handle.pass))
-    end
-
-    function _pass_run(rawop, external_pass, handle::ExternalPassHandle)
-        op = Operation(rawop, false)
-        try
-            pass_run(handle.ctx, handle.pass, op)
-        catch ex
-            @error "Something went wrong running pass" exception = (ex, catch_backtrace())
-            API.mlirExternalPassSignalFailure(external_pass)
-        end
-        nothing
-    end
-
-    function create_external_pass!(oppass::OpPassManager, args...)
-        create_external_pass!(oppass.pass, args...)
-    end
-    function create_external_pass!(manager, pass, name, argument,
-        description, opname=opname(pass),
-        dependent_dialects=API.MlirDialectHandle[])
-        passid = TypeID(manager.allocator)
-        callbacks = API.MlirExternalPassCallbacks(
-            @cfunction(_pass_construct, Cvoid, (Any,)),
-            @cfunction(_pass_destruct, Cvoid, (Any,)),
-            @cfunction(_pass_initialize, API.MlirLogicalResult, (API.MlirContext, Any,)),
-            @cfunction(_pass_clone, Any, (Any,)),
-            @cfunction(_pass_run, Cvoid, (API.MlirOperation, API.MlirExternalPass, Any))
-        )
-        pass_handle = manager.passes[passid] = ExternalPassHandle(nothing, pass)
-        userdata = Base.pointer_from_objref(pass_handle)
-        mlir_pass = API.mlirCreateExternalPass(passid, name, argument, description, opname,
-            length(dependent_dialects), dependent_dialects,
-            callbacks, userdata)
-        mlir_pass
-    end
-
+function create_external_pass!(oppass::OpPassManager, args...)
+    create_external_pass!(oppass.pass, args...)
+end
+function create_external_pass!(manager, pass, name, argument,
+    description, opname=opname(pass),
+    dependent_dialects=API.MlirDialectHandle[])
+    passid = TypeID(manager.allocator)
+    MLIR_VERSION[] >= v"15" || throw(MLIRException("`create_external_pass!` requires MLIR version 15 or later"))
+    callbacks = API.MlirExternalPassCallbacks(
+        @cfunction(_pass_construct, Cvoid, (Any,)),
+        @cfunction(_pass_destruct, Cvoid, (Any,)),
+        @cfunction(_pass_initialize, API.MlirLogicalResult, (API.MlirContext, Any,)),
+        @cfunction(_pass_clone, Any, (Any,)),
+        @cfunction(_pass_run, Cvoid, (API.MlirOperation, API.MlirExternalPass, Any))
+    )
+    pass_handle = manager.passes[passid] = ExternalPassHandle(nothing, pass)
+    userdata = Base.pointer_from_objref(pass_handle)
+    mlir_pass = API.mlirCreateExternalPass(passid, name, argument, description, opname,
+        length(dependent_dialects), dependent_dialects,
+        callbacks, userdata)
+    mlir_pass
 end
