@@ -16,21 +16,21 @@ Base.ndims(value::Value) = Base.ndims(Type(value))
 
 Returns 1 if two values are equal, 0 otherwise.
 """
-Base.:(==)(a::Value, b::Value) = API.Dispatcher.mlirValueEqual(a, b)
+Base.:(==)(a::Value, b::Value) = API.mlirValueEqual(a, b)
 
 """
     is_block_arg(value)
 
 Returns 1 if the value is a block argument, 0 otherwise.
 """
-is_block_arg(value::Value) = API.Dispatcher.mlirValueIsABlockArgument(value)
+is_block_arg(value::Value) = API.mlirValueIsABlockArgument(value)
 
 """
     is_op_res(value)
 
 Returns 1 if the value is an operation result, 0 otherwise.
 """
-is_op_res(value::Value) = API.Dispatcher.mlirValueIsAOpResult(value)
+is_op_res(value::Value) = API.mlirValueIsAOpResult(value)
 
 """
     block_owner(value)
@@ -39,7 +39,7 @@ Returns the block in which this value is defined as an argument. Asserts if the 
 """
 function block_owner(value::Value)
     @assert is_block_arg(value) "could not get owner, value is not a block argument"
-    Block(API.Dispatcher.mlirBlockArgumentGetOwner(value), false)
+    Block(API.mlirBlockArgumentGetOwner(value), false)
 end
 
 """
@@ -49,16 +49,16 @@ Returns an operation that produced this value as its result. Asserts if the valu
 """
 function op_owner(value::Value)
     @assert is_op_res(value) "could not get owner, value is not an op result"
-    Operation(API.Dispatcher.mlirOpResultGetOwner(value), false)
+    Operation(API.mlirOpResultGetOwner(value), false)
 end
 
 function owner(value::Value)
     if is_block_arg(value)
-        raw_block = API.Dispatcher.mlirBlockArgumentGetOwner(value)
+        raw_block = API.mlirBlockArgumentGetOwner(value)
         mlirIsNull(raw_block) && return nothing
         return Block(raw_block, false)
     elseif is_op_res(value)
-        raw_op = API.Dispatcher.mlirOpResultGetOwner(value)
+        raw_op = API.mlirOpResultGetOwner(value)
         mlirIsNull(raw_op) && return nothing
         return Operation(raw_op, false)
     else
@@ -73,7 +73,7 @@ Returns the position of the value in the argument list of its block.
 """
 function block_arg_num(value::Value)
     @assert is_block_arg(value) "could not get arg number, value is not a block argument"
-    API.Dispatcher.mlirBlockArgumentGetArgNumber(value)
+    API.mlirBlockArgumentGetArgNumber(value)
 end
 
 """
@@ -83,7 +83,7 @@ Returns the position of the value in the list of results of the operation that p
 """
 function op_res_num(value::Value)
     @assert is_op_res(value) "could not get result number, value is not an op result"
-    API.Dispatcher.mlirOpResultGetResultNumber(value)
+    API.mlirOpResultGetResultNumber(value)
 end
 
 function position(value::Value)
@@ -101,7 +101,7 @@ end
 
 Returns the type of the value.
 """
-type(value::Value) = Type(API.Dispatcher.mlirValueGetType(value))
+type(value::Value) = Type(API.mlirValueGetType(value))
 
 """
     set_type!(value, type)
@@ -110,12 +110,12 @@ Sets the type of the block argument to the given type.
 """
 function type!(value, type)
     @assert is_a_block_argument(value) "could not set type, value is not a block argument"
-    API.Dispatcher.mlirBlockArgumentSetType(value, type)
+    API.mlirBlockArgumentSetType(value, type)
     value
 end
 
 function Base.show(io::IO, value::Value)
     c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
-    API.Dispatcher.mlirValuePrint(value, c_print_callback, ref)
+    API.mlirValuePrint(value, c_print_callback, ref)
 end

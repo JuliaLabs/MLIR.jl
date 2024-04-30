@@ -12,7 +12,7 @@ Base.eltype(::BlockIterator) = Block
 
 function Base.iterate(it::BlockIterator)
     reg = it.region
-    raw_block = API.Dispatcher.mlirRegionGetFirstBlock(reg)
+    raw_block = API.mlirRegionGetFirstBlock(reg)
     if mlirIsNull(raw_block)
         nothing
     else
@@ -22,7 +22,7 @@ function Base.iterate(it::BlockIterator)
 end
 
 function Base.iterate(::BlockIterator, block)
-    raw_block = API.Dispatcher.mlirBlockGetNextInRegion(block)
+    raw_block = API.mlirBlockGetNextInRegion(block)
     if mlirIsNull(raw_block)
         nothing
     else
@@ -44,7 +44,7 @@ Base.eltype(::RegionIterator) = Region
 Base.length(it::RegionIterator) = nregions(it.op)
 
 function Base.iterate(it::RegionIterator)
-    raw_region = API.Dispatcher.mlirOperationGetFirstRegion(it.op)
+    raw_region = API.mlirOperationGetFirstRegion(it.op)
     if mlirIsNull(raw_region)
         nothing
     else
@@ -54,7 +54,7 @@ function Base.iterate(it::RegionIterator)
 end
 
 function Base.iterate(it::RegionIterator, region)
-    raw_region = API.Dispatcher.mlirRegionGetNextInOperation(region)
+    raw_region = API.mlirRegionGetNextInOperation(region)
     if mlirIsNull(raw_region)
         nothing
     else
@@ -76,7 +76,7 @@ Base.IteratorSize(::Core.Type{OperationIterator}) = Base.SizeUnknown()
 Base.eltype(::OperationIterator) = Operation
 
 function Base.iterate(it::OperationIterator)
-    raw_op = API.Dispatcher.mlirBlockGetFirstOperation(it.block)
+    raw_op = API.mlirBlockGetFirstOperation(it.block)
     if mlirIsNull(raw_op)
         nothing
     else
@@ -86,7 +86,7 @@ function Base.iterate(it::OperationIterator)
 end
 
 function Base.iterate(::OperationIterator, op)
-    raw_op = API.Dispatcher.mlirOperationGetNextInBlock(op)
+    raw_op = API.mlirOperationGetNextInBlock(op)
     if mlirIsNull(raw_op)
         nothing
     else

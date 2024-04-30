@@ -175,7 +175,7 @@ struct MlirIdentifier
     ptr::Ptr{Cvoid}
 end
 
-Base.String(str::MlirIdentifier) = String(API.Dispatcher.mlirIdentifierStr(str))
+Base.String(str::MlirIdentifier) = String(API.mlirIdentifierStr(str))
 
 struct MlirLocation
     ptr::Ptr{Cvoid}

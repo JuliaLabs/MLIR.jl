@@ -13,7 +13,7 @@ end
 Creates a zero result affine map with no dimensions or symbols in the context.
 The affine map is owned by the context.
 """
-AffineMap(; context::Context=context()) = AffineMap(API.Dispatcher.mlirAffineMapEmptyGet(context))
+AffineMap(; context::Context=context()) = AffineMap(API.mlirAffineMapEmptyGet(context))
 
 Base.convert(::Core.Type{API.MlirAffineMap}, map::AffineMap) = map.map
 
@@ -22,21 +22,21 @@ Base.convert(::Core.Type{API.MlirAffineMap}, map::AffineMap) = map.map
 
 Checks if two affine maps are equal.
 """
-Base.:(==)(a::AffineMap, b::AffineMap) = API.Dispatcher.mlirAffineMapEqual(a, b)
+Base.:(==)(a::AffineMap, b::AffineMap) = API.mlirAffineMapEqual(a, b)
 
 """
     compose(affineExpr, affineMap)
 
 Composes the given map with the given expression.
 """
-compose(expr::AffineExpr, map::AffineMap) = AffineExpr(API.Dispatcher.mlirAffineExprCompose(expr, map))
+compose(expr::AffineExpr, map::AffineMap) = AffineExpr(API.mlirAffineExprCompose(expr, map))
 
 """
     context(affineMap)
 
 Gets the context that the given affine map was created with.
 """
-context(map::AffineMap) = API.Dispatcher.mlirAffineMapGetContext(map)
+context(map::AffineMap) = API.mlirAffineMapGetContext(map)
 
 """
     AffineMap(ndims, nsymbols; context=context())
@@ -44,7 +44,7 @@ context(map::AffineMap) = API.Dispatcher.mlirAffineMapGetContext(map)
 Creates a zero result affine map of the given dimensions and symbols in the context.
 The affine map is owned by the context.
 """
-AffineMap(ndims, nsymbols; context::Context=context()) = AffineMap(API.Dispatcher.mlirAffineMapZeroResultGet(context, ndims, nsymbols))
+AffineMap(ndims, nsymbols; context::Context=context()) = AffineMap(API.mlirAffineMapZeroResultGet(context, ndims, nsymbols))
 
 """
     AffineMap(ndims, nsymbols, affineExprs; context=context())
@@ -52,21 +52,21 @@ AffineMap(ndims, nsymbols; context::Context=context()) = AffineMap(API.Dispatche
 Creates an affine map with results defined by the given list of affine expressions.
 The map resulting map also has the requested number of input dimensions and symbols, regardless of them being used in the results.
 """
-AffineMap(ndims, nsymbols, exprs::Vector{AffineExpr}; context::Context=context()) = AffineMap(API.Dispatcher.mlirAffineMapGet(context, ndims, nsymbols, length(exprs), pointer(exprs)))
+AffineMap(ndims, nsymbols, exprs::Vector{AffineExpr}; context::Context=context()) = AffineMap(API.mlirAffineMapGet(context, ndims, nsymbols, length(exprs), pointer(exprs)))
 
 """
     ConstantAffineMap(val; context=context())
 
 Creates a single constant result affine map in the context. The affine map is owned by the context.
 """
-ConstantAffineMap(val; context::Context=context()) = AffineMap(API.Dispatcher.mlirAffineMapConstantGet(context, val))
+ConstantAffineMap(val; context::Context=context()) = AffineMap(API.mlirAffineMapConstantGet(context, val))
 
 """
     IdentityAffineMap(ndims; context=context())
 
 Creates an affine map with 'ndims' identity in the context. The affine map is owned by the context.
 """
-IdentityAffineMap(ndims; context::Context=context()) = AffineMap(API.Dispatcher.mlirAffineMapMultiDimIdentityGet(context, ndims))
+IdentityAffineMap(ndims; context::Context=context()) = AffineMap(API.mlirAffineMapMultiDimIdentityGet(context, ndims))
 
 """
     MinorIdentityAffineMap(ndims, nresults; context=context())
@@ -76,7 +76,7 @@ The function asserts that the number of dimensions is greater or equal to the nu
 """
 function MinorIdentityAffineMap(ndims, nresults; context::Context=context())
     @assert ndims >= nresults "number of dimensions must be greater or equal to the number of results"
-    AffineMap(API.Dispatcher.mlirAffineMapMinorIdentityGet(context, ndims, nresults))
+    AffineMap(API.mlirAffineMapMinorIdentityGet(context, ndims, nresults))
 end
 
 """
@@ -90,7 +90,7 @@ The affine map is owned by the context.
 function PermutationAffineMap(permutation; context::Context=context())
     @assert Base.isperm(permutation) "$permutation must be a valid permutation"
     zero_perm = permutation .- 1
-    AffineMap(API.Dispatcher.mlirAffineMapPermutationGet(context, length(zero_perm), pointer(zero_perm)))
+    AffineMap(API.mlirAffineMapPermutationGet(context, length(zero_perm), pointer(zero_perm)))
 end
 
 """
@@ -98,28 +98,28 @@ end
 
 Checks whether the given affine map is an identity affine map. The function asserts that the number of dimensions is greater or equal to the number of results.
 """
-isidentity(map::AffineMap) = API.Dispatcher.mlirAffineMapIsIdentity(map)
+isidentity(map::AffineMap) = API.mlirAffineMapIsIdentity(map)
 
 """
     isminoridentity(affineMap)
 
 Checks whether the given affine map is a minor identity affine map.
 """
-isminoridentity(map::AffineMap) = API.Dispatcher.mlirAffineMapIsMinorIdentity(map)
+isminoridentity(map::AffineMap) = API.mlirAffineMapIsMinorIdentity(map)
 
 """
     isempty(affineMap)
 
 Checks whether the given affine map is an empty affine map.
 """
-Base.isempty(map::AffineMap) = API.Dispatcher.mlirAffineMapIsEmpty(map)
+Base.isempty(map::AffineMap) = API.mlirAffineMapIsEmpty(map)
 
 """
     issingleconstant(affineMap)
 
 Checks whether the given affine map is a single result constant affine map.
 """
-issingleconstant(map::AffineMap) = API.Dispatcher.mlirAffineMapIsSingleConstant(map)
+issingleconstant(map::AffineMap) = API.mlirAffineMapIsSingleConstant(map)
 
 """
     result(affineMap)
@@ -128,7 +128,7 @@ Returns the constant result of the given affine map. The function asserts that t
 """
 function result(map::AffineMap)
     @assert issingleconstant(map) "affine map must have a single constant result"
-    API.Dispatcher.mlirAffineMapGetSingleConstantResult(map)
+    API.mlirAffineMapGetSingleConstantResult(map)
 end
 
 """
@@ -136,56 +136,56 @@ end
 
 Returns the number of dimensions of the given affine map.
 """
-Base.ndims(map::AffineMap) = API.Dispatcher.mlirAffineMapGetNumDims(map)
+Base.ndims(map::AffineMap) = API.mlirAffineMapGetNumDims(map)
 
 """
     nsymbols(affineMap)
 
 Returns the number of symbols of the given affine map.
 """
-nsymbols(map::AffineMap) = API.Dispatcher.mlirAffineMapGetNumSymbols(map)
+nsymbols(map::AffineMap) = API.mlirAffineMapGetNumSymbols(map)
 
 """
     nresults(affineMap)
 
 Returns the number of results of the given affine map.
 """
-nresults(map::AffineMap) = API.Dispatcher.mlirAffineMapGetNumResults(map)
+nresults(map::AffineMap) = API.mlirAffineMapGetNumResults(map)
 
 """
     result(affineMap, pos)
 
 Returns the result at the given position.
 """
-result(map::AffineMap, pos) = AffineExpr(API.Dispatcher.mlirAffineMapGetResult(map, pos))
+result(map::AffineMap, pos) = AffineExpr(API.mlirAffineMapGetResult(map, pos))
 
 """
     ninputs(affineMap)
 
 Returns the number of inputs (dimensions + symbols) of the given affine map.
 """
-ninputs(map::AffineMap) = API.Dispatcher.mlirAffineMapGetNumInputs(map)
+ninputs(map::AffineMap) = API.mlirAffineMapGetNumInputs(map)
 
 """
     isprojperm(affineMap)
 
 Checks whether the given affine map represents a subset of a symbol-less permutation map.
 """
-isprojperm(map::AffineMap) = API.Dispatcher.mlirAffineMapIsProjectedPermutation(map)
+isprojperm(map::AffineMap) = API.mlirAffineMapIsProjectedPermutation(map)
 
 """
     isperm(affineMap)
 
 Checks whether the given affine map represents a symbol-less permutation map.
 """
-Base.isperm(map::AffineMap) = API.Dispatcher.mlirAffineMapIsPermutation(map)
+Base.isperm(map::AffineMap) = API.mlirAffineMapIsPermutation(map)
 
 """
     submap(affineMap, positions)
 
 Returns the affine map consisting of the `positions` subset.
 """
-submap(map::AffineMap, pos::Vector{Int}) = AffineMap(API.Dispatcher.mlirAffineMapGetSubMap(map, length(pos), pointer(pos)))
+submap(map::AffineMap, pos::Vector{Int}) = AffineMap(API.mlirAffineMapGetSubMap(map, length(pos), pointer(pos)))
 
 """
     majorsubmap(affineMap, nresults)
@@ -194,7 +194,7 @@ Returns the affine map consisting of the most major `nresults` results.
 Returns the null AffineMap if the `nresults` is equal to zero.
 Returns the `affineMap` if `nresults` is greater or equals to number of results of the given affine map.
 """
-majorsubmap(map::AffineMap, nresults) = AffineMap(API.Dispatcher.mlirAffineMapGetMajorSubMap(map, nresults))
+majorsubmap(map::AffineMap, nresults) = AffineMap(API.mlirAffineMapGetMajorSubMap(map, nresults))
 
 """
     minorsubmap(affineMap, nresults)
@@ -202,14 +202,14 @@ majorsubmap(map::AffineMap, nresults) = AffineMap(API.Dispatcher.mlirAffineMapGe
 Returns the affine map consisting of the most minor `nresults` results. Returns the null AffineMap if the `nresults` is equal to zero.
 Returns the `affineMap` if `nresults` is greater or equals to number of results of the given affine map.
 """
-minorsubmap(map::AffineMap, nresults) = AffineMap(API.Dispatcher.mlirAffineMapGetMinorSubMap(map, nresults))
+minorsubmap(map::AffineMap, nresults) = AffineMap(API.mlirAffineMapGetMinorSubMap(map, nresults))
 
 """
     mlirAffineMapReplace(affineMap, expression => replacement, numResultDims, numResultSyms)
 
 Apply `AffineExpr::replace(map)` to each of the results and return a new new AffineMap with the new results and the specified number of dims and symbols.
 """
-Base.replace(map::AffineMap, old_new::Pair{AffineExpr,AffineExpr}, nresultdims, nresultsyms) = AffineMap(API.Dispatcher.mlirAffineMapReplace(map, old_new.first, old_new.second, nresultdims, nresultsyms))
+Base.replace(map::AffineMap, old_new::Pair{AffineExpr,AffineExpr}, nresultdims, nresultsyms) = AffineMap(API.mlirAffineMapReplace(map, old_new.first, old_new.second, nresultdims, nresultsyms))
 
 """
     simplify(affineMaps, size, result, populateResult)
@@ -219,13 +219,13 @@ Asserts that all maps in `affineMaps` are normalized to the same number of dims 
 Takes a callback `populateResult` to fill the `res` container with value `m` at entry `idx`.
 This allows returning without worrying about ownership considerations.
 """
-# TODO simplify(map::AffineMap, ...) = AffineMap(API.Dispatcher.mlirAffineMapCompressUnusedSymbols(map, ...))
+# TODO simplify(map::AffineMap, ...) = AffineMap(API.mlirAffineMapCompressUnusedSymbols(map, ...))
 
 function Base.show(io::IO, map::AffineMap)
     print(io, "AffineMap(#= ")
     c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
-    API.Dispatcher.mlirAffineMapPrint(map, c_print_callback, ref)
+    API.mlirAffineMapPrint(map, c_print_callback, ref)
     print(io, " =#)")
 end
 

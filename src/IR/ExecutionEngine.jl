@@ -3,7 +3,7 @@ struct ExecutionEngine
 
     function ExecutionEngine(engine)
         @assert !mlirIsNull(engine) "cannot create ExecutionEngine with null MlirExecutionEngine"
-        finalizer(API.Dispatcher.mlirExecutionEngineDestroy, new(engine))
+        finalizer(API.mlirExecutionEngineDestroy, new(engine))
     end
 end
 
@@ -21,9 +21,9 @@ TODO: figure out other options.
 function ExecutionEngine(mod::Module, optLevel::Int, sharedlibs::Vector{String}=String[], enableObjectDump::Bool=false)
     if MLIR_VERSION[] < v"16"
         enableObjectDump && @warn "enableObjectDump is only available in LLVM 16 and later"
-        ExecutionEngine(API.Dispatcher.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs))
+        ExecutionEngine(API.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs))
     else
-        ExecutionEngine(API.Dispatcher.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs, enableObjectDump))
+        ExecutionEngine(API.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs, enableObjectDump))
     end
 end
 
@@ -37,7 +37,7 @@ Base.convert(::Core.Type{API.MlirExecutionEngine}, engine::ExecutionEngine) = en
 Lookup a native function in the execution engine by name, returns nullptr if the name can't be looked-up.
 """
 function lookup(jit::ExecutionEngine, name::String; packed::Bool=false)
-    fn = packed ? API.Dispatcher.mlirExecutionEngineLookupPacked(jit, name) : API.Dispatcher.mlirExecutionEngineLookup(jit, name)
+    fn = packed ? API.mlirExecutionEngineLookupPacked(jit, name) : API.mlirExecutionEngineLookup(jit, name)
     fn == C_NULL ? nothing : fn
 end
 
@@ -48,4 +48,4 @@ end
 
 Dump as an object in `fileName`.
 """
-Base.write(filename::String, jit::ExecutionEngine) = API.Dispatcher.mlirExecutionEngineDumpToObjectFile(jit, filename)
+Base.write(filename::String, jit::ExecutionEngine) = API.mlirExecutionEngineDumpToObjectFile(jit, filename)

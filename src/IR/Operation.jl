@@ -6,7 +6,7 @@ mutable struct Operation
         @assert !mlirIsNull(operation) "cannot create Operation with null MlirOperation"
         finalizer(new(operation, owned)) do op
             if op.owned
-                API.Dispatcher.mlirOperationDestroy(op.operation)
+                API.mlirOperationDestroy(op.operation)
             end
         end
     end
@@ -14,56 +14,56 @@ end
 
 Base.cconvert(::Core.Type{API.MlirOperation}, operation::Operation) = operation
 Base.unsafe_convert(::Core.Type{API.MlirOperation}, operation::Operation) = operation.operation
-Base.:(==)(op::Operation, other::Operation) = API.Dispatcher.mlirOperationEqual(op, other)
+Base.:(==)(op::Operation, other::Operation) = API.mlirOperationEqual(op, other)
 
 """
     copy(op)
 
 Creates a deep copy of an operation. The operation is not inserted and ownership is transferred to the caller.
 """
-Base.copy(operation::Operation) = Operation(API.Dispatcher.mlirOperationClone(operation))
+Base.copy(operation::Operation) = Operation(API.mlirOperationClone(operation))
 
 """
     context(op)
 
 Gets the context this operation is associated with.
 """
-context(operation::Operation) = Context(API.Dispatcher.mlirOperationGetContext(operation))
+context(operation::Operation) = Context(API.mlirOperationGetContext(operation))
 
 """
     location(op)
 
 Gets the location of the operation.
 """
-location(operation::Operation) = Location(API.Dispatcher.mlirOperationGetLocation(operation))
+location(operation::Operation) = Location(API.mlirOperationGetLocation(operation))
 
 """
     typeid(op)
 
 Gets the type id of the operation. Returns null if the operation does not have a registered operation description.
 """
-typeid(op::Operation) = TypeID(API.Dispatcher.mlirOperationGetTypeID(op))
+typeid(op::Operation) = TypeID(API.mlirOperationGetTypeID(op))
 
 """
     name(op)
 
 Gets the name of the operation as an identifier.
 """
-name(operation::Operation) = String(API.Dispatcher.mlirOperationGetName(operation))
+name(operation::Operation) = String(API.mlirOperationGetName(operation))
 
 """
     block(op)
 
 Gets the block that owns this operation, returning null if the operation is not owned.
 """
-block(operation::Operation) = Block(API.Dispatcher.mlirOperationGetBlock(operation), false)
+block(operation::Operation) = Block(API.mlirOperationGetBlock(operation), false)
 
 """
     parent_op(op)
 
 Gets the operation that owns this operation, returning null if the operation is not owned.
 """
-parent_op(operation::Operation) = Operation(API.Dispatcher.mlirOperationGetParentOperation(operation), false)
+parent_op(operation::Operation) = Operation(API.mlirOperationGetParentOperation(operation), false)
 
 """
     rmfromparent(op)
@@ -72,7 +72,7 @@ Removes the given operation from its parent block. The operation is not destroye
 The ownership of the operation is transferred to the caller.
 """
 function rmfromparent!(operation::Operation)
-    API.Dispatcher.mlirOperationRemoveFromParent(operation)
+    API.mlirOperationRemoveFromParent(operation)
     @atomic operation.owned = true
     operation
 end
@@ -84,7 +84,7 @@ dialect(operation::Operation) = first(split(name(operation), '.')) |> Symbol
 
 Returns the number of regions attached to the given operation.
 """
-nregions(operation::Operation) = API.Dispatcher.mlirOperationGetNumRegions(operation)
+nregions(operation::Operation) = API.mlirOperationGetNumRegions(operation)
 
 """
     region(op, i)
@@ -93,7 +93,7 @@ Returns `i`-th region attached to the operation.
 """
 function region(operation::Operation, i)
     i ∉ 1:nregions(operation) && throw(BoundsError(operation, i))
-    Region(API.Dispatcher.mlirOperationGetRegion(operation, i - 1), false)
+    Region(API.mlirOperationGetRegion(operation, i - 1), false)
 end
 
 """
@@ -101,7 +101,7 @@ end
 
 Returns the number of results of the operation.
 """
-nresults(operation::Operation) = API.Dispatcher.mlirOperationGetNumResults(operation)
+nresults(operation::Operation) = API.mlirOperationGetNumResults(operation)
 
 """
     result(op, i)
@@ -110,7 +110,7 @@ Returns `i`-th result of the operation.
 """
 function result(operation::Operation, i=1)
     i ∉ 1:nresults(operation) && throw(BoundsError(operation, i))
-    Value(API.Dispatcher.mlirOperationGetResult(operation, i - 1))
+    Value(API.mlirOperationGetResult(operation, i - 1))
 end
 results(operation) = [result(operation, i) for i in 1:nresults(operation)]
 
@@ -119,7 +119,7 @@ results(operation) = [result(operation, i) for i in 1:nresults(operation)]
 
 Returns the number of operands of the operation.
 """
-noperands(operation::Operation) = API.Dispatcher.mlirOperationGetNumOperands(operation)
+noperands(operation::Operation) = API.mlirOperationGetNumOperands(operation)
 
 """
     operand(op, i)
@@ -128,7 +128,7 @@ Returns `i`-th operand of the operation.
 """
 function operand(operation::Operation, i=1)
     i ∉ 1:noperands(operation) && throw(BoundsError(operation, i))
-    Value(API.Dispatcher.mlirOperationGetOperand(operation, i - 1))
+    Value(API.mlirOperationGetOperand(operation, i - 1))
 end
 
 """
@@ -138,7 +138,7 @@ Sets the `i`-th operand of the operation.
 """
 function operand!(operation::Operation, i, value)
     i ∉ 1:noperands(operation) && throw(BoundsError(operation, i))
-    API.Dispatcher.mlirOperationSetOperand(operation, i - 1, value)
+    API.mlirOperationSetOperand(operation, i - 1, value)
     value
 end
 
@@ -147,7 +147,7 @@ end
 
 Returns the number of successor blocks of the operation.
 """
-nsuccessors(operation::Operation) = API.Dispatcher.mlirOperationGetNumSuccessors(operation)
+nsuccessors(operation::Operation) = API.mlirOperationGetNumSuccessors(operation)
 
 """
     successor(op, i)
@@ -156,7 +156,7 @@ Returns `i`-th successor of the operation.
 """
 function successor(operation::Operation, i)
     i ∉ 1:nsuccessors(operation) && throw(BoundsError(operation, i))
-    Block(API.Dispatcher.mlirOperationGetSuccessor(operation, i - 1), false)
+    Block(API.mlirOperationGetSuccessor(operation, i - 1), false)
 end
 
 """
@@ -164,7 +164,7 @@ end
 
 Returns the number of attributes attached to the operation.
 """
-nattrs(operation::Operation) = API.Dispatcher.mlirOperationGetNumAttributes(operation)
+nattrs(operation::Operation) = API.mlirOperationGetNumAttributes(operation)
 
 """
     attr(op, i)
@@ -173,7 +173,7 @@ Return `i`-th attribute of the operation.
 """
 function attr(operation::Operation, i)
     i ∉ 1:nattrs(operation) && throw(BoundsError(operation, i))
-    NamedAttribute(API.Dispatcher.mlirOperationGetAttribute(operation, i - 1))
+    NamedAttribute(API.mlirOperationGetAttribute(operation, i - 1))
 end
 
 """
@@ -182,7 +182,7 @@ end
 Returns an attribute attached to the operation given its name.
 """
 function attr(operation::Operation, name::AbstractString)
-    raw_attr = API.Dispatcher.mlirOperationGetAttributeByName(operation, name)
+    raw_attr = API.mlirOperationGetAttributeByName(operation, name)
     if mlirIsNull(raw_attr)
         return nothing
     end
@@ -195,7 +195,7 @@ end
 Sets an attribute by name, replacing the existing if it exists or adding a new one otherwise.
 """
 function attr!(operation::Operation, name, attribute)
-    API.Dispatcher.mlirOperationSetAttributeByName(operation, name, attribute)
+    API.mlirOperationSetAttributeByName(operation, name, attribute)
     operation
 end
 
@@ -204,7 +204,7 @@ end
 
 Removes an attribute by name. Returns false if the attribute was not found and true if removed.
 """
-rmattr!(operation::Operation, name) = API.Dispatcher.mlirOperationRemoveAttributeByName(operation, name)
+rmattr!(operation::Operation, name) = API.mlirOperationRemoveAttributeByName(operation, name)
 
 function lose_ownership!(operation::Operation)
     @assert operation.owned
@@ -218,15 +218,15 @@ function Base.show(io::IO, operation::Operation)
     buffer = IOBuffer()
     ref = Ref(buffer)
 
-    flags = API.Dispatcher.mlirOpPrintingFlagsCreate()
+    flags = API.mlirOpPrintingFlagsCreate()
 
     if MLIR_VERSION[] >= v"16"
-        API.Dispatcher.mlirOpPrintingFlagsEnableDebugInfo(flags, get(io, :debug, false), true)
+        API.mlirOpPrintingFlagsEnableDebugInfo(flags, get(io, :debug, false), true)
     else
-        get(io, :debug, false) && API.Dispatcher.mlirOpPrintingFlagsEnableDebugInfo(flags, true)
+        get(io, :debug, false) && API.mlirOpPrintingFlagsEnableDebugInfo(flags, true)
     end
-    API.Dispatcher.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
-    API.Dispatcher.mlirOpPrintingFlagsDestroy(flags)
+    API.mlirOperationPrintWithFlags(operation, flags, c_print_callback, ref)
+    API.mlirOpPrintingFlagsDestroy(flags)
 
     write(io, rstrip(String(take!(buffer))))
 end
@@ -236,7 +236,7 @@ end
 
 Verify the operation and return true if it passes, false if it fails.
 """
-verify(operation::Operation) = API.Dispatcher.mlirOperationVerify(operation)
+verify(operation::Operation) = API.mlirOperationVerify(operation)
 
 """
     move_after!(op, other)
@@ -245,7 +245,7 @@ Moves the given operation immediately after the other operation in its parent bl
 """
 function move_after!(operation::Operation, other::Operation)
     lose_ownership!(operation)
-    API.Dispatcher.mlirOperationMoveAfter(operation, other)
+    API.mlirOperationMoveAfter(operation, other)
 end
 
 """
@@ -258,7 +258,7 @@ In any case, the ownership is transferred to the block of the other operation.
 """
 function move_before!(operation::Operation, other::Operation)
     lose_ownership!(operation)
-    API.Dispatcher.mlirOperationMoveBefore(operation, other)
+    API.mlirOperationMoveBefore(operation, other)
 end
 
 """
@@ -267,7 +267,7 @@ end
 Returns whether the given fully-qualified operation (i.e. 'dialect.operation') is registered with the context.
 This will return true if the dialect is loaded and the operation is registered within the dialect.
 """
-is_registered(opname; context::Context=context()) = API.Dispatcher.mlirContextIsRegisteredOperation(context, opname)
+is_registered(opname; context::Context=context()) = API.mlirContextIsRegisteredOperation(context, opname)
 
 # TODO mlirOperationWriteBytecode (LLVM 16)
 
@@ -281,27 +281,27 @@ function create_operation(
     result_inference=isnothing(results)
 )
     GC.@preserve name loc begin
-        state = Ref(API.Dispatcher.mlirOperationStateGet(name, loc))
+        state = Ref(API.mlirOperationStateGet(name, loc))
         if !isnothing(results)
             if result_inference
                 error("Result inference and provided results conflict")
             end
-            API.Dispatcher.mlirOperationStateAddResults(state, length(results), results)
+            API.mlirOperationStateAddResults(state, length(results), results)
         end
         if !isnothing(operands)
-            API.Dispatcher.mlirOperationStateAddOperands(state, length(operands), operands)
+            API.mlirOperationStateAddOperands(state, length(operands), operands)
         end
         if !isnothing(owned_regions)
             lose_ownership!.(owned_regions)
             GC.@preserve owned_regions begin
                 mlir_regions = Base.unsafe_convert.(API.MlirRegion, owned_regions)
-                API.Dispatcher.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
+                API.mlirOperationStateAddOwnedRegions(state, length(mlir_regions), mlir_regions)
             end
         end
         if !isnothing(successors)
             GC.@preserve successors begin
                 mlir_blocks = Base.unsafe_convert.(API.MlirBlock, successors)
-                API.Dispatcher.mlirOperationStateAddSuccessors(
+                API.mlirOperationStateAddSuccessors(
                     state,
                     length(mlir_blocks),
                     mlir_blocks,
@@ -309,12 +309,12 @@ function create_operation(
             end
         end
         if !isnothing(attributes)
-            API.Dispatcher.mlirOperationStateAddAttributes(state, length(attributes), attributes)
+            API.mlirOperationStateAddAttributes(state, length(attributes), attributes)
         end
         if result_inference
-            API.Dispatcher.mlirOperationStateEnableResultTypeInference(state)
+            API.mlirOperationStateEnableResultTypeInference(state)
         end
-        op = API.Dispatcher.mlirOperationCreate(state)
+        op = API.mlirOperationCreate(state)
         if mlirIsNull(op)
             error("Create Operation '$name' failed")
         end

@@ -13,7 +13,7 @@ mutable struct PassManager
     function PassManager(pm::API.MlirPassManager)
         @assert !mlirIsNull(pm) "cannot create PassManager with null MlirPassManager"
         finalizer(new(pm, TypeIDAllocator(), Dict{TypeID,ExternalPassHandle}())) do pm
-            API.Dispatcher.mlirPassManagerDestroy(pm.pass)
+            API.mlirPassManagerDestroy(pm.pass)
         end
     end
 end
@@ -23,7 +23,7 @@ end
 
 Create a new top-level PassManager.
 """
-PassManager(; context::Context=context()) = PassManager(API.Dispatcher.mlirPassManagerCreate(context))
+PassManager(; context::Context=context()) = PassManager(API.mlirPassManagerCreate(context))
 
 """
       PassManager(anchorOp; context=context())
@@ -32,7 +32,7 @@ PassManager(; context::Context=context()) = PassManager(API.Dispatcher.mlirPassM
   """
 function PassManager(anchor_op::Operation; context::Context=context())
     MLIR_VERSION[] >= v"16" || throw(UndefVarError("`PassManager(::Operation)` requires MLIR version 16 or later"))
-    PassManager(API.Dispatcher.mlirPassManagerCreateOnOperation(context, anchor_op))
+    PassManager(API.mlirPassManagerCreateOnOperation(context, anchor_op))
 end
 
 Base.convert(::Core.Type{API.MlirPassManager}, pass::PassManager) = pass.pass
@@ -43,7 +43,7 @@ Base.convert(::Core.Type{API.MlirPassManager}, pass::PassManager) = pass.pass
 Enable mlir-print-ir-after-all.
 """
 function enable_ir_printing!(pm)
-    API.Dispatcher.mlirPassManagerEnableIRPrinting(pm)
+    API.mlirPassManagerEnableIRPrinting(pm)
     pm
 end
 
@@ -53,7 +53,7 @@ end
 Enable / disable verify-each.
 """
 function enable_verifier!(pm, enable=true)
-    API.Dispatcher.mlirPassManagerEnableVerifier(pm, enable)
+    API.mlirPassManagerEnableVerifier(pm, enable)
     pm
 end
 
@@ -63,7 +63,7 @@ end
 Run the provided `passManager` on the given `module`.
 """
 function run!(pm::PassManager, mod::Module)
-    status = LogicalResult(API.Dispatcher.mlirPassManagerRun(pm, mod))
+    status = LogicalResult(API.mlirPassManagerRun(pm, mod))
     if isfailure(status)
         throw("failed to run pass manager on module")
     end
@@ -85,7 +85,7 @@ end
 
 Cast a top-level `PassManager` to a generic `OpPassManager`.
 """
-OpPassManager(pm::PassManager) = OpPassManager(API.Dispatcher.mlirPassManagerGetAsOpPassManager(pm), pm)
+OpPassManager(pm::PassManager) = OpPassManager(API.mlirPassManagerGetAsOpPassManager(pm), pm)
 
 """
     OpPassManager(passManager, operationName)
@@ -93,14 +93,14 @@ OpPassManager(pm::PassManager) = OpPassManager(API.Dispatcher.mlirPassManagerGet
 Nest an `OpPassManager` under the top-level PassManager, the nested passmanager will only run on operations matching the provided name.
 The returned `OpPassManager` will be destroyed when the parent is destroyed. To further nest more `OpPassManager` under the newly returned one, see `mlirOpPassManagerNest` below.
 """
-OpPassManager(pm::PassManager, opname) = OpPassManager(API.Dispatcher.mlirPassManagerGetNestedUnder(pm, opname), pm)
+OpPassManager(pm::PassManager, opname) = OpPassManager(API.mlirPassManagerGetNestedUnder(pm, opname), pm)
 
 """
     OpPassManager(opPassManager, operationName)
 
 Nest an `OpPassManager` under the provided `OpPassManager`, the nested passmanager will only run on operations matching the provided name. The returned `OpPassManager` will be destroyed when the parent is destroyed.
 """
-OpPassManager(opm::OpPassManager, opname) = OpPassManager(API.Dispatcher.mlirOpPassManagerGetNestedUnder(opm, opname), opm.pass)
+OpPassManager(opm::OpPassManager, opname) = OpPassManager(API.mlirOpPassManagerGetNestedUnder(opm, opname), opm.pass)
 
 Base.convert(::Core.Type{API.MlirOpPassManager}, op_pass::OpPassManager) = op_pass.op_pass
 
@@ -108,7 +108,7 @@ function Base.show(io::IO, op_pass::OpPassManager)
     c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
     println(io, "OpPassManager(\"\"\"")
-    API.Dispatcher.mlirPrintPassPipeline(op_pass, c_print_callback, ref)
+    API.mlirPrintPassPipeline(op_pass, c_print_callback, ref)
     println(io)
     print(io, "\"\"\")")
 end
@@ -128,7 +128,7 @@ end
 Add a pass and transfer ownership to the provided top-level `PassManager`. If the pass is not a generic operation pass or a `ModulePass`, a new `OpPassManager` is implicitly nested under the provided PassManager.
 """
 function add_owned_pass!(pm::PassManager, pass)
-    API.Dispatcher.mlirPassManagerAddOwnedPass(pm, pass)
+    API.mlirPassManagerAddOwnedPass(pm, pass)
     pm
 end
 
@@ -138,7 +138,7 @@ end
 Add a pass and transfer ownership to the provided `OpPassManager`. If the pass is not a generic operation pass or matching the type of the provided `OpPassManager`, a new `OpPassManager` is implicitly nested under the provided `OpPassManager`.
 """
 function add_owned_pass!(opm::OpPassManager, pass)
-    API.Dispatcher.mlirOpPassManagerAddOwnedPass(opm, pass)
+    API.mlirOpPassManagerAddOwnedPass(opm, pass)
     opm
 end
 
@@ -151,9 +151,9 @@ function Base.parse(opm::OpPassManager, pipeline::String)
     result = if MLIR_VERSION[] >= v"16"
         io = IOBuffer()
         c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
-        API.Dispatcher.mlirParsePassPipeline(opm, pipeline, c_print_callback, Ref(io))
+        API.mlirParsePassPipeline(opm, pipeline, c_print_callback, Ref(io))
     else
-        API.Dispatcher.mlirParsePassPipeline(opm, pipeline)
+        API.mlirParsePassPipeline(opm, pipeline)
     end |> LogicalResult
 
     if isfailure(result)
@@ -172,13 +172,13 @@ function add_pipeline!(op_pass::OpPassManager, pipeline)
     @static if isdefined(API, :mlirOpPassManagerAddPipeline)
         io = IOBuffer()
         c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
-        result = LogicalResult(API.Dispatcher.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, Ref(io)))
+        result = LogicalResult(API.mlirOpPassManagerAddPipeline(op_pass, pipeline, c_print_callback, Ref(io)))
         if isfailure(result)
             exc = AddPipelineException(String(take!(io)))
             throw(exc)
         end
     else
-        result = LogicalResult(API.Dispatcher.mlirParsePassPipeline(op_pass, pipeline))
+        result = LogicalResult(API.mlirParsePassPipeline(op_pass, pipeline))
         if isfailure(result)
             throw(AddPipelineException(" " * pipeline))
         end
@@ -223,7 +223,7 @@ end
             pass_run(handle.ctx, handle.pass, op)
         catch ex
             @error "Something went wrong running pass" exception = (ex, catch_backtrace())
-            API.Dispatcher.mlirExternalPassSignalFailure(external_pass)
+            API.mlirExternalPassSignalFailure(external_pass)
         end
         nothing
     end
@@ -244,7 +244,7 @@ end
         )
         pass_handle = manager.passes[passid] = ExternalPassHandle(nothing, pass)
         userdata = Base.pointer_from_objref(pass_handle)
-        mlir_pass = API.Dispatcher.mlirCreateExternalPass(passid, name, argument, description, opname,
+        mlir_pass = API.mlirCreateExternalPass(passid, name, argument, description, opname,
             length(dependent_dialects), dependent_dialects,
             callbacks, userdata)
         mlir_pass

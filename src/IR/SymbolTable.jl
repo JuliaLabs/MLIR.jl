@@ -3,7 +3,7 @@ struct SymbolTable
 
     function SymbolTable(st)
         @assert !mlirIsNull(st) "cannot create SymbolTable with null MlirSymbolTable"
-        finalizer(API.Dispatcher.mlirSymbolTableDestroy, new(st))
+        finalizer(API.mlirSymbolTableDestroy, new(st))
     end
 end
 
@@ -12,7 +12,7 @@ end
 
 Creates a symbol table for the given operation. If the operation does not have the SymbolTable trait, returns a null symbol table.
 """
-SymbolTable(op::Operation) = SymbolTable(API.Dispatcher.mlirSymbolTableCreate(op))
+SymbolTable(op::Operation) = SymbolTable(API.mlirSymbolTableCreate(op))
 
 Base.convert(::Core.Type{API.MlirSymbolTable}, st::SymbolTable) = st.st
 
@@ -25,7 +25,7 @@ Base.convert(::Core.Type{API.MlirSymbolTable}, st::SymbolTable) = st.st
 Looks up a symbol with the given name in the given symbol table and returns the operation that corresponds to the symbol.
 If the symbol cannot be found, returns a null operation.
 """
-lookup(st::SymbolTable, name::AbstractString) = Operation(API.Dispatcher.mlirSymbolTableLookup(st, name))
+lookup(st::SymbolTable, name::AbstractString) = Operation(API.mlirSymbolTableLookup(st, name))
 Base.getindex(st::SymbolTable, name::AbstractString) = lookup(st, name)
 
 """
@@ -36,14 +36,14 @@ If the symbol table already has a symbol with the same name, renames the symbol 
 Note that this does not move the operation itself into the block of the symbol table operation, this should be done separately.
 Returns the name of the symbol after insertion.
 """
-push!(st::SymbolTable, op::Operation) = Attribute(API.Dispatcher.mlirSymbolTableInsert(st, op))
+push!(st::SymbolTable, op::Operation) = Attribute(API.mlirSymbolTableInsert(st, op))
 
 """
     delete!(symboltable, operation)
 
 Removes the given operation from the symbol table and erases it.
 """
-delete!(st::SymbolTable, op::Operation) = API.Dispatcher.mlirSymbolTableErase(st, op)
+delete!(st::SymbolTable, op::Operation) = API.mlirSymbolTableErase(st, op)
 
 # TODO mlirSymbolTableReplaceAllSymbolUses
 # TODO mlirSymbolTableWalkSymbolTables
