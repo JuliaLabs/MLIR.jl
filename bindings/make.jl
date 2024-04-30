@@ -133,7 +133,7 @@ end
 
 function rewrite!(dag::ExprDAG) end
 
-julia_llvm = Dict([v"1.9" => v"14.0.5+3", v"1.10" => v"15.0.7+10", v"1.11" => v"16.0.6+2"])
+julia_llvm = Dict([v"1.9" => v"14.0.5+3", v"1.10" => v"15.0.7+10", v"1.11" => v"16.0.6+2", v"1.12" => v"17.0.6+3"])
 options = load_options(joinpath(@__DIR__, "wrap.toml"))
 
 @add_def off_t
