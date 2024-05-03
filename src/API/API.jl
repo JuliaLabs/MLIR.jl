@@ -1,6 +1,6 @@
 module API
 
-using ..MLIR: MLIR_VERSION
+using ..MLIR: MLIR_VERSION, MLIRException
 
 include("Types.jl")
 using .Types
@@ -25,18 +25,37 @@ begin
     end
 
     for op in ops
+        container_mods = filter([v14, v15, v16]) do mod
+            op in names(mod; all=true)
+        end
+        container_mods = map(container_mods) do mod
+            mod, VersionNumber(string(nameof(mod)))
+        end
+
         @eval function $op(args...; kwargs...)
-            if v"14" <= MLIR_VERSION[] < v"15"
-                v14.$op(args...; kwargs...)
-            elseif v"15" <= MLIR_VERSION[] < v"16"
-                v15.$op(args...; kwargs...)
-            elseif v"16" <= MLIR_VERSION[] < v"17"
-                v16.$op(args...; kwargs...)
-            else
+            version = MLIR_VERSION[]
+            if v"14" > version <= v"17"
                 error("Unsupported MLIR version $version")
             end
+
+            $(map(container_mods) do (mod, version)
+                :(
+                    if @v_str($(version.major)) <= version < @v_str($(version.major + 1))
+                        return $mod.$op(args...; kwargs...)
+                    end
+                )
+            end...)
+
+            throw(MLIRException(string(
+                $op,
+                " is not implemented for MLIR $(version.major). You can find it in MLIR ",
+                $(join(map(container_mods) do (_, version)
+                        "$(version.major)"
+                    end, ", ", ", and ")),
+                "."
+            )))
         end
     end
 end
 
-end
+end # module API

@@ -30,21 +30,42 @@ begin
     # generate version-less dialect modules
     for (dialect, ops) in dialectops
         mod = @eval module $dialect
-        using ...MLIR: MLIR_VERSION
+        using ...MLIR: MLIR_VERSION, MLIRException
         using ..Dialects: v14, v15, v16
         end
 
         for op in ops
+            container_mods = filter([v14, v15, v16]) do mod
+                dialect in names(mod; all=true) && op in names(getproperty(mod, dialect); all=true)
+            end
+            container_mods = map(container_mods) do mod
+                mod, VersionNumber(string(nameof(mod)))
+            end
+
             @eval mod function $op(args...; kwargs...)
-                if v"14" <= MLIR_VERSION[] < v"15"
-                    v14.$dialect.$op(args...; kwargs...)
-                elseif v"15" <= MLIR_VERSION[] < v"16"
-                    v15.$dialect.$op(args...; kwargs...)
-                elseif v"16" <= MLIR_VERSION[] < v"17"
-                    v16.$dialect.$op(args...; kwargs...)
-                else
+                version = MLIR_VERSION[]
+                if v"14" > version <= v"17"
                     error("Unsupported MLIR version $version")
                 end
+
+                $(map(container_mods) do (mod, version)
+                    :(
+                        if @v_str($(version.major)) <= version < @v_str($(version.major + 1))
+                            return $mod.$dialect.$op(args...; kwargs...)
+                        end
+                    )
+                end...)
+
+                throw(MLIRException(string(
+                    $dialect,
+                    ".",
+                    $op,
+                    " is not implemented for MLIR $(version.major). You can find it in MLIR ",
+                    $(join(map(container_mods) do (_, version)
+                            "$(version.major)"
+                        end, ", ", ", and ")),
+                    "."
+                )))
             end
         end
     end
