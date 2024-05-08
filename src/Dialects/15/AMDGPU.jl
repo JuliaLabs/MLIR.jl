@@ -1,6 +1,6 @@
 module amdgpu
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -27,7 +27,7 @@ function lds_barrier(; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "amdgpu.lds_barrier", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -66,7 +66,7 @@ function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Val
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
 
-    create_operation(
+    IR.create_operation(
         "amdgpu.raw_buffer_atomic_fadd", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -117,7 +117,7 @@ function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothi
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
 
-    create_operation(
+    IR.create_operation(
         "amdgpu.raw_buffer_load", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -156,7 +156,7 @@ function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, s
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
 
-    create_operation(
+    IR.create_operation(
         "amdgpu.raw_buffer_store", location;
         operands, owned_regions, successors, attributes,
         results=results,

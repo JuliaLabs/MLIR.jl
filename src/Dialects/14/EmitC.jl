@@ -1,6 +1,6 @@
 module emitc
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -30,7 +30,7 @@ function apply(operand::Value; result::IR.Type, applicableOperator, location=Loc
     successors = Block[]
     attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
 
-    create_operation(
+    IR.create_operation(
         "emitc.apply", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -66,7 +66,7 @@ function call(operands::Vector{Value}; result_0::Vector{IR.Type}, callee, args=n
     !isnothing(args) && push!(attributes, namedattribute("args", args))
     !isnothing(template_args) && push!(attributes, namedattribute("template_args", template_args))
 
-    create_operation(
+    IR.create_operation(
         "emitc.call", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -102,7 +102,7 @@ function constant(; result_0::IR.Type, value, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value),]
 
-    create_operation(
+    IR.create_operation(
         "emitc.constant", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -140,7 +140,7 @@ function include(; include, is_standard_include=nothing, location=Location())
     attributes = NamedAttribute[namedattribute("include", include),]
     !isnothing(is_standard_include) && push!(attributes, namedattribute("is_standard_include", is_standard_include))
 
-    create_operation(
+    IR.create_operation(
         "emitc.include", location;
         operands, owned_regions, successors, attributes,
         results=results,

@@ -1,6 +1,6 @@
 module std
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -26,7 +26,7 @@ function assert(arg::Value; msg, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("msg", msg),]
 
-    create_operation(
+    IR.create_operation(
         "std.assert", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -58,7 +58,7 @@ function br(destOperands::Vector{Value}; dest::Block, location=Location())
     successors = Block[dest,]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "std.br", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -91,7 +91,7 @@ function call_indirect(callee::Value, callee_operands::Vector{Value}; results::V
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "std.call_indirect", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -120,7 +120,7 @@ function call(operands::Vector{Value}; result_0::Vector{IR.Type}, callee, locati
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee),]
 
-    create_operation(
+    IR.create_operation(
         "std.call", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -164,7 +164,7 @@ function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOpe
     attributes = NamedAttribute[]
     push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands),]))
 
-    create_operation(
+    IR.create_operation(
         "std.cond_br", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -214,7 +214,7 @@ function constant(; result_0::IR.Type, value, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value),]
 
-    create_operation(
+    IR.create_operation(
         "std.constant", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -246,7 +246,7 @@ function return_(operands::Vector{Value}; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "std.return", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -295,7 +295,7 @@ function select(condition::Value, true_value::Value, false_value::Value; result=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
+    IR.create_operation(
         "std.select", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -336,7 +336,7 @@ function splat(input::Value; aggregate::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "std.splat", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -372,7 +372,7 @@ function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vecto
     push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands),]))
     !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
 
-    create_operation(
+    IR.create_operation(
         "std.switch", location;
         operands, owned_regions, successors, attributes,
         results=results,

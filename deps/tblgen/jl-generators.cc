@@ -171,7 +171,7 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
   const char *moduleTemplate;
   if (disableModuleWrap)
   {
-    moduleTemplate = R"(import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+    moduleTemplate = R"(import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -182,7 +182,7 @@ import ...API
   {
     moduleTemplate = R"(module {0}
 
-import ...IR: NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -203,7 +203,7 @@ end
     successors = Block[{3}]
     attributes = NamedAttribute[{4}]
     {5}
-    create_operation(
+    IR.create_operation(
         "{6}", location;
         operands, owned_regions, successors, attributes,
         results={7},

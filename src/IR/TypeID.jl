@@ -27,25 +27,18 @@ Checks if two type ids are equal.
 """
 Base.:(==)(a::TypeID, b::TypeID) = API.mlirTypeIDEqual(a, b)
 
-@static if isdefined(API, :MlirTypeIDAllocator)
+mutable struct TypeIDAllocator
+    allocator::API.MlirTypeIDAllocator
 
-    mutable struct TypeIDAllocator
-        allocator::API.MlirTypeIDAllocator
-
-        function TypeIDAllocator()
-            ptr = API.mlirTypeIDAllocatorCreate()
-            @assert ptr != C_NULL "cannot create TypeIDAllocator"
-            finalizer(API.mlirTypeIDAllocatorDestroy, new(ptr))
-        end
+    function TypeIDAllocator()
+        MLIR_VERSION[] >= v"15" || throw(MLIRException("`TypeIDAllocator` requires MLIR version 15 or later"))
+        ptr = API.mlirTypeIDAllocatorCreate()
+        @assert ptr != C_NULL "cannot create TypeIDAllocator"
+        finalizer(API.mlirTypeIDAllocatorDestroy, new(ptr))
     end
-
-    Base.cconvert(::Core.Type{API.MlirTypeIDAllocator}, allocator::TypeIDAllocator) = allocator
-    Base.unsafe_convert(::Core.Type{API.MlirTypeIDAllocator}, allocator) = allocator.allocator
-
-    TypeID(allocator::TypeIDAllocator) = TypeID(API.mlirTypeIDAllocatorAllocateTypeID(allocator))
-
-else
-
-    struct TypeIDAllocator end
-
 end
+
+Base.cconvert(::Core.Type{API.MlirTypeIDAllocator}, allocator::TypeIDAllocator) = allocator
+Base.unsafe_convert(::Core.Type{API.MlirTypeIDAllocator}, allocator) = allocator.allocator
+
+TypeID(allocator::TypeIDAllocator) = TypeID(API.mlirTypeIDAllocatorAllocateTypeID(allocator))

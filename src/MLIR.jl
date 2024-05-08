@@ -1,25 +1,20 @@
 module MLIR
 
-module API
-using CEnum
+using Preferences
+using ScopedValues
+import MLIR_jll
 
-# MLIR C API
-using MLIR_jll
-let
-    ver = string(Base.libllvm_version.major)
-    dir = joinpath(@__DIR__, "API", ver)
-    if !isdir(dir)
-        error("""The MLIR API bindings for v$ver do not exist.
-                You might need a newer version of MLIR.jl for this version of Julia.""")
-    end
+const MLIR_VERSION = ScopedValue(VersionNumber(@load_preference("MLIR_VERSION", Base.libllvm_version_string)))
+const MLIR_C_PATH = ScopedValue(@load_preference("MLIR_C_PATH", MLIR_jll.mlir_c))
 
-    include(joinpath(dir, "libMLIR_h.jl"))
+struct MLIRException <: Exception
+    msg::String
 end
-end # module API
 
+Base.showerror(io::IO, err::MLIRException) = print(io, err.msg)
+
+include("API/API.jl")
 include("IR/IR.jl")
-
-include("Dialects.jl")
-
+include("Dialects/Dialects.jl")
 
 end # module MLIR

@@ -18,11 +18,13 @@ LLVM passes at `optLevel` are run before code generation.
 The number and array of paths corresponding to shared libraries that will be loaded are specified via `numPaths` and `sharedLibPaths` respectively.
 TODO: figure out other options.
 """
-@llvmversioned max=v"15" function ExecutionEngine(mod::Module, optLevel::Int, sharedlibs::Vector{String} = String[])
-    ExecutionEngine(API.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs))
-end
-@llvmversioned min=v"16" function ExecutionEngine(mod::Module, optLevel::Int, sharedlibs::Vector{String} = String[], enableObjectDump::Bool = false)
-    ExecutionEngine(API.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs, enableObjectDump))
+function ExecutionEngine(mod::Module, optLevel::Int, sharedlibs::Vector{String}=String[], enableObjectDump::Bool=false)
+    if MLIR_VERSION[] < v"16"
+        enableObjectDump && @warn "enableObjectDump is only available in LLVM 16 and later"
+        ExecutionEngine(API.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs))
+    else
+        ExecutionEngine(API.mlirExecutionEngineCreate(mod, optLevel, length(sharedlibs), sharedlibs, enableObjectDump))
+    end
 end
 
 Base.convert(::Core.Type{API.MlirExecutionEngine}, engine::ExecutionEngine) = engine.engine
@@ -34,7 +36,7 @@ Base.convert(::Core.Type{API.MlirExecutionEngine}, engine::ExecutionEngine) = en
 
 Lookup a native function in the execution engine by name, returns nullptr if the name can't be looked-up.
 """
-function lookup(jit::ExecutionEngine, name::String; packed::Bool = false)
+function lookup(jit::ExecutionEngine, name::String; packed::Bool=false)
     fn = packed ? API.mlirExecutionEngineLookupPacked(jit, name) : API.mlirExecutionEngineLookup(jit, name)
     fn == C_NULL ? nothing : fn
 end

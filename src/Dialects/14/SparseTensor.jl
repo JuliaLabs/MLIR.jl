@@ -1,6 +1,6 @@
 module sparse_tensor
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -34,7 +34,7 @@ function compress(tensor::Value, indices::Value, values::Value, filled::Value, a
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.compress", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -82,7 +82,7 @@ function convert(source::Value; dest::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.convert", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -129,7 +129,7 @@ function expand(tensor::Value; values::IR.Type, filled::IR.Type, added::IR.Type,
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.expand", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -161,7 +161,7 @@ function init(sizes::Vector{Value}; result::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.init", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -195,7 +195,7 @@ function lex_insert(tensor::Value, indices::Value, value::Value; location=Locati
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.lex_insert", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -238,7 +238,7 @@ function load(tensor::Value; result=nothing::Union{Nothing,IR.Type}, hasInserts=
     !isnothing(result) && push!(results, result)
     !isnothing(hasInserts) && push!(attributes, namedattribute("hasInserts", hasInserts))
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.load", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -271,7 +271,7 @@ function new(source::Value; result::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.new", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -302,7 +302,7 @@ function out(tensor::Value, dest::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.out", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -338,7 +338,7 @@ function release(tensor::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.release", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -371,7 +371,7 @@ function indices(tensor::Value, dim::Value; result::IR.Type, location=Location()
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.indices", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -404,7 +404,7 @@ function pointers(tensor::Value, dim::Value; result::IR.Type, location=Location(
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.pointers", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -436,7 +436,7 @@ function values(tensor::Value; result::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "sparse_tensor.values", location;
         operands, owned_regions, successors, attributes,
         results=results,

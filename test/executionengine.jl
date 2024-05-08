@@ -82,10 +82,10 @@ MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
 
 jit = if LLVM.version() >= v"16"
     MLIR.API.mlirExecutionEngineCreate(
-        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL, #= enableObjectDump =# false)
+        mod, 2, 0, C_NULL, false) #= enableObjectDump =#
 else
     MLIR.API.mlirExecutionEngineCreate(
-        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
+        mod, 2, 0, C_NULL) #=sharedLibPaths=#
 end
 
 if jit == C_NULL

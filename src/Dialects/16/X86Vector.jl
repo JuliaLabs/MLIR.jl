@@ -1,6 +1,6 @@
 module x86vector
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
 
@@ -17,7 +17,7 @@ function avx_intr_dp_ps_256(a::Value, b::Value, c::Value; res=nothing::Union{Not
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx.intr.dp.ps.256", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -51,7 +51,7 @@ function avx_intr_dot(a::Value, b::Value; res=nothing::Union{Nothing,IR.Type}, l
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx.intr.dot", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -71,7 +71,7 @@ function avx512_intr_mask_compress(a::Value, src::Value, k::Value; res=nothing::
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.intr.mask.compress", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -104,7 +104,7 @@ function avx512_mask_compress(k::Value, a::Value, src=nothing::Union{Nothing,Val
     !isnothing(dst) && push!(results, dst)
     !isnothing(constant_src) && push!(attributes, namedattribute("constant_src", constant_src))
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.mask.compress", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -134,7 +134,7 @@ function avx512_mask_rndscale(src::Value, k::Value, a::Value, imm::Value, roundi
     attributes = NamedAttribute[]
     !isnothing(dst) && push!(results, dst)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.mask.rndscale", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -154,7 +154,7 @@ function avx512_intr_mask_rndscale_pd_512(src::Value, k::Value, a::Value, imm::V
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.intr.mask.rndscale.pd.512", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -174,7 +174,7 @@ function avx512_intr_mask_rndscale_ps_512(src::Value, k::Value, a::Value, imm::V
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.intr.mask.rndscale.ps.512", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -204,7 +204,7 @@ function avx512_mask_scalef(src::Value, a::Value, b::Value, k::Value, rounding::
     attributes = NamedAttribute[]
     !isnothing(dst) && push!(results, dst)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.mask.scalef", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -224,7 +224,7 @@ function avx512_intr_mask_scalef_pd_512(src::Value, a::Value, b::Value, k::Value
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.intr.mask.scalef.pd.512", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -244,7 +244,7 @@ function avx512_intr_mask_scalef_ps_512(src::Value, a::Value, b::Value, k::Value
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.intr.mask.scalef.ps.512", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -264,7 +264,7 @@ function avx_intr_rsqrt_ps_256(a::Value; res=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx.intr.rsqrt.ps.256", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -284,7 +284,7 @@ function avx_rsqrt(a::Value; b=nothing::Union{Nothing,IR.Type}, location=Locatio
     attributes = NamedAttribute[]
     !isnothing(b) && push!(results, b)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx.rsqrt", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -303,7 +303,7 @@ function avx512_intr_vp2intersect_d_512(a::Value, b::Value; res::IR.Type, locati
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.intr.vp2intersect.d.512", location;
         operands, owned_regions, successors, attributes,
         results=results,
@@ -336,7 +336,7 @@ function avx512_vp2intersect(a::Value, b::Value; k1=nothing::Union{Nothing,IR.Ty
     !isnothing(k1) && push!(results, k1)
     !isnothing(k2) && push!(results, k2)
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.vp2intersect", location;
         operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
@@ -355,7 +355,7 @@ function avx512_intr_vp2intersect_q_512(a::Value, b::Value; res::IR.Type, locati
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
+    IR.create_operation(
         "x86vector.avx512.intr.vp2intersect.q.512", location;
         operands, owned_regions, successors, attributes,
         results=results,

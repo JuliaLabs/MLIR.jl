@@ -1,5 +1,6 @@
 module IR
 
+using ..MLIR: MLIR_VERSION, MLIRException
 using ..API
 
 # do not export `Type`, as it is already defined in Core
@@ -21,22 +22,6 @@ function print_callback(str::API.MlirStringRef, userdata)
     return Cvoid()
 end
 
-macro llvmversioned(pred, expr)
-    @assert Meta.isexpr(pred, :(=)) "Expected an expression as the first argument"
-
-    predname, version = pred.args
-    @assert predname in (:min, :max) "Expected 'min' or 'max' as the first argument"
-
-    @assert Meta.isexpr(version, :macrocall) && version.args[1] == Symbol("@v_str") "Expected a VersionNumber"
-    version = eval(version)
-
-    if predname == :min && Base.libllvm_version >= version || predname == :max && VersionNumber(Base.libllvm_version.major) <= version
-        esc(expr)
-    else
-        esc(:(nothing))
-    end
-end
-
 include("LogicalResult.jl")
 include("Context.jl")
 include("Dialect.jl")
@@ -48,7 +33,7 @@ include("Module.jl")
 include("Block.jl")
 include("Region.jl")
 include("Value.jl")
-@llvmversioned min=v"16" include("OpOperand.jl")
+include("OpOperand.jl") # introduced in LLVM 16
 include("Identifier.jl")
 include("SymbolTable.jl")
 include("AffineExpr.jl")
@@ -59,26 +44,6 @@ include("Iterators.jl")
 
 include("ExecutionEngine.jl")
 include("Pass.jl")
-
-# MlirStringRef is a non-owning reference to a string,
-# we thus need to ensure that the Julia string remains alive
-# over the use. For that we use the cconvert/unsafe_convert mechanism
-# for foreign-calls. The returned value of the cconvert is rooted across
-# foreign-call.
-Base.cconvert(::Core.Type{API.MlirStringRef}, s::Union{Symbol,String}) = s
-Base.cconvert(::Core.Type{API.MlirStringRef}, s::AbstractString) = Base.cconvert(API.MlirStringRef, String(s)::String)
-
-# Directly create `MlirStringRef` instead of adding an extra ccall.
-function Base.unsafe_convert(::Core.Type{API.MlirStringRef}, s::Union{Symbol,String,AbstractVector{UInt8}})
-    p = Base.unsafe_convert(Ptr{Cchar}, s)
-    return API.MlirStringRef(p, sizeof(s))
-end
-
-function Base.String(str::API.MlirStringRef)
-    Base.unsafe_string(pointer(str.data), str.length)
-end
-
-Base.String(str::API.MlirIdentifier) = String(API.mlirIdentifierStr(str))
 
 ### Utils
 
