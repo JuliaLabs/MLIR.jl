@@ -136,7 +136,7 @@ function mlir_dialects(version::VersionNumber)
         [
             ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]),
             ("affine", "Affine.jl", ["Affine/IR/AffineOps.td"]),
-            # ("amdgpu", "AMDGPU.jl", ["AMDGPU/AMDGPU.td"]), # TODO fails
+            ("amdgpu", "AMDGPU.jl", ["AMDGPU/IR/AMDGPU.td"]),
             ("amx", "AMX.jl", ["AMX/AMX.td"]),
             ("arith", "Arith.jl", ["Arith/IR/ArithOps.td"]),
             ("arm_neon", "ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
