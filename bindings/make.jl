@@ -7,125 +7,187 @@ function mlir_dialects(version::VersionNumber)
     # 1. dialect name
     # 2. bindings file name
     # 3. tablegen files
-    dialects = Tuple{String,String,Vector{String}}[
-        ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
-    ]
 
-    if version >= v"14"
-        append!(dialects, [
-            ("amx", "AMX.jl", ["AMX/AMX.td"]),
+    dialects = if v"14" <= version < v"15"
+        [
+            ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]),
             ("affine", "Affine.jl", ["Affine/IR/AffineOps.td"]),
+            ("amx", "AMX.jl", ["AMX/AMX.td"]),
+            ("arith", "Arithmetic.jl", ["Arithmetic/IR/ArithmeticOps.td"]), # folder renamed to 'Arith' in v16
             ("arm_neon", "ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
             ("arm_sve", "ArmSVE.jl", ["ArmSVE/ArmSVE.td"]),
             ("async", "Async.jl", ["Async/IR/AsyncOps.td"]),
             ("bufferization", "Bufferization.jl", ["Bufferization/IR/BufferizationOps.td"]),
+            ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
             ("complex", "Complex.jl", ["Complex/IR/ComplexOps.td"]),
-            # ("dlti", "DLTI.jl"[, "DLTI/DLTI.td"]), fails on v15
+            # ("dlti", "DLTI.jl", ["DLTI/DLTI.td"]), # TODO crashes
             ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
-            ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
+            ("gpu", "GPU.jl", ["GPU/GPUOps.td"]), # moved to IR subfolder in v15
             ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
             ("math", "Math.jl", ["Math/IR/MathOps.td"]),
             ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
-            ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]),
             ("omp", "OpenMP.jl", ["OpenMP/OpenMPOps.td"]),
-            ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
             ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
+            ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
             ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
+            ("scf", "SCF.jl", ["SCF/SCFOps.td"]), # moved to IR subfolder in v15
             ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
             ("sparse_tensor", "SparseTensor.jl", ["SparseTensor/IR/SparseTensorOps.td"]),
+            ("spv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]), # dialect name renamed to 'spirv' in v16
+            ("std", "StandardOps.jl", ["StandardOps/IR/Ops.td"]),
             ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
             ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
             ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
             ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
-        ])
-    end
-
-    if v"14" <= version < v"15"
-        append!(dialects, [
-            ("gpu", "GPU.jl", ["GPU/GPUOps.td"]), # moved to IR subfolder in v15
-            ("scf", "SCF.jl", ["SCF/SCFOps.td"]), # moved to IR subfolder in v15
-            ("std", "StandardOps.jl", ["StandardOps/IR/Ops.td"]),
-        ])
-    end
-
-    if v"14" <= version < v"16"
-        append!(dialects, [
-            ("arith", "Arithmetic.jl", ["Arithmetic/IR/ArithmeticOps.td"]), # folder renamed to 'Arith' in v16
-            ("spv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]), # dialect name renamed to 'spirv' in v16
-        ])
-    end
-
-    if version >= v"15"
-        append!(dialects, [
-            ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
-            ("scf", "SCF.jl", ["SCF/IR/SCFOps.td"]),
+        ]
+    elseif v"15" <= version < v"16"
+        [
+            ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]),
+            ("affine", "Affine.jl", ["Affine/IR/AffineOps.td"]),
             ("amdgpu", "AMDGPU.jl", ["AMDGPU/AMDGPU.td"]),
+            ("amx", "AMX.jl", ["AMX/AMX.td"]),
+            ("arith", "Arithmetic.jl", ["Arithmetic/IR/ArithmeticOps.td"]), # folder renamed to 'Arith' in v16
+            ("arm_neon", "ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
+            ("arm_sve", "ArmSVE.jl", ["ArmSVE/ArmSVE.td"]),
+            ("async", "Async.jl", ["Async/IR/AsyncOps.td"]),
+            ("bufferization", "Bufferization.jl", ["Bufferization/IR/BufferizationOps.td"]),
+            ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
             ("cf", "ControlFlow.jl", ["ControlFlow/IR/ControlFlowOps.td"]),
+            ("complex", "Complex.jl", ["Complex/IR/ComplexOps.td"]),
+            # ("dlti", "DLTI.jl"[, "DLTI/DLTI.td"]), # TODO crashes
+            ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
             ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
+            ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
+            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
+            ("math", "Math.jl", ["Math/IR/MathOps.td"]),
+            ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
             ("ml_program", "MLProgram.jl", ["MLProgram/IR/MLProgramOps.td"]),
             ("nvgpu", "NVGPU.jl", ["NVGPU/IR/NVGPU.td"]),
-        ])
-    end
-
-    if v"15" <= version < v"16"
-        append!(dialects, [
+            ("omp", "OpenMP.jl", ["OpenMP/OpenMPOps.td"]),
+            ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
+            ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
+            ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
+            ("scf", "SCF.jl", ["SCF/IR/SCFOps.td"]),
+            ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
+            ("sparse_tensor", "SparseTensor.jl", ["SparseTensor/IR/SparseTensorOps.td"]),
+            ("spv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]), # dialect name renamed to 'spirv' in v16
+            ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
+            ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
             ("transform", "Transform.jl", [
-                "Transform/IR/TransformOps.td",
                 "Bufferization/TransformOps/BufferizationTransformOps.td",
                 "Linalg/TransformOps/LinalgTransformOps.td",
                 "SCF/TransformOps/SCFTransformOps.td",
-            ]), # more ops files in v16
-        ])
-    end
-
-    if v"16" <= version < v"17"
-        append!(dialects, [
-            ("transform", "Transform.jl", [
                 "Transform/IR/TransformOps.td",
+            ]), # more ops files in v16
+            ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
+            ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
+        ]
+    elseif v"16" <= version < v"17"
+        [
+            ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]),
+            ("affine", "Affine.jl", ["Affine/IR/AffineOps.td"]),
+            ("amdgpu", "AMDGPU.jl", ["AMDGPU/AMDGPU.td"]),
+            ("amx", "AMX.jl", ["AMX/AMX.td"]),
+            ("arith", "Arith.jl", ["Arith/IR/ArithOps.td"]),
+            ("arm_neon", "ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
+            ("arm_sve", "ArmSVE.jl", ["ArmSVE/ArmSVE.td"]),
+            ("async", "Async.jl", ["Async/IR/AsyncOps.td"]),
+            ("bufferization", "Bufferization.jl", ["Bufferization/IR/BufferizationOps.td"]),
+            ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
+            ("cf", "ControlFlow.jl", ["ControlFlow/IR/ControlFlowOps.td"]),
+            ("complex", "Complex.jl", ["Complex/IR/ComplexOps.td"]),
+            # ("dlti", "DLTI.jl"[, "DLTI/DLTI.td"]), # TODO crashes
+            ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
+            ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
+            ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
+            ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
+            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
+            ("math", "Math.jl", ["Math/IR/MathOps.td"]),
+            ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
+            ("ml_program", "MLProgram.jl", ["MLProgram/IR/MLProgramOps.td"]),
+            ("nvgpu", "NVGPU.jl", ["NVGPU/IR/NVGPU.td"]),
+            ("omp", "OpenMP.jl", ["OpenMP/OpenMPOps.td"]),
+            ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
+            ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
+            ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
+            ("scf", "SCF.jl", ["SCF/IR/SCFOps.td"]),
+            ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
+            ("sparse_tensor", "SparseTensor.jl", ["SparseTensor/IR/SparseTensorOps.td"]),
+            ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
+            ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
+            ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
+            ("transform", "Transform.jl", [
                 "Affine/TransformOps/AffineTransformOps.td",
                 "Bufferization/TransformOps/BufferizationTransformOps.td",
                 "GPU/TransformOps/GPUTransformOps.td",
                 "Linalg/TransformOps/LinalgTransformOps.td",
                 "MemRef/TransformOps/MemRefTransformOps.td",
                 "SCF/TransformOps/SCFTransformOps.td",
+                "Transform/IR/TransformOps.td",
                 "Vector/TransformOps/VectorTransformOps.td",
             ]), # more ops files in v17
-        ])
-    end
-
-    if version >= v"16"
-        append!(dialects, [
+            ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
+            ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
+        ]
+    elseif v"17" <= version < v"18"
+        [
+            # ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]), # TODO fails
+            ("affine", "Affine.jl", ["Affine/IR/AffineOps.td"]),
+            # ("amdgpu", "AMDGPU.jl", ["AMDGPU/AMDGPU.td"]), # TODO fails
+            ("amx", "AMX.jl", ["AMX/AMX.td"]),
             ("arith", "Arith.jl", ["Arith/IR/ArithOps.td"]),
-            ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
-            ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
-        ])
-    end
-
-    if version >= v"17"
-        append!(dialects, [
+            ("arm_neon", "ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
             ("arm_sme", "ArmSME.jl", ["ArmSME/IR/ArmSME.td"]),
+            ("arm_sve", "ArmSVE.jl", ["ArmSVE/ArmSVE.td"]),
+            ("async", "Async.jl", ["Async/IR/AsyncOps.td"]),
+            ("bufferization", "Bufferization.jl", ["Bufferization/IR/BufferizationOps.td"]),
+            ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
+            ("cf", "ControlFlow.jl", ["ControlFlow/IR/ControlFlowOps.td"]),
+            ("complex", "Complex.jl", ["Complex/IR/ComplexOps.td"]),
+            # ("dlti", "DLTI.jl", ["DLTI/DLTI.td"]), # TODO crashes
+            ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
+            ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
+            ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
+            ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
             ("irdl", "IRDL.jl", ["IRDL/IR/IRDLOps.td"]),
-            ("ub", "UB.jl", ["UB/IR/UBOps.td"]),
+            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
+            ("math", "Math.jl", ["Math/IR/MathOps.td"]),
+            ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
+            ("ml_program", "MLProgram.jl", ["MLProgram/IR/MLProgramOps.td"]),
+            ("nvgpu", "NVGPU.jl", ["NVGPU/IR/NVGPU.td"]),
+            ("omp", "OpenMP.jl", ["OpenMP/OpenMPOps.td"]),
+            ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
+            ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
+            ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
+            ("scf", "SCF.jl", ["SCF/IR/SCFOps.td"]),
+            ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
+            ("sparse_tensor", "SparseTensor.jl", ["SparseTensor/IR/SparseTensorOps.td"]),
+            ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
+            ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
+            ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
             ("transform", "Transform.jl", [
-                "Transform/IR/TransformOps.td",
                 "Affine/TransformOps/AffineTransformOps.td",
                 "Bufferization/TransformOps/BufferizationTransformOps.td",
                 "GPU/TransformOps/GPUTransformOps.td",
-                "Linalg/TransformOps/LinalgTransformOps.td",
                 "Linalg/TransformOps/LinalgMatchOps.td",
+                "Linalg/TransformOps/LinalgTransformOps.td",
                 "MemRef/TransformOps/MemRefTransformOps.td",
                 "NVGPU/TransformOps/NVGPUTransformOps.td",
                 "SCF/TransformOps/SCFTransformOps.td",
                 "Tensor/TransformOps/TensorTransformOps.td",
+                "Transform/IR/TransformOps.td",
                 "Vector/TransformOps/VectorTransformOps.td",
-            ])
-        ])
-    end
-
-    if version >= v"18"
-        append!(dialects, [
-            ("mesh", "Mesh.jl", ["Mesh/IR/MeshOps.td"]),
-        ])
+            ]),
+            ("ub", "UB.jl", ["UB/IR/UBOps.td"]),
+            ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
+            ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
+        ]
+    else
+        error("Unsupported MLIR version: $version")
     end
 
     return dialects
