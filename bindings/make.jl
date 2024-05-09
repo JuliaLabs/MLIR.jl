@@ -251,10 +251,12 @@ for (julia_version, llvm_version) in julia_llvm
         for (dialect_name, binding, tds) in mlir_dialects(llvm_version)
             tempfiles = map(tds) do td
                 tempfile, _ = mktemp()
+                tdpath = joinpath(include_dir, "mlir", "Dialect", td)
                 flags = [
                     "--generator=jl-op-defs",
                     "--disable-module-wrap",
-                    joinpath(include_dir, "mlir", "Dialect", td),
+                    tdpath,
+                    "-I", dirname(tdpath),
                     "-I", include_dir,
                     "-o", tempfile,
                 ]
