@@ -8,12 +8,24 @@ using ..API
 export Attribute, Block, Context, Dialect, Location, Operation, Region, Value
 export activate!, deactivate!, dispose!, enable_multithreading!, context!
 export context, type, type!, location, typeid, block, dialect
-export nattrs, attr, attr!, rmattr!, nregions, region, nresults, result, noperands, operand, operand!, nsuccessors, successor
+export nattrs,
+    attr,
+    attr!,
+    rmattr!,
+    nregions,
+    region,
+    nresults,
+    result,
+    noperands,
+    operand,
+    operand!,
+    nsuccessors,
+    successor
 export BlockIterator, RegionIterator, OperationIterator
 export @affinemap
 
 function mlirIsNull(val)
-    val.ptr == C_NULL
+    return val.ptr == C_NULL
 end
 
 function print_callback(str::API.MlirStringRef, userdata)
@@ -70,6 +82,6 @@ function verifyall(operation::Operation; debug=false)
         end
     end
 end
-verifyall(module_::IR.Module) = Operation(module_) |> verifyall
+verifyall(module_::IR.Module) = verifyall(Operation(module_))
 
 end # module IR

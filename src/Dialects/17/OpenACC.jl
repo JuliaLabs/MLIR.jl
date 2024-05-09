@@ -294,24 +294,21 @@ function bounds(
     !isnothing(extent) && push!(operands, extent)
     !isnothing(stride) && push!(operands, stride)
     !isnothing(startIdx) && push!(operands, startIdx)
-    push!(
-        attributes,
-        operandsegmentsizes([
-            if (lowerbound == nothing)
-                0
-            elseif 1(upperbound == nothing)
-                0
-            elseif 1(extent == nothing)
-                0
-            elseif 1(stride == nothing)
-                0
-            elseif 1(startIdx == nothing)
-                0
-            else
-                1
-            end,
-        ]),
-    )
+    push!(attributes, operandsegmentsizes([
+        if (lowerbound == nothing)
+            0
+        elseif 1(upperbound == nothing)
+            0
+        elseif 1(extent == nothing)
+            0
+        elseif 1(stride == nothing)
+            0
+        elseif 1(startIdx == nothing)
+            0
+        else
+            1
+        end,
+    ]))
     !isnothing(strideInBytes) &&
         push!(attributes, namedattribute("strideInBytes", strideInBytes))
 

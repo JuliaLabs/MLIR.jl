@@ -44,8 +44,7 @@ end
 const intptr_t = Clong
 export intptr_t
 
-export
-    MlirAffineExpr,
+export MlirAffineExpr,
     MlirAffineMap,
     MlirAsmState,
     MlirAttribute,
@@ -119,10 +118,14 @@ end
 # for foreign-calls. The returned value of the cconvert is rooted across
 # foreign-call.
 Base.cconvert(::Core.Type{MlirStringRef}, s::Union{Symbol,String}) = s
-Base.cconvert(::Core.Type{MlirStringRef}, s::AbstractString) = Base.cconvert(MlirStringRef, String(s)::String)
+function Base.cconvert(::Core.Type{MlirStringRef}, s::AbstractString)
+    return Base.cconvert(MlirStringRef, String(s)::String)
+end
 
 # Directly create `MlirStringRef` instead of adding an extra ccall.
-function Base.unsafe_convert(::Core.Type{MlirStringRef}, s::Union{Symbol,String,AbstractVector{UInt8}})
+function Base.unsafe_convert(
+    ::Core.Type{MlirStringRef}, s::Union{Symbol,String,AbstractVector{UInt8}}
+)
     p = Base.unsafe_convert(Ptr{Cchar}, s)
     return MlirStringRef(p, sizeof(s))
 end

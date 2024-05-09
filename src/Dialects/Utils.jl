@@ -8,4 +8,6 @@ function namedattribute(name, val::NamedAttribute)
     return val
 end
 
-operandsegmentsizes(segments) = namedattribute("operand_segment_sizes", Attribute(Int32.(segments)))
+function operandsegmentsizes(segments)
+    return namedattribute("operand_segment_sizes", Attribute(Int32.(segments)))
+end

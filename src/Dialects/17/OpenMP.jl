@@ -895,20 +895,17 @@ function target(
     !isnothing(if_expr) && push!(operands, if_expr)
     !isnothing(device) && push!(operands, device)
     !isnothing(thread_limit) && push!(operands, thread_limit)
-    push!(
-        attributes,
-        operandsegmentsizes([
-            if (if_expr == nothing)
-                0
-            elseif 1(device == nothing)
-                0
-            elseif 1(thread_limit == nothing)
-                0
-            else
-                1length(map_operands)
-            end,
-        ]),
-    )
+    push!(attributes, operandsegmentsizes([
+        if (if_expr == nothing)
+            0
+        elseif 1(device == nothing)
+            0
+        elseif 1(thread_limit == nothing)
+            0
+        else
+            1length(map_operands)
+        end,
+    ]))
     !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
     !isnothing(map_types) && push!(attributes, namedattribute("map_types", map_types))
 
@@ -1038,18 +1035,15 @@ function target_enter_data(
     attributes = NamedAttribute[namedattribute("map_types", map_types),]
     !isnothing(if_expr) && push!(operands, if_expr)
     !isnothing(device) && push!(operands, device)
-    push!(
-        attributes,
-        operandsegmentsizes([
-            if (if_expr == nothing)
-                0
-            elseif 1(device == nothing)
-                0
-            else
-                1length(map_operands)
-            end
-        ]),
-    )
+    push!(attributes, operandsegmentsizes([
+        if (if_expr == nothing)
+            0
+        elseif 1(device == nothing)
+            0
+        else
+            1length(map_operands)
+        end,
+    ]))
     !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
@@ -1103,18 +1097,15 @@ function target_exit_data(
     attributes = NamedAttribute[namedattribute("map_types", map_types),]
     !isnothing(if_expr) && push!(operands, if_expr)
     !isnothing(device) && push!(operands, device)
-    push!(
-        attributes,
-        operandsegmentsizes([
-            if (if_expr == nothing)
-                0
-            elseif 1(device == nothing)
-                0
-            else
-                1length(map_operands)
-            end
-        ]),
-    )
+    push!(attributes, operandsegmentsizes([
+        if (if_expr == nothing)
+            0
+        elseif 1(device == nothing)
+            0
+        else
+            1length(map_operands)
+        end,
+    ]))
     !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(

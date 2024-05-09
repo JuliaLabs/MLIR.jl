@@ -18,9 +18,9 @@ end
 @testset "Module construction from operation" begin
     IR.context!(IR.Context()) do
         if LLVM.version() >= v"15"
-            op = builtin.module_(bodyRegion=IR.Region())
+            op = builtin.module_(; bodyRegion=IR.Region())
         else
-            op = builtin.module_(body=IR.Region())
+            op = builtin.module_(; body=IR.Region())
         end
         mod = IR.Module(op)
         op = IR.Operation(mod)
@@ -28,7 +28,9 @@ end
         @test IR.name(op) == "builtin.module"
 
         # Only a `module` operation can be used to create a module.
-        @test_throws AssertionError IR.Module(arith.constant(; value=true, result=IR.Type(Bool)))
+        @test_throws AssertionError IR.Module(
+            arith.constant(; value=true, result=IR.Type(Bool))
+        )
     end
 end
 
@@ -37,22 +39,28 @@ end
         mod = if LLVM.version() >= v"15"
             IR.load_all_available_dialects()
             IR.get_or_load_dialect!(IR.DialectHandle(:func))
-            parse(IR.Module, """
-            module {
-                func.func @f() {
-                    return
+            parse(
+                IR.Module,
+                """
+                module {
+                    func.func @f() {
+                        return
+                    }
                 }
-            }
-            """)
+                """,
+            )
         else
             IR.get_or_load_dialect!(IR.DialectHandle(:std))
-            parse(IR.Module, """
-            module {
-                func @f() {
-                    std.return
+            parse(
+                IR.Module,
+                """
+                module {
+                    func @f() {
+                        std.return
+                    }
                 }
-            }
-            """)
+                """,
+            )
         end
         b = IR.body(mod)
         ops = collect(IR.OperationIterator(b))

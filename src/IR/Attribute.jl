@@ -16,7 +16,8 @@ Base.convert(::Core.Type{API.MlirAttribute}, attribute::Attribute) = attribute.a
 
 Parses an attribute. The attribute is owned by the context.
 """
-Base.parse(::Core.Type{Attribute}, str; context::Context=context()) = Attribute(API.mlirAttributeParseGet(context, str))
+Base.parse(::Core.Type{Attribute}, str; context::Context=context()) =
+    Attribute(API.mlirAttributeParseGet(context, str))
 
 """
     ==(a1, a2)
@@ -79,7 +80,8 @@ isarray(attr::Attribute) = API.mlirAttributeIsAArray(attr)
 
 Creates an array element containing the given list of elements in the given context.
 """
-Attribute(attrs::Vector{Attribute}; context::Context=context()) = Attribute(API.mlirArrayAttrGet(context, length(attrs), pointer(attrs)))
+Attribute(attrs::Vector{Attribute}; context::Context=context()) =
+    Attribute(API.mlirArrayAttrGet(context, length(attrs), pointer(attrs)))
 
 """
     isdict(attr)
@@ -95,7 +97,7 @@ Creates a dictionary attribute containing the given list of elements in the prov
 """
 function Attribute(attrs::Dict; context::Context=context())
     attrs = map(splat(NamedAttribute), attrs)
-    Attribute(API.mlirDictionaryAttrGet(context, length(attrs), pointer(attrs)))
+    return Attribute(API.mlirDictionaryAttrGet(context, length(attrs), pointer(attrs)))
 end
 
 """
@@ -111,7 +113,9 @@ isfloat(attr::Attribute) = API.mlirAttributeIsAFloat(attr)
 Creates a floating point attribute in the given context with the given double value and double-precision FP semantics.
 If `check=true`, emits appropriate diagnostics on illegal arguments.
 """
-function Attribute(f::T; context::Context=context(), location::Location=Location(), check::Bool=false) where {T<:AbstractFloat}
+function Attribute(
+    f::T; context::Context=context(), location::Location=Location(), check::Bool=false
+) where {T<:AbstractFloat}
     if check
         Attribute(API.mlirFloatAttrDoubleGetChecked(location, Type(T), Float64(f)))
     else
@@ -126,7 +130,7 @@ Returns the value stored in the given floating point attribute, interpreting the
 """
 function Base.Float64(attr::Attribute)
     @assert isfloat(attr) "attribute $(attr) is not a floating point attribute"
-    API.mlirFloatAttrGetValueDouble(attr)
+    return API.mlirFloatAttrGetValueDouble(attr)
 end
 
 """
@@ -141,7 +145,8 @@ isinteger(attr::Attribute) = API.mlirAttributeIsAInteger(attr)
 
 Creates an integer attribute of the given type with the given integer value.
 """
-Attribute(i::T, type=Type(T)) where {T<:Integer} = Attribute(API.mlirIntegerAttrGet(type, Int64(i)))
+Attribute(i::T, type=Type(T)) where {T<:Integer} =
+    Attribute(API.mlirIntegerAttrGet(type, Int64(i)))
 
 """
     Int64(attr)
@@ -150,7 +155,7 @@ Returns the value stored in the given integer attribute, assuming the value is o
 """
 function Base.Int64(attr::Attribute)
     @assert isinteger(attr) "attribute $(attr) is not an integer attribute"
-    API.mlirIntegerAttrGetValueInt(attr)
+    return API.mlirIntegerAttrGetValueInt(attr)
 end
 
 # TODO mlirIntegerAttrGetValueSInt
@@ -162,7 +167,7 @@ Returns the value stored in the given integer attribute, assuming the value is o
 """
 function Base.UInt64(attr::Attribute)
     @assert isinteger(attr) "attribute $(attr) is not an integer attribute"
-    API.mlirIntegerAttrGetValueUInt(attr)
+    return API.mlirIntegerAttrGetValueUInt(attr)
 end
 
 """
@@ -186,7 +191,7 @@ Returns the value stored in the given bool attribute.
 """
 function Base.Bool(attr::Attribute)
     @assert isbool(attr) "attribute $(attr) is not a boolean attribute"
-    API.mlirBoolAttrGetValue(attr)
+    return API.mlirBoolAttrGetValue(attr)
 end
 
 """
@@ -209,7 +214,8 @@ isopaque(attr::Attribute) = API.mlirAttributeIsAOpaque(attr)
 Creates an opaque attribute in the given context associated with the dialect identified by its namespace.
 The attribute contains opaque byte data of the specified length (data need not be null-terminated).
 """
-OpaqueAttribute(namespace, data, type; context::Context=context) = Attribute(API.mlirOpaqueAttrGet(context, namespace, length(data), data, type))
+OpaqueAttribute(namespace, data, type; context::Context=context) =
+    Attribute(API.mlirOpaqueAttrGet(context, namespace, length(data), data, type))
 
 """
     mlirOpaqueAttrGetDialectNamespace(attr)
@@ -218,7 +224,7 @@ Returns the namespace of the dialect with which the given opaque attribute is as
 """
 function namespace(attr::Attribute)
     @assert isopaque(attr) "attribute $(attr) is not an opaque attribute"
-    String(API.mlirOpaqueAttrGetDialectNamespace(attr))
+    return String(API.mlirOpaqueAttrGetDialectNamespace(attr))
 end
 
 """
@@ -228,7 +234,7 @@ Returns the raw data as a string reference. The data remains live as long as the
 """
 function data(attr::Attribute)
     @assert isopaque(attr) "attribute $(attr) is not an opaque attribute"
-    String(API.mlirOpaqueAttrGetData(attr)) # TODO return as Base.CodeUnits{Int8,String}? or as a Vector{Int8}? or Pointer?
+    return String(API.mlirOpaqueAttrGetData(attr)) # TODO return as Base.CodeUnits{Int8,String}? or as a Vector{Int8}? or Pointer?
 end
 
 """
@@ -243,7 +249,8 @@ isstring(attr::Attribute) = API.mlirAttributeIsAString(attr)
 
 Creates a string attribute in the given context containing the given string.
 """
-Attribute(str::AbstractString; context::Context=context()) = Attribute(API.mlirStringAttrGet(context, str))
+Attribute(str::AbstractString; context::Context=context()) =
+    Attribute(API.mlirStringAttrGet(context, str))
 
 """
     Attribute(type, str)
@@ -251,7 +258,7 @@ Attribute(str::AbstractString; context::Context=context()) = Attribute(API.mlirS
 Creates a string attribute in the given context containing the given string. Additionally, the attribute has the given type.
 """
 function Attribute(type::Type, str::AbstractString)
-    Attribute(API.mlirStringAttrTypedGet(type, str))
+    return Attribute(API.mlirStringAttrTypedGet(type, str))
 end
 
 """
@@ -261,7 +268,7 @@ Returns the attribute values as a string reference. The data remains live as lon
 """
 function Base.String(attr::Attribute)
     @assert isstring(attr) "attribute $(attr) is not a string attribute"
-    String(API.mlirStringAttrGetValue(attr))
+    return String(API.mlirStringAttrGetValue(attr))
 end
 
 """
@@ -277,7 +284,11 @@ issymbolref(attr::Attribute) = API.mlirAttributeIsASymbolRef(attr)
 Creates a symbol reference attribute in the given context referencing a symbol identified by the given string inside a list of nested references.
 Each of the references in the list must not be nested.
 """
-SymbolRefAttribute(symbol::String, references::Vector{Attribute}; context::Context=context()) = Attribute(API.mlirSymbolRefAttrGet(context, symbol, length(references), pointer(references)))
+SymbolRefAttribute(
+    symbol::String, references::Vector{Attribute}; context::Context=context()
+) = Attribute(
+    API.mlirSymbolRefAttrGet(context, symbol, length(references), pointer(references))
+)
 
 """
     rootref(attr)
@@ -286,7 +297,7 @@ Returns the string reference to the root referenced symbol. The data remains liv
 """
 function rootref(attr::Attribute)
     @assert issymbolref(attr) "attribute $(attr) is not a symbol reference attribute"
-    String(API.mlirSymbolRefAttrGetRootReference(attr))
+    return String(API.mlirSymbolRefAttrGetRootReference(attr))
 end
 
 """
@@ -296,7 +307,7 @@ Returns the string reference to the leaf referenced symbol. The data remains liv
 """
 function leafref(attr::Attribute)
     @assert issymbolref(attr) "attribute $(attr) is not a symbol reference attribute"
-    String(API.mlirSymbolRefAttrGetLeafReference(attr))
+    return String(API.mlirSymbolRefAttrGetLeafReference(attr))
 end
 
 """
@@ -306,7 +317,7 @@ Returns the number of references nested in the given symbol reference attribute.
 """
 function nnestedrefs(attr::Attribute)
     @assert issymbolref(attr) "attribute $(attr) is not a symbol reference attribute"
-    API.mlirSymbolRefAttrGetNumNestedReferences(attr)
+    return API.mlirSymbolRefAttrGetNumNestedReferences(attr)
 end
 
 """
@@ -321,7 +332,8 @@ isflatsymbolref(attr::Attribute) = API.mlirAttributeIsAFlatSymbolRef(attr)
 
 Creates a flat symbol reference attribute in the given context referencing a symbol identified by the given string.
 """
-FlatSymbolRefAttribute(symbol::String; context::Context=context()) = Attribute(API.mlirFlatSymbolRefAttrGet(context, symbol))
+FlatSymbolRefAttribute(symbol::String; context::Context=context()) =
+    Attribute(API.mlirFlatSymbolRefAttrGet(context, symbol))
 
 """
     flatsymbol(attr)
@@ -330,7 +342,7 @@ Returns the referenced symbol as a string reference. The data remains live as lo
 """
 function flatsymbol(attr::Attribute)
     @assert isflatsymbolref(attr) "attribute $(attr) is not a flat symbol reference attribute"
-    String(API.mlirFlatSymbolRefAttrGetValue(attr))
+    return String(API.mlirFlatSymbolRefAttrGetValue(attr))
 end
 
 """
@@ -394,7 +406,9 @@ Creates a dense elements attribute with the given Shaped type and elements in th
 """
 function DenseElementsAttribute(shaped_type::Type, elements::AbstractArray)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    Attribute(API.mlirDenseElementsAttrGet(shaped_type, length(elements), pointer(elements)))
+    return Attribute(
+        API.mlirDenseElementsAttrGet(shaped_type, length(elements), pointer(elements))
+    )
 end
 
 # TODO mlirDenseElementsAttrRawBufferGet
@@ -406,57 +420,57 @@ Creates a dense elements attribute with the given Shaped type containing a singl
 """
 function Base.fill(attr::Attribute, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    Attribute(API.mlirDenseElementsAttrSplatGet(attr, shaped_type))
+    return Attribute(API.mlirDenseElementsAttrSplatGet(attr, shaped_type))
 end
 
 function Base.fill(value::Bool, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrBoolSplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrBoolSplatGet(value, shaped_type)
 end
 
 function Base.fill(value::UInt8, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrUInt8SplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrUInt8SplatGet(value, shaped_type)
 end
 
 function Base.fill(value::Int8, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrInt8SplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrInt8SplatGet(value, shaped_type)
 end
 
 function Base.fill(value::UInt32, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrUInt32SplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrUInt32SplatGet(value, shaped_type)
 end
 
 function Base.fill(value::Int32, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrInt32SplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrInt32SplatGet(value, shaped_type)
 end
 
 function Base.fill(value::UInt64, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrUInt64SplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrUInt64SplatGet(value, shaped_type)
 end
 
 function Base.fill(value::Int64, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrInt64SplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrInt64SplatGet(value, shaped_type)
 end
 
 function Base.fill(value::Float32, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrFloatSplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrFloatSplatGet(value, shaped_type)
 end
 
 function Base.fill(value::Float64, shaped_type::Type)
     @assert isshaped(shaped_type) "type $(shaped_type) is not a shaped type"
-    API.mlirDenseElementsAttrDoubleSplatGet(value, shaped_type)
+    return API.mlirDenseElementsAttrDoubleSplatGet(value, shaped_type)
 end
 
 function Base.fill(::Core.Type{Attribute}, value, shape)
     shaped_type = TensorType(shape, Type(typeof(value)))
-    Base.fill(value, shaped_type)
+    return Base.fill(value, shaped_type)
 end
 
 """
@@ -466,64 +480,88 @@ Creates a dense elements attribute with the given shaped type from elements of a
 """
 function DenseElementsAttribute(values::AbstractVector{Bool})
     shaped_type = TensorType(size(values), Type(Bool))
-    Attribute(API.mlirDenseElementsAttrBoolGet(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrBoolGet(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt8})
     shaped_type = TensorType(size(values), Type(UInt8))
-    Attribute(API.mlirDenseElementsAttrUInt8Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrUInt8Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int8})
     shaped_type = TensorType(size(values), Type(Int8))
-    Attribute(API.mlirDenseElementsAttrInt8Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrInt8Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt16})
     shaped_type = TensorType(size(values), Type(UInt16))
-    Attribute(API.mlirDenseElementsAttrUInt16Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrUInt16Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int16})
     shaped_type = TensorType(size(values), Type(Int16))
-    Attribute(API.mlirDenseElementsAttrInt16Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrInt16Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt32})
     shaped_type = TensorType(size(values), Type(UInt32))
-    Attribute(API.mlirDenseElementsAttrUInt32Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrUInt32Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int32})
     shaped_type = TensorType(size(values), Type(Int32))
-    Attribute(API.mlirDenseElementsAttrInt32Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrInt32Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{UInt64})
     shaped_type = TensorType(size(values), Type(UInt64))
-    Attribute(API.mlirDenseElementsAttrUInt64Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrUInt64Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{Int64})
     shaped_type = TensorType(size(values), Type(Int64))
-    Attribute(API.mlirDenseElementsAttrInt64Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrInt64Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{Float32})
     shaped_type = TensorType(size(values), Type(Float32))
-    Attribute(API.mlirDenseElementsAttrFloatGet(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrFloatGet(shaped_type, length(values), pointer(values))
+    )
 end
 
 function DenseElementsAttribute(values::AbstractArray{Float64})
     shaped_type = TensorType(size(values), Type(Float64))
-    Attribute(API.mlirDenseElementsAttrDoubleGet(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrDoubleGet(shaped_type, length(values), pointer(values))
+    )
 end
 
 # TODO mlirDenseElementsAttrBFloat16Get
 
 function DenseElementsAttribute(values::AbstractArray{Float16})
     shaped_type = TensorType(size(values), Type(Float16))
-    Attribute(API.mlirDenseElementsAttrFloat16Get(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrFloat16Get(shaped_type, length(values), pointer(values))
+    )
 end
 
 """
@@ -534,11 +572,15 @@ Creates a dense elements attribute with the given shaped type from string elemen
 function DenseElementsAttribute(values::AbstractArray{String})
     # TODO may fail because `Type(String)` is not defined
     shaped_type = TensorType(size(values), Type(String))
-    Attribute(API.mlirDenseElementsAttrStringGet(shaped_type, length(values), pointer(values)))
+    return Attribute(
+        API.mlirDenseElementsAttrStringGet(shaped_type, length(values), pointer(values))
+    )
 end
 
 function Attribute(values::AbstractArray)
-    MLIR_VERSION[] >= v"15" || throw(MLIRException("`Attribute(::AbstractArray)` requires MLIR version 15 or later"))
+    MLIR_VERSION[] >= v"15" || throw(
+        MLIRException("`Attribute(::AbstractArray)` requires MLIR version 15 or later")
+    )
     if MLIR_VERSION[] < v"16"
         DenseElementsAttribute(values)
     else
@@ -556,7 +598,7 @@ function Base.reshape(attr::Attribute, shape)
     @assert length(attr) == prod(shape) "new shape $(shape) has a different number of elements than the original attribute"
     element_type = eltype(type(attr))
     shaped_type = TensorType(shape, element_type)
-    Attribute(API.mlirDenseElementsAttrReshape(attr, shaped_type))
+    return Attribute(API.mlirDenseElementsAttrReshape(attr, shaped_type))
 end
 
 """
@@ -566,7 +608,7 @@ Checks whether the given dense elements attribute contains a single replicated v
 """
 function issplat(attr::Attribute)
     @assert isdenseelements(attr) "attribute $(attr) is not a dense elements attribute"
-    API.mlirDenseElementsAttrIsSplat(attr) # TODO Base.allequal?
+    return API.mlirDenseElementsAttrIsSplat(attr) # TODO Base.allequal?
 end
 
 # TODO mlirDenseElementsAttrGetRawData
@@ -577,8 +619,10 @@ end
   Checks whether the given attribute is an opaque elements attribute.
   """
 function isopaqueelements(attr::Attribute)
-    MLIR_VERSION[] >= v"15" || throw(MLIRException("`isopaqueelements(::Attribute)` requires MLIR version 15 or later"))
-    API.mlirAttributeIsAOpaqueElements(attr)
+    MLIR_VERSION[] >= v"15" || throw(
+        MLIRException("`isopaqueelements(::Attribute)` requires MLIR version 15 or later"),
+    )
+    return API.mlirAttributeIsAOpaqueElements(attr)
 end
 
 """
@@ -600,40 +644,67 @@ issparseelements(attr::Attribute) = API.mlirAttributeIsASparseElements(attr)
 function isdensearray end
 
 function isdensearray(attr::Attribute, ::Core.Type{Bool})
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`isdensearray(::Attribute, ::Core.Type{Bool})` requires MLIR version 16 or later"))
-    API.mlirAttributeIsADenseBoolArray(attr)
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`isdensearray(::Attribute, ::Core.Type{Bool})` requires MLIR version 16 or later",
+        ),
+    )
+    return API.mlirAttributeIsADenseBoolArray(attr)
 end
 
 function isdensearray(attr::Attribute, ::Core.Type{Int8})
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`isdensearray(::Attribute, ::Core.Type{Int8})` requires MLIR version 16 or later"))
-    API.mlirAttributeIsADenseI8Array(attr)
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`isdensearray(::Attribute, ::Core.Type{Int8})` requires MLIR version 16 or later",
+        ),
+    )
+    return API.mlirAttributeIsADenseI8Array(attr)
 end
 
 function isdensearray(attr::Attribute, ::Core.Type{Int16})
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`isdensearray(::Attribute, ::Core.Type{Int16})` requires MLIR version 16 or later"))
-    API.mlirAttributeIsADenseI16Array(attr)
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`isdensearray(::Attribute, ::Core.Type{Int16})` requires MLIR version 16 or later",
+        ),
+    )
+    return API.mlirAttributeIsADenseI16Array(attr)
 end
 
 function isdensearray(attr::Attribute, ::Core.Type{Int32})
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`isdensearray(::Attribute, ::Core.Type{Int32})` requires MLIR version 16 or later"))
-    API.mlirAttributeIsADenseI32Array(attr)
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`isdensearray(::Attribute, ::Core.Type{Int32})` requires MLIR version 16 or later",
+        ),
+    )
+    return API.mlirAttributeIsADenseI32Array(attr)
 end
 
 function isdensearray(attr::Attribute, ::Core.Type{Int64})
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`isdensearray(::Attribute, ::Core.Type{Int64})` requires MLIR version 16 or later"))
-    API.mlirAttributeIsADenseI64Array(attr)
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`isdensearray(::Attribute, ::Core.Type{Int64})` requires MLIR version 16 or later",
+        ),
+    )
+    return API.mlirAttributeIsADenseI64Array(attr)
 end
 
 function isdensearray(attr::Attribute, ::Core.Type{Float32})
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`isdensearray(::Attribute, ::Core.Type{Float32})` requires MLIR version 16 or later"))
-    API.mlirAttributeIsADenseF32Array(attr)
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`isdensearray(::Attribute, ::Core.Type{Float32})` requires MLIR version 16 or later",
+        ),
+    )
+    return API.mlirAttributeIsADenseF32Array(attr)
 end
 
 function isdensearray(attr::Attribute, ::Core.Type{Float64})
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`isdensearray(::Attribute, ::Core.Type{Float64})` requires MLIR version 16 or later"))
-    API.mlirAttributeIsADenseF64Array(attr)
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`isdensearray(::Attribute, ::Core.Type{Float64})` requires MLIR version 16 or later",
+        ),
+    )
+    return API.mlirAttributeIsADenseF64Array(attr)
 end
-
 
 """
       DenseArrayAttribute(array; context=context())
@@ -643,38 +714,66 @@ end
 function DenseArrayAttribute end
 
 function DenseArrayAttribute(values::AbstractArray{Bool}; context::Context=context())
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`DenseArrayAttribute(::AbstractArray{Bool})` requires MLIR version 16 or later"))
-    Attribute(API.mlirDenseBoolArrayGet(context, length(values), pointer(values)))
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`DenseArrayAttribute(::AbstractArray{Bool})` requires MLIR version 16 or later",
+        ),
+    )
+    return Attribute(API.mlirDenseBoolArrayGet(context, length(values), pointer(values)))
 end
 
 function DenseArrayAttribute(values::AbstractArray{Int8}; context::Context=context())
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`DenseArrayAttribute(::AbstractArray{Int8})` requires MLIR version 16 or later"))
-    Attribute(API.mlirDenseI8ArrayGet(context, length(values), pointer(values)))
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`DenseArrayAttribute(::AbstractArray{Int8})` requires MLIR version 16 or later",
+        ),
+    )
+    return Attribute(API.mlirDenseI8ArrayGet(context, length(values), pointer(values)))
 end
 
 function DenseArrayAttribute(values::AbstractArray{Int16}; context::Context=context())
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`DenseArrayAttribute(::AbstractArray{Int16})` requires MLIR version 16 or later"))
-    Attribute(API.mlirDenseI16ArrayGet(context, length(values), pointer(values)))
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`DenseArrayAttribute(::AbstractArray{Int16})` requires MLIR version 16 or later",
+        ),
+    )
+    return Attribute(API.mlirDenseI16ArrayGet(context, length(values), pointer(values)))
 end
 
 function DenseArrayAttribute(values::AbstractArray{Int32}; context::Context=context())
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`DenseArrayAttribute(::AbstractArray{Int32})` requires MLIR version 16 or later"))
-    Attribute(API.mlirDenseI32ArrayGet(context, length(values), pointer(values)))
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`DenseArrayAttribute(::AbstractArray{Int32})` requires MLIR version 16 or later",
+        ),
+    )
+    return Attribute(API.mlirDenseI32ArrayGet(context, length(values), pointer(values)))
 end
 
 function DenseArrayAttribute(values::AbstractArray{Int64}; context::Context=context())
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`DenseArrayAttribute(::AbstractArray{Int64})` requires MLIR version 16 or later"))
-    Attribute(API.mlirDenseI64ArrayGet(context, length(values), pointer(values)))
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`DenseArrayAttribute(::AbstractArray{Int64})` requires MLIR version 16 or later",
+        ),
+    )
+    return Attribute(API.mlirDenseI64ArrayGet(context, length(values), pointer(values)))
 end
 
 function DenseArrayAttribute(values::AbstractArray{Float32}; context::Context=context())
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`DenseArrayAttribute(::AbstractArray{Float32})` requires MLIR version 16 or later"))
-    Attribute(API.mlirDenseF32ArrayGet(context, length(values), pointer(values)))
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`DenseArrayAttribute(::AbstractArray{Float32})` requires MLIR version 16 or later",
+        ),
+    )
+    return Attribute(API.mlirDenseF32ArrayGet(context, length(values), pointer(values)))
 end
 
 function DenseArrayAttribute(values::AbstractArray{Float64}; context::Context=context())
-    MLIR_VERSION[] >= v"16" || throw(MLIRException("`DenseArrayAttribute(::AbstractArray{Float64})` requires MLIR version 16 or later"))
-    Attribute(API.mlirDenseF64ArrayGet(context, length(values), pointer(values)))
+    MLIR_VERSION[] >= v"16" || throw(
+        MLIRException(
+            "`DenseArrayAttribute(::AbstractArray{Float64})` requires MLIR version 16 or later",
+        ),
+    )
+    return Attribute(API.mlirDenseF64ArrayGet(context, length(values), pointer(values)))
 end
 
 function Base.length(attr::Attribute)
@@ -685,7 +784,9 @@ function Base.length(attr::Attribute)
     elseif iselements(attr)
         API.mlirElementsAttrGetNumElements(attr)
     elseif MLIR_VERSION[] >= v"16"
-        _isdensearray = any(T -> isdensearray(attr, T), [Bool, Int8, Int16, Int32, Int64, Float32, Float64])
+        _isdensearray = any(
+            T -> isdensearray(attr, T), [Bool, Int8, Int16, Int32, Int64, Float32, Float64]
+        )
         if _isdensearray
             API.mlirDenseBoolArrayGetNumElements(attr)
         end
@@ -787,7 +888,7 @@ function Base.show(io::IO, attribute::Attribute)
     c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
     API.mlirAttributePrint(attribute, c_print_callback, ref)
-    print(io, " =#)")
+    return print(io, " =#)")
 end
 
 struct NamedAttribute
@@ -802,7 +903,9 @@ Associates an attribute with the name. Takes ownership of neither.
 function NamedAttribute(name, attribute; context=context(attribute))
     @assert !mlirIsNull(attribute.attribute)
     name = API.mlirIdentifierGet(context, name)
-    NamedAttribute(API.mlirNamedAttributeGet(name, attribute))
+    return NamedAttribute(API.mlirNamedAttributeGet(name, attribute))
 end
 
-Base.convert(::Core.Type{API.MlirAttribute}, named_attribute::NamedAttribute) = named_attribute.named_attribute
+function Base.convert(::Core.Type{API.MlirAttribute}, named_attribute::NamedAttribute)
+    return named_attribute.named_attribute
+end

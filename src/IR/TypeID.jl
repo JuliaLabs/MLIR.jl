@@ -3,7 +3,7 @@ struct TypeID
 
     function TypeID(typeid)
         @assert !mlirIsNull(typeid) "cannot create TypeID with null MlirTypeID"
-        new(typeid)
+        return new(typeid)
     end
 end
 
@@ -31,14 +31,17 @@ mutable struct TypeIDAllocator
     allocator::API.MlirTypeIDAllocator
 
     function TypeIDAllocator()
-        MLIR_VERSION[] >= v"15" || throw(MLIRException("`TypeIDAllocator` requires MLIR version 15 or later"))
+        MLIR_VERSION[] >= v"15" ||
+            throw(MLIRException("`TypeIDAllocator` requires MLIR version 15 or later"))
         ptr = API.mlirTypeIDAllocatorCreate()
         @assert ptr != C_NULL "cannot create TypeIDAllocator"
-        finalizer(API.mlirTypeIDAllocatorDestroy, new(ptr))
+        return finalizer(API.mlirTypeIDAllocatorDestroy, new(ptr))
     end
 end
 
 Base.cconvert(::Core.Type{API.MlirTypeIDAllocator}, allocator::TypeIDAllocator) = allocator
 Base.unsafe_convert(::Core.Type{API.MlirTypeIDAllocator}, allocator) = allocator.allocator
 
-TypeID(allocator::TypeIDAllocator) = TypeID(API.mlirTypeIDAllocatorAllocateTypeID(allocator))
+function TypeID(allocator::TypeIDAllocator)
+    return TypeID(API.mlirTypeIDAllocatorAllocateTypeID(allocator))
+end

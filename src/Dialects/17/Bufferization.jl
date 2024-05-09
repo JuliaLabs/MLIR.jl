@@ -77,13 +77,14 @@ function alloc_tensor(
     push!(
         attributes,
         operandsegmentsizes([
-            length(dynamic_sizes), if (copy == nothing)
+            length(dynamic_sizes),
+            if (copy == nothing)
                 0
             elseif 1(size_hint == nothing)
                 0
             else
                 1
-            end
+            end,
         ]),
     )
     !isnothing(memory_space) &&
