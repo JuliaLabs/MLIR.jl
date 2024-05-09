@@ -1,9 +1,9 @@
 module arm_neon
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
-
 
 """
 `intr_smull`
@@ -18,16 +18,20 @@ https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsi
 """
 function intr_smull(a::Value, b::Value; res::IR.Type, location=Location())
     results = IR.Type[res,]
-    operands = Value[a, b,]
+    operands = Value[a, b]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
 
-    IR.create_operation(
-        "arm_neon.intr.smull", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "arm_neon.intr.smull",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -45,16 +49,20 @@ res[i] := a[i] + dot_product(b[i, ...], c[i, ...])
 """
 function _2d_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location())
     results = IR.Type[res,]
-    operands = Value[a, b, c,]
+    operands = Value[a, b, c]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
 
-    IR.create_operation(
-        "arm_neon.2d.sdot", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "arm_neon.2d.sdot",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -70,16 +78,20 @@ https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsi
 """
 function intr_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location())
     results = IR.Type[res,]
-    operands = Value[a, b, c,]
+    operands = Value[a, b, c]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
 
-    IR.create_operation(
-        "arm_neon.intr.sdot", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "arm_neon.intr.sdot",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 

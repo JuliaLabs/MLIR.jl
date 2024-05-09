@@ -1,9 +1,9 @@
 module scf
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
-
 
 """
 `condition`
@@ -14,18 +14,22 @@ region of `scf.while` is executed, with the remaining arguments forwarded
 to the entry block of the region. Otherwise, the loop terminates.
 """
 function condition(condition::Value, args::Vector{Value}; location=Location())
-  results = IR.Type[]
-  operands = Value[condition, args...,]
-  owned_regions = Region[]
-  successors = Block[]
-  attributes = NamedAttribute[]
+    results = IR.Type[]
+    operands = Value[condition, args...]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.condition", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.condition",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -70,18 +74,22 @@ affine.for %i = 0 to 100 {
 ```
 """
 function execute_region(; result_0::Vector{IR.Type}, region::Region, location=Location())
-  results = IR.Type[result_0...,]
-  operands = Value[]
-  owned_regions = Region[region,]
-  successors = Block[]
-  attributes = NamedAttribute[]
+    results = IR.Type[result_0...,]
+    operands = Value[]
+    owned_regions = Region[region,]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.execute_region", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.execute_region",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -173,19 +181,31 @@ func.func @conditional_reduce(%buffer: memref<1024xf32>, %lb: index,
 }
 ```
 """
-function for_(lowerBound::Value, upperBound::Value, step::Value, initArgs::Vector{Value}; results::Vector{IR.Type}, region::Region, location=Location())
-  results = IR.Type[results...,]
-  operands = Value[lowerBound, upperBound, step, initArgs...,]
-  owned_regions = Region[region,]
-  successors = Block[]
-  attributes = NamedAttribute[]
+function for_(
+    lowerBound::Value,
+    upperBound::Value,
+    step::Value,
+    initArgs::Vector{Value};
+    results::Vector{IR.Type},
+    region::Region,
+    location=Location(),
+)
+    results = IR.Type[results...,]
+    operands = Value[lowerBound, upperBound, step, initArgs...]
+    owned_regions = Region[region,]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.for", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.for",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -313,21 +333,32 @@ Example with privatized tensors:
 }
 ```
 """
-function foreach_thread(num_threads::Vector{Value}, outputs::Vector{Value}; results::Vector{IR.Type}, mapping=nothing, region::Region, location=Location())
-  results = IR.Type[results...,]
-  operands = Value[num_threads..., outputs...,]
-  owned_regions = Region[region,]
-  successors = Block[]
-  attributes = NamedAttribute[]
-  push!(attributes, operandsegmentsizes([length(num_threads), length(outputs),]))
-  !isnothing(mapping) && push!(attributes, namedattribute("mapping", mapping))
+function foreach_thread(
+    num_threads::Vector{Value},
+    outputs::Vector{Value};
+    results::Vector{IR.Type},
+    mapping=nothing,
+    region::Region,
+    location=Location(),
+)
+    results = IR.Type[results...,]
+    operands = Value[num_threads..., outputs...]
+    owned_regions = Region[region,]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    push!(attributes, operandsegmentsizes([length(num_threads), length(outputs)]))
+    !isnothing(mapping) && push!(attributes, namedattribute("mapping", mapping))
 
-  IR.create_operation(
-    "scf.foreach_thread", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.foreach_thread",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -376,19 +407,29 @@ scf.if %b  {
 }
 ```
 """
-function if_(condition::Value; results::Vector{IR.Type}, thenRegion::Region, elseRegion::Region, location=Location())
-  results = IR.Type[results...,]
-  operands = Value[condition,]
-  owned_regions = Region[thenRegion, elseRegion,]
-  successors = Block[]
-  attributes = NamedAttribute[]
+function if_(
+    condition::Value;
+    results::Vector{IR.Type},
+    thenRegion::Region,
+    elseRegion::Region,
+    location=Location(),
+)
+    results = IR.Type[results...,]
+    operands = Value[condition,]
+    owned_regions = Region[thenRegion, elseRegion]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.if", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.if",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -422,19 +463,30 @@ default {
 }
 ```
 """
-function index_switch(arg::Value; results::Vector{IR.Type}, cases, defaultRegion::Region, caseRegions::Vector{Region}, location=Location())
-  results = IR.Type[results...,]
-  operands = Value[arg,]
-  owned_regions = Region[defaultRegion, caseRegions...,]
-  successors = Block[]
-  attributes = NamedAttribute[namedattribute("cases", cases),]
+function index_switch(
+    arg::Value;
+    results::Vector{IR.Type},
+    cases,
+    defaultRegion::Region,
+    caseRegions::Vector{Region},
+    location=Location(),
+)
+    results = IR.Type[results...,]
+    operands = Value[arg,]
+    owned_regions = Region[defaultRegion, caseRegions...]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("cases", cases),]
 
-  IR.create_operation(
-    "scf.index_switch", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.index_switch",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -483,20 +535,37 @@ scf.parallel (%iv) = (%lb) to (%ub) step (%step) init (%init) -> f32 {
 }
 ```
 """
-function parallel(lowerBound::Vector{Value}, upperBound::Vector{Value}, step::Vector{Value}, initVals::Vector{Value}; results::Vector{IR.Type}, region::Region, location=Location())
-  results = IR.Type[results...,]
-  operands = Value[lowerBound..., upperBound..., step..., initVals...,]
-  owned_regions = Region[region,]
-  successors = Block[]
-  attributes = NamedAttribute[]
-  push!(attributes, operandsegmentsizes([length(lowerBound), length(upperBound), length(step), length(initVals),]))
+function parallel(
+    lowerBound::Vector{Value},
+    upperBound::Vector{Value},
+    step::Vector{Value},
+    initVals::Vector{Value};
+    results::Vector{IR.Type},
+    region::Region,
+    location=Location(),
+)
+    results = IR.Type[results...,]
+    operands = Value[lowerBound..., upperBound..., step..., initVals...]
+    owned_regions = Region[region,]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    push!(
+        attributes,
+        operandsegmentsizes([
+            length(lowerBound), length(upperBound), length(step), length(initVals)
+        ]),
+    )
 
-  IR.create_operation(
-    "scf.parallel", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.parallel",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -511,18 +580,22 @@ the enclosing `scf.foreach_thread`.
 The result number corresponds to the position of the op in the terminator.
 """
 function foreach_thread_perform_concurrently(; region::Region, location=Location())
-  results = IR.Type[]
-  operands = Value[]
-  owned_regions = Region[region,]
-  successors = Block[]
-  attributes = NamedAttribute[]
+    results = IR.Type[]
+    operands = Value[]
+    owned_regions = Region[region,]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.foreach_thread.perform_concurrently", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.foreach_thread.perform_concurrently",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -562,18 +635,22 @@ scf.reduce(%operand) : f32 {
 ```
 """
 function reduce(operand::Value; reductionOperator::Region, location=Location())
-  results = IR.Type[]
-  operands = Value[operand,]
-  owned_regions = Region[reductionOperator,]
-  successors = Block[]
-  attributes = NamedAttribute[]
+    results = IR.Type[]
+    operands = Value[operand,]
+    owned_regions = Region[reductionOperator,]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.reduce", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.reduce",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -588,18 +665,22 @@ scf.reduce.return %res : f32
 ```
 """
 function reduce_return(result::Value; location=Location())
-  results = IR.Type[]
-  operands = Value[result,]
-  owned_regions = Region[]
-  successors = Block[]
-  attributes = NamedAttribute[]
+    results = IR.Type[]
+    operands = Value[result,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.reduce.return", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.reduce.return",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -716,19 +797,29 @@ assignment-list ::= assignment | assignment `,` assignment-list
 assignment ::= ssa-value `=` ssa-value
 ```
 """
-function while_(inits::Vector{Value}; results::Vector{IR.Type}, before::Region, after::Region, location=Location())
-  results = IR.Type[results...,]
-  operands = Value[inits...,]
-  owned_regions = Region[before, after,]
-  successors = Block[]
-  attributes = NamedAttribute[]
+function while_(
+    inits::Vector{Value};
+    results::Vector{IR.Type},
+    before::Region,
+    after::Region,
+    location=Location(),
+)
+    results = IR.Type[results...,]
+    operands = Value[inits...,]
+    owned_regions = Region[before, after]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.while", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.while",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 """
@@ -745,18 +836,22 @@ Otherwise, it has to be present in the syntax to indicate which values are
 yielded.
 """
 function yield(results::Vector{Value}; location=Location())
-  results = IR.Type[]
-  operands = Value[results...,]
-  owned_regions = Region[]
-  successors = Block[]
-  attributes = NamedAttribute[]
+    results = IR.Type[]
+    operands = Value[results...,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
 
-  IR.create_operation(
-    "scf.yield", location;
-    operands, owned_regions, successors, attributes,
-    results=results,
-    result_inference=false
-  )
+    return IR.create_operation(
+        "scf.yield",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
 end
 
 end # scf

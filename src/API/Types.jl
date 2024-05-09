@@ -45,44 +45,56 @@ const intptr_t = Clong
 export intptr_t
 
 export
-    MlirDialectHandle,
-    MlirTypeID,
-    MlirTypeIDAllocator,
-    MlirStringRef,
-    MlirLogicalResult,
-    MlirContext,
-    MlirDialect,
-    MlirDialectRegistry,
-    MlirOperation,
-    MlirOpOperand,
-    MlirOpPrintingFlags,
-    MlirBlock,
-    MlirRegion,
-    MlirSymbolTable,
-    MlirAttribute,
-    MlirIdentifier,
-    MlirLocation,
-    MlirModule,
-    MlirType,
-    MlirValue,
-    MlirNamedAttribute,
-    MlirOperationState,
     MlirAffineExpr,
     MlirAffineMap,
-    MlirPass,
-    MlirExternalPass,
-    MlirPassManager,
-    MlirOpPassManager,
-    MlirExternalPassCallbacks,
+    MlirAsmState,
+    MlirAttribute,
+    MlirBlock,
+    MlirBytecodeWriterConfig,
+    MlirContext,
     MlirDiagnostic,
+    MlirDialect,
+    MlirDialectHandle,
+    MlirDialectRegistry,
     MlirExecutionEngine,
-    MlirIntegerSet
+    MlirExternalPass,
+    MlirExternalPassCallbacks,
+    MlirIdentifier,
+    MlirIntegerSet,
+    MlirLlvmThreadPool,
+    MlirLocation,
+    MlirLogicalResult,
+    MlirModule,
+    MlirNamedAttribute,
+    MlirOperation,
+    MlirOperationState,
+    MlirOpOperand,
+    MlirOpPassManager,
+    MlirOpPrintingFlags,
+    MlirPass,
+    MlirPassManager,
+    MlirRegion,
+    MlirStringRef,
+    MlirSymbolTable,
+    MlirType,
+    MlirTypeID,
+    MlirTypeIDAllocator,
+    MlirValue
 
 struct MlirTypeID
     ptr::Ptr{Cvoid}
 end
 
 struct MlirTypeIDAllocator
+    ptr::Ptr{Cvoid}
+end
+
+"""
+    MlirLlvmThreadPool
+
+Re-export llvm::ThreadPool so as to avoid including the LLVM C API directly.
+"""
+struct MlirLlvmThreadPool
     ptr::Ptr{Cvoid}
 end
 
@@ -288,6 +300,14 @@ struct MlirExecutionEngine
 end
 
 struct MlirIntegerSet
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirAsmState
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirBytecodeWriterConfig
     ptr::Ptr{Cvoid}
 end
 

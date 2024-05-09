@@ -1,9 +1,9 @@
 module math
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
-
 
 """
 `abs`
@@ -27,11 +27,15 @@ function abs(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.abs", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.abs",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -62,19 +66,25 @@ See also https://en.wikipedia.org/wiki/Atan2
 %a = math.atan2 %b, %c : f32
 ```
 """
-function atan2(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function atan2(
+    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs,]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.atan2", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.atan2",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -106,11 +116,15 @@ function atan(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.atan", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.atan",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -142,11 +156,15 @@ function ceil(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.ceil", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.ceil",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -171,19 +189,25 @@ tensor or vector). It has no standard attributes.
 %a = math.copysign %b, %c : f64
 ```
 """
-function copysign(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function copysign(
+    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs,]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.copysign", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.copysign",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -215,11 +239,15 @@ function cos(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.cos", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.cos",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -244,11 +272,15 @@ function ctlz(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.ctlz", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.ctlz",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -273,11 +305,15 @@ function cttz(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.cttz", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.cttz",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -302,11 +338,15 @@ function ctpop(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.ctpop", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.ctpop",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -338,11 +378,15 @@ function erf(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.erf", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.erf",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -374,11 +418,15 @@ function exp2(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.exp2", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.exp2",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -412,11 +460,15 @@ function expm1(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.expm1", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.expm1",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -448,11 +500,15 @@ function exp(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.exp", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.exp",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -484,11 +540,15 @@ function floor(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.floor", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.floor",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -517,19 +577,29 @@ The semantics of the operation correspond to those of the `llvm.fma`
 particular case of lowering to LLVM, this is guaranteed to lower
 to the `llvm.fma.*` intrinsic.
 """
-function fma(a::Value, b::Value, c::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function fma(
+    a::Value,
+    b::Value,
+    c::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[a, b, c,]
+    operands = Value[a, b, c]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.fma", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.fma",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -555,11 +625,15 @@ function log10(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.log10", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.log10",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -587,11 +661,15 @@ function log1p(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.log1p", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.log1p",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -617,11 +695,15 @@ function log2(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.log2", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.log2",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -647,11 +729,15 @@ function log(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.log", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.log",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -675,19 +761,25 @@ must have the same type.
 %a = math.powf %b, %c : f64
 ```
 """
-function powf(lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function powf(
+    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs,]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.powf", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.powf",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -722,11 +814,15 @@ function round(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.round", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.round",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -752,11 +848,15 @@ function rsqrt(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.rsqrt", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.rsqrt",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -788,11 +888,15 @@ function sin(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.sin", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.sin",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -818,11 +922,15 @@ function sqrt(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.sqrt", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.sqrt",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -848,11 +956,15 @@ function tan(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.tan", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.tan",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -878,11 +990,15 @@ function tanh(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    IR.create_operation(
-        "math.tanh", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "math.tanh",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
