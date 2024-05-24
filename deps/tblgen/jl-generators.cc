@@ -158,6 +158,7 @@ namespace
 } // namespace
 
 extern bool disableModuleWrap;
+extern bool isExternal;
 
 bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
                      llvm::raw_ostream &os)
@@ -168,25 +169,34 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
   std::vector<llvm::Record *> opdefs = recordKeeper.getAllDerivedDefinitions("Op");
 #endif
 
+  const char *imports;
+  if (isExternal)
+  {
+    imports = R"(import MLIR.IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import MLIR.Dialects: namedattribute, operandsegmentsizes)";
+  }
+  else
+  {
+    imports = R"(import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ..Dialects: namedattribute, operandsegmentsizes)";
+  }
+
   const char *moduleTemplate;
   if (disableModuleWrap)
   {
-    moduleTemplate = R"(import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
-import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
+    // 0: imports, 1: content
+    moduleTemplate = R"({0}
 
-{0}
+{1}
 )";
   }
   else
   {
+    // 0: module name, 1: imports, 2: content
     moduleTemplate = R"(module {0}
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
-import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
-
 {1}
+{2}
 end # {0}
 )";
   }
@@ -439,11 +449,11 @@ end
 
   if (disableModuleWrap)
   {
-    os << llvm::formatv(moduleTemplate, modulecontents);
+    os << llvm::formatv(moduleTemplate, imports, modulecontents);
   }
   else
   {
-    os << llvm::formatv(moduleTemplate, modulename, modulecontents);
+    os << llvm::formatv(moduleTemplate, modulename, imports, modulecontents);
   }
 
   return false;
