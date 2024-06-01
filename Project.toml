@@ -11,7 +11,7 @@ ScopedValues = "7e506255-f358-4e82-b7e4-beb19740aa63"
 
 [compat]
 CEnum = "0.4"
-MLIR_jll = "14,15,16"
+MLIR_jll = "14,15,16,17"
 Preferences = "1"
 ScopedValues = "1"
 julia = "1.9"
