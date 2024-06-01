@@ -1,3 +1,5 @@
+using TaskLocalValues
+
 mutable struct Block
     block::API.MlirBlock
     @atomic owned::Bool
@@ -13,6 +15,14 @@ mutable struct Block
 end
 
 Block() = Block(Type[], Location[])
+
+"""
+Used during MLIR code generation to keep track of the current block.
+"""
+const currentblock = TaskLocalValue{Union{Nothing, Block}}(()->nothing)
+
+setcurrentblock!(block::Block) = currentblock[] = block
+resetcurrentblock!() = currentblock[] = nothing
 
 """
     Block(args, locs)
