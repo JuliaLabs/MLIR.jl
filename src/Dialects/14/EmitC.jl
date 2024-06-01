@@ -1,9 +1,9 @@
 module emitc
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
-
 
 """
 `apply`
@@ -30,11 +30,15 @@ function apply(operand::Value; result::IR.Type, applicableOperator, location=Loc
     successors = Block[]
     attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
 
-    create_operation(
-        "emitc.apply", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "emitc.apply",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -57,20 +61,32 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(operands::Vector{Value}; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
+function call(
+    operands::Vector{Value};
+    result_0::Vector{IR.Type},
+    callee,
+    args=nothing,
+    template_args=nothing,
+    location=Location(),
+)
     results = IR.Type[result_0...,]
     operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee),]
     !isnothing(args) && push!(attributes, namedattribute("args", args))
-    !isnothing(template_args) && push!(attributes, namedattribute("template_args", template_args))
+    !isnothing(template_args) &&
+        push!(attributes, namedattribute("template_args", template_args))
 
-    create_operation(
-        "emitc.call", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "emitc.call",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -102,16 +118,20 @@ function constant(; result_0::IR.Type, value, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("value", value),]
 
-    create_operation(
-        "emitc.constant", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "emitc.constant",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
 """
-`include`
+`include_`
 
 The `include` operation allows to define a source file inclusion via the
 `#include` directive.
@@ -132,19 +152,24 @@ emitc.include \"myheader.h\"
 \"emitc.include\" (){include = \"myheader.h\"} : () -> ()
 ```
 """
-function include(; include, is_standard_include=nothing, location=Location())
+function include_(; include_, is_standard_include=nothing, location=Location())
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("include", include),]
-    !isnothing(is_standard_include) && push!(attributes, namedattribute("is_standard_include", is_standard_include))
+    attributes = NamedAttribute[namedattribute("include", include_),]
+    !isnothing(is_standard_include) &&
+        push!(attributes, namedattribute("is_standard_include", is_standard_include))
 
-    create_operation(
-        "emitc.include", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "emitc.include",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 

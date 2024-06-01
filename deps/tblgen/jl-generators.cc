@@ -107,6 +107,7 @@ namespace
         leading_spaces_str += "[ ]";
       description = std::regex_replace(description, std::regex("\n" + leading_spaces_str), "\n");
     }
+    description = std::regex_replace(description, std::regex(R"(\\)"), R"(\\)");
     description = std::regex_replace(description, std::regex("(['\"$])"), "\\$1");
     description = std::regex_replace(description, std::regex("(^|\n)(Example|Syntax):"), "$1# $2");
 
@@ -141,7 +142,7 @@ namespace
     }
     // check if name colides with Julia keywords, generated module name, or "location":
     // https://docs.julialang.org/en/v1/base/base/#Keywords
-    std::vector<std::string> reservedKeywords = {"location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
+    std::vector<std::string> reservedKeywords = {"include", "location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
     if (modulename.has_value()) {
       reservedKeywords.push_back(modulename.value());
     }
@@ -157,6 +158,7 @@ namespace
 } // namespace
 
 extern bool disableModuleWrap;
+extern bool isExternal;
 
 bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
                      llvm::raw_ostream &os)
@@ -167,25 +169,34 @@ bool emitOpTableDefs(const llvm::RecordKeeper &recordKeeper,
   std::vector<llvm::Record *> opdefs = recordKeeper.getAllDerivedDefinitions("Op");
 #endif
 
+  const char *imports;
+  if (isExternal)
+  {
+    imports = R"(import MLIR.IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
+import MLIR.Dialects: namedattribute, operandsegmentsizes)";
+  }
+  else
+  {
+    imports = R"(import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
+import ..Dialects: namedattribute, operandsegmentsizes)";
+  }
+
   const char *moduleTemplate;
   if (disableModuleWrap)
   {
-    moduleTemplate = R"(import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, create_operation, context, IndexType
-import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
+    // 0: imports, 1: content
+    moduleTemplate = R"({0}
 
-{0}
+{1}
 )";
   }
   else
   {
+    // 0: module name, 1: imports, 2: content
     moduleTemplate = R"(module {0}
 
-import ...IR: NamedAttribute, value, Location, Block, Region, Attribute, create_operation, context, IndexType
-import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
-
 {1}
+{2}
 end # {0}
 )";
   }
@@ -202,7 +213,7 @@ end
     successors = Block[{3}]
     attributes = NamedAttribute[{4}]
     {5}
-    create_operation(
+    IR.create_operation(
         "{6}", location;
         operands, owned_regions, successors, attributes,
         results={7},
@@ -430,11 +441,11 @@ end
 
   if (disableModuleWrap)
   {
-    os << llvm::formatv(moduleTemplate, modulecontents);
+    os << llvm::formatv(moduleTemplate, imports, modulecontents);
   }
   else
   {
-    os << llvm::formatv(moduleTemplate, modulename, modulecontents);
+    os << llvm::formatv(moduleTemplate, modulename, imports, modulecontents);
   }
 
   return false;

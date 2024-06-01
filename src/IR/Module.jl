@@ -3,7 +3,7 @@ mutable struct Module
 
     function Module(module_)
         @assert !mlirIsNull(module_) "cannot create Module with null MlirModule"
-        finalizer(API.mlirModuleDestroy, new(module_))
+        return finalizer(API.mlirModuleDestroy, new(module_))
     end
 end
 
@@ -23,7 +23,8 @@ Base.convert(::Core.Type{API.MlirModule}, module_::Module) = module_.module_
 
 Parses a module from the string and transfers ownership to the caller.
 """
-Base.parse(::Core.Type{Module}, module_; context::Context=context()) = Module(API.mlirModuleCreateParse(context, module_))
+Base.parse(::Core.Type{Module}, module_; context::Context=context()) =
+    Module(API.mlirModuleCreateParse(context, module_))
 
 macro mlir_str(code)
     quote
@@ -55,5 +56,5 @@ Operation(module_::Module) = Operation(API.mlirModuleGetOperation(module_), fals
 
 function Base.show(io::IO, module_::Module)
     println(io, "Module:")
-    show(io, Operation(module_))
+    return show(io, Operation(module_))
 end

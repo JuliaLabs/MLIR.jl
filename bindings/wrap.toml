@@ -1,7 +1,7 @@
 [general]
-library_name = "mlir_c"
+library_name = "MLIR_C_PATH[]"
 output_file_path = "libMLIR_h.jl"
-prologue_file_path = "./missing_defs.jl"
+prologue_file_path = ""
 epilogue_file_path = ""
 use_julia_native_enum_type = false
 use_deterministic_symbol = true

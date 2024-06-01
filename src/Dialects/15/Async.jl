@@ -1,9 +1,9 @@
 module async
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, create_operation, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 import ...API
-
 
 """
 `add_to_group`
@@ -20,19 +20,25 @@ for the group lifetime.
 %2 = async.add_to_group %1, %0 : !async.token
 ```
 """
-function add_to_group(operand::Value, group::Value; rank=nothing::Union{Nothing,IR.Type}, location=Location())
+function add_to_group(
+    operand::Value, group::Value; rank=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[operand, group,]
+    operands = Value[operand, group]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(rank) && push!(results, rank)
 
-    create_operation(
-        "async.add_to_group", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.add_to_group",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -63,11 +69,15 @@ function await_all(operand::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.await_all", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.await_all",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -95,11 +105,15 @@ function await(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
-        "async.await", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.await",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -117,11 +131,15 @@ function coro_begin(id::Value; handle=nothing::Union{Nothing,IR.Type}, location=
     attributes = NamedAttribute[]
     !isnothing(handle) && push!(results, handle)
 
-    create_operation(
-        "async.coro.begin", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.coro.begin",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -139,11 +157,15 @@ function coro_end(handle::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.coro.end", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.coro.end",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -155,16 +177,20 @@ async.coro.begin operation.
 """
 function coro_free(id::Value, handle::Value; location=Location())
     results = IR.Type[]
-    operands = Value[id, handle,]
+    operands = Value[id, handle]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.coro.free", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.coro.free",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -181,11 +207,15 @@ function coro_id(; id=nothing::Union{Nothing,IR.Type}, location=Location())
     attributes = NamedAttribute[]
     !isnothing(id) && push!(results, id)
 
-    create_operation(
-        "async.coro.id", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.coro.id",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -194,7 +224,9 @@ end
 
 The `async.coro.saves` saves the coroutine state.
 """
-function coro_save(handle::Value; state=nothing::Union{Nothing,IR.Type}, location=Location())
+function coro_save(
+    handle::Value; state=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
     operands = Value[handle,]
     owned_regions = Region[]
@@ -202,11 +234,15 @@ function coro_save(handle::Value; state=nothing::Union{Nothing,IR.Type}, locatio
     attributes = NamedAttribute[]
     !isnothing(state) && push!(results, state)
 
-    create_operation(
-        "async.coro.save", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.coro.save",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -222,18 +258,28 @@ In switched-resume lowering coroutine can be already in resumed state when
 suspend operation is called, in this case control will be transferred to the
 `resume` successor skipping the `suspend` successor.
 """
-function coro_suspend(state::Value; suspendDest::Block, resumeDest::Block, cleanupDest::Block, location=Location())
+function coro_suspend(
+    state::Value;
+    suspendDest::Block,
+    resumeDest::Block,
+    cleanupDest::Block,
+    location=Location(),
+)
     results = IR.Type[]
     operands = Value[state,]
     owned_regions = Region[]
-    successors = Block[suspendDest, resumeDest, cleanupDest,]
+    successors = Block[suspendDest, resumeDest, cleanupDest]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.coro.suspend", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.coro.suspend",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -254,7 +300,9 @@ wait until the number of added tokens or values reaches the group size.
 async.await_all %group
 ```
 """
-function create_group(size::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function create_group(
+    size::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
     operands = Value[size,]
     owned_regions = Region[]
@@ -262,11 +310,15 @@ function create_group(size::Value; result=nothing::Union{Nothing,IR.Type}, locat
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
-        "async.create_group", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.create_group",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -311,19 +363,30 @@ In the example above asynchronous execution starts only after dependency
 token and value argument become ready. Unwrapped value passed to the
 attached body region as an %unwrapped value of f32 type.
 """
-function execute(dependencies::Vector{Value}, operands::Vector{Value}; token::IR.Type, results::Vector{IR.Type}, body::Region, location=Location())
-    results = IR.Type[token, results...,]
-    operands = Value[dependencies..., operands...,]
+function execute(
+    dependencies::Vector{Value},
+    operands::Vector{Value};
+    token::IR.Type,
+    results::Vector{IR.Type},
+    body::Region,
+    location=Location(),
+)
+    results = IR.Type[token, results...]
+    operands = Value[dependencies..., operands...]
     owned_regions = Region[body,]
     successors = Block[]
     attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dependencies), length(operands),]))
+    push!(attributes, operandsegmentsizes([length(dependencies), length(operands)]))
 
-    create_operation(
-        "async.execute", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.execute",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -340,11 +403,15 @@ function runtime_add_ref(operand::Value; count, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("count", count),]
 
-    create_operation(
-        "async.runtime.add_ref", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.add_ref",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -354,19 +421,25 @@ end
 The `async.runtime.add_to_group` adds an async token or value to the async
 group. Returns the rank of the added element in the group.
 """
-function runtime_add_to_group(operand::Value, group::Value; rank=nothing::Union{Nothing,IR.Type}, location=Location())
+function runtime_add_to_group(
+    operand::Value, group::Value; rank=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[operand, group,]
+    operands = Value[operand, group]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(rank) && push!(results, rank)
 
-    create_operation(
-        "async.runtime.add_to_group", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.add_to_group",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -379,16 +452,20 @@ the runtime.
 """
 function runtime_await_and_resume(operand::Value, handle::Value; location=Location())
     results = IR.Type[]
-    operands = Value[operand, handle,]
+    operands = Value[operand, handle]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.await_and_resume", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.await_and_resume",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -405,11 +482,15 @@ function runtime_await(operand::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.await", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.await",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -419,7 +500,9 @@ end
 The `async.runtime.create_group` operation creates an async dialect group
 of the given size. Group created in the empty state.
 """
-function runtime_create_group(size::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function runtime_create_group(
+    size::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
     operands = Value[size,]
     owned_regions = Region[]
@@ -427,11 +510,15 @@ function runtime_create_group(size::Value; result=nothing::Union{Nothing,IR.Type
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
-        "async.runtime.create_group", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.create_group",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -448,11 +535,15 @@ function runtime_create(; result::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.create", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.create",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -469,11 +560,15 @@ function runtime_drop_ref(operand::Value; count, location=Location())
     successors = Block[]
     attributes = NamedAttribute[namedattribute("count", count),]
 
-    create_operation(
-        "async.runtime.drop_ref", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.drop_ref",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -485,7 +580,9 @@ group (any of the async runtime values) is in the error state. It is the
 caller responsibility to check error state after the call to `await` or
 resuming after `await_and_resume`.
 """
-function runtime_is_error(operand::Value; is_error=nothing::Union{Nothing,IR.Type}, location=Location())
+function runtime_is_error(
+    operand::Value; is_error=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
     operands = Value[operand,]
     owned_regions = Region[]
@@ -493,11 +590,15 @@ function runtime_is_error(operand::Value; is_error=nothing::Union{Nothing,IR.Typ
     attributes = NamedAttribute[]
     !isnothing(is_error) && push!(results, is_error)
 
-    create_operation(
-        "async.runtime.is_error", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.is_error",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -514,11 +615,15 @@ function runtime_load(storage::Value; result::IR.Type, location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.load", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.load",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -528,7 +633,9 @@ end
 The `async.runtime.num_worker_threads` operation gets the number of threads
 in the threadpool from the runtime.
 """
-function runtime_num_worker_threads(; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function runtime_num_worker_threads(;
+    result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
@@ -536,11 +643,15 @@ function runtime_num_worker_threads(; result=nothing::Union{Nothing,IR.Type}, lo
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
-    create_operation(
-        "async.runtime.num_worker_threads", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.num_worker_threads",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -557,11 +668,15 @@ function runtime_resume(handle::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.resume", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.resume",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -578,11 +693,15 @@ function runtime_set_available(operand::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.set_available", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.set_available",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -599,11 +718,15 @@ function runtime_set_error(operand::Value; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.set_error", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.set_error",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -615,16 +738,20 @@ async.value storage.
 """
 function runtime_store(value::Value, storage::Value; location=Location())
     results = IR.Type[]
-    operands = Value[value, storage,]
+    operands = Value[value, storage]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.runtime.store", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.runtime.store",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -641,11 +768,15 @@ function yield(operands::Vector{Value}; location=Location())
     successors = Block[]
     attributes = NamedAttribute[]
 
-    create_operation(
-        "async.yield", location;
-        operands, owned_regions, successors, attributes,
+    return IR.create_operation(
+        "async.yield",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 

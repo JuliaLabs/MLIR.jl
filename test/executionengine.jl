@@ -1,7 +1,7 @@
 using MLIR
 using Test
 
-import LLVM
+using LLVM: LLVM
 
 function registerAllUpstreamDialects!(ctx)
     if LLVM.version() >= v"15"
@@ -25,22 +25,22 @@ function lowerModuleToLLVM(ctx, mod)
     end
     opm = MLIR.API.mlirPassManagerGetNestedUnder(pm, op)
     if LLVM.version() >= v"15"
-        MLIR.API.mlirPassManagerAddOwnedPass(pm,
-            MLIR.API.mlirCreateConversionConvertFuncToLLVM()
+        MLIR.API.mlirPassManagerAddOwnedPass(
+            pm, MLIR.API.mlirCreateConversionConvertFuncToLLVM()
         )
     else
-        MLIR.API.mlirPassManagerAddOwnedPass(pm,
-            MLIR.API.mlirCreateConversionConvertStandardToLLVM()
+        MLIR.API.mlirPassManagerAddOwnedPass(
+            pm, MLIR.API.mlirCreateConversionConvertStandardToLLVM()
         )
     end
 
     if LLVM.version() >= v"16"
-        MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
-            MLIR.API.mlirCreateConversionArithToLLVMConversionPass()
+        MLIR.API.mlirOpPassManagerAddOwnedPass(
+            opm, MLIR.API.mlirCreateConversionArithToLLVMConversionPass()
         )
     else
-        MLIR.API.mlirOpPassManagerAddOwnedPass(opm,
-            MLIR.API.mlirCreateConversionConvertArithmeticToLLVM()
+        MLIR.API.mlirOpPassManagerAddOwnedPass(
+            opm, MLIR.API.mlirCreateConversionConvertArithmeticToLLVM()
         )
     end
     status = MLIR.API.mlirPassManagerRun(pm, mod)
@@ -48,7 +48,7 @@ function lowerModuleToLLVM(ctx, mod)
     if status.value == 0
         error("Unexpected failure running pass failure")
     end
-    MLIR.API.mlirPassManagerDestroy(pm)
+    return MLIR.API.mlirPassManagerDestroy(pm)
 end
 
 ctx = MLIR.API.mlirContextCreate()
@@ -81,11 +81,9 @@ MLIR.API.mlirRegisterAllLLVMTranslations(ctx)
 # TODO add C-API for translateModuleToLLVMIR
 
 jit = if LLVM.version() >= v"16"
-    MLIR.API.mlirExecutionEngineCreate(
-        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL, #= enableObjectDump =# false)
+    MLIR.API.mlirExecutionEngineCreate(mod, 2, 0, C_NULL, false) #= enableObjectDump =#
 else
-    MLIR.API.mlirExecutionEngineCreate(
-        mod, #=optLevel=# 2, #=numPaths=# 0, #=sharedLibPaths=# C_NULL)
+    MLIR.API.mlirExecutionEngineCreate(mod, 2, 0, C_NULL) #=sharedLibPaths=#
 end
 
 if jit == C_NULL
