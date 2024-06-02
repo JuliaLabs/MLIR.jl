@@ -142,7 +142,11 @@ namespace
     }
     // check if name colides with Julia keywords, generated module name, or "location":
     // https://docs.julialang.org/en/v1/base/base/#Keywords
-    std::vector<std::string> reservedKeywords = {"include", "location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"};
+    // aditionally check that name doesn't conflict with local variables defined in the function (results, operands, owned_regions, successors, attributes)
+    std::vector<std::string> reservedKeywords = {
+      "results", "operands", "owned_regions", "successors", "attributes", 
+      "include", "location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"
+      };
     if (modulename.has_value()) {
       reservedKeywords.push_back(modulename.value());
     }
