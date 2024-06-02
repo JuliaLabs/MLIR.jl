@@ -37,7 +37,7 @@ If the symbol table already has a symbol with the same name, renames the symbol 
 Note that this does not move the operation itself into the block of the symbol table operation, this should be done separately.
 Returns the name of the symbol after insertion.
 """
-push!(st::SymbolTable, op::Operation) = Attribute(API.mlirSymbolTableInsert(st, op))
+Base.push!(st::SymbolTable, op::Operation) = Attribute(API.mlirSymbolTableInsert(st, op))
 
 """
     delete!(symboltable, operation)
