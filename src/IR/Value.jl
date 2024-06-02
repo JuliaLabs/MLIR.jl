@@ -21,6 +21,27 @@ value(x::T) where T = value(ValueTrait(T), x)
 value(::Convertible, x) = x.value
 value(::NonConvertible, x::T) where T = error("Type $T does not have the Convertible ValueTrait")
 
+unpack(T) = unpack(IR.ValueTrait(T), T)
+unpack(::IR.Convertible, T) = (T, )
+function unpack(::IR.NonConvertible, T)
+    @assert isbitstype(T) "Cannot unpack type $T that is not `isbitstype`"
+    @info T
+    fc = fieldcount(T)
+    if (fc == 0)
+        if (sizeof(T) == 0)
+            return []
+        else
+            error("Unable to unpack NonConvertible type $T any further")
+        end
+    end
+    unpacked = []
+    for i in 1:fc
+        ft = fieldtype(T, i)
+        append!(unpacked, unpack(ft))
+    end
+    return unpacked
+end
+
 """
     ==(value1, value2)
 
