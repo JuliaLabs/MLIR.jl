@@ -17,7 +17,7 @@ end
 
 begin
     # list dialect operations
-    local dialectops = mapreduce(mergewith!(∪), [v14, v15, v16]) do mod
+    local dialectops = mapreduce(mergewith!(∪), [v14, v15, v16, v17]) do mod
         dialects = filter(names(mod; all=true)) do dialect
             dialect ∉ [nameof(mod), :eval, :include] && !startswith(string(dialect), '#')
         end
@@ -33,11 +33,11 @@ begin
     for (dialect, ops) in dialectops
         mod = @eval module $dialect
             using ...MLIR: MLIR_VERSION, MLIRException
-            using ..Dialects: v14, v15, v16
+            using ..Dialects: v14, v15, v16, v17
         end
 
         for op in ops
-            container_mods = filter([v14, v15, v16]) do mod
+            container_mods = filter([v14, v15, v16, v17]) do mod
                 dialect in names(mod; all=true) &&
                     op in names(getproperty(mod, dialect); all=true)
             end
