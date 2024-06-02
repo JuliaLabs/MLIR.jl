@@ -21,7 +21,7 @@ Used during MLIR code generation to keep track of the current block.
 """
 const currentblock = TaskLocalValue{Union{Nothing, Block}}(()->nothing)
 
-setcurrentblock!(block::Block) = currentblock[] = block
+setcurrentblock!(block::Union{Nothing, Block}) = currentblock[] = block
 resetcurrentblock!() = currentblock[] = nothing
 
 """

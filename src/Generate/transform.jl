@@ -7,6 +7,13 @@ function handle_goto(cg, dest, args)
 end
 function handle_gotoifnot(cg, cond, true_dest, false_dest, true_args, false_args)
     generate_gotoifnot(cg, cond; true_args, false_args, true_dest, false_dest, location=IR.Location())
+end 
+function handle_gotoifnot(cg, cond::Bool, true_dest, false_dest, true_args, false_args)
+    if cond
+        handle_goto(cg, true_dest, true_args)
+    else
+        handle_goto(cg, false_dest, false_args)
+    end
 end
 function handle_phi(cg, T, i)
     T(IR.argument(currentblock(cg), i)) # TODO: flimsy conversion from IR.Value to T. only works if T's constructor can handle this.
@@ -15,7 +22,7 @@ function handle_return(cg, val::T) where T
     if isnothing(val)
         returnvalues = []
     else
-        returnvalues = reinterpret(Tuple{unpack(T)...}, val)
+        returnvalues = reinterpret(Tuple{IR.unpack(T)...}, val)
     end
     generate_return(cg, returnvalues; location=IR.Location())
 end
@@ -97,28 +104,30 @@ region = builder(args)
 
 For a more easy-to-use interface, use methods from `CodegenContext`.
 """
-function generate!(cg, ir::CC.IRCode)
+function generate!(cg, ir::CC.IRCode, ret)
     original_currentblock = IR.currentblock[]
+    
+    reg = IR.Region()
+    @info "ping!" reg
+
+    blocks = [
+        prepare_block(ir, bb)
+        for bb in ir.cfg.blocks
+    ]
+    entryblock = first(blocks)
 
     argtypes = ir.argtypes[begin+1:end] # the first argument is the type of the function itself, we don't need this.
     args = map(enumerate(argtypes)) do (i, argtype)
         temp = []
-        for t in unpack(argtype)
+        for t in IR.unpack(argtype)
             arg = IR.push_argument!(entryblock, IR.Type(t))
             push!(temp, t(arg))
         end
         reinterpret(argtype, Tuple(temp))
     end
 
-    reg = IR.Region()
-
-    blocks = [
-        prepare_block(ir, bb)
-        for bb in ir.cfg.blocks
-    ]
-
     currentblockindex = 0
-    function next_block!()
+    function next_block()
         currentblockindex += 1
         b = blocks[currentblockindex]
         IR.setcurrentblock!(b)
@@ -127,14 +136,21 @@ function generate!(cg, ir::CC.IRCode)
 
     transformed_ir = transform(cg, ir, blocks, next_block)
     
-    builder = Core.OpaqueClosure(transformed_ir; do_compile=true)
+    builder! = Core.OpaqueClosure(transformed_ir; do_compile=true)
 
-    builder(args...)
+    builder!(args...)
 
-    setcurrentblock!(original_currentblock) # restore original currentblock (needed for recursion)
+    IR.setcurrentblock!(original_currentblock) # restore original currentblock (needed for recursion)
 
-    return region
+    @info argtypes
+
+    argtypes = IR.Type[IR.type(IR.argument(entryblock, i)) for i in 1:IR.nargs(entryblock)]
+    rettypes = IR.Type[IR.Type.(IR.unpack(ret))...]
+
+    return generate_function(cg, argtypes=>rettypes, reg)
 end
+generate(cg, ir::CC.IRCode, ret) = generate!(cg, Core.Compiler.copy(ir), ret)
+generate(cg, f, types) = generate!(cg, only(Core.Compiler.code_ircode(f, types, interp=MLIRInterpreter()))...)
 
 function transform(cg, ir, blocks, next_block)
     # insert calls to next_block at the beginning of each block and add explicit gotos if they are missing.
@@ -305,6 +321,8 @@ function transform(cg, ir, blocks, next_block)
 
     # errors if invalid
     CC.verify_ir(ir)
+
+    return ir
 end
 
 "Generates a block argument for each phi node present in the block."

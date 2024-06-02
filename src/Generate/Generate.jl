@@ -3,6 +3,7 @@ include("CodeInfoTools.jl")
 module Generate
 
 using ..IR
+import ..Dialects
 
 include("intrinsic.jl")
 include("absint.jl")

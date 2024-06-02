@@ -324,7 +324,7 @@ function create_operation(
         end
         Operation(op, true)
     end
-    if (!isnothing(currentblock))
+    if (!isnothing(currentblock[]))
         push!(currentblock[], op)
     end
     return op
