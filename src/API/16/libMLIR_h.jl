@@ -1,16 +1,33 @@
 using CEnum
 
-const __darwin_intptr_t = Clong
+const intptr_t = Clong
 
-const intptr_t = __darwin_intptr_t
+struct MlirDialectHandle
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirTypeID
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirTypeIDAllocator
+    ptr::Ptr{Cvoid}
+end
 
 """
-    mlirStringRefCreate(str, length)
+    MlirStringRef
 
-Constructs a string reference from the pointer and length. The pointer need not reference to a null-terminated string.
+| Field | Note                          |
+| :---- | :---------------------------- |
+| data  | Pointer to the first symbol.  |
 """
+struct MlirStringRef
+    data::Cstring
+    length::Cint
+end
+
 function mlirStringRefCreate(str, length)
-    @ccall (MLIR_C_PATH[]).mlirStringRefCreate(str::Cstring, length::Csize_t)::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirStringRefCreate(str::Cstring, length::Cint)::MlirStringRef
 end
 
 """
@@ -28,9 +45,7 @@ end
 Returns true if two string references are equal, false otherwise.
 """
 function mlirStringRefEqual(string, other)
-    @ccall (MLIR_C_PATH[]).mlirStringRefEqual(
-        string::MlirStringRef, other::MlirStringRef
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirStringRefEqual(string::MlirStringRef, other::MlirStringRef)::Bool
 end
 
 # typedef void ( * MlirStringCallback ) ( MlirStringRef , void * )
@@ -40,6 +55,15 @@ A callback for returning string references.
 This function is called back by the functions that need to return a reference to the portion of the string with the following arguments: - an [`MlirStringRef`](@ref) representing the current portion of the string - a pointer to user data forwarded from the printing call.
 """
 const MlirStringCallback = Ptr{Cvoid}
+
+"""
+    MlirLogicalResult
+
+A logical result value, essentially a boolean with named states. LLVM convention for using boolean values to designate success or failure of an operation is a moving target, so MLIR opted for an explicit class. Instances of [`MlirLogicalResult`](@ref) must only be inspected using the associated functions.
+"""
+struct MlirLogicalResult
+    value::Int8
+end
 
 """
     mlirLogicalResultIsSuccess(res)
@@ -104,13 +128,8 @@ function mlirTypeIDEqual(typeID1, typeID2)
     @ccall (MLIR_C_PATH[]).mlirTypeIDEqual(typeID1::MlirTypeID, typeID2::MlirTypeID)::Bool
 end
 
-"""
-    mlirTypeIDHashValue(typeID)
-
-Returns the hash value of the type id.
-"""
 function mlirTypeIDHashValue(typeID)
-    @ccall (MLIR_C_PATH[]).mlirTypeIDHashValue(typeID::MlirTypeID)::Csize_t
+    @ccall (MLIR_C_PATH[]).mlirTypeIDHashValue(typeID::MlirTypeID)::Cint
 end
 
 """
@@ -137,9 +156,79 @@ end
 Allocates a type id that is valid for the lifetime of the allocator
 """
 function mlirTypeIDAllocatorAllocateTypeID(allocator)
-    @ccall (MLIR_C_PATH[]).mlirTypeIDAllocatorAllocateTypeID(
-        allocator::MlirTypeIDAllocator
-    )::MlirTypeID
+    @ccall (MLIR_C_PATH[]).mlirTypeIDAllocatorAllocateTypeID(allocator::MlirTypeIDAllocator)::MlirTypeID
+end
+
+struct MlirContext
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirDialect
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirDialectRegistry
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirOperation
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirOpOperand
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirOpPrintingFlags
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirBlock
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirRegion
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirSymbolTable
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirAttribute
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirIdentifier
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirLocation
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirModule
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirType
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirValue
+    ptr::Ptr{Cvoid}
+end
+
+"""
+    MlirNamedAttribute
+
+Named MLIR attribute.
+
+A named attribute is essentially a (name, attribute) pair where the name is a string.
+"""
+struct MlirNamedAttribute
+    name::MlirIdentifier
+    attribute::MlirAttribute
 end
 
 """
@@ -184,9 +273,7 @@ end
 Sets whether unregistered dialects are allowed in this context.
 """
 function mlirContextSetAllowUnregisteredDialects(context, allow)
-    @ccall (MLIR_C_PATH[]).mlirContextSetAllowUnregisteredDialects(
-        context::MlirContext, allow::Bool
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirContextSetAllowUnregisteredDialects(context::MlirContext, allow::Bool)::Cvoid
 end
 
 """
@@ -195,9 +282,7 @@ end
 Returns whether the context allows unregistered dialects.
 """
 function mlirContextGetAllowUnregisteredDialects(context)
-    @ccall (MLIR_C_PATH[]).mlirContextGetAllowUnregisteredDialects(
-        context::MlirContext
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirContextGetAllowUnregisteredDialects(context::MlirContext)::Bool
 end
 
 """
@@ -206,9 +291,7 @@ end
 Returns the number of dialects registered with the given context. A registered dialect will be loaded if needed by the parser.
 """
 function mlirContextGetNumRegisteredDialects(context)
-    @ccall (MLIR_C_PATH[]).mlirContextGetNumRegisteredDialects(
-        context::MlirContext
-    )::intptr_t
+    @ccall (MLIR_C_PATH[]).mlirContextGetNumRegisteredDialects(context::MlirContext)::intptr_t
 end
 
 """
@@ -217,9 +300,7 @@ end
 Append the contents of the given dialect registry to the registry associated with the context.
 """
 function mlirContextAppendDialectRegistry(ctx, registry)
-    @ccall (MLIR_C_PATH[]).mlirContextAppendDialectRegistry(
-        ctx::MlirContext, registry::MlirDialectRegistry
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirContextAppendDialectRegistry(ctx::MlirContext, registry::MlirDialectRegistry)::Cvoid
 end
 
 """
@@ -237,9 +318,7 @@ end
 Gets the dialect instance owned by the given context using the dialect namespace to identify it, loads (i.e., constructs the instance of) the dialect if necessary. If the dialect is not registered with the context, returns null. Use mlirContextLoad<Name>Dialect to load an unregistered dialect.
 """
 function mlirContextGetOrLoadDialect(context, name)
-    @ccall (MLIR_C_PATH[]).mlirContextGetOrLoadDialect(
-        context::MlirContext, name::MlirStringRef
-    )::MlirDialect
+    @ccall (MLIR_C_PATH[]).mlirContextGetOrLoadDialect(context::MlirContext, name::MlirStringRef)::MlirDialect
 end
 
 """
@@ -248,9 +327,7 @@ end
 Set threading mode (must be set to false to mlir-print-ir-after-all).
 """
 function mlirContextEnableMultithreading(context, enable)
-    @ccall (MLIR_C_PATH[]).mlirContextEnableMultithreading(
-        context::MlirContext, enable::Bool
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirContextEnableMultithreading(context::MlirContext, enable::Bool)::Cvoid
 end
 
 """
@@ -268,9 +345,7 @@ end
 Returns whether the given fully-qualified operation (i.e. 'dialect.operation') is registered with the context. This will return true if the dialect is loaded and the operation is registered within the dialect.
 """
 function mlirContextIsRegisteredOperation(context, name)
-    @ccall (MLIR_C_PATH[]).mlirContextIsRegisteredOperation(
-        context::MlirContext, name::MlirStringRef
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirContextIsRegisteredOperation(context::MlirContext, name::MlirStringRef)::Bool
 end
 
 """
@@ -297,9 +372,7 @@ end
 Checks if two dialects that belong to the same context are equal. Dialects from different contexts will not compare equal.
 """
 function mlirDialectEqual(dialect1, dialect2)
-    @ccall (MLIR_C_PATH[]).mlirDialectEqual(
-        dialect1::MlirDialect, dialect2::MlirDialect
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirDialectEqual(dialect1::MlirDialect, dialect2::MlirDialect)::Bool
 end
 
 """
@@ -317,9 +390,7 @@ end
 Returns the namespace associated with the provided dialect handle.
 """
 function mlirDialectHandleGetNamespace(arg1)
-    @ccall (MLIR_C_PATH[]).mlirDialectHandleGetNamespace(
-        arg1::MlirDialectHandle
-    )::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirDialectHandleGetNamespace(arg1::MlirDialectHandle)::MlirStringRef
 end
 
 """
@@ -328,9 +399,7 @@ end
 Inserts the dialect associated with the provided dialect handle into the provided dialect registry
 """
 function mlirDialectHandleInsertDialect(arg1, arg2)
-    @ccall (MLIR_C_PATH[]).mlirDialectHandleInsertDialect(
-        arg1::MlirDialectHandle, arg2::MlirDialectRegistry
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirDialectHandleInsertDialect(arg1::MlirDialectHandle, arg2::MlirDialectRegistry)::Cvoid
 end
 
 """
@@ -339,9 +408,7 @@ end
 Registers the dialect associated with the provided dialect handle.
 """
 function mlirDialectHandleRegisterDialect(arg1, arg2)
-    @ccall (MLIR_C_PATH[]).mlirDialectHandleRegisterDialect(
-        arg1::MlirDialectHandle, arg2::MlirContext
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirDialectHandleRegisterDialect(arg1::MlirDialectHandle, arg2::MlirContext)::Cvoid
 end
 
 """
@@ -350,9 +417,7 @@ end
 Loads the dialect associated with the provided dialect handle.
 """
 function mlirDialectHandleLoadDialect(arg1, arg2)
-    @ccall (MLIR_C_PATH[]).mlirDialectHandleLoadDialect(
-        arg1::MlirDialectHandle, arg2::MlirContext
-    )::MlirDialect
+    @ccall (MLIR_C_PATH[]).mlirDialectHandleLoadDialect(arg1::MlirDialectHandle, arg2::MlirContext)::MlirDialect
 end
 
 """
@@ -388,9 +453,7 @@ end
 Creates an File/Line/Column location owned by the given context.
 """
 function mlirLocationFileLineColGet(context, filename, line, col)
-    @ccall (MLIR_C_PATH[]).mlirLocationFileLineColGet(
-        context::MlirContext, filename::MlirStringRef, line::Cuint, col::Cuint
-    )::MlirLocation
+    @ccall (MLIR_C_PATH[]).mlirLocationFileLineColGet(context::MlirContext, filename::MlirStringRef, line::Cuint, col::Cuint)::MlirLocation
 end
 
 """
@@ -399,9 +462,7 @@ end
 Creates a call site location with a callee and a caller.
 """
 function mlirLocationCallSiteGet(callee, caller)
-    @ccall (MLIR_C_PATH[]).mlirLocationCallSiteGet(
-        callee::MlirLocation, caller::MlirLocation
-    )::MlirLocation
+    @ccall (MLIR_C_PATH[]).mlirLocationCallSiteGet(callee::MlirLocation, caller::MlirLocation)::MlirLocation
 end
 
 """
@@ -410,12 +471,7 @@ end
 Creates a fused location with an array of locations and metadata.
 """
 function mlirLocationFusedGet(ctx, nLocations, locations, metadata)
-    @ccall (MLIR_C_PATH[]).mlirLocationFusedGet(
-        ctx::MlirContext,
-        nLocations::intptr_t,
-        locations::Ptr{MlirLocation},
-        metadata::MlirAttribute,
-    )::MlirLocation
+    @ccall (MLIR_C_PATH[]).mlirLocationFusedGet(ctx::MlirContext, nLocations::intptr_t, locations::Ptr{MlirLocation}, metadata::MlirAttribute)::MlirLocation
 end
 
 """
@@ -424,9 +480,7 @@ end
 Creates a name location owned by the given context. Providing null location for childLoc is allowed and if childLoc is null location, then the behavior is the same as having unknown child location.
 """
 function mlirLocationNameGet(context, name, childLoc)
-    @ccall (MLIR_C_PATH[]).mlirLocationNameGet(
-        context::MlirContext, name::MlirStringRef, childLoc::MlirLocation
-    )::MlirLocation
+    @ccall (MLIR_C_PATH[]).mlirLocationNameGet(context::MlirContext, name::MlirStringRef, childLoc::MlirLocation)::MlirLocation
 end
 
 """
@@ -471,9 +525,7 @@ end
 Prints a location by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirLocationPrint(location, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirLocationPrint(
-        location::MlirLocation, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirLocationPrint(location::MlirLocation, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -491,9 +543,7 @@ end
 Parses a module from the string and transfers ownership to the caller.
 """
 function mlirModuleCreateParse(context, _module)
-    @ccall (MLIR_C_PATH[]).mlirModuleCreateParse(
-        context::MlirContext, _module::MlirStringRef
-    )::MlirModule
+    @ccall (MLIR_C_PATH[]).mlirModuleCreateParse(context::MlirContext, _module::MlirStringRef)::MlirModule
 end
 
 """
@@ -550,15 +600,29 @@ function mlirModuleFromOperation(op)
     @ccall (MLIR_C_PATH[]).mlirModuleFromOperation(op::MlirOperation)::MlirModule
 end
 
+struct MlirOperationState
+    name::MlirStringRef
+    location::MlirLocation
+    nResults::intptr_t
+    results::Ptr{MlirType}
+    nOperands::intptr_t
+    operands::Ptr{MlirValue}
+    nRegions::intptr_t
+    regions::Ptr{MlirRegion}
+    nSuccessors::intptr_t
+    successors::Ptr{MlirBlock}
+    nAttributes::intptr_t
+    attributes::Ptr{MlirNamedAttribute}
+    enableResultTypeInference::Bool
+end
+
 """
     mlirOperationStateGet(name, loc)
 
 Constructs an operation state from a name and a location.
 """
 function mlirOperationStateGet(name, loc)
-    @ccall (MLIR_C_PATH[]).mlirOperationStateGet(
-        name::MlirStringRef, loc::MlirLocation
-    )::MlirOperationState
+    @ccall (MLIR_C_PATH[]).mlirOperationStateGet(name::MlirStringRef, loc::MlirLocation)::MlirOperationState
 end
 
 """
@@ -567,33 +631,23 @@ end
 Adds a list of components to the operation state.
 """
 function mlirOperationStateAddResults(state, n, results)
-    @ccall (MLIR_C_PATH[]).mlirOperationStateAddResults(
-        state::Ptr{MlirOperationState}, n::intptr_t, results::Ptr{MlirType}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationStateAddResults(state::Ptr{MlirOperationState}, n::intptr_t, results::Ptr{MlirType})::Cvoid
 end
 
 function mlirOperationStateAddOperands(state, n, operands)
-    @ccall (MLIR_C_PATH[]).mlirOperationStateAddOperands(
-        state::Ptr{MlirOperationState}, n::intptr_t, operands::Ptr{MlirValue}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationStateAddOperands(state::Ptr{MlirOperationState}, n::intptr_t, operands::Ptr{MlirValue})::Cvoid
 end
 
 function mlirOperationStateAddOwnedRegions(state, n, regions)
-    @ccall (MLIR_C_PATH[]).mlirOperationStateAddOwnedRegions(
-        state::Ptr{MlirOperationState}, n::intptr_t, regions::Ptr{MlirRegion}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationStateAddOwnedRegions(state::Ptr{MlirOperationState}, n::intptr_t, regions::Ptr{MlirRegion})::Cvoid
 end
 
 function mlirOperationStateAddSuccessors(state, n, successors)
-    @ccall (MLIR_C_PATH[]).mlirOperationStateAddSuccessors(
-        state::Ptr{MlirOperationState}, n::intptr_t, successors::Ptr{MlirBlock}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationStateAddSuccessors(state::Ptr{MlirOperationState}, n::intptr_t, successors::Ptr{MlirBlock})::Cvoid
 end
 
 function mlirOperationStateAddAttributes(state, n, attributes)
-    @ccall (MLIR_C_PATH[]).mlirOperationStateAddAttributes(
-        state::Ptr{MlirOperationState}, n::intptr_t, attributes::Ptr{MlirNamedAttribute}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationStateAddAttributes(state::Ptr{MlirOperationState}, n::intptr_t, attributes::Ptr{MlirNamedAttribute})::Cvoid
 end
 
 """
@@ -602,9 +656,7 @@ end
 Enables result type inference for the operation under construction. If enabled, then the caller must not have called [`mlirOperationStateAddResults`](@ref)(). Note that if enabled, the [`mlirOperationCreate`](@ref)() call is failable: it will return a null operation on inference failure and will emit diagnostics.
 """
 function mlirOperationStateEnableResultTypeInference(state)
-    @ccall (MLIR_C_PATH[]).mlirOperationStateEnableResultTypeInference(
-        state::Ptr{MlirOperationState}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationStateEnableResultTypeInference(state::Ptr{MlirOperationState})::Cvoid
 end
 
 """
@@ -631,9 +683,7 @@ end
 Enables the elision of large elements attributes by printing a lexically valid but otherwise meaningless form instead of the element data. The `largeElementLimit` is used to configure what is considered to be a "large" ElementsAttr by providing an upper limit to the number of elements.
 """
 function mlirOpPrintingFlagsElideLargeElementsAttrs(flags, largeElementLimit)
-    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsElideLargeElementsAttrs(
-        flags::MlirOpPrintingFlags, largeElementLimit::intptr_t
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsElideLargeElementsAttrs(flags::MlirOpPrintingFlags, largeElementLimit::intptr_t)::Cvoid
 end
 
 """
@@ -642,9 +692,7 @@ end
 Enable or disable printing of debug information (based on `enable`). If 'prettyForm' is set to true, debug information is printed in a more readable 'pretty' form. Note: The IR generated with 'prettyForm' is not parsable.
 """
 function mlirOpPrintingFlagsEnableDebugInfo(flags, enable, prettyForm)
-    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsEnableDebugInfo(
-        flags::MlirOpPrintingFlags, enable::Bool, prettyForm::Bool
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsEnableDebugInfo(flags::MlirOpPrintingFlags, enable::Bool, prettyForm::Bool)::Cvoid
 end
 
 """
@@ -653,9 +701,7 @@ end
 Always print operations in the generic form.
 """
 function mlirOpPrintingFlagsPrintGenericOpForm(flags)
-    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsPrintGenericOpForm(
-        flags::MlirOpPrintingFlags
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsPrintGenericOpForm(flags::MlirOpPrintingFlags)::Cvoid
 end
 
 """
@@ -664,9 +710,7 @@ end
 Use local scope when printing the operation. This allows for using the printer in a more localized and thread-safe setting, but may not necessarily be identical to what the IR will look like when dumping the full module.
 """
 function mlirOpPrintingFlagsUseLocalScope(flags)
-    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsUseLocalScope(
-        flags::MlirOpPrintingFlags
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOpPrintingFlagsUseLocalScope(flags::MlirOpPrintingFlags)::Cvoid
 end
 
 """
@@ -677,9 +721,7 @@ Creates an operation and transfers ownership to the caller. Note that caller own
 This call can fail under the following conditions, in which case, it will return a null operation and emit diagnostics: - Result type inference is enabled and cannot be performed.
 """
 function mlirOperationCreate(state)
-    @ccall (MLIR_C_PATH[]).mlirOperationCreate(
-        state::Ptr{MlirOperationState}
-    )::MlirOperation
+    @ccall (MLIR_C_PATH[]).mlirOperationCreate(state::Ptr{MlirOperationState})::MlirOperation
 end
 
 """
@@ -796,9 +838,7 @@ end
 Returns `pos`-th region attached to the operation.
 """
 function mlirOperationGetRegion(op, pos)
-    @ccall (MLIR_C_PATH[]).mlirOperationGetRegion(
-        op::MlirOperation, pos::intptr_t
-    )::MlirRegion
+    @ccall (MLIR_C_PATH[]).mlirOperationGetRegion(op::MlirOperation, pos::intptr_t)::MlirRegion
 end
 
 """
@@ -825,9 +865,7 @@ end
 Returns `pos`-th operand of the operation.
 """
 function mlirOperationGetOperand(op, pos)
-    @ccall (MLIR_C_PATH[]).mlirOperationGetOperand(
-        op::MlirOperation, pos::intptr_t
-    )::MlirValue
+    @ccall (MLIR_C_PATH[]).mlirOperationGetOperand(op::MlirOperation, pos::intptr_t)::MlirValue
 end
 
 """
@@ -836,9 +874,7 @@ end
 Sets the `pos`-th operand of the operation.
 """
 function mlirOperationSetOperand(op, pos, newValue)
-    @ccall (MLIR_C_PATH[]).mlirOperationSetOperand(
-        op::MlirOperation, pos::intptr_t, newValue::MlirValue
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationSetOperand(op::MlirOperation, pos::intptr_t, newValue::MlirValue)::Cvoid
 end
 
 """
@@ -856,9 +892,7 @@ end
 Returns `pos`-th result of the operation.
 """
 function mlirOperationGetResult(op, pos)
-    @ccall (MLIR_C_PATH[]).mlirOperationGetResult(
-        op::MlirOperation, pos::intptr_t
-    )::MlirValue
+    @ccall (MLIR_C_PATH[]).mlirOperationGetResult(op::MlirOperation, pos::intptr_t)::MlirValue
 end
 
 """
@@ -876,9 +910,7 @@ end
 Returns `pos`-th successor of the operation.
 """
 function mlirOperationGetSuccessor(op, pos)
-    @ccall (MLIR_C_PATH[]).mlirOperationGetSuccessor(
-        op::MlirOperation, pos::intptr_t
-    )::MlirBlock
+    @ccall (MLIR_C_PATH[]).mlirOperationGetSuccessor(op::MlirOperation, pos::intptr_t)::MlirBlock
 end
 
 """
@@ -896,9 +928,7 @@ end
 Return `pos`-th attribute of the operation.
 """
 function mlirOperationGetAttribute(op, pos)
-    @ccall (MLIR_C_PATH[]).mlirOperationGetAttribute(
-        op::MlirOperation, pos::intptr_t
-    )::MlirNamedAttribute
+    @ccall (MLIR_C_PATH[]).mlirOperationGetAttribute(op::MlirOperation, pos::intptr_t)::MlirNamedAttribute
 end
 
 """
@@ -907,9 +937,7 @@ end
 Returns an attribute attached to the operation given its name.
 """
 function mlirOperationGetAttributeByName(op, name)
-    @ccall (MLIR_C_PATH[]).mlirOperationGetAttributeByName(
-        op::MlirOperation, name::MlirStringRef
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirOperationGetAttributeByName(op::MlirOperation, name::MlirStringRef)::MlirAttribute
 end
 
 """
@@ -918,9 +946,7 @@ end
 Sets an attribute by name, replacing the existing if it exists or adding a new one otherwise.
 """
 function mlirOperationSetAttributeByName(op, name, attr)
-    @ccall (MLIR_C_PATH[]).mlirOperationSetAttributeByName(
-        op::MlirOperation, name::MlirStringRef, attr::MlirAttribute
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationSetAttributeByName(op::MlirOperation, name::MlirStringRef, attr::MlirAttribute)::Cvoid
 end
 
 """
@@ -929,9 +955,7 @@ end
 Removes an attribute by name. Returns false if the attribute was not found and true if removed.
 """
 function mlirOperationRemoveAttributeByName(op, name)
-    @ccall (MLIR_C_PATH[]).mlirOperationRemoveAttributeByName(
-        op::MlirOperation, name::MlirStringRef
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirOperationRemoveAttributeByName(op::MlirOperation, name::MlirStringRef)::Bool
 end
 
 """
@@ -940,9 +964,7 @@ end
 Prints an operation by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirOperationPrint(op, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirOperationPrint(
-        op::MlirOperation, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationPrint(op::MlirOperation, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -951,12 +973,7 @@ end
 Same as [`mlirOperationPrint`](@ref) but accepts flags controlling the printing behavior.
 """
 function mlirOperationPrintWithFlags(op, flags, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirOperationPrintWithFlags(
-        op::MlirOperation,
-        flags::MlirOpPrintingFlags,
-        callback::MlirStringCallback,
-        userData::Ptr{Cvoid},
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationPrintWithFlags(op::MlirOperation, flags::MlirOpPrintingFlags, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -965,9 +982,7 @@ end
 Same as [`mlirOperationPrint`](@ref) but writing the bytecode format out.
 """
 function mlirOperationWriteBytecode(op, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirOperationWriteBytecode(
-        op::MlirOperation, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationWriteBytecode(op::MlirOperation, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -994,9 +1009,7 @@ end
 Moves the given operation immediately after the other operation in its parent block. The given operation may be owned by the caller or by its current block. The other operation must belong to a block. In any case, the ownership is transferred to the block of the other operation.
 """
 function mlirOperationMoveAfter(op, other)
-    @ccall (MLIR_C_PATH[]).mlirOperationMoveAfter(
-        op::MlirOperation, other::MlirOperation
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationMoveAfter(op::MlirOperation, other::MlirOperation)::Cvoid
 end
 
 """
@@ -1005,9 +1018,7 @@ end
 Moves the given operation immediately before the other operation in its parent block. The given operation may be owner by the caller or by its current block. The other operation must belong to a block. In any case, the ownership is transferred to the block of the other operation.
 """
 function mlirOperationMoveBefore(op, other)
-    @ccall (MLIR_C_PATH[]).mlirOperationMoveBefore(
-        op::MlirOperation, other::MlirOperation
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOperationMoveBefore(op::MlirOperation, other::MlirOperation)::Cvoid
 end
 
 """
@@ -1061,9 +1072,7 @@ end
 Takes a block owned by the caller and appends it to the given region.
 """
 function mlirRegionAppendOwnedBlock(region, block)
-    @ccall (MLIR_C_PATH[]).mlirRegionAppendOwnedBlock(
-        region::MlirRegion, block::MlirBlock
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirRegionAppendOwnedBlock(region::MlirRegion, block::MlirBlock)::Cvoid
 end
 
 """
@@ -1072,9 +1081,7 @@ end
 Takes a block owned by the caller and inserts it at `pos` to the given region. This is an expensive operation that linearly scans the region, prefer insertAfter/Before instead.
 """
 function mlirRegionInsertOwnedBlock(region, pos, block)
-    @ccall (MLIR_C_PATH[]).mlirRegionInsertOwnedBlock(
-        region::MlirRegion, pos::intptr_t, block::MlirBlock
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirRegionInsertOwnedBlock(region::MlirRegion, pos::intptr_t, block::MlirBlock)::Cvoid
 end
 
 """
@@ -1083,9 +1090,7 @@ end
 Takes a block owned by the caller and inserts it after the (non-owned) reference block in the given region. The reference block must belong to the region. If the reference block is null, prepends the block to the region.
 """
 function mlirRegionInsertOwnedBlockAfter(region, reference, block)
-    @ccall (MLIR_C_PATH[]).mlirRegionInsertOwnedBlockAfter(
-        region::MlirRegion, reference::MlirBlock, block::MlirBlock
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirRegionInsertOwnedBlockAfter(region::MlirRegion, reference::MlirBlock, block::MlirBlock)::Cvoid
 end
 
 """
@@ -1094,9 +1099,7 @@ end
 Takes a block owned by the caller and inserts it before the (non-owned) reference block in the given region. The reference block must belong to the region. If the reference block is null, appends the block to the region.
 """
 function mlirRegionInsertOwnedBlockBefore(region, reference, block)
-    @ccall (MLIR_C_PATH[]).mlirRegionInsertOwnedBlockBefore(
-        region::MlirRegion, reference::MlirBlock, block::MlirBlock
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirRegionInsertOwnedBlockBefore(region::MlirRegion, reference::MlirBlock, block::MlirBlock)::Cvoid
 end
 
 """
@@ -1123,9 +1126,7 @@ end
 Creates a new empty block with the given argument types and transfers ownership to the caller.
 """
 function mlirBlockCreate(nArgs, args, locs)
-    @ccall (MLIR_C_PATH[]).mlirBlockCreate(
-        nArgs::intptr_t, args::Ptr{MlirType}, locs::Ptr{MlirLocation}
-    )::MlirBlock
+    @ccall (MLIR_C_PATH[]).mlirBlockCreate(nArgs::intptr_t, args::Ptr{MlirType}, locs::Ptr{MlirLocation})::MlirBlock
 end
 
 """
@@ -1215,9 +1216,7 @@ end
 Takes an operation owned by the caller and appends it to the block.
 """
 function mlirBlockAppendOwnedOperation(block, operation)
-    @ccall (MLIR_C_PATH[]).mlirBlockAppendOwnedOperation(
-        block::MlirBlock, operation::MlirOperation
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirBlockAppendOwnedOperation(block::MlirBlock, operation::MlirOperation)::Cvoid
 end
 
 """
@@ -1226,9 +1225,7 @@ end
 Takes an operation owned by the caller and inserts it as `pos` to the block. This is an expensive operation that scans the block linearly, prefer insertBefore/After instead.
 """
 function mlirBlockInsertOwnedOperation(block, pos, operation)
-    @ccall (MLIR_C_PATH[]).mlirBlockInsertOwnedOperation(
-        block::MlirBlock, pos::intptr_t, operation::MlirOperation
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirBlockInsertOwnedOperation(block::MlirBlock, pos::intptr_t, operation::MlirOperation)::Cvoid
 end
 
 """
@@ -1237,9 +1234,7 @@ end
 Takes an operation owned by the caller and inserts it after the (non-owned) reference operation in the given block. If the reference is null, prepends the operation. Otherwise, the reference must belong to the block.
 """
 function mlirBlockInsertOwnedOperationAfter(block, reference, operation)
-    @ccall (MLIR_C_PATH[]).mlirBlockInsertOwnedOperationAfter(
-        block::MlirBlock, reference::MlirOperation, operation::MlirOperation
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirBlockInsertOwnedOperationAfter(block::MlirBlock, reference::MlirOperation, operation::MlirOperation)::Cvoid
 end
 
 """
@@ -1248,9 +1243,7 @@ end
 Takes an operation owned by the caller and inserts it before the (non-owned) reference operation in the given block. If the reference is null, appends the operation. Otherwise, the reference must belong to the block.
 """
 function mlirBlockInsertOwnedOperationBefore(block, reference, operation)
-    @ccall (MLIR_C_PATH[]).mlirBlockInsertOwnedOperationBefore(
-        block::MlirBlock, reference::MlirOperation, operation::MlirOperation
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirBlockInsertOwnedOperationBefore(block::MlirBlock, reference::MlirOperation, operation::MlirOperation)::Cvoid
 end
 
 """
@@ -1268,9 +1261,7 @@ end
 Appends an argument of the specified type to the block. Returns the newly added argument.
 """
 function mlirBlockAddArgument(block, type, loc)
-    @ccall (MLIR_C_PATH[]).mlirBlockAddArgument(
-        block::MlirBlock, type::MlirType, loc::MlirLocation
-    )::MlirValue
+    @ccall (MLIR_C_PATH[]).mlirBlockAddArgument(block::MlirBlock, type::MlirType, loc::MlirLocation)::MlirValue
 end
 
 """
@@ -1288,9 +1279,7 @@ end
 Prints a block by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirBlockPrint(block, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirBlockPrint(
-        block::MlirBlock, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirBlockPrint(block::MlirBlock, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -1398,9 +1387,7 @@ end
 Prints a value by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirValuePrint(value, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirValuePrint(
-        value::MlirValue, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirValuePrint(value::MlirValue, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -1454,9 +1441,7 @@ end
 Parses a type. The type is owned by the context.
 """
 function mlirTypeParseGet(context, type)
-    @ccall (MLIR_C_PATH[]).mlirTypeParseGet(
-        context::MlirContext, type::MlirStringRef
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirTypeParseGet(context::MlirContext, type::MlirStringRef)::MlirType
 end
 
 """
@@ -1501,9 +1486,7 @@ end
 Prints a location by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirTypePrint(type, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirTypePrint(
-        type::MlirType, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirTypePrint(type::MlirType, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -1521,9 +1504,7 @@ end
 Parses an attribute. The attribute is owned by the context.
 """
 function mlirAttributeParseGet(context, attr)
-    @ccall (MLIR_C_PATH[]).mlirAttributeParseGet(
-        context::MlirContext, attr::MlirStringRef
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirAttributeParseGet(context::MlirContext, attr::MlirStringRef)::MlirAttribute
 end
 
 """
@@ -1577,9 +1558,7 @@ end
 Prints an attribute by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirAttributePrint(attr, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirAttributePrint(
-        attr::MlirAttribute, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirAttributePrint(attr::MlirAttribute, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -1597,9 +1576,7 @@ end
 Associates an attribute with the name. Takes ownership of neither.
 """
 function mlirNamedAttributeGet(name, attr)
-    @ccall (MLIR_C_PATH[]).mlirNamedAttributeGet(
-        name::MlirIdentifier, attr::MlirAttribute
-    )::MlirNamedAttribute
+    @ccall (MLIR_C_PATH[]).mlirNamedAttributeGet(name::MlirIdentifier, attr::MlirAttribute)::MlirNamedAttribute
 end
 
 """
@@ -1608,9 +1585,7 @@ end
 Gets an identifier with the given string value.
 """
 function mlirIdentifierGet(context, str)
-    @ccall (MLIR_C_PATH[]).mlirIdentifierGet(
-        context::MlirContext, str::MlirStringRef
-    )::MlirIdentifier
+    @ccall (MLIR_C_PATH[]).mlirIdentifierGet(context::MlirContext, str::MlirStringRef)::MlirIdentifier
 end
 
 """
@@ -1628,9 +1603,7 @@ end
 Checks whether two identifiers are the same.
 """
 function mlirIdentifierEqual(ident, other)
-    @ccall (MLIR_C_PATH[]).mlirIdentifierEqual(
-        ident::MlirIdentifier, other::MlirIdentifier
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirIdentifierEqual(ident::MlirIdentifier, other::MlirIdentifier)::Bool
 end
 
 """
@@ -1693,9 +1666,7 @@ end
 Looks up a symbol with the given name in the given symbol table and returns the operation that corresponds to the symbol. If the symbol cannot be found, returns a null operation.
 """
 function mlirSymbolTableLookup(symbolTable, name)
-    @ccall (MLIR_C_PATH[]).mlirSymbolTableLookup(
-        symbolTable::MlirSymbolTable, name::MlirStringRef
-    )::MlirOperation
+    @ccall (MLIR_C_PATH[]).mlirSymbolTableLookup(symbolTable::MlirSymbolTable, name::MlirStringRef)::MlirOperation
 end
 
 """
@@ -1704,9 +1675,7 @@ end
 Inserts the given operation into the given symbol table. The operation must have the symbol trait. If the symbol table already has a symbol with the same name, renames the symbol being inserted to ensure name uniqueness. Note that this does not move the operation itself into the block of the symbol table operation, this should be done separately. Returns the name of the symbol after insertion.
 """
 function mlirSymbolTableInsert(symbolTable, operation)
-    @ccall (MLIR_C_PATH[]).mlirSymbolTableInsert(
-        symbolTable::MlirSymbolTable, operation::MlirOperation
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirSymbolTableInsert(symbolTable::MlirSymbolTable, operation::MlirOperation)::MlirAttribute
 end
 
 """
@@ -1715,9 +1684,7 @@ end
 Removes the given operation from the symbol table and erases it.
 """
 function mlirSymbolTableErase(symbolTable, operation)
-    @ccall (MLIR_C_PATH[]).mlirSymbolTableErase(
-        symbolTable::MlirSymbolTable, operation::MlirOperation
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirSymbolTableErase(symbolTable::MlirSymbolTable, operation::MlirOperation)::Cvoid
 end
 
 """
@@ -1726,9 +1693,7 @@ end
 Attempt to replace all uses that are nested within the given operation of the given symbol 'oldSymbol' with the provided 'newSymbol'. This does not traverse into nested symbol tables. Will fail atomically if there are any unknown operations that may be potential symbol tables.
 """
 function mlirSymbolTableReplaceAllSymbolUses(oldSymbol, newSymbol, from)
-    @ccall (MLIR_C_PATH[]).mlirSymbolTableReplaceAllSymbolUses(
-        oldSymbol::MlirStringRef, newSymbol::MlirStringRef, from::MlirOperation
-    )::MlirLogicalResult
+    @ccall (MLIR_C_PATH[]).mlirSymbolTableReplaceAllSymbolUses(oldSymbol::MlirStringRef, newSymbol::MlirStringRef, from::MlirOperation)::MlirLogicalResult
 end
 
 """
@@ -1737,12 +1702,11 @@ end
 Walks all symbol table operations nested within, and including, `op`. For each symbol table operation, the provided callback is invoked with the op and a boolean signifying if the symbols within that symbol table can be treated as if all uses within the IR are visible to the caller. `allSymUsesVisible` identifies whether all of the symbol uses of symbols within `op` are visible.
 """
 function mlirSymbolTableWalkSymbolTables(from, allSymUsesVisible, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirSymbolTableWalkSymbolTables(
-        from::MlirOperation,
-        allSymUsesVisible::Bool,
-        callback::Ptr{Cvoid},
-        userData::Ptr{Cvoid},
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirSymbolTableWalkSymbolTables(from::MlirOperation, allSymUsesVisible::Bool, callback::Ptr{Cvoid}, userData::Ptr{Cvoid})::Cvoid
+end
+
+struct MlirAffineExpr
+    ptr::Ptr{Cvoid}
 end
 
 """
@@ -1760,9 +1724,7 @@ end
 Returns `true` if the two affine expressions are equal.
 """
 function mlirAffineExprEqual(lhs, rhs)
-    @ccall (MLIR_C_PATH[]).mlirAffineExprEqual(
-        lhs::MlirAffineExpr, rhs::MlirAffineExpr
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirAffineExprEqual(lhs::MlirAffineExpr, rhs::MlirAffineExpr)::Bool
 end
 
 """
@@ -1780,9 +1742,7 @@ end
 Prints an affine expression by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirAffineExprPrint(affineExpr, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirAffineExprPrint(
-        affineExpr::MlirAffineExpr, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirAffineExprPrint(affineExpr::MlirAffineExpr, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -1800,9 +1760,7 @@ end
 Checks whether the given affine expression is made out of only symbols and constants.
 """
 function mlirAffineExprIsSymbolicOrConstant(affineExpr)
-    @ccall (MLIR_C_PATH[]).mlirAffineExprIsSymbolicOrConstant(
-        affineExpr::MlirAffineExpr
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirAffineExprIsSymbolicOrConstant(affineExpr::MlirAffineExpr)::Bool
 end
 
 """
@@ -1820,9 +1778,7 @@ end
 Returns the greatest known integral divisor of this affine expression. The result is always positive.
 """
 function mlirAffineExprGetLargestKnownDivisor(affineExpr)
-    @ccall (MLIR_C_PATH[]).mlirAffineExprGetLargestKnownDivisor(
-        affineExpr::MlirAffineExpr
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirAffineExprGetLargestKnownDivisor(affineExpr::MlirAffineExpr)::Int64
 end
 
 """
@@ -1831,9 +1787,7 @@ end
 Checks whether the given affine expression is a multiple of 'factor'.
 """
 function mlirAffineExprIsMultipleOf(affineExpr, factor)
-    @ccall (MLIR_C_PATH[]).mlirAffineExprIsMultipleOf(
-        affineExpr::MlirAffineExpr, factor::Int64
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirAffineExprIsMultipleOf(affineExpr::MlirAffineExpr, factor::Int64)::Bool
 end
 
 """
@@ -1842,9 +1796,11 @@ end
 Checks whether the given affine expression involves AffineDimExpr 'position'.
 """
 function mlirAffineExprIsFunctionOfDim(affineExpr, position)
-    @ccall (MLIR_C_PATH[]).mlirAffineExprIsFunctionOfDim(
-        affineExpr::MlirAffineExpr, position::intptr_t
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirAffineExprIsFunctionOfDim(affineExpr::MlirAffineExpr, position::intptr_t)::Bool
+end
+
+struct MlirAffineMap
+    ptr::Ptr{Cvoid}
 end
 
 """
@@ -1853,9 +1809,7 @@ end
 Composes the given map with the given expression.
 """
 function mlirAffineExprCompose(affineExpr, affineMap)
-    @ccall (MLIR_C_PATH[]).mlirAffineExprCompose(
-        affineExpr::MlirAffineExpr, affineMap::MlirAffineMap
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineExprCompose(affineExpr::MlirAffineExpr, affineMap::MlirAffineMap)::MlirAffineExpr
 end
 
 """
@@ -1873,9 +1827,7 @@ end
 Creates an affine dimension expression with 'position' in the context.
 """
 function mlirAffineDimExprGet(ctx, position)
-    @ccall (MLIR_C_PATH[]).mlirAffineDimExprGet(
-        ctx::MlirContext, position::intptr_t
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineDimExprGet(ctx::MlirContext, position::intptr_t)::MlirAffineExpr
 end
 
 """
@@ -1884,9 +1836,7 @@ end
 Returns the position of the given affine dimension expression.
 """
 function mlirAffineDimExprGetPosition(affineExpr)
-    @ccall (MLIR_C_PATH[]).mlirAffineDimExprGetPosition(
-        affineExpr::MlirAffineExpr
-    )::intptr_t
+    @ccall (MLIR_C_PATH[]).mlirAffineDimExprGetPosition(affineExpr::MlirAffineExpr)::intptr_t
 end
 
 """
@@ -1904,9 +1854,7 @@ end
 Creates an affine symbol expression with 'position' in the context.
 """
 function mlirAffineSymbolExprGet(ctx, position)
-    @ccall (MLIR_C_PATH[]).mlirAffineSymbolExprGet(
-        ctx::MlirContext, position::intptr_t
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineSymbolExprGet(ctx::MlirContext, position::intptr_t)::MlirAffineExpr
 end
 
 """
@@ -1915,9 +1863,7 @@ end
 Returns the position of the given affine symbol expression.
 """
 function mlirAffineSymbolExprGetPosition(affineExpr)
-    @ccall (MLIR_C_PATH[]).mlirAffineSymbolExprGetPosition(
-        affineExpr::MlirAffineExpr
-    )::intptr_t
+    @ccall (MLIR_C_PATH[]).mlirAffineSymbolExprGetPosition(affineExpr::MlirAffineExpr)::intptr_t
 end
 
 """
@@ -1935,9 +1881,7 @@ end
 Creates an affine constant expression with 'constant' in the context.
 """
 function mlirAffineConstantExprGet(ctx, constant)
-    @ccall (MLIR_C_PATH[]).mlirAffineConstantExprGet(
-        ctx::MlirContext, constant::Int64
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineConstantExprGet(ctx::MlirContext, constant::Int64)::MlirAffineExpr
 end
 
 """
@@ -1964,9 +1908,7 @@ end
 Creates an affine add expression with 'lhs' and 'rhs'.
 """
 function mlirAffineAddExprGet(lhs, rhs)
-    @ccall (MLIR_C_PATH[]).mlirAffineAddExprGet(
-        lhs::MlirAffineExpr, rhs::MlirAffineExpr
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineAddExprGet(lhs::MlirAffineExpr, rhs::MlirAffineExpr)::MlirAffineExpr
 end
 
 """
@@ -1984,9 +1926,7 @@ end
 Creates an affine mul expression with 'lhs' and 'rhs'.
 """
 function mlirAffineMulExprGet(lhs, rhs)
-    @ccall (MLIR_C_PATH[]).mlirAffineMulExprGet(
-        lhs::MlirAffineExpr, rhs::MlirAffineExpr
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineMulExprGet(lhs::MlirAffineExpr, rhs::MlirAffineExpr)::MlirAffineExpr
 end
 
 """
@@ -2004,9 +1944,7 @@ end
 Creates an affine mod expression with 'lhs' and 'rhs'.
 """
 function mlirAffineModExprGet(lhs, rhs)
-    @ccall (MLIR_C_PATH[]).mlirAffineModExprGet(
-        lhs::MlirAffineExpr, rhs::MlirAffineExpr
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineModExprGet(lhs::MlirAffineExpr, rhs::MlirAffineExpr)::MlirAffineExpr
 end
 
 """
@@ -2024,9 +1962,7 @@ end
 Creates an affine floordiv expression with 'lhs' and 'rhs'.
 """
 function mlirAffineFloorDivExprGet(lhs, rhs)
-    @ccall (MLIR_C_PATH[]).mlirAffineFloorDivExprGet(
-        lhs::MlirAffineExpr, rhs::MlirAffineExpr
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineFloorDivExprGet(lhs::MlirAffineExpr, rhs::MlirAffineExpr)::MlirAffineExpr
 end
 
 """
@@ -2044,9 +1980,7 @@ end
 Creates an affine ceildiv expression with 'lhs' and 'rhs'.
 """
 function mlirAffineCeilDivExprGet(lhs, rhs)
-    @ccall (MLIR_C_PATH[]).mlirAffineCeilDivExprGet(
-        lhs::MlirAffineExpr, rhs::MlirAffineExpr
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineCeilDivExprGet(lhs::MlirAffineExpr, rhs::MlirAffineExpr)::MlirAffineExpr
 end
 
 """
@@ -2064,9 +1998,7 @@ end
 Returns the left hand side affine expression of the given affine binary operation expression.
 """
 function mlirAffineBinaryOpExprGetLHS(affineExpr)
-    @ccall (MLIR_C_PATH[]).mlirAffineBinaryOpExprGetLHS(
-        affineExpr::MlirAffineExpr
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineBinaryOpExprGetLHS(affineExpr::MlirAffineExpr)::MlirAffineExpr
 end
 
 """
@@ -2075,9 +2007,7 @@ end
 Returns the right hand side affine expression of the given affine binary operation expression.
 """
 function mlirAffineBinaryOpExprGetRHS(affineExpr)
-    @ccall (MLIR_C_PATH[]).mlirAffineBinaryOpExprGetRHS(
-        affineExpr::MlirAffineExpr
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineBinaryOpExprGetRHS(affineExpr::MlirAffineExpr)::MlirAffineExpr
 end
 
 """
@@ -2113,9 +2043,7 @@ end
 Prints an affine map by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirAffineMapPrint(affineMap, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapPrint(
-        affineMap::MlirAffineMap, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirAffineMapPrint(affineMap::MlirAffineMap, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -2142,9 +2070,7 @@ end
 Creates a zero result affine map of the given dimensions and symbols in the context. The affine map is owned by the context.
 """
 function mlirAffineMapZeroResultGet(ctx, dimCount, symbolCount)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapZeroResultGet(
-        ctx::MlirContext, dimCount::intptr_t, symbolCount::intptr_t
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapZeroResultGet(ctx::MlirContext, dimCount::intptr_t, symbolCount::intptr_t)::MlirAffineMap
 end
 
 """
@@ -2153,13 +2079,7 @@ end
 Creates an affine map with results defined by the given list of affine expressions. The map resulting map also has the requested number of input dimensions and symbols, regardless of them being used in the results.
 """
 function mlirAffineMapGet(ctx, dimCount, symbolCount, nAffineExprs, affineExprs)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapGet(
-        ctx::MlirContext,
-        dimCount::intptr_t,
-        symbolCount::intptr_t,
-        nAffineExprs::intptr_t,
-        affineExprs::Ptr{MlirAffineExpr},
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapGet(ctx::MlirContext, dimCount::intptr_t, symbolCount::intptr_t, nAffineExprs::intptr_t, affineExprs::Ptr{MlirAffineExpr})::MlirAffineMap
 end
 
 """
@@ -2168,9 +2088,7 @@ end
 Creates a single constant result affine map in the context. The affine map is owned by the context.
 """
 function mlirAffineMapConstantGet(ctx, val)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapConstantGet(
-        ctx::MlirContext, val::Int64
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapConstantGet(ctx::MlirContext, val::Int64)::MlirAffineMap
 end
 
 """
@@ -2179,9 +2097,7 @@ end
 Creates an affine map with 'numDims' identity in the context. The affine map is owned by the context.
 """
 function mlirAffineMapMultiDimIdentityGet(ctx, numDims)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapMultiDimIdentityGet(
-        ctx::MlirContext, numDims::intptr_t
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapMultiDimIdentityGet(ctx::MlirContext, numDims::intptr_t)::MlirAffineMap
 end
 
 """
@@ -2190,9 +2106,7 @@ end
 Creates an identity affine map on the most minor dimensions in the context. The affine map is owned by the context. The function asserts that the number of dimensions is greater or equal to the number of results.
 """
 function mlirAffineMapMinorIdentityGet(ctx, dims, results)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapMinorIdentityGet(
-        ctx::MlirContext, dims::intptr_t, results::intptr_t
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapMinorIdentityGet(ctx::MlirContext, dims::intptr_t, results::intptr_t)::MlirAffineMap
 end
 
 """
@@ -2201,9 +2115,7 @@ end
 Creates an affine map with a permutation expression and its size in the context. The permutation expression is a non-empty vector of integers. The elements of the permutation vector must be continuous from 0 and cannot be repeated (i.e. `[1,2,0]` is a valid permutation. `[2,0]` or `[1,1,2]` is an invalid invalid permutation.) The affine map is owned by the context.
 """
 function mlirAffineMapPermutationGet(ctx, size, permutation)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapPermutationGet(
-        ctx::MlirContext, size::intptr_t, permutation::Ptr{Cuint}
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapPermutationGet(ctx::MlirContext, size::intptr_t, permutation::Ptr{Cuint})::MlirAffineMap
 end
 
 """
@@ -2248,9 +2160,7 @@ end
 Returns the constant result of the given affine map. The function asserts that the map has a single constant result.
 """
 function mlirAffineMapGetSingleConstantResult(affineMap)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapGetSingleConstantResult(
-        affineMap::MlirAffineMap
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirAffineMapGetSingleConstantResult(affineMap::MlirAffineMap)::Int64
 end
 
 """
@@ -2286,9 +2196,7 @@ end
 Returns the result at the given position.
 """
 function mlirAffineMapGetResult(affineMap, pos)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapGetResult(
-        affineMap::MlirAffineMap, pos::intptr_t
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirAffineMapGetResult(affineMap::MlirAffineMap, pos::intptr_t)::MlirAffineExpr
 end
 
 """
@@ -2306,9 +2214,7 @@ end
 Checks whether the given affine map represents a subset of a symbol-less permutation map.
 """
 function mlirAffineMapIsProjectedPermutation(affineMap)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapIsProjectedPermutation(
-        affineMap::MlirAffineMap
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirAffineMapIsProjectedPermutation(affineMap::MlirAffineMap)::Bool
 end
 
 """
@@ -2326,9 +2232,7 @@ end
 Returns the affine map consisting of the `resultPos` subset.
 """
 function mlirAffineMapGetSubMap(affineMap, size, resultPos)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapGetSubMap(
-        affineMap::MlirAffineMap, size::intptr_t, resultPos::Ptr{intptr_t}
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapGetSubMap(affineMap::MlirAffineMap, size::intptr_t, resultPos::Ptr{intptr_t})::MlirAffineMap
 end
 
 """
@@ -2337,9 +2241,7 @@ end
 Returns the affine map consisting of the most major `numResults` results. Returns the null AffineMap if the `numResults` is equal to zero. Returns the `affineMap` if `numResults` is greater or equals to number of results of the given affine map.
 """
 function mlirAffineMapGetMajorSubMap(affineMap, numResults)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapGetMajorSubMap(
-        affineMap::MlirAffineMap, numResults::intptr_t
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapGetMajorSubMap(affineMap::MlirAffineMap, numResults::intptr_t)::MlirAffineMap
 end
 
 """
@@ -2348,9 +2250,7 @@ end
 Returns the affine map consisting of the most minor `numResults` results. Returns the null AffineMap if the `numResults` is equal to zero. Returns the `affineMap` if `numResults` is greater or equals to number of results of the given affine map.
 """
 function mlirAffineMapGetMinorSubMap(affineMap, numResults)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapGetMinorSubMap(
-        affineMap::MlirAffineMap, numResults::intptr_t
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirAffineMapGetMinorSubMap(affineMap::MlirAffineMap, numResults::intptr_t)::MlirAffineMap
 end
 
 """
@@ -2358,16 +2258,8 @@ end
 
 Apply AffineExpr::replace(`map`) to each of the results and return a new new AffineMap with the new results and the specified number of dims and symbols.
 """
-function mlirAffineMapReplace(
-    affineMap, expression, replacement, numResultDims, numResultSyms
-)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapReplace(
-        affineMap::MlirAffineMap,
-        expression::MlirAffineExpr,
-        replacement::MlirAffineExpr,
-        numResultDims::intptr_t,
-        numResultSyms::intptr_t,
-    )::MlirAffineMap
+function mlirAffineMapReplace(affineMap, expression, replacement, numResultDims, numResultSyms)
+    @ccall (MLIR_C_PATH[]).mlirAffineMapReplace(affineMap::MlirAffineMap, expression::MlirAffineExpr, replacement::MlirAffineExpr, numResultDims::intptr_t, numResultSyms::intptr_t)::MlirAffineMap
 end
 
 """
@@ -2376,12 +2268,7 @@ end
 Returns the simplified affine map resulting from dropping the symbols that do not appear in any of the individual maps in `affineMaps`. Asserts that all maps in `affineMaps` are normalized to the same number of dims and symbols. Takes a callback `populateResult` to fill the `res` container with value `m` at entry `idx`. This allows returning without worrying about ownership considerations.
 """
 function mlirAffineMapCompressUnusedSymbols(affineMaps, size, result, populateResult)
-    @ccall (MLIR_C_PATH[]).mlirAffineMapCompressUnusedSymbols(
-        affineMaps::Ptr{MlirAffineMap},
-        size::intptr_t,
-        result::Ptr{Cvoid},
-        populateResult::Ptr{Cvoid},
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirAffineMapCompressUnusedSymbols(affineMaps::Ptr{MlirAffineMap}, size::intptr_t, result::Ptr{Cvoid}, populateResult::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -2435,9 +2322,7 @@ end
 Creates an array element containing the given list of elements in the given context.
 """
 function mlirArrayAttrGet(ctx, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirArrayAttrGet(
-        ctx::MlirContext, numElements::intptr_t, elements::Ptr{MlirAttribute}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirArrayAttrGet(ctx::MlirContext, numElements::intptr_t, elements::Ptr{MlirAttribute})::MlirAttribute
 end
 
 """
@@ -2455,9 +2340,7 @@ end
 Returns pos-th element stored in the given array attribute.
 """
 function mlirArrayAttrGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirArrayAttrGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirArrayAttrGetElement(attr::MlirAttribute, pos::intptr_t)::MlirAttribute
 end
 
 """
@@ -2475,9 +2358,7 @@ end
 Creates a dictionary attribute containing the given list of elements in the provided context.
 """
 function mlirDictionaryAttrGet(ctx, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDictionaryAttrGet(
-        ctx::MlirContext, numElements::intptr_t, elements::Ptr{MlirNamedAttribute}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDictionaryAttrGet(ctx::MlirContext, numElements::intptr_t, elements::Ptr{MlirNamedAttribute})::MlirAttribute
 end
 
 """
@@ -2495,9 +2376,7 @@ end
 Returns pos-th element of the given dictionary attribute.
 """
 function mlirDictionaryAttrGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDictionaryAttrGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::MlirNamedAttribute
+    @ccall (MLIR_C_PATH[]).mlirDictionaryAttrGetElement(attr::MlirAttribute, pos::intptr_t)::MlirNamedAttribute
 end
 
 """
@@ -2506,9 +2385,7 @@ end
 Returns the dictionary attribute element with the given name or NULL if the given name does not exist in the dictionary.
 """
 function mlirDictionaryAttrGetElementByName(attr, name)
-    @ccall (MLIR_C_PATH[]).mlirDictionaryAttrGetElementByName(
-        attr::MlirAttribute, name::MlirStringRef
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDictionaryAttrGetElementByName(attr::MlirAttribute, name::MlirStringRef)::MlirAttribute
 end
 
 """
@@ -2526,9 +2403,7 @@ end
 Creates a floating point attribute in the given context with the given double value and double-precision FP semantics.
 """
 function mlirFloatAttrDoubleGet(ctx, type, value)
-    @ccall (MLIR_C_PATH[]).mlirFloatAttrDoubleGet(
-        ctx::MlirContext, type::MlirType, value::Cdouble
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirFloatAttrDoubleGet(ctx::MlirContext, type::MlirType, value::Cdouble)::MlirAttribute
 end
 
 """
@@ -2537,9 +2412,7 @@ end
 Same as "[`mlirFloatAttrDoubleGet`](@ref)", but if the type is not valid for a construction of a FloatAttr, returns a null [`MlirAttribute`](@ref).
 """
 function mlirFloatAttrDoubleGetChecked(loc, type, value)
-    @ccall (MLIR_C_PATH[]).mlirFloatAttrDoubleGetChecked(
-        loc::MlirLocation, type::MlirType, value::Cdouble
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirFloatAttrDoubleGetChecked(loc::MlirLocation, type::MlirType, value::Cdouble)::MlirAttribute
 end
 
 """
@@ -2647,13 +2520,7 @@ end
 Creates an opaque attribute in the given context associated with the dialect identified by its namespace. The attribute contains opaque byte data of the specified length (data need not be null-terminated).
 """
 function mlirOpaqueAttrGet(ctx, dialectNamespace, dataLength, data, type)
-    @ccall (MLIR_C_PATH[]).mlirOpaqueAttrGet(
-        ctx::MlirContext,
-        dialectNamespace::MlirStringRef,
-        dataLength::intptr_t,
-        data::Cstring,
-        type::MlirType,
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirOpaqueAttrGet(ctx::MlirContext, dialectNamespace::MlirStringRef, dataLength::intptr_t, data::Cstring, type::MlirType)::MlirAttribute
 end
 
 """
@@ -2662,9 +2529,7 @@ end
 Returns the namespace of the dialect with which the given opaque attribute is associated. The namespace string is owned by the context.
 """
 function mlirOpaqueAttrGetDialectNamespace(attr)
-    @ccall (MLIR_C_PATH[]).mlirOpaqueAttrGetDialectNamespace(
-        attr::MlirAttribute
-    )::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirOpaqueAttrGetDialectNamespace(attr::MlirAttribute)::MlirStringRef
 end
 
 """
@@ -2691,9 +2556,7 @@ end
 Creates a string attribute in the given context containing the given string.
 """
 function mlirStringAttrGet(ctx, str)
-    @ccall (MLIR_C_PATH[]).mlirStringAttrGet(
-        ctx::MlirContext, str::MlirStringRef
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirStringAttrGet(ctx::MlirContext, str::MlirStringRef)::MlirAttribute
 end
 
 """
@@ -2702,9 +2565,7 @@ end
 Creates a string attribute in the given context containing the given string. Additionally, the attribute has the given type.
 """
 function mlirStringAttrTypedGet(type, str)
-    @ccall (MLIR_C_PATH[]).mlirStringAttrTypedGet(
-        type::MlirType, str::MlirStringRef
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirStringAttrTypedGet(type::MlirType, str::MlirStringRef)::MlirAttribute
 end
 
 """
@@ -2731,12 +2592,7 @@ end
 Creates a symbol reference attribute in the given context referencing a symbol identified by the given string inside a list of nested references. Each of the references in the list must not be nested.
 """
 function mlirSymbolRefAttrGet(ctx, symbol, numReferences, references)
-    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGet(
-        ctx::MlirContext,
-        symbol::MlirStringRef,
-        numReferences::intptr_t,
-        references::Ptr{MlirAttribute},
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGet(ctx::MlirContext, symbol::MlirStringRef, numReferences::intptr_t, references::Ptr{MlirAttribute})::MlirAttribute
 end
 
 """
@@ -2745,9 +2601,7 @@ end
 Returns the string reference to the root referenced symbol. The data remains live as long as the context in which the attribute lives.
 """
 function mlirSymbolRefAttrGetRootReference(attr)
-    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetRootReference(
-        attr::MlirAttribute
-    )::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetRootReference(attr::MlirAttribute)::MlirStringRef
 end
 
 """
@@ -2756,9 +2610,7 @@ end
 Returns the string reference to the leaf referenced symbol. The data remains live as long as the context in which the attribute lives.
 """
 function mlirSymbolRefAttrGetLeafReference(attr)
-    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetLeafReference(
-        attr::MlirAttribute
-    )::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetLeafReference(attr::MlirAttribute)::MlirStringRef
 end
 
 """
@@ -2767,9 +2619,7 @@ end
 Returns the number of references nested in the given symbol reference attribute.
 """
 function mlirSymbolRefAttrGetNumNestedReferences(attr)
-    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetNumNestedReferences(
-        attr::MlirAttribute
-    )::intptr_t
+    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetNumNestedReferences(attr::MlirAttribute)::intptr_t
 end
 
 """
@@ -2778,9 +2628,7 @@ end
 Returns pos-th reference nested in the given symbol reference attribute.
 """
 function mlirSymbolRefAttrGetNestedReference(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetNestedReference(
-        attr::MlirAttribute, pos::intptr_t
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirSymbolRefAttrGetNestedReference(attr::MlirAttribute, pos::intptr_t)::MlirAttribute
 end
 
 """
@@ -2798,9 +2646,7 @@ end
 Creates a flat symbol reference attribute in the given context referencing a symbol identified by the given string.
 """
 function mlirFlatSymbolRefAttrGet(ctx, symbol)
-    @ccall (MLIR_C_PATH[]).mlirFlatSymbolRefAttrGet(
-        ctx::MlirContext, symbol::MlirStringRef
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirFlatSymbolRefAttrGet(ctx::MlirContext, symbol::MlirStringRef)::MlirAttribute
 end
 
 """
@@ -2872,9 +2718,7 @@ end
 Returns the element at the given rank-dimensional index.
 """
 function mlirElementsAttrGetValue(attr, rank, idxs)
-    @ccall (MLIR_C_PATH[]).mlirElementsAttrGetValue(
-        attr::MlirAttribute, rank::intptr_t, idxs::Ptr{UInt64}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirElementsAttrGetValue(attr::MlirAttribute, rank::intptr_t, idxs::Ptr{UInt64})::MlirAttribute
 end
 
 """
@@ -2883,9 +2727,7 @@ end
 Checks whether the given rank-dimensional index is valid in the given elements attribute.
 """
 function mlirElementsAttrIsValidIndex(attr, rank, idxs)
-    @ccall (MLIR_C_PATH[]).mlirElementsAttrIsValidIndex(
-        attr::MlirAttribute, rank::intptr_t, idxs::Ptr{UInt64}
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirElementsAttrIsValidIndex(attr::MlirAttribute, rank::intptr_t, idxs::Ptr{UInt64})::Bool
 end
 
 """
@@ -2936,45 +2778,31 @@ end
 Create a dense array attribute with the given elements.
 """
 function mlirDenseBoolArrayGet(ctx, size, values)
-    @ccall (MLIR_C_PATH[]).mlirDenseBoolArrayGet(
-        ctx::MlirContext, size::intptr_t, values::Ptr{Cint}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseBoolArrayGet(ctx::MlirContext, size::intptr_t, values::Ptr{Cint})::MlirAttribute
 end
 
 function mlirDenseI8ArrayGet(ctx, size, values)
-    @ccall (MLIR_C_PATH[]).mlirDenseI8ArrayGet(
-        ctx::MlirContext, size::intptr_t, values::Ptr{Int8}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseI8ArrayGet(ctx::MlirContext, size::intptr_t, values::Ptr{Int8})::MlirAttribute
 end
 
 function mlirDenseI16ArrayGet(ctx, size, values)
-    @ccall (MLIR_C_PATH[]).mlirDenseI16ArrayGet(
-        ctx::MlirContext, size::intptr_t, values::Ptr{Int16}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseI16ArrayGet(ctx::MlirContext, size::intptr_t, values::Ptr{Int16})::MlirAttribute
 end
 
 function mlirDenseI32ArrayGet(ctx, size, values)
-    @ccall (MLIR_C_PATH[]).mlirDenseI32ArrayGet(
-        ctx::MlirContext, size::intptr_t, values::Ptr{Int32}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseI32ArrayGet(ctx::MlirContext, size::intptr_t, values::Ptr{Int32})::MlirAttribute
 end
 
 function mlirDenseI64ArrayGet(ctx, size, values)
-    @ccall (MLIR_C_PATH[]).mlirDenseI64ArrayGet(
-        ctx::MlirContext, size::intptr_t, values::Ptr{Int64}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseI64ArrayGet(ctx::MlirContext, size::intptr_t, values::Ptr{Int64})::MlirAttribute
 end
 
 function mlirDenseF32ArrayGet(ctx, size, values)
-    @ccall (MLIR_C_PATH[]).mlirDenseF32ArrayGet(
-        ctx::MlirContext, size::intptr_t, values::Ptr{Cfloat}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseF32ArrayGet(ctx::MlirContext, size::intptr_t, values::Ptr{Cfloat})::MlirAttribute
 end
 
 function mlirDenseF64ArrayGet(ctx, size, values)
-    @ccall (MLIR_C_PATH[]).mlirDenseF64ArrayGet(
-        ctx::MlirContext, size::intptr_t, values::Ptr{Cdouble}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseF64ArrayGet(ctx::MlirContext, size::intptr_t, values::Ptr{Cdouble})::MlirAttribute
 end
 
 """
@@ -2992,45 +2820,31 @@ end
 Get an element of a dense array.
 """
 function mlirDenseBoolArrayGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseBoolArrayGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirDenseBoolArrayGetElement(attr::MlirAttribute, pos::intptr_t)::Bool
 end
 
 function mlirDenseI8ArrayGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseI8ArrayGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int8
+    @ccall (MLIR_C_PATH[]).mlirDenseI8ArrayGetElement(attr::MlirAttribute, pos::intptr_t)::Int8
 end
 
 function mlirDenseI16ArrayGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseI16ArrayGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int16
+    @ccall (MLIR_C_PATH[]).mlirDenseI16ArrayGetElement(attr::MlirAttribute, pos::intptr_t)::Int16
 end
 
 function mlirDenseI32ArrayGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseI32ArrayGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int32
+    @ccall (MLIR_C_PATH[]).mlirDenseI32ArrayGetElement(attr::MlirAttribute, pos::intptr_t)::Int32
 end
 
 function mlirDenseI64ArrayGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseI64ArrayGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirDenseI64ArrayGetElement(attr::MlirAttribute, pos::intptr_t)::Int64
 end
 
 function mlirDenseF32ArrayGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseF32ArrayGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::Cfloat
+    @ccall (MLIR_C_PATH[]).mlirDenseF32ArrayGetElement(attr::MlirAttribute, pos::intptr_t)::Cfloat
 end
 
 function mlirDenseF64ArrayGetElement(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseF64ArrayGetElement(
-        attr::MlirAttribute, pos::intptr_t
-    )::Cdouble
+    @ccall (MLIR_C_PATH[]).mlirDenseF64ArrayGetElement(attr::MlirAttribute, pos::intptr_t)::Cdouble
 end
 
 """
@@ -3056,24 +2870,11 @@ end
 Creates a dense elements attribute with the given Shaped type and elements in the same context as the type.
 """
 function mlirDenseElementsAttrGet(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGet(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{MlirAttribute}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGet(shapedType::MlirType, numElements::intptr_t, elements::Ptr{MlirAttribute})::MlirAttribute
 end
 
-"""
-    mlirDenseElementsAttrRawBufferGet(shapedType, rawBufferSize, rawBuffer)
-
-Creates a dense elements attribute with the given Shaped type and elements populated from a packed, row-major opaque buffer of contents.
-
-The format of the raw buffer is a densely packed array of values that can be bitcast to the storage format of the element type specified. Types that are not byte aligned will be: - For bitwidth > 1: Rounded up to the next byte. - For bitwidth = 1: Packed into 8bit bytes with bits corresponding to the linear order of the shape type from MSB to LSB, padded to on the right.
-
-A raw buffer of a single element (or for 1-bit, a byte of value 0 or 255) will be interpreted as a splat. User code should be prepared for additional, conformant patterns to be identified as splats in the future.
-"""
 function mlirDenseElementsAttrRawBufferGet(shapedType, rawBufferSize, rawBuffer)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrRawBufferGet(
-        shapedType::MlirType, rawBufferSize::Csize_t, rawBuffer::Ptr{Cvoid}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrRawBufferGet(shapedType::MlirType, rawBufferSize::Cint, rawBuffer::Ptr{Cvoid})::MlirAttribute
 end
 
 """
@@ -3082,63 +2883,43 @@ end
 Creates a dense elements attribute with the given Shaped type containing a single replicated element (splat).
 """
 function mlirDenseElementsAttrSplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrSplatGet(
-        shapedType::MlirType, element::MlirAttribute
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrSplatGet(shapedType::MlirType, element::MlirAttribute)::MlirAttribute
 end
 
 function mlirDenseElementsAttrBoolSplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrBoolSplatGet(
-        shapedType::MlirType, element::Bool
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrBoolSplatGet(shapedType::MlirType, element::Bool)::MlirAttribute
 end
 
 function mlirDenseElementsAttrUInt8SplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt8SplatGet(
-        shapedType::MlirType, element::UInt8
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt8SplatGet(shapedType::MlirType, element::UInt8)::MlirAttribute
 end
 
 function mlirDenseElementsAttrInt8SplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt8SplatGet(
-        shapedType::MlirType, element::Int8
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt8SplatGet(shapedType::MlirType, element::Int8)::MlirAttribute
 end
 
 function mlirDenseElementsAttrUInt32SplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt32SplatGet(
-        shapedType::MlirType, element::UInt32
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt32SplatGet(shapedType::MlirType, element::UInt32)::MlirAttribute
 end
 
 function mlirDenseElementsAttrInt32SplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt32SplatGet(
-        shapedType::MlirType, element::Int32
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt32SplatGet(shapedType::MlirType, element::Int32)::MlirAttribute
 end
 
 function mlirDenseElementsAttrUInt64SplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt64SplatGet(
-        shapedType::MlirType, element::UInt64
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt64SplatGet(shapedType::MlirType, element::UInt64)::MlirAttribute
 end
 
 function mlirDenseElementsAttrInt64SplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt64SplatGet(
-        shapedType::MlirType, element::Int64
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt64SplatGet(shapedType::MlirType, element::Int64)::MlirAttribute
 end
 
 function mlirDenseElementsAttrFloatSplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrFloatSplatGet(
-        shapedType::MlirType, element::Cfloat
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrFloatSplatGet(shapedType::MlirType, element::Cfloat)::MlirAttribute
 end
 
 function mlirDenseElementsAttrDoubleSplatGet(shapedType, element)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrDoubleSplatGet(
-        shapedType::MlirType, element::Cdouble
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrDoubleSplatGet(shapedType::MlirType, element::Cdouble)::MlirAttribute
 end
 
 """
@@ -3147,81 +2928,55 @@ end
 Creates a dense elements attribute with the given shaped type from elements of a specific type. Expects the element type of the shaped type to match the data element type.
 """
 function mlirDenseElementsAttrBoolGet(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrBoolGet(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{Cint}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrBoolGet(shapedType::MlirType, numElements::intptr_t, elements::Ptr{Cint})::MlirAttribute
 end
 
 function mlirDenseElementsAttrUInt8Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt8Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt8}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt8Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt8})::MlirAttribute
 end
 
 function mlirDenseElementsAttrInt8Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt8Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int8}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt8Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int8})::MlirAttribute
 end
 
 function mlirDenseElementsAttrUInt16Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt16Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt16}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt16Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt16})::MlirAttribute
 end
 
 function mlirDenseElementsAttrInt16Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt16Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int16}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt16Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int16})::MlirAttribute
 end
 
 function mlirDenseElementsAttrUInt32Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt32Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt32}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt32Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt32})::MlirAttribute
 end
 
 function mlirDenseElementsAttrInt32Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt32Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int32}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt32Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int32})::MlirAttribute
 end
 
 function mlirDenseElementsAttrUInt64Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt64Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt64}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrUInt64Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt64})::MlirAttribute
 end
 
 function mlirDenseElementsAttrInt64Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt64Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int64}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrInt64Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{Int64})::MlirAttribute
 end
 
 function mlirDenseElementsAttrFloatGet(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrFloatGet(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{Cfloat}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrFloatGet(shapedType::MlirType, numElements::intptr_t, elements::Ptr{Cfloat})::MlirAttribute
 end
 
 function mlirDenseElementsAttrDoubleGet(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrDoubleGet(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{Cdouble}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrDoubleGet(shapedType::MlirType, numElements::intptr_t, elements::Ptr{Cdouble})::MlirAttribute
 end
 
 function mlirDenseElementsAttrBFloat16Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrBFloat16Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt16}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrBFloat16Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt16})::MlirAttribute
 end
 
 function mlirDenseElementsAttrFloat16Get(shapedType, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrFloat16Get(
-        shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt16}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrFloat16Get(shapedType::MlirType, numElements::intptr_t, elements::Ptr{UInt16})::MlirAttribute
 end
 
 """
@@ -3230,9 +2985,7 @@ end
 Creates a dense elements attribute with the given shaped type from string elements.
 """
 function mlirDenseElementsAttrStringGet(shapedType, numElements, strs)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrStringGet(
-        shapedType::MlirType, numElements::intptr_t, strs::Ptr{MlirStringRef}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrStringGet(shapedType::MlirType, numElements::intptr_t, strs::Ptr{MlirStringRef})::MlirAttribute
 end
 
 """
@@ -3241,9 +2994,7 @@ end
 Creates a dense elements attribute that has the same data as the given dense elements attribute and a different shaped type. The new type must have the same total number of elements.
 """
 function mlirDenseElementsAttrReshapeGet(attr, shapedType)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrReshapeGet(
-        attr::MlirAttribute, shapedType::MlirType
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrReshapeGet(attr::MlirAttribute, shapedType::MlirType)::MlirAttribute
 end
 
 """
@@ -3261,9 +3012,7 @@ end
 Returns the single replicated value (splat) of a specific type contained by the given dense elements attribute.
 """
 function mlirDenseElementsAttrGetSplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetSplatValue(
-        attr::MlirAttribute
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetSplatValue(attr::MlirAttribute)::MlirAttribute
 end
 
 function mlirDenseElementsAttrGetBoolSplatValue(attr)
@@ -3275,51 +3024,35 @@ function mlirDenseElementsAttrGetInt8SplatValue(attr)
 end
 
 function mlirDenseElementsAttrGetUInt8SplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt8SplatValue(
-        attr::MlirAttribute
-    )::UInt8
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt8SplatValue(attr::MlirAttribute)::UInt8
 end
 
 function mlirDenseElementsAttrGetInt32SplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt32SplatValue(
-        attr::MlirAttribute
-    )::Int32
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt32SplatValue(attr::MlirAttribute)::Int32
 end
 
 function mlirDenseElementsAttrGetUInt32SplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt32SplatValue(
-        attr::MlirAttribute
-    )::UInt32
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt32SplatValue(attr::MlirAttribute)::UInt32
 end
 
 function mlirDenseElementsAttrGetInt64SplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt64SplatValue(
-        attr::MlirAttribute
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt64SplatValue(attr::MlirAttribute)::Int64
 end
 
 function mlirDenseElementsAttrGetUInt64SplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt64SplatValue(
-        attr::MlirAttribute
-    )::UInt64
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt64SplatValue(attr::MlirAttribute)::UInt64
 end
 
 function mlirDenseElementsAttrGetFloatSplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetFloatSplatValue(
-        attr::MlirAttribute
-    )::Cfloat
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetFloatSplatValue(attr::MlirAttribute)::Cfloat
 end
 
 function mlirDenseElementsAttrGetDoubleSplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetDoubleSplatValue(
-        attr::MlirAttribute
-    )::Cdouble
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetDoubleSplatValue(attr::MlirAttribute)::Cdouble
 end
 
 function mlirDenseElementsAttrGetStringSplatValue(attr)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetStringSplatValue(
-        attr::MlirAttribute
-    )::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetStringSplatValue(attr::MlirAttribute)::MlirStringRef
 end
 
 """
@@ -3328,75 +3061,51 @@ end
 Returns the pos-th value (flat contiguous indexing) of a specific type contained by the given dense elements attribute.
 """
 function mlirDenseElementsAttrGetBoolValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetBoolValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetBoolValue(attr::MlirAttribute, pos::intptr_t)::Bool
 end
 
 function mlirDenseElementsAttrGetInt8Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt8Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int8
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt8Value(attr::MlirAttribute, pos::intptr_t)::Int8
 end
 
 function mlirDenseElementsAttrGetUInt8Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt8Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt8
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt8Value(attr::MlirAttribute, pos::intptr_t)::UInt8
 end
 
 function mlirDenseElementsAttrGetInt16Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt16Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int16
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt16Value(attr::MlirAttribute, pos::intptr_t)::Int16
 end
 
 function mlirDenseElementsAttrGetUInt16Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt16Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt16
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt16Value(attr::MlirAttribute, pos::intptr_t)::UInt16
 end
 
 function mlirDenseElementsAttrGetInt32Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt32Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int32
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt32Value(attr::MlirAttribute, pos::intptr_t)::Int32
 end
 
 function mlirDenseElementsAttrGetUInt32Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt32Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt32
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt32Value(attr::MlirAttribute, pos::intptr_t)::UInt32
 end
 
 function mlirDenseElementsAttrGetInt64Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt64Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetInt64Value(attr::MlirAttribute, pos::intptr_t)::Int64
 end
 
 function mlirDenseElementsAttrGetUInt64Value(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt64Value(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt64
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetUInt64Value(attr::MlirAttribute, pos::intptr_t)::UInt64
 end
 
 function mlirDenseElementsAttrGetFloatValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetFloatValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Cfloat
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetFloatValue(attr::MlirAttribute, pos::intptr_t)::Cfloat
 end
 
 function mlirDenseElementsAttrGetDoubleValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetDoubleValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Cdouble
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetDoubleValue(attr::MlirAttribute, pos::intptr_t)::Cdouble
 end
 
 function mlirDenseElementsAttrGetStringValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetStringValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetStringValue(attr::MlirAttribute, pos::intptr_t)::MlirStringRef
 end
 
 """
@@ -3408,125 +3117,48 @@ function mlirDenseElementsAttrGetRawData(attr)
     @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrGetRawData(attr::MlirAttribute)::Ptr{Cvoid}
 end
 
-function mlirUnmanagedDenseBoolResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseBoolResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{Cint},
-    )::MlirAttribute
+function mlirUnmanagedDenseBoolResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseBoolResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Cint})::MlirAttribute
 end
 
-function mlirUnmanagedDenseUInt8ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt8ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{UInt8},
-    )::MlirAttribute
+function mlirUnmanagedDenseUInt8ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt8ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt8})::MlirAttribute
 end
 
-function mlirUnmanagedDenseInt8ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt8ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{Int8},
-    )::MlirAttribute
+function mlirUnmanagedDenseInt8ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt8ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int8})::MlirAttribute
 end
 
-function mlirUnmanagedDenseUInt16ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt16ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{UInt16},
-    )::MlirAttribute
+function mlirUnmanagedDenseUInt16ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt16ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt16})::MlirAttribute
 end
 
-function mlirUnmanagedDenseInt16ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt16ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{Int16},
-    )::MlirAttribute
+function mlirUnmanagedDenseInt16ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt16ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int16})::MlirAttribute
 end
 
-function mlirUnmanagedDenseUInt32ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt32ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{UInt32},
-    )::MlirAttribute
+function mlirUnmanagedDenseUInt32ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt32ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt32})::MlirAttribute
 end
 
-function mlirUnmanagedDenseInt32ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt32ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{Int32},
-    )::MlirAttribute
+function mlirUnmanagedDenseInt32ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt32ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int32})::MlirAttribute
 end
 
-function mlirUnmanagedDenseUInt64ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt64ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{UInt64},
-    )::MlirAttribute
+function mlirUnmanagedDenseUInt64ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseUInt64ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{UInt64})::MlirAttribute
 end
 
-function mlirUnmanagedDenseInt64ResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt64ResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{Int64},
-    )::MlirAttribute
+function mlirUnmanagedDenseInt64ResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseInt64ResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Int64})::MlirAttribute
 end
 
-function mlirUnmanagedDenseFloatResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseFloatResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{Cfloat},
-    )::MlirAttribute
+function mlirUnmanagedDenseFloatResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseFloatResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Cfloat})::MlirAttribute
 end
 
-function mlirUnmanagedDenseDoubleResourceElementsAttrGet(
-    shapedType, name, numElements, elements
-)
-    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseDoubleResourceElementsAttrGet(
-        shapedType::MlirType,
-        name::MlirStringRef,
-        numElements::intptr_t,
-        elements::Ptr{Cdouble},
-    )::MlirAttribute
+function mlirUnmanagedDenseDoubleResourceElementsAttrGet(shapedType, name, numElements, elements)
+    @ccall (MLIR_C_PATH[]).mlirUnmanagedDenseDoubleResourceElementsAttrGet(shapedType::MlirType, name::MlirStringRef, numElements::intptr_t, elements::Ptr{Cdouble})::MlirAttribute
 end
 
 """
@@ -3535,69 +3167,47 @@ end
 Returns the pos-th value (flat contiguous indexing) of a specific type contained by the given dense resource elements attribute.
 """
 function mlirDenseBoolResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseBoolResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirDenseBoolResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Bool
 end
 
 function mlirDenseInt8ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseInt8ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int8
+    @ccall (MLIR_C_PATH[]).mlirDenseInt8ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int8
 end
 
 function mlirDenseUInt8ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseUInt8ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt8
+    @ccall (MLIR_C_PATH[]).mlirDenseUInt8ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt8
 end
 
 function mlirDenseInt16ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseInt16ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int16
+    @ccall (MLIR_C_PATH[]).mlirDenseInt16ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int16
 end
 
 function mlirDenseUInt16ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseUInt16ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt16
+    @ccall (MLIR_C_PATH[]).mlirDenseUInt16ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt16
 end
 
 function mlirDenseInt32ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseInt32ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int32
+    @ccall (MLIR_C_PATH[]).mlirDenseInt32ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int32
 end
 
 function mlirDenseUInt32ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseUInt32ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt32
+    @ccall (MLIR_C_PATH[]).mlirDenseUInt32ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt32
 end
 
 function mlirDenseInt64ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseInt64ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirDenseInt64ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Int64
 end
 
 function mlirDenseUInt64ResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseUInt64ResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::UInt64
+    @ccall (MLIR_C_PATH[]).mlirDenseUInt64ResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::UInt64
 end
 
 function mlirDenseFloatResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseFloatResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Cfloat
+    @ccall (MLIR_C_PATH[]).mlirDenseFloatResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Cfloat
 end
 
 function mlirDenseDoubleResourceElementsAttrGetValue(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirDenseDoubleResourceElementsAttrGetValue(
-        attr::MlirAttribute, pos::intptr_t
-    )::Cdouble
+    @ccall (MLIR_C_PATH[]).mlirDenseDoubleResourceElementsAttrGetValue(attr::MlirAttribute, pos::intptr_t)::Cdouble
 end
 
 """
@@ -3615,9 +3225,7 @@ end
 Creates a sparse elements attribute of the given shape from a list of indices and a list of associated values. Both lists are expected to be dense elements attributes with the same number of elements. The list of indices is expected to contain 64-bit integers. The attribute is created in the same context as the type.
 """
 function mlirSparseElementsAttribute(shapedType, denseIndices, denseValues)
-    @ccall (MLIR_C_PATH[]).mlirSparseElementsAttribute(
-        shapedType::MlirType, denseIndices::MlirAttribute, denseValues::MlirAttribute
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirSparseElementsAttribute(shapedType::MlirType, denseIndices::MlirAttribute, denseValues::MlirAttribute)::MlirAttribute
 end
 
 """
@@ -3626,9 +3234,7 @@ end
 Returns the dense elements attribute containing 64-bit integer indices of non-null elements in the given sparse elements attribute.
 """
 function mlirSparseElementsAttrGetIndices(attr)
-    @ccall (MLIR_C_PATH[]).mlirSparseElementsAttrGetIndices(
-        attr::MlirAttribute
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirSparseElementsAttrGetIndices(attr::MlirAttribute)::MlirAttribute
 end
 
 """
@@ -3637,9 +3243,7 @@ end
 Returns the dense elements attribute containing the non-null elements in the given sparse elements attribute.
 """
 function mlirSparseElementsAttrGetValues(attr)
-    @ccall (MLIR_C_PATH[]).mlirSparseElementsAttrGetValues(
-        attr::MlirAttribute
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirSparseElementsAttrGetValues(attr::MlirAttribute)::MlirAttribute
 end
 
 function mlirAttributeIsAStridedLayout(attr)
@@ -3647,9 +3251,7 @@ function mlirAttributeIsAStridedLayout(attr)
 end
 
 function mlirStridedLayoutAttrGet(ctx, offset, numStrides, strides)
-    @ccall (MLIR_C_PATH[]).mlirStridedLayoutAttrGet(
-        ctx::MlirContext, offset::Int64, numStrides::intptr_t, strides::Ptr{Int64}
-    )::MlirAttribute
+    @ccall (MLIR_C_PATH[]).mlirStridedLayoutAttrGet(ctx::MlirContext, offset::Int64, numStrides::intptr_t, strides::Ptr{Int64})::MlirAttribute
 end
 
 function mlirStridedLayoutAttrGetOffset(attr)
@@ -3661,9 +3263,7 @@ function mlirStridedLayoutAttrGetNumStrides(attr)
 end
 
 function mlirStridedLayoutAttrGetStride(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirStridedLayoutAttrGetStride(
-        attr::MlirAttribute, pos::intptr_t
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirStridedLayoutAttrGetStride(attr::MlirAttribute, pos::intptr_t)::Int64
 end
 
 """
@@ -3690,9 +3290,7 @@ end
 Creates a signed integer type of the given bitwidth in the context. The type is owned by the context.
 """
 function mlirIntegerTypeSignedGet(ctx, bitwidth)
-    @ccall (MLIR_C_PATH[]).mlirIntegerTypeSignedGet(
-        ctx::MlirContext, bitwidth::Cuint
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirIntegerTypeSignedGet(ctx::MlirContext, bitwidth::Cuint)::MlirType
 end
 
 """
@@ -3701,9 +3299,7 @@ end
 Creates an unsigned integer type of the given bitwidth in the context. The type is owned by the context.
 """
 function mlirIntegerTypeUnsignedGet(ctx, bitwidth)
-    @ccall (MLIR_C_PATH[]).mlirIntegerTypeUnsignedGet(
-        ctx::MlirContext, bitwidth::Cuint
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirIntegerTypeUnsignedGet(ctx::MlirContext, bitwidth::Cuint)::MlirType
 end
 
 """
@@ -4027,9 +3623,7 @@ end
 Creates a vector type of the shape identified by its rank and dimensions, with the given element type in the same context as the element type. The type is owned by the context.
 """
 function mlirVectorTypeGet(rank, shape, elementType)
-    @ccall (MLIR_C_PATH[]).mlirVectorTypeGet(
-        rank::intptr_t, shape::Ptr{Int64}, elementType::MlirType
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirVectorTypeGet(rank::intptr_t, shape::Ptr{Int64}, elementType::MlirType)::MlirType
 end
 
 """
@@ -4038,9 +3632,7 @@ end
 Same as "[`mlirVectorTypeGet`](@ref)" but returns a nullptr wrapping [`MlirType`](@ref) on illegal arguments, emitting appropriate diagnostics.
 """
 function mlirVectorTypeGetChecked(loc, rank, shape, elementType)
-    @ccall (MLIR_C_PATH[]).mlirVectorTypeGetChecked(
-        loc::MlirLocation, rank::intptr_t, shape::Ptr{Int64}, elementType::MlirType
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirVectorTypeGetChecked(loc::MlirLocation, rank::intptr_t, shape::Ptr{Int64}, elementType::MlirType)::MlirType
 end
 
 """
@@ -4076,9 +3668,7 @@ end
 Creates a tensor type of a fixed rank with the given shape, element type, and optional encoding in the same context as the element type. The type is owned by the context. Tensor types without any specific encoding field should assign [`mlirAttributeGetNull`](@ref)() to this parameter.
 """
 function mlirRankedTensorTypeGet(rank, shape, elementType, encoding)
-    @ccall (MLIR_C_PATH[]).mlirRankedTensorTypeGet(
-        rank::intptr_t, shape::Ptr{Int64}, elementType::MlirType, encoding::MlirAttribute
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirRankedTensorTypeGet(rank::intptr_t, shape::Ptr{Int64}, elementType::MlirType, encoding::MlirAttribute)::MlirType
 end
 
 """
@@ -4087,13 +3677,7 @@ end
 Same as "[`mlirRankedTensorTypeGet`](@ref)" but returns a nullptr wrapping [`MlirType`](@ref) on illegal arguments, emitting appropriate diagnostics.
 """
 function mlirRankedTensorTypeGetChecked(loc, rank, shape, elementType, encoding)
-    @ccall (MLIR_C_PATH[]).mlirRankedTensorTypeGetChecked(
-        loc::MlirLocation,
-        rank::intptr_t,
-        shape::Ptr{Int64},
-        elementType::MlirType,
-        encoding::MlirAttribute,
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirRankedTensorTypeGetChecked(loc::MlirLocation, rank::intptr_t, shape::Ptr{Int64}, elementType::MlirType, encoding::MlirAttribute)::MlirType
 end
 
 """
@@ -4120,9 +3704,7 @@ end
 Same as "[`mlirUnrankedTensorTypeGet`](@ref)" but returns a nullptr wrapping [`MlirType`](@ref) on illegal arguments, emitting appropriate diagnostics.
 """
 function mlirUnrankedTensorTypeGetChecked(loc, elementType)
-    @ccall (MLIR_C_PATH[]).mlirUnrankedTensorTypeGetChecked(
-        loc::MlirLocation, elementType::MlirType
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirUnrankedTensorTypeGetChecked(loc::MlirLocation, elementType::MlirType)::MlirType
 end
 
 """
@@ -4149,13 +3731,7 @@ end
 Creates a MemRef type with the given rank and shape, a potentially empty list of affine layout maps, the given memory space and element type, in the same context as element type. The type is owned by the context.
 """
 function mlirMemRefTypeGet(elementType, rank, shape, layout, memorySpace)
-    @ccall (MLIR_C_PATH[]).mlirMemRefTypeGet(
-        elementType::MlirType,
-        rank::intptr_t,
-        shape::Ptr{Int64},
-        layout::MlirAttribute,
-        memorySpace::MlirAttribute,
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirMemRefTypeGet(elementType::MlirType, rank::intptr_t, shape::Ptr{Int64}, layout::MlirAttribute, memorySpace::MlirAttribute)::MlirType
 end
 
 """
@@ -4164,14 +3740,7 @@ end
 Same as "[`mlirMemRefTypeGet`](@ref)" but returns a nullptr-wrapping [`MlirType`](@ref) o illegal arguments, emitting appropriate diagnostics.
 """
 function mlirMemRefTypeGetChecked(loc, elementType, rank, shape, layout, memorySpace)
-    @ccall (MLIR_C_PATH[]).mlirMemRefTypeGetChecked(
-        loc::MlirLocation,
-        elementType::MlirType,
-        rank::intptr_t,
-        shape::Ptr{Int64},
-        layout::MlirAttribute,
-        memorySpace::MlirAttribute,
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirMemRefTypeGetChecked(loc::MlirLocation, elementType::MlirType, rank::intptr_t, shape::Ptr{Int64}, layout::MlirAttribute, memorySpace::MlirAttribute)::MlirType
 end
 
 """
@@ -4180,9 +3749,7 @@ end
 Creates a MemRef type with the given rank, shape, memory space and element type in the same context as the element type. The type has no affine maps, i.e. represents a default row-major contiguous memref. The type is owned by the context.
 """
 function mlirMemRefTypeContiguousGet(elementType, rank, shape, memorySpace)
-    @ccall (MLIR_C_PATH[]).mlirMemRefTypeContiguousGet(
-        elementType::MlirType, rank::intptr_t, shape::Ptr{Int64}, memorySpace::MlirAttribute
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirMemRefTypeContiguousGet(elementType::MlirType, rank::intptr_t, shape::Ptr{Int64}, memorySpace::MlirAttribute)::MlirType
 end
 
 """
@@ -4191,13 +3758,7 @@ end
 Same as "[`mlirMemRefTypeContiguousGet`](@ref)" but returns a nullptr wrapping [`MlirType`](@ref) on illegal arguments, emitting appropriate diagnostics.
 """
 function mlirMemRefTypeContiguousGetChecked(loc, elementType, rank, shape, memorySpace)
-    @ccall (MLIR_C_PATH[]).mlirMemRefTypeContiguousGetChecked(
-        loc::MlirLocation,
-        elementType::MlirType,
-        rank::intptr_t,
-        shape::Ptr{Int64},
-        memorySpace::MlirAttribute,
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirMemRefTypeContiguousGetChecked(loc::MlirLocation, elementType::MlirType, rank::intptr_t, shape::Ptr{Int64}, memorySpace::MlirAttribute)::MlirType
 end
 
 """
@@ -4206,9 +3767,7 @@ end
 Creates an Unranked MemRef type with the given element type and in the given memory space. The type is owned by the context of element type.
 """
 function mlirUnrankedMemRefTypeGet(elementType, memorySpace)
-    @ccall (MLIR_C_PATH[]).mlirUnrankedMemRefTypeGet(
-        elementType::MlirType, memorySpace::MlirAttribute
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirUnrankedMemRefTypeGet(elementType::MlirType, memorySpace::MlirAttribute)::MlirType
 end
 
 """
@@ -4217,9 +3776,7 @@ end
 Same as "[`mlirUnrankedMemRefTypeGet`](@ref)" but returns a nullptr wrapping [`MlirType`](@ref) on illegal arguments, emitting appropriate diagnostics.
 """
 function mlirUnrankedMemRefTypeGetChecked(loc, elementType, memorySpace)
-    @ccall (MLIR_C_PATH[]).mlirUnrankedMemRefTypeGetChecked(
-        loc::MlirLocation, elementType::MlirType, memorySpace::MlirAttribute
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirUnrankedMemRefTypeGetChecked(loc::MlirLocation, elementType::MlirType, memorySpace::MlirAttribute)::MlirType
 end
 
 """
@@ -4273,9 +3830,7 @@ end
 Creates a tuple type that consists of the given list of elemental types. The type is owned by the context.
 """
 function mlirTupleTypeGet(ctx, numElements, elements)
-    @ccall (MLIR_C_PATH[]).mlirTupleTypeGet(
-        ctx::MlirContext, numElements::intptr_t, elements::Ptr{MlirType}
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirTupleTypeGet(ctx::MlirContext, numElements::intptr_t, elements::Ptr{MlirType})::MlirType
 end
 
 """
@@ -4311,13 +3866,7 @@ end
 Creates a function type, mapping a list of input types to result types.
 """
 function mlirFunctionTypeGet(ctx, numInputs, inputs, numResults, results)
-    @ccall (MLIR_C_PATH[]).mlirFunctionTypeGet(
-        ctx::MlirContext,
-        numInputs::intptr_t,
-        inputs::Ptr{MlirType},
-        numResults::intptr_t,
-        results::Ptr{MlirType},
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirFunctionTypeGet(ctx::MlirContext, numInputs::intptr_t, inputs::Ptr{MlirType}, numResults::intptr_t, results::Ptr{MlirType})::MlirType
 end
 
 """
@@ -4353,9 +3902,7 @@ end
 Returns the pos-th result type.
 """
 function mlirFunctionTypeGetResult(type, pos)
-    @ccall (MLIR_C_PATH[]).mlirFunctionTypeGetResult(
-        type::MlirType, pos::intptr_t
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirFunctionTypeGetResult(type::MlirType, pos::intptr_t)::MlirType
 end
 
 """
@@ -4373,9 +3920,7 @@ end
 Creates an opaque type in the given context associated with the dialect identified by its namespace. The type contains opaque byte data of the specified length (data need not be null-terminated).
 """
 function mlirOpaqueTypeGet(ctx, dialectNamespace, typeData)
-    @ccall (MLIR_C_PATH[]).mlirOpaqueTypeGet(
-        ctx::MlirContext, dialectNamespace::MlirStringRef, typeData::MlirStringRef
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirOpaqueTypeGet(ctx::MlirContext, dialectNamespace::MlirStringRef, typeData::MlirStringRef)::MlirType
 end
 
 """
@@ -4396,6 +3941,22 @@ function mlirOpaqueTypeGetData(type)
     @ccall (MLIR_C_PATH[]).mlirOpaqueTypeGetData(type::MlirType)::MlirStringRef
 end
 
+struct MlirPass
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirExternalPass
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirPassManager
+    ptr::Ptr{Cvoid}
+end
+
+struct MlirOpPassManager
+    ptr::Ptr{Cvoid}
+end
+
 """
     mlirPassManagerCreate(ctx)
 
@@ -4411,9 +3972,7 @@ end
 Create a new top-level PassManager anchored on `anchorOp`.
 """
 function mlirPassManagerCreateOnOperation(ctx, anchorOp)
-    @ccall (MLIR_C_PATH[]).mlirPassManagerCreateOnOperation(
-        ctx::MlirContext, anchorOp::MlirStringRef
-    )::MlirPassManager
+    @ccall (MLIR_C_PATH[]).mlirPassManagerCreateOnOperation(ctx::MlirContext, anchorOp::MlirStringRef)::MlirPassManager
 end
 
 """
@@ -4440,9 +3999,7 @@ end
 Cast a top-level PassManager to a generic OpPassManager.
 """
 function mlirPassManagerGetAsOpPassManager(passManager)
-    @ccall (MLIR_C_PATH[]).mlirPassManagerGetAsOpPassManager(
-        passManager::MlirPassManager
-    )::MlirOpPassManager
+    @ccall (MLIR_C_PATH[]).mlirPassManagerGetAsOpPassManager(passManager::MlirPassManager)::MlirOpPassManager
 end
 
 """
@@ -4451,9 +4008,7 @@ end
 Run the provided `passManager` on the given `module`.
 """
 function mlirPassManagerRun(passManager, _module)
-    @ccall (MLIR_C_PATH[]).mlirPassManagerRun(
-        passManager::MlirPassManager, _module::MlirModule
-    )::MlirLogicalResult
+    @ccall (MLIR_C_PATH[]).mlirPassManagerRun(passManager::MlirPassManager, _module::MlirModule)::MlirLogicalResult
 end
 
 """
@@ -4462,9 +4017,7 @@ end
 Enable mlir-print-ir-after-all.
 """
 function mlirPassManagerEnableIRPrinting(passManager)
-    @ccall (MLIR_C_PATH[]).mlirPassManagerEnableIRPrinting(
-        passManager::MlirPassManager
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirPassManagerEnableIRPrinting(passManager::MlirPassManager)::Cvoid
 end
 
 """
@@ -4473,9 +4026,7 @@ end
 Enable / disable verify-each.
 """
 function mlirPassManagerEnableVerifier(passManager, enable)
-    @ccall (MLIR_C_PATH[]).mlirPassManagerEnableVerifier(
-        passManager::MlirPassManager, enable::Bool
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirPassManagerEnableVerifier(passManager::MlirPassManager, enable::Bool)::Cvoid
 end
 
 """
@@ -4484,9 +4035,7 @@ end
 Nest an OpPassManager under the top-level PassManager, the nested passmanager will only run on operations matching the provided name. The returned OpPassManager will be destroyed when the parent is destroyed. To further nest more OpPassManager under the newly returned one, see `mlirOpPassManagerNest` below.
 """
 function mlirPassManagerGetNestedUnder(passManager, operationName)
-    @ccall (MLIR_C_PATH[]).mlirPassManagerGetNestedUnder(
-        passManager::MlirPassManager, operationName::MlirStringRef
-    )::MlirOpPassManager
+    @ccall (MLIR_C_PATH[]).mlirPassManagerGetNestedUnder(passManager::MlirPassManager, operationName::MlirStringRef)::MlirOpPassManager
 end
 
 """
@@ -4495,9 +4044,7 @@ end
 Nest an OpPassManager under the provided OpPassManager, the nested passmanager will only run on operations matching the provided name. The returned OpPassManager will be destroyed when the parent is destroyed.
 """
 function mlirOpPassManagerGetNestedUnder(passManager, operationName)
-    @ccall (MLIR_C_PATH[]).mlirOpPassManagerGetNestedUnder(
-        passManager::MlirOpPassManager, operationName::MlirStringRef
-    )::MlirOpPassManager
+    @ccall (MLIR_C_PATH[]).mlirOpPassManagerGetNestedUnder(passManager::MlirOpPassManager, operationName::MlirStringRef)::MlirOpPassManager
 end
 
 """
@@ -4506,9 +4053,7 @@ end
 Add a pass and transfer ownership to the provided top-level mlirPassManager. If the pass is not a generic operation pass or a ModulePass, a new OpPassManager is implicitly nested under the provided PassManager.
 """
 function mlirPassManagerAddOwnedPass(passManager, pass)
-    @ccall (MLIR_C_PATH[]).mlirPassManagerAddOwnedPass(
-        passManager::MlirPassManager, pass::MlirPass
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirPassManagerAddOwnedPass(passManager::MlirPassManager, pass::MlirPass)::Cvoid
 end
 
 """
@@ -4517,9 +4062,7 @@ end
 Add a pass and transfer ownership to the provided mlirOpPassManager. If the pass is not a generic operation pass or matching the type of the provided PassManager, a new OpPassManager is implicitly nested under the provided PassManager.
 """
 function mlirOpPassManagerAddOwnedPass(passManager, pass)
-    @ccall (MLIR_C_PATH[]).mlirOpPassManagerAddOwnedPass(
-        passManager::MlirOpPassManager, pass::MlirPass
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirOpPassManagerAddOwnedPass(passManager::MlirOpPassManager, pass::MlirPass)::Cvoid
 end
 
 """
@@ -4528,12 +4071,7 @@ end
 Parse a sequence of textual MLIR pass pipeline elements and add them to the provided OpPassManager. If parsing fails an error message is reported using the provided callback.
 """
 function mlirOpPassManagerAddPipeline(passManager, pipelineElements, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirOpPassManagerAddPipeline(
-        passManager::MlirOpPassManager,
-        pipelineElements::MlirStringRef,
-        callback::MlirStringCallback,
-        userData::Ptr{Cvoid},
-    )::MlirLogicalResult
+    @ccall (MLIR_C_PATH[]).mlirOpPassManagerAddPipeline(passManager::MlirOpPassManager, pipelineElements::MlirStringRef, callback::MlirStringCallback, userData::Ptr{Cvoid})::MlirLogicalResult
 end
 
 """
@@ -4542,9 +4080,7 @@ end
 Print a textual MLIR pass pipeline by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirPrintPassPipeline(passManager, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirPrintPassPipeline(
-        passManager::MlirOpPassManager, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirPrintPassPipeline(passManager::MlirOpPassManager, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -4553,12 +4089,28 @@ end
 Parse a textual MLIR pass pipeline and assign it to the provided OpPassManager. If parsing fails an error message is reported using the provided callback.
 """
 function mlirParsePassPipeline(passManager, pipeline, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirParsePassPipeline(
-        passManager::MlirOpPassManager,
-        pipeline::MlirStringRef,
-        callback::MlirStringCallback,
-        userData::Ptr{Cvoid},
-    )::MlirLogicalResult
+    @ccall (MLIR_C_PATH[]).mlirParsePassPipeline(passManager::MlirOpPassManager, pipeline::MlirStringRef, callback::MlirStringCallback, userData::Ptr{Cvoid})::MlirLogicalResult
+end
+
+"""
+    MlirExternalPassCallbacks
+
+Structure of external [`MlirPass`](@ref) callbacks. All callbacks are required to be set unless otherwise specified.
+
+| Field      | Note                                                                                                                                                                                              |
+| :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| construct  | This callback is called from the pass is created. This is analogous to a C++ pass constructor.                                                                                                    |
+| destruct   | This callback is called when the pass is destroyed This is analogous to a C++ pass destructor.                                                                                                    |
+| initialize | This callback is optional. The callback is called before the pass is run, allowing a chance to initialize any complex state necessary for running the pass. See Pass::initialize(MLIRContext *).  |
+| clone      | This callback is called when the pass is cloned. See Pass::clonePass().                                                                                                                           |
+| run        | This callback is called when the pass is run. See Pass::runOnOperation().                                                                                                                         |
+"""
+struct MlirExternalPassCallbacks
+    construct::Ptr{Cvoid}
+    destruct::Ptr{Cvoid}
+    initialize::Ptr{Cvoid}
+    clone::Ptr{Cvoid}
+    run::Ptr{Cvoid}
 end
 
 """
@@ -4566,28 +4118,8 @@ end
 
 Creates an external [`MlirPass`](@ref) that calls the supplied `callbacks` using the supplied `userData`. If `opName` is empty, the pass is a generic operation pass. Otherwise it is an operation pass specific to the specified pass name.
 """
-function mlirCreateExternalPass(
-    passID,
-    name,
-    argument,
-    description,
-    opName,
-    nDependentDialects,
-    dependentDialects,
-    callbacks,
-    userData,
-)
-    @ccall (MLIR_C_PATH[]).mlirCreateExternalPass(
-        passID::MlirTypeID,
-        name::MlirStringRef,
-        argument::MlirStringRef,
-        description::MlirStringRef,
-        opName::MlirStringRef,
-        nDependentDialects::intptr_t,
-        dependentDialects::Ptr{MlirDialectHandle},
-        callbacks::MlirExternalPassCallbacks,
-        userData::Ptr{Cvoid},
-    )::MlirPass
+function mlirCreateExternalPass(passID, name, argument, description, opName, nDependentDialects, dependentDialects, callbacks, userData)
+    @ccall (MLIR_C_PATH[]).mlirCreateExternalPass(passID::MlirTypeID, name::MlirStringRef, argument::MlirStringRef, description::MlirStringRef, opName::MlirStringRef, nDependentDialects::intptr_t, dependentDialects::Ptr{MlirDialectHandle}, callbacks::MlirExternalPassCallbacks, userData::Ptr{Cvoid})::MlirPass
 end
 
 """
@@ -5070,6 +4602,15 @@ function mlirIsGlobalDebugEnabled()
 end
 
 """
+    MlirDiagnostic
+
+An opaque reference to a diagnostic, always owned by the diagnostics engine (context). Must not be stored outside of the diagnostic handler.
+"""
+struct MlirDiagnostic
+    ptr::Ptr{Cvoid}
+end
+
+"""
     MlirDiagnosticSeverity
 
 Severity of a diagnostic.
@@ -5098,9 +4639,7 @@ const MlirDiagnosticHandler = Ptr{Cvoid}
 Prints a diagnostic using the provided callback.
 """
 function mlirDiagnosticPrint(diagnostic, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirDiagnosticPrint(
-        diagnostic::MlirDiagnostic, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirDiagnosticPrint(diagnostic::MlirDiagnostic, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -5109,9 +4648,7 @@ end
 Returns the location at which the diagnostic is reported.
 """
 function mlirDiagnosticGetLocation(diagnostic)
-    @ccall (MLIR_C_PATH[]).mlirDiagnosticGetLocation(
-        diagnostic::MlirDiagnostic
-    )::MlirLocation
+    @ccall (MLIR_C_PATH[]).mlirDiagnosticGetLocation(diagnostic::MlirDiagnostic)::MlirLocation
 end
 
 """
@@ -5120,9 +4657,7 @@ end
 Returns the severity of the diagnostic.
 """
 function mlirDiagnosticGetSeverity(diagnostic)
-    @ccall (MLIR_C_PATH[]).mlirDiagnosticGetSeverity(
-        diagnostic::MlirDiagnostic
-    )::MlirDiagnosticSeverity
+    @ccall (MLIR_C_PATH[]).mlirDiagnosticGetSeverity(diagnostic::MlirDiagnostic)::MlirDiagnosticSeverity
 end
 
 """
@@ -5140,9 +4675,7 @@ end
 Returns `pos`-th note attached to the diagnostic. Expects `pos` to be a valid zero-based index into the list of notes.
 """
 function mlirDiagnosticGetNote(diagnostic, pos)
-    @ccall (MLIR_C_PATH[]).mlirDiagnosticGetNote(
-        diagnostic::MlirDiagnostic, pos::intptr_t
-    )::MlirDiagnostic
+    @ccall (MLIR_C_PATH[]).mlirDiagnosticGetNote(diagnostic::MlirDiagnostic, pos::intptr_t)::MlirDiagnostic
 end
 
 """
@@ -5151,12 +4684,7 @@ end
 Attaches the diagnostic handler to the context. Handlers are invoked in the reverse order of attachment until one of them processes the diagnostic completely. When a handler is invoked it is passed the `userData` that was provided when it was attached. If non-NULL, `deleteUserData` is called once the system no longer needs to call the handler (for instance after the handler is detached or the context is destroyed). Returns an identifier that can be used to detach the handler.
 """
 function mlirContextAttachDiagnosticHandler(context, handler, userData, deleteUserData)
-    @ccall (MLIR_C_PATH[]).mlirContextAttachDiagnosticHandler(
-        context::MlirContext,
-        handler::MlirDiagnosticHandler,
-        userData::Ptr{Cvoid},
-        deleteUserData::Ptr{Cvoid},
-    )::MlirDiagnosticHandlerID
+    @ccall (MLIR_C_PATH[]).mlirContextAttachDiagnosticHandler(context::MlirContext, handler::MlirDiagnosticHandler, userData::Ptr{Cvoid}, deleteUserData::Ptr{Cvoid})::MlirDiagnosticHandlerID
 end
 
 """
@@ -5165,9 +4693,7 @@ end
 Detaches an attached diagnostic handler from the context given its identifier.
 """
 function mlirContextDetachDiagnosticHandler(context, id)
-    @ccall (MLIR_C_PATH[]).mlirContextDetachDiagnosticHandler(
-        context::MlirContext, id::MlirDiagnosticHandlerID
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirContextDetachDiagnosticHandler(context::MlirContext, id::MlirDiagnosticHandlerID)::Cvoid
 end
 
 """
@@ -5301,9 +4827,7 @@ end
 Creates an llvm.ptr type.
 """
 function mlirLLVMPointerTypeGet(pointee, addressSpace)
-    @ccall (MLIR_C_PATH[]).mlirLLVMPointerTypeGet(
-        pointee::MlirType, addressSpace::Cuint
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirLLVMPointerTypeGet(pointee::MlirType, addressSpace::Cuint)::MlirType
 end
 
 """
@@ -5321,9 +4845,7 @@ end
 Creates an llvm.array type.
 """
 function mlirLLVMArrayTypeGet(elementType, numElements)
-    @ccall (MLIR_C_PATH[]).mlirLLVMArrayTypeGet(
-        elementType::MlirType, numElements::Cuint
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirLLVMArrayTypeGet(elementType::MlirType, numElements::Cuint)::MlirType
 end
 
 """
@@ -5332,12 +4854,7 @@ end
 Creates an llvm.func type.
 """
 function mlirLLVMFunctionTypeGet(resultType, nArgumentTypes, argumentTypes, isVarArg)
-    @ccall (MLIR_C_PATH[]).mlirLLVMFunctionTypeGet(
-        resultType::MlirType,
-        nArgumentTypes::intptr_t,
-        argumentTypes::Ptr{MlirType},
-        isVarArg::Bool,
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirLLVMFunctionTypeGet(resultType::MlirType, nArgumentTypes::intptr_t, argumentTypes::Ptr{MlirType}, isVarArg::Bool)::MlirType
 end
 
 """
@@ -5346,9 +4863,7 @@ end
 Creates an LLVM literal (unnamed) struct type.
 """
 function mlirLLVMStructTypeLiteralGet(ctx, nFieldTypes, fieldTypes, isPacked)
-    @ccall (MLIR_C_PATH[]).mlirLLVMStructTypeLiteralGet(
-        ctx::MlirContext, nFieldTypes::intptr_t, fieldTypes::Ptr{MlirType}, isPacked::Bool
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirLLVMStructTypeLiteralGet(ctx::MlirContext, nFieldTypes::intptr_t, fieldTypes::Ptr{MlirType}, isPacked::Bool)::MlirType
 end
 
 """
@@ -5540,9 +5055,7 @@ end
 Returns the minimum possible value stored by a quantized type.
 """
 function mlirQuantizedTypeGetDefaultMinimumForInteger(isSigned, integralWidth)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetDefaultMinimumForInteger(
-        isSigned::Bool, integralWidth::Cuint
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetDefaultMinimumForInteger(isSigned::Bool, integralWidth::Cuint)::Int64
 end
 
 """
@@ -5551,9 +5064,7 @@ end
 Returns the maximum possible value stored by a quantized type.
 """
 function mlirQuantizedTypeGetDefaultMaximumForInteger(isSigned, integralWidth)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetDefaultMaximumForInteger(
-        isSigned::Bool, integralWidth::Cuint
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetDefaultMaximumForInteger(isSigned::Bool, integralWidth::Cuint)::Int64
 end
 
 """
@@ -5616,9 +5127,7 @@ end
 Returns the integral bitwidth that the storage type of the given quantized type can represent exactly.
 """
 function mlirQuantizedTypeGetStorageTypeIntegralWidth(type)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetStorageTypeIntegralWidth(
-        type::MlirType
-    )::Cuint
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetStorageTypeIntegralWidth(type::MlirType)::Cuint
 end
 
 """
@@ -5627,9 +5136,7 @@ end
 Returns `true` if the `candidate` type is compatible with the given quantized `type`.
 """
 function mlirQuantizedTypeIsCompatibleExpressedType(type, candidate)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeIsCompatibleExpressedType(
-        type::MlirType, candidate::MlirType
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeIsCompatibleExpressedType(type::MlirType, candidate::MlirType)::Bool
 end
 
 """
@@ -5638,9 +5145,7 @@ end
 Returns the element type of the given quantized type as another quantized type.
 """
 function mlirQuantizedTypeGetQuantizedElementType(type)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetQuantizedElementType(
-        type::MlirType
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeGetQuantizedElementType(type::MlirType)::MlirType
 end
 
 """
@@ -5649,9 +5154,7 @@ end
 Casts from a type based on the storage type of the given type to a corresponding type based on the given type. Returns a null type if the cast is not valid.
 """
 function mlirQuantizedTypeCastFromStorageType(type, candidate)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeCastFromStorageType(
-        type::MlirType, candidate::MlirType
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeCastFromStorageType(type::MlirType, candidate::MlirType)::MlirType
 end
 
 """
@@ -5669,9 +5172,7 @@ end
 Casts from a type based on the expressed type of the given type to a corresponding type based on the given type. Returns a null type if the cast is not valid.
 """
 function mlirQuantizedTypeCastFromExpressedType(type, candidate)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeCastFromExpressedType(
-        type::MlirType, candidate::MlirType
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeCastFromExpressedType(type::MlirType, candidate::MlirType)::MlirType
 end
 
 """
@@ -5689,9 +5190,7 @@ end
 Casts from a type based on the expressed type of the given quantized type to equivalent type based on storage type of the same quantized type.
 """
 function mlirQuantizedTypeCastExpressedToStorageType(type, candidate)
-    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeCastExpressedToStorageType(
-        type::MlirType, candidate::MlirType
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirQuantizedTypeCastExpressedToStorageType(type::MlirType, candidate::MlirType)::MlirType
 end
 
 """
@@ -5708,16 +5207,8 @@ end
 
 Creates an instance of AnyQuantizedType with the given parameters in the same context as `storageType` and returns it. The instance is owned by the context.
 """
-function mlirAnyQuantizedTypeGet(
-    flags, storageType, expressedType, storageTypeMin, storageTypeMax
-)
-    @ccall (MLIR_C_PATH[]).mlirAnyQuantizedTypeGet(
-        flags::Cuint,
-        storageType::MlirType,
-        expressedType::MlirType,
-        storageTypeMin::Int64,
-        storageTypeMax::Int64,
-    )::MlirType
+function mlirAnyQuantizedTypeGet(flags, storageType, expressedType, storageTypeMin, storageTypeMax)
+    @ccall (MLIR_C_PATH[]).mlirAnyQuantizedTypeGet(flags::Cuint, storageType::MlirType, expressedType::MlirType, storageTypeMin::Int64, storageTypeMax::Int64)::MlirType
 end
 
 """
@@ -5734,18 +5225,8 @@ end
 
 Creates an instance of UniformQuantizedType with the given parameters in the same context as `storageType` and returns it. The instance is owned by the context.
 """
-function mlirUniformQuantizedTypeGet(
-    flags, storageType, expressedType, scale, zeroPoint, storageTypeMin, storageTypeMax
-)
-    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedTypeGet(
-        flags::Cuint,
-        storageType::MlirType,
-        expressedType::MlirType,
-        scale::Cdouble,
-        zeroPoint::Int64,
-        storageTypeMin::Int64,
-        storageTypeMax::Int64,
-    )::MlirType
+function mlirUniformQuantizedTypeGet(flags, storageType, expressedType, scale, zeroPoint, storageTypeMin, storageTypeMax)
+    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedTypeGet(flags::Cuint, storageType::MlirType, expressedType::MlirType, scale::Cdouble, zeroPoint::Int64, storageTypeMin::Int64, storageTypeMax::Int64)::MlirType
 end
 
 """
@@ -5789,28 +5270,8 @@ end
 
 Creates an instance of UniformQuantizedPerAxisType with the given parameters in the same context as `storageType` and returns it. `scales` and `zeroPoints` point to `nDims` number of elements. The instance is owned by the context.
 """
-function mlirUniformQuantizedPerAxisTypeGet(
-    flags,
-    storageType,
-    expressedType,
-    nDims,
-    scales,
-    zeroPoints,
-    quantizedDimension,
-    storageTypeMin,
-    storageTypeMax,
-)
-    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGet(
-        flags::Cuint,
-        storageType::MlirType,
-        expressedType::MlirType,
-        nDims::intptr_t,
-        scales::Ptr{Cdouble},
-        zeroPoints::Ptr{Int64},
-        quantizedDimension::Int32,
-        storageTypeMin::Int64,
-        storageTypeMax::Int64,
-    )::MlirType
+function mlirUniformQuantizedPerAxisTypeGet(flags, storageType, expressedType, nDims, scales, zeroPoints, quantizedDimension, storageTypeMin, storageTypeMax)
+    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGet(flags::Cuint, storageType::MlirType, expressedType::MlirType, nDims::intptr_t, scales::Ptr{Cdouble}, zeroPoints::Ptr{Int64}, quantizedDimension::Int32, storageTypeMin::Int64, storageTypeMax::Int64)::MlirType
 end
 
 """
@@ -5819,9 +5280,7 @@ end
 Returns the number of axes in the given quantized per-axis type.
 """
 function mlirUniformQuantizedPerAxisTypeGetNumDims(type)
-    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetNumDims(
-        type::MlirType
-    )::intptr_t
+    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetNumDims(type::MlirType)::intptr_t
 end
 
 """
@@ -5830,9 +5289,7 @@ end
 Returns `pos`-th scale of the given quantized per-axis type.
 """
 function mlirUniformQuantizedPerAxisTypeGetScale(type, pos)
-    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetScale(
-        type::MlirType, pos::intptr_t
-    )::Cdouble
+    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetScale(type::MlirType, pos::intptr_t)::Cdouble
 end
 
 """
@@ -5841,9 +5298,7 @@ end
 Returns `pos`-th zero point of the given quantized per-axis type.
 """
 function mlirUniformQuantizedPerAxisTypeGetZeroPoint(type, pos)
-    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetZeroPoint(
-        type::MlirType, pos::intptr_t
-    )::Int64
+    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetZeroPoint(type::MlirType, pos::intptr_t)::Int64
 end
 
 """
@@ -5852,9 +5307,7 @@ end
 Returns the index of the quantized dimension in the given quantized per-axis type.
 """
 function mlirUniformQuantizedPerAxisTypeGetQuantizedDimension(type)
-    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetQuantizedDimension(
-        type::MlirType
-    )::Int32
+    @ccall (MLIR_C_PATH[]).mlirUniformQuantizedPerAxisTypeGetQuantizedDimension(type::MlirType)::Int32
 end
 
 """
@@ -5881,9 +5334,7 @@ end
 Creates an instance of CalibratedQuantizedType with the given parameters in the same context as `expressedType` and returns it. The instance is owned by the context.
 """
 function mlirCalibratedQuantizedTypeGet(expressedType, min, max)
-    @ccall (MLIR_C_PATH[]).mlirCalibratedQuantizedTypeGet(
-        expressedType::MlirType, min::Cdouble, max::Cdouble
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirCalibratedQuantizedTypeGet(expressedType::MlirType, min::Cdouble, max::Cdouble)::MlirType
 end
 
 """
@@ -5941,9 +5392,7 @@ end
 Checks whether the given attribute is a sparse\\_tensor.encoding attribute.
 """
 function mlirAttributeIsASparseTensorEncodingAttr(attr)
-    @ccall (MLIR_C_PATH[]).mlirAttributeIsASparseTensorEncodingAttr(
-        attr::MlirAttribute
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirAttributeIsASparseTensorEncodingAttr(attr::MlirAttribute)::Bool
 end
 
 """
@@ -5951,24 +5400,8 @@ end
 
 Creates a sparse\\_tensor.encoding attribute with the given parameters.
 """
-function mlirSparseTensorEncodingAttrGet(
-    ctx,
-    numDimLevelTypes,
-    dimLevelTypes,
-    dimOrdering,
-    higherOrdering,
-    pointerBitWidth,
-    indexBitWidth,
-)
-    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGet(
-        ctx::MlirContext,
-        numDimLevelTypes::intptr_t,
-        dimLevelTypes::Ptr{MlirSparseTensorDimLevelType},
-        dimOrdering::MlirAffineMap,
-        higherOrdering::MlirAffineMap,
-        pointerBitWidth::Cint,
-        indexBitWidth::Cint,
-    )::MlirAttribute
+function mlirSparseTensorEncodingAttrGet(ctx, numDimLevelTypes, dimLevelTypes, dimOrdering, higherOrdering, pointerBitWidth, indexBitWidth)
+    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGet(ctx::MlirContext, numDimLevelTypes::intptr_t, dimLevelTypes::Ptr{MlirSparseTensorDimLevelType}, dimOrdering::MlirAffineMap, higherOrdering::MlirAffineMap, pointerBitWidth::Cint, indexBitWidth::Cint)::MlirAttribute
 end
 
 """
@@ -5977,9 +5410,7 @@ end
 Returns the number of dim level types in a sparse\\_tensor.encoding attribute.
 """
 function mlirSparseTensorEncodingGetNumDimLevelTypes(attr)
-    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingGetNumDimLevelTypes(
-        attr::MlirAttribute
-    )::intptr_t
+    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingGetNumDimLevelTypes(attr::MlirAttribute)::intptr_t
 end
 
 """
@@ -5988,9 +5419,7 @@ end
 Returns a specified dim level type in a sparse\\_tensor.encoding attribute.
 """
 function mlirSparseTensorEncodingAttrGetDimLevelType(attr, pos)
-    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetDimLevelType(
-        attr::MlirAttribute, pos::intptr_t
-    )::MlirSparseTensorDimLevelType
+    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetDimLevelType(attr::MlirAttribute, pos::intptr_t)::MlirSparseTensorDimLevelType
 end
 
 """
@@ -5999,9 +5428,7 @@ end
 Returns the dimension ordering in a sparse\\_tensor.encoding attribute.
 """
 function mlirSparseTensorEncodingAttrGetDimOrdering(attr)
-    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetDimOrdering(
-        attr::MlirAttribute
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetDimOrdering(attr::MlirAttribute)::MlirAffineMap
 end
 
 """
@@ -6010,9 +5437,7 @@ end
 Returns the higher ordering in a sparse\\_tensor.encoding attribute.
 """
 function mlirSparseTensorEncodingAttrGetHigherOrdering(attr)
-    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetHigherOrdering(
-        attr::MlirAttribute
-    )::MlirAffineMap
+    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetHigherOrdering(attr::MlirAttribute)::MlirAffineMap
 end
 
 """
@@ -6021,9 +5446,7 @@ end
 Returns the pointer bit width in a sparse\\_tensor.encoding attribute.
 """
 function mlirSparseTensorEncodingAttrGetPointerBitWidth(attr)
-    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetPointerBitWidth(
-        attr::MlirAttribute
-    )::Cint
+    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetPointerBitWidth(attr::MlirAttribute)::Cint
 end
 
 """
@@ -6032,9 +5455,7 @@ end
 Returns the index bit width in a sparse\\_tensor.encoding attribute.
 """
 function mlirSparseTensorEncodingAttrGetIndexBitWidth(attr)
-    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetIndexBitWidth(
-        attr::MlirAttribute
-    )::Cint
+    @ccall (MLIR_C_PATH[]).mlirSparseTensorEncodingAttrGetIndexBitWidth(attr::MlirAttribute)::Cint
 end
 
 function mlirRegisterSparseTensorPasses()
@@ -6126,15 +5547,15 @@ function mlirTypeIsATransformOperationType(type)
 end
 
 function mlirTransformOperationTypeGet(ctx, operationName)
-    @ccall (MLIR_C_PATH[]).mlirTransformOperationTypeGet(
-        ctx::MlirContext, operationName::MlirStringRef
-    )::MlirType
+    @ccall (MLIR_C_PATH[]).mlirTransformOperationTypeGet(ctx::MlirContext, operationName::MlirStringRef)::MlirType
 end
 
 function mlirTransformOperationTypeGetOperationName(type)
-    @ccall (MLIR_C_PATH[]).mlirTransformOperationTypeGetOperationName(
-        type::MlirType
-    )::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirTransformOperationTypeGetOperationName(type::MlirType)::MlirStringRef
+end
+
+struct MlirExecutionEngine
+    ptr::Ptr{Cvoid}
 end
 
 """
@@ -6143,13 +5564,7 @@ end
 Creates an ExecutionEngine for the provided ModuleOp. The ModuleOp is expected to be "translatable" to LLVM IR (only contains operations in dialects that implement the `LLVMTranslationDialectInterface`). The module ownership stays with the client and can be destroyed as soon as the call returns. `optLevel` is the optimization level to be used for transformation and code generation. LLVM passes at `optLevel` are run before code generation. The number and array of paths corresponding to shared libraries that will be loaded are specified via `numPaths` and `sharedLibPaths` respectively. TODO: figure out other options.
 """
 function mlirExecutionEngineCreate(op, optLevel, numPaths, sharedLibPaths, enableObjectDump)
-    @ccall (MLIR_C_PATH[]).mlirExecutionEngineCreate(
-        op::MlirModule,
-        optLevel::Cint,
-        numPaths::Cint,
-        sharedLibPaths::Ptr{MlirStringRef},
-        enableObjectDump::Bool,
-    )::MlirExecutionEngine
+    @ccall (MLIR_C_PATH[]).mlirExecutionEngineCreate(op::MlirModule, optLevel::Cint, numPaths::Cint, sharedLibPaths::Ptr{MlirStringRef}, enableObjectDump::Bool)::MlirExecutionEngine
 end
 
 """
@@ -6176,9 +5591,7 @@ end
 Invoke a native function in the execution engine by name with the arguments and result of the invoked function passed as an array of pointers. The function must have been tagged with the `llvm.emit\\_c\\_interface` attribute. Returns a failure if the execution fails for any reason (the function name can't be resolved for instance).
 """
 function mlirExecutionEngineInvokePacked(jit, name, arguments)
-    @ccall (MLIR_C_PATH[]).mlirExecutionEngineInvokePacked(
-        jit::MlirExecutionEngine, name::MlirStringRef, arguments::Ptr{Ptr{Cvoid}}
-    )::MlirLogicalResult
+    @ccall (MLIR_C_PATH[]).mlirExecutionEngineInvokePacked(jit::MlirExecutionEngine, name::MlirStringRef, arguments::Ptr{Ptr{Cvoid}})::MlirLogicalResult
 end
 
 """
@@ -6187,9 +5600,7 @@ end
 Lookup the wrapper of the native function in the execution engine with the given name, returns nullptr if the function can't be looked-up.
 """
 function mlirExecutionEngineLookupPacked(jit, name)
-    @ccall (MLIR_C_PATH[]).mlirExecutionEngineLookupPacked(
-        jit::MlirExecutionEngine, name::MlirStringRef
-    )::Ptr{Cvoid}
+    @ccall (MLIR_C_PATH[]).mlirExecutionEngineLookupPacked(jit::MlirExecutionEngine, name::MlirStringRef)::Ptr{Cvoid}
 end
 
 """
@@ -6198,9 +5609,7 @@ end
 Lookup a native function in the execution engine by name, returns nullptr if the name can't be looked-up.
 """
 function mlirExecutionEngineLookup(jit, name)
-    @ccall (MLIR_C_PATH[]).mlirExecutionEngineLookup(
-        jit::MlirExecutionEngine, name::MlirStringRef
-    )::Ptr{Cvoid}
+    @ccall (MLIR_C_PATH[]).mlirExecutionEngineLookup(jit::MlirExecutionEngine, name::MlirStringRef)::Ptr{Cvoid}
 end
 
 """
@@ -6209,9 +5618,7 @@ end
 Register a symbol with the jit: this symbol will be accessible to the jitted code.
 """
 function mlirExecutionEngineRegisterSymbol(jit, name, sym)
-    @ccall (MLIR_C_PATH[]).mlirExecutionEngineRegisterSymbol(
-        jit::MlirExecutionEngine, name::MlirStringRef, sym::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirExecutionEngineRegisterSymbol(jit::MlirExecutionEngine, name::MlirStringRef, sym::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -6220,9 +5627,11 @@ end
 Dump as an object in `fileName`.
 """
 function mlirExecutionEngineDumpToObjectFile(jit, fileName)
-    @ccall (MLIR_C_PATH[]).mlirExecutionEngineDumpToObjectFile(
-        jit::MlirExecutionEngine, fileName::MlirStringRef
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirExecutionEngineDumpToObjectFile(jit::MlirExecutionEngine, fileName::MlirStringRef)::Cvoid
+end
+
+struct MlirIntegerSet
+    ptr::Ptr{Cvoid}
 end
 
 """
@@ -6258,9 +5667,7 @@ end
 Prints an integer set by sending chunks of the string representation and forwarding `userData to `callback`. Note that the callback may be called several times with consecutive chunks of the string.
 """
 function mlirIntegerSetPrint(set, callback, userData)
-    @ccall (MLIR_C_PATH[]).mlirIntegerSetPrint(
-        set::MlirIntegerSet, callback::MlirStringCallback, userData::Ptr{Cvoid}
-    )::Cvoid
+    @ccall (MLIR_C_PATH[]).mlirIntegerSetPrint(set::MlirIntegerSet, callback::MlirStringCallback, userData::Ptr{Cvoid})::Cvoid
 end
 
 """
@@ -6278,9 +5685,7 @@ end
 Gets or creates a new canonically empty integer set with the give number of dimensions and symbols in the given context.
 """
 function mlirIntegerSetEmptyGet(context, numDims, numSymbols)
-    @ccall (MLIR_C_PATH[]).mlirIntegerSetEmptyGet(
-        context::MlirContext, numDims::intptr_t, numSymbols::intptr_t
-    )::MlirIntegerSet
+    @ccall (MLIR_C_PATH[]).mlirIntegerSetEmptyGet(context::MlirContext, numDims::intptr_t, numSymbols::intptr_t)::MlirIntegerSet
 end
 
 """
@@ -6288,17 +5693,8 @@ end
 
 Gets or creates a new integer set in the given context. The set is defined by a list of affine constraints, with the given number of input dimensions and symbols, which are treated as either equalities (eqFlags is 1) or inequalities (eqFlags is 0). Both `constraints` and `eqFlags` are expected to point to at least `numConstraint` consecutive values.
 """
-function mlirIntegerSetGet(
-    context, numDims, numSymbols, numConstraints, constraints, eqFlags
-)
-    @ccall (MLIR_C_PATH[]).mlirIntegerSetGet(
-        context::MlirContext,
-        numDims::intptr_t,
-        numSymbols::intptr_t,
-        numConstraints::intptr_t,
-        constraints::Ptr{MlirAffineExpr},
-        eqFlags::Ptr{Bool},
-    )::MlirIntegerSet
+function mlirIntegerSetGet(context, numDims, numSymbols, numConstraints, constraints, eqFlags)
+    @ccall (MLIR_C_PATH[]).mlirIntegerSetGet(context::MlirContext, numDims::intptr_t, numSymbols::intptr_t, numConstraints::intptr_t, constraints::Ptr{MlirAffineExpr}, eqFlags::Ptr{Bool})::MlirIntegerSet
 end
 
 """
@@ -6306,16 +5702,8 @@ end
 
 Gets or creates a new integer set in which the values and dimensions of the given set are replaced with the given affine expressions. `dimReplacements` and `symbolReplacements` are expected to point to at least as many consecutive expressions as the given set has dimensions and symbols, respectively. The new set will have `numResultDims` and `numResultSymbols` dimensions and symbols, respectively.
 """
-function mlirIntegerSetReplaceGet(
-    set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols
-)
-    @ccall (MLIR_C_PATH[]).mlirIntegerSetReplaceGet(
-        set::MlirIntegerSet,
-        dimReplacements::Ptr{MlirAffineExpr},
-        symbolReplacements::Ptr{MlirAffineExpr},
-        numResultDims::intptr_t,
-        numResultSymbols::intptr_t,
-    )::MlirIntegerSet
+function mlirIntegerSetReplaceGet(set, dimReplacements, symbolReplacements, numResultDims, numResultSymbols)
+    @ccall (MLIR_C_PATH[]).mlirIntegerSetReplaceGet(set::MlirIntegerSet, dimReplacements::Ptr{MlirAffineExpr}, symbolReplacements::Ptr{MlirAffineExpr}, numResultDims::intptr_t, numResultSymbols::intptr_t)::MlirIntegerSet
 end
 
 """
@@ -6387,9 +5775,7 @@ end
 Returns `pos`-th constraint of the set.
 """
 function mlirIntegerSetGetConstraint(set, pos)
-    @ccall (MLIR_C_PATH[]).mlirIntegerSetGetConstraint(
-        set::MlirIntegerSet, pos::intptr_t
-    )::MlirAffineExpr
+    @ccall (MLIR_C_PATH[]).mlirIntegerSetGetConstraint(set::MlirIntegerSet, pos::intptr_t)::MlirAffineExpr
 end
 
 """
@@ -6398,9 +5784,7 @@ end
 Returns `true` of the `pos`-th constraint of the set is an equality constraint, `false` otherwise.
 """
 function mlirIntegerSetIsConstraintEq(set, pos)
-    @ccall (MLIR_C_PATH[]).mlirIntegerSetIsConstraintEq(
-        set::MlirIntegerSet, pos::intptr_t
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirIntegerSetIsConstraintEq(set::MlirIntegerSet, pos::intptr_t)::Bool
 end
 
 """
@@ -6409,9 +5793,7 @@ end
 Returns `true` if the given operation implements an interface identified by its TypeID.
 """
 function mlirOperationImplementsInterface(operation, interfaceTypeID)
-    @ccall (MLIR_C_PATH[]).mlirOperationImplementsInterface(
-        operation::MlirOperation, interfaceTypeID::MlirTypeID
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirOperationImplementsInterface(operation::MlirOperation, interfaceTypeID::MlirTypeID)::Bool
 end
 
 """
@@ -6420,9 +5802,7 @@ end
 Returns `true` if the operation identified by its canonical string name implements the interface identified by its TypeID in the given context. Note that interfaces may be attached to operations in some contexts and not others.
 """
 function mlirOperationImplementsInterfaceStatic(operationName, context, interfaceTypeID)
-    @ccall (MLIR_C_PATH[]).mlirOperationImplementsInterfaceStatic(
-        operationName::MlirStringRef, context::MlirContext, interfaceTypeID::MlirTypeID
-    )::Bool
+    @ccall (MLIR_C_PATH[]).mlirOperationImplementsInterfaceStatic(operationName::MlirStringRef, context::MlirContext, interfaceTypeID::MlirTypeID)::Bool
 end
 
 """
@@ -6445,30 +5825,8 @@ const MlirTypesCallback = Ptr{Cvoid}
 
 Infers the return types of the operation identified by its canonical given the arguments that will be supplied to its generic builder. Calls `callback` with the types of inferred arguments, potentially several times, on success. Returns failure otherwise.
 """
-function mlirInferTypeOpInterfaceInferReturnTypes(
-    opName,
-    context,
-    location,
-    nOperands,
-    operands,
-    attributes,
-    nRegions,
-    regions,
-    callback,
-    userData,
-)
-    @ccall (MLIR_C_PATH[]).mlirInferTypeOpInterfaceInferReturnTypes(
-        opName::MlirStringRef,
-        context::MlirContext,
-        location::MlirLocation,
-        nOperands::intptr_t,
-        operands::Ptr{MlirValue},
-        attributes::MlirAttribute,
-        nRegions::intptr_t,
-        regions::Ptr{MlirRegion},
-        callback::MlirTypesCallback,
-        userData::Ptr{Cvoid},
-    )::MlirLogicalResult
+function mlirInferTypeOpInterfaceInferReturnTypes(opName, context, location, nOperands, operands, attributes, nRegions, regions, callback, userData)
+    @ccall (MLIR_C_PATH[]).mlirInferTypeOpInterfaceInferReturnTypes(opName::MlirStringRef, context::MlirContext, location::MlirLocation, nOperands::intptr_t, operands::Ptr{MlirValue}, attributes::MlirAttribute, nRegions::intptr_t, regions::Ptr{MlirRegion}, callback::MlirTypesCallback, userData::Ptr{Cvoid})::MlirLogicalResult
 end
 
 """
@@ -6613,3 +5971,4 @@ end
 function mlirRegisterTransformsViewOpGraph()
     @ccall (MLIR_C_PATH[]).mlirRegisterTransformsViewOpGraph()::Cvoid
 end
+
