@@ -146,7 +146,7 @@ function code_mlir(f, types)
             line = @static if VERSION <= v"1.11"
                 ir.linetable[stmt[:line]+1]
             else
-                ir.debuginfo.linetable[stmt[:line]+1]
+                (; ((:line, :file) .=> Base.IRShow.debuginfo_firstline(ir.debuginfo))...)
             end
 
             if Meta.isexpr(inst, :call)
@@ -193,7 +193,7 @@ function code_mlir(f, types)
                 line = @static if VERSION < v"1.12"
                     ir.linetable[stmt[:line]+1]
                 else
-                    ir.debuginfo.linetable[stmt[:line]+1]
+                    (; ((:line, :file) .=> Base.IRShow.debuginfo_firstline(ir.debuginfo))...)
                 end
                 location = Location(string(line.file), line.line, 0)
                 push!(current_block, func.return_([get_value(inst.val)]; location))
