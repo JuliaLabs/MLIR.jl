@@ -222,5 +222,6 @@ BoolTrait(T) = NonBoollike()
 @inline mlir_bool_conversion(x::Bool) = x
 @inline mlir_bool_conversion(x::T) where T = mlir_bool_conversion(BoolTrait(T), x)
 
-@intrinsic mlir_bool_conversion(::Boollike, x) = Base.inferencebarrier(x)::Bool
+@inline mlir_bool_conversion(::Boollike, x)::Bool = bool_conversion_intrinsic(x)
+@intrinsic bool_conversion_intrinsic(x)::Bool = Base.inferencebarrier(nothing)::Bool
 @intrinsic mlir_bool_conversion(::NonBoollike, x::T) where T = error("Type $T is not marked as Boollike.")
