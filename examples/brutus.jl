@@ -146,7 +146,7 @@ function code_mlir(f, types)
             line = @static if VERSION <= v"1.11"
                 ir.linetable[stmt[:line]+1]
             else
-                (; ((:file, :line) .=> Base.IRShow.debuginfo_firstline(ir.debuginfo))...)
+                last(Base.IRShow.buildLineInfoNode(ir.debuginfo, :var"n/a", sidx))
             end
 
             if Meta.isexpr(inst, :call)
