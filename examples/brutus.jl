@@ -190,11 +190,6 @@ function code_mlir(f, types)
                 cond_br = cf.cond_br(cond, true_args, false_args; trueDest=other_dest, falseDest=dest, location)
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
-                line = @static if VERSION < v"1.12"
-                    ir.linetable[stmt[:line]+1]
-                else
-                    (; ((:file, :line) .=> Base.IRShow.debuginfo_firstline(ir.debuginfo))...)
-                end
                 location = Location(string(line.file), line.line, 0)
                 push!(current_block, func.return_([get_value(inst.val)]; location))
             elseif Meta.isexpr(inst, :code_coverage_effect)
