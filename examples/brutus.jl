@@ -143,7 +143,16 @@ function code_mlir(f, types)
         for sidx in bb.stmts
             stmt = ir.stmts[sidx]
             inst = stmt[:inst]
-            line = ir.linetable[stmt[:line]+1]
+            line = @static if VERSION <= v"1.11"
+                ir.linetable[stmt[:line]+1]
+            else
+                lineinfonode = Base.IRShow.buildLineInfoNode(ir.debuginfo, :var"n/a", sidx)
+                if !isempty(lineinfonode)
+                    last(lineinfonode)
+                else
+                    (; ((:file, :line) .=> Base.IRShow.debuginfo_firstline(ir.debuginfo))...)
+                end
+            end
 
             if Meta.isexpr(inst, :call)
                 val_type = stmt[:type]
@@ -186,7 +195,6 @@ function code_mlir(f, types)
                 cond_br = cf.cond_br(cond, true_args, false_args; trueDest=other_dest, falseDest=dest, location)
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
-                line = ir.linetable[stmt[:line]+1]
                 location = Location(string(line.file), line.line, 0)
                 push!(current_block, func.return_([get_value(inst.val)]; location))
             elseif Meta.isexpr(inst, :code_coverage_effect)

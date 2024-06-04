@@ -64,7 +64,11 @@ end
 Run the provided `passManager` on the given `module`.
 """
 function run!(pm::PassManager, mod::Module)
-    status = LogicalResult(API.mlirPassManagerRun(pm, mod))
+    status = if MLIR_VERSION[] >= v"17"
+        LogicalResult(API.mlirPassManagerRunOnOp(pm, Operation(mod)))
+    else
+        LogicalResult(API.mlirPassManagerRun(pm, mod))
+    end
     if isfailure(status)
         throw("failed to run pass manager on module")
     end

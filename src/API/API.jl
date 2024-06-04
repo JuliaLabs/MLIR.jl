@@ -18,14 +18,14 @@ end
 
 # generate version-less API functions
 begin
-    local ops = mapreduce(∪, [v14, v15, v16]) do mod
+    local ops = mapreduce(∪, [v14, v15, v16, v17]) do mod
         filter(names(mod; all=true)) do name
             name ∉ [nameof(mod), :eval, :include] && !startswith(string(name), '#')
         end
     end
 
     for op in ops
-        container_mods = filter([v14, v15, v16]) do mod
+        container_mods = filter([v14, v15, v16, v17]) do mod
             op in names(mod; all=true)
         end
         container_mods = map(container_mods) do mod
