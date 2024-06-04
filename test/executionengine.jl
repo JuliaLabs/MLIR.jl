@@ -24,7 +24,11 @@ function lowerModuleToLLVM(ctx, mod)
         op = "builtin.func"
     end
     opm = MLIR.API.mlirPassManagerGetNestedUnder(pm, op)
-    if LLVM.version() >= v"15"
+    if LLVM.version() >= v"17"
+        MLIR.API.mlirPassManagerAddOwnedPass(
+            pm, MLIR.API.mlirCreateConversionConvertFuncToLLVMPass()
+        )
+    elseif LLVM.version() >= v"15"
         MLIR.API.mlirPassManagerAddOwnedPass(
             pm, MLIR.API.mlirCreateConversionConvertFuncToLLVM()
         )
@@ -43,7 +47,12 @@ function lowerModuleToLLVM(ctx, mod)
             opm, MLIR.API.mlirCreateConversionConvertArithmeticToLLVM()
         )
     end
-    status = MLIR.API.mlirPassManagerRun(pm, mod)
+    status = if LLVM.version() >= v"17"
+        op = MLIR.API.mlirModuleGetOperation(mod)
+        MLIR.API.mlirPassManagerRunOnOp(pm, op)
+    else
+        MLIR.API.mlirPassManagerRun(pm, mod)
+    end
     # undefined symbol: mlirLogicalResultIsFailure
     if status.value == 0
         error("Unexpected failure running pass failure")
