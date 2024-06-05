@@ -2,18 +2,6 @@ using CEnum
 
 const intptr_t = Clong
 
-"""
-    MlirStringRef
-
-| Field | Note                          |
-| :---- | :---------------------------- |
-| data  | Pointer to the first symbol.  |
-"""
-struct MlirStringRef
-    data::Cstring
-    length::Cint
-end
-
 function mlirStringRefCreate(str, length)
     @ccall (MLIR_C_PATH[]).mlirStringRefCreate(str::Cstring, length::Cint)::MlirStringRef
 end
@@ -43,15 +31,6 @@ A callback for returning string references.
 This function is called back by the functions that need to return a reference to the portion of the string with the following arguments: - an [`MlirStringRef`](@ref) representing the current portion of the string - a pointer to user data forwarded from the printing call.
 """
 const MlirStringCallback = Ptr{Cvoid}
-
-"""
-    MlirLogicalResult
-
-A logical result value, essentially a boolean with named states. LLVM convention for using boolean values to designate success or failure of an operation is a moving target, so MLIR opted for an explicit class. Instances of [`MlirLogicalResult`](@ref) must only be inspected using the associated functions.
-"""
-struct MlirLogicalResult
-    value::Int8
-end
 
 """
     mlirLogicalResultIsSuccess(res)
@@ -87,78 +66,6 @@ Creates a logical result representing a failure.
 """
 function mlirLogicalResultFailure()
     @ccall (MLIR_C_PATH[]).mlirLogicalResultFailure()::MlirLogicalResult
-end
-
-struct MlirContext
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirDialect
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirDialectRegistry
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirOperation
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirOpPrintingFlags
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirBlock
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirRegion
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirSymbolTable
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirAttribute
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirIdentifier
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirLocation
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirModule
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirType
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirTypeID
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirValue
-    ptr::Ptr{Cvoid}
-end
-
-"""
-    MlirNamedAttribute
-
-Named MLIR attribute.
-
-A named attribute is essentially a (name, attribute) pair where the name is a string.
-"""
-struct MlirNamedAttribute
-    name::MlirIdentifier
-    attribute::MlirAttribute
 end
 
 """
@@ -483,22 +390,6 @@ Views the generic operation as a module. The returned module is null when the in
 """
 function mlirModuleFromOperation(op)
     @ccall (MLIR_C_PATH[]).mlirModuleFromOperation(op::MlirOperation)::MlirModule
-end
-
-struct MlirOperationState
-    name::MlirStringRef
-    location::MlirLocation
-    nResults::intptr_t
-    results::Ptr{MlirType}
-    nOperands::intptr_t
-    operands::Ptr{MlirValue}
-    nRegions::intptr_t
-    regions::Ptr{MlirRegion}
-    nSuccessors::intptr_t
-    successors::Ptr{MlirBlock}
-    nAttributes::intptr_t
-    attributes::Ptr{MlirNamedAttribute}
-    enableResultTypeInference::Bool
 end
 
 """
@@ -1549,10 +1440,6 @@ function mlirSymbolTableWalkSymbolTables(from, allSymUsesVisible, callback, user
     @ccall (MLIR_C_PATH[]).mlirSymbolTableWalkSymbolTables(from::MlirOperation, allSymUsesVisible::Bool, callback::Ptr{Cvoid}, userData::Ptr{Cvoid})::Cvoid
 end
 
-struct MlirAffineExpr
-    ptr::Ptr{Cvoid}
-end
-
 """
     mlirAffineExprGetContext(affineExpr)
 
@@ -1641,10 +1528,6 @@ Checks whether the given affine expression involves AffineDimExpr 'position'.
 """
 function mlirAffineExprIsFunctionOfDim(affineExpr, position)
     @ccall (MLIR_C_PATH[]).mlirAffineExprIsFunctionOfDim(affineExpr::MlirAffineExpr, position::intptr_t)::Bool
-end
-
-struct MlirAffineMap
-    ptr::Ptr{Cvoid}
 end
 
 """
@@ -3457,18 +3340,6 @@ function mlirFunctionTypeGetResult(type, pos)
     @ccall (MLIR_C_PATH[]).mlirFunctionTypeGetResult(type::MlirType, pos::intptr_t)::MlirType
 end
 
-struct MlirPass
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirPassManager
-    ptr::Ptr{Cvoid}
-end
-
-struct MlirOpPassManager
-    ptr::Ptr{Cvoid}
-end
-
 """
     mlirPassManagerCreate(ctx)
 
@@ -3985,15 +3856,6 @@ function mlirIsGlobalDebugEnabled()
 end
 
 """
-    MlirDiagnostic
-
-An opaque reference to a diagnostic, always owned by the diagnostics engine (context). Must not be stored outside of the diagnostic handler.
-"""
-struct MlirDiagnostic
-    ptr::Ptr{Cvoid}
-end
-
-"""
     MlirDiagnosticSeverity
 
 Severity of a diagnostic.
@@ -4086,10 +3948,6 @@ Emits an error at the given location through the diagnostics engine. Used for te
 """
 function mlirEmitError(location, message)
     @ccall (MLIR_C_PATH[]).mlirEmitError(location::MlirLocation, message::Cstring)::Cvoid
-end
-
-struct MlirDialectHandle
-    ptr::Ptr{Cvoid}
 end
 
 """
@@ -5005,10 +4863,6 @@ function mlirGetDialectHandle__tensor__()
     @ccall (MLIR_C_PATH[]).mlirGetDialectHandle__tensor__()::MlirDialectHandle
 end
 
-struct MlirExecutionEngine
-    ptr::Ptr{Cvoid}
-end
-
 """
     mlirExecutionEngineCreate(op, optLevel, numPaths, sharedLibPaths)
 
@@ -5079,10 +4933,6 @@ Dump as an object in `fileName`.
 """
 function mlirExecutionEngineDumpToObjectFile(jit, fileName)
     @ccall (MLIR_C_PATH[]).mlirExecutionEngineDumpToObjectFile(jit::MlirExecutionEngine, fileName::MlirStringRef)::Cvoid
-end
-
-struct MlirIntegerSet
-    ptr::Ptr{Cvoid}
 end
 
 """
