@@ -48,9 +48,9 @@ const intrinsics_to_mlir = Dict([
         arg = only(args)
         mT = IR.type(arg)
         T = IR.julia_type(mT)
-        ones = IR.result(push!(
-            block, arith.constant(; value=typemax(UInt64) % T, result=mT, location)
-        ))
+        ones = IR.result(
+            push!(block, arith.constant(; value=typemax(UInt64) % T, result=mT, location)),
+        )
         return push!(block, arith.xori(arg, ones; location))
     end,
 ])
@@ -251,11 +251,13 @@ macro code_mlir(call)
     @assert Meta.isexpr(call, :call) "only calls are supported"
 
     f = esc(first(call.args))
-    args = esc(Expr(
-        :curly,
-        Tuple,
-        map(arg -> :($(Core.Typeof)($arg)), call.args[(begin + 1):end])...,
-    ))
+    args = esc(
+        Expr(
+            :curly,
+            Tuple,
+            map(arg -> :($(Core.Typeof)($arg)), call.args[(begin + 1):end])...,
+        ),
+    )
 
     quote
         code_mlir($f, $args)
