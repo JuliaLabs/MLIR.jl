@@ -156,13 +156,15 @@ end
 Parse a textual MLIR pass pipeline and add it to the provided `OpPassManager`.
 """
 function Base.parse(opm::OpPassManager, pipeline::String)
-    result = LogicalResult(if MLIR_VERSION[] >= v"16"
-        io = IOBuffer()
-        c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
-        API.mlirParsePassPipeline(opm, pipeline, c_print_callback, Ref(io))
-    else
-        API.mlirParsePassPipeline(opm, pipeline)
-    end)
+    result = LogicalResult(
+        if MLIR_VERSION[] >= v"16"
+            io = IOBuffer()
+            c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
+            API.mlirParsePassPipeline(opm, pipeline, c_print_callback, Ref(io))
+        else
+            API.mlirParsePassPipeline(opm, pipeline)
+        end,
+    )
 
     if isfailure(result)
         throw(AddPipelineException(String(take!(io))))

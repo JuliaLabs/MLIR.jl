@@ -6,7 +6,7 @@ but from C++.
 """
 module Brutus
 
-import LLVM
+using LLVM: LLVM
 using Core: PhiNode, GotoNode, GotoIfNot, SSAValue, Argument, ReturnNode, PiNode
 using MLIR.IR
 using MLIR.Dialects: arith, func, cf
@@ -14,26 +14,27 @@ using MLIR.Dialects: arith, func, cf
 const BrutusScalar = Union{Bool,Int64,Int32,Float32,Float64}
 
 module Predicates
-const eq = 0
-const ne = 1
-const slt = 2
-const sle = 3
-const sgt = 4
-const sge = 5
-const ult = 6
-const ule = 7
-const ugt = 8
-const uge = 9
+    const eq = 0
+    const ne = 1
+    const slt = 2
+    const sle = 3
+    const sgt = 4
+    const sge = 5
+    const ult = 6
+    const ule = 7
+    const ugt = 8
+    const uge = 9
 end
 
 function cmpi_pred(predicate)
     function (ops...; location=Location())
-        arith.cmpi(ops...; result=IR.Type(Bool), predicate, location)
+        return arith.cmpi(ops...; result=IR.Type(Bool), predicate, location)
     end
 end
 
 function single_op_wrapper(fop)
-    (block::Block, args::Vector{Value}; location=Location()) -> push!(block, fop(args...; location))
+    return (block::Block, args::Vector{Value}; location=Location()) ->
+        push!(block, fop(args...; location))
 end
 
 const intrinsics_to_mlir = Dict([
@@ -47,9 +48,10 @@ const intrinsics_to_mlir = Dict([
         arg = only(args)
         mT = IR.type(arg)
         T = IR.julia_type(mT)
-        ones = push!(block, arith.constant(value=typemax(UInt64) % T;
-            result=mT, location)) |> IR.result
-        push!(block, arith.xori(arg, ones; location))
+        ones = IR.result(push!(
+            block, arith.constant(; value=typemax(UInt64) % T, result=mT, location)
+        ))
+        return push!(block, arith.xori(arg, ones; location))
     end,
 ])
 
@@ -86,7 +88,7 @@ function collect_value_arguments(ir, from, to)
             push!(values, inst.values[edge])
         end
     end
-    values
+    return values
 end
 
 """
@@ -102,7 +104,7 @@ This only supports a few Julia Core primitives and scalar types of type $BrutusS
 """
 function code_mlir(f, types)
     ctx = context()
-    ir, ret = Core.Compiler.code_ircode(f, types) |> only
+    ir, ret = only(Core.Compiler.code_ircode(f, types))
     @assert first(ir.argtypes) isa Core.Const
 
     values = Vector{Value}(undef, length(ir.stmts))
@@ -112,10 +114,7 @@ function code_mlir(f, types)
     end
     IR.load_all_available_dialects()
 
-    blocks = [
-        prepare_block(ir, bb)
-        for bb in ir.cfg.blocks
-    ]
+    blocks = [prepare_block(ir, bb) for bb in ir.cfg.blocks]
 
     current_block = entry_block = blocks[begin]
 
@@ -144,13 +143,17 @@ function code_mlir(f, types)
             stmt = ir.stmts[sidx]
             inst = stmt[:inst]
             line = @static if VERSION <= v"1.11"
-                ir.linetable[stmt[:line]+1]
+                ir.linetable[stmt[:line] + 1]
             else
                 lineinfonode = Base.IRShow.buildLineInfoNode(ir.debuginfo, :var"n/a", sidx)
                 if !isempty(lineinfonode)
                     last(lineinfonode)
                 else
-                    (; ((:file, :line) .=> Base.IRShow.debuginfo_firstline(ir.debuginfo))...)
+                    (;
+                        (
+                            (:file, :line) .=> Base.IRShow.debuginfo_firstline(ir.debuginfo)
+                        )...
+                    )
                 end
             end
 
@@ -167,7 +170,7 @@ function code_mlir(f, types)
                 end
 
                 fop! = intrinsics_to_mlir[called_func]
-                args = get_value.(@view inst.args[begin+1:end])
+                args = get_value.(@view inst.args[(begin + 1):end])
 
                 location = Location(string(line.file), line.line, 0)
                 res = IR.result(fop!(current_block, args; location))
@@ -186,13 +189,20 @@ function code_mlir(f, types)
                 false_args = get_value.(collect_value_arguments(ir, block_id, inst.dest))
                 cond = get_value(inst.cond)
                 @assert length(bb.succs) == 2 # NOTE: We assume that length(bb.succs) == 2, this might be wrong
-                other_dest = setdiff(bb.succs, inst.dest) |> only
+                other_dest = only(setdiff(bb.succs, inst.dest))
                 true_args = get_value.(collect_value_arguments(ir, block_id, other_dest))
                 other_dest = blocks[other_dest]
                 dest = blocks[inst.dest]
 
                 location = Location(string(line.file), line.line, 0)
-                cond_br = cf.cond_br(cond, true_args, false_args; trueDest=other_dest, falseDest=dest, location)
+                cond_br = cf.cond_br(
+                    cond,
+                    true_args,
+                    false_args;
+                    trueDest=other_dest,
+                    falseDest=dest,
+                    location,
+                )
                 push!(current_block, cond_br)
             elseif inst isa ReturnNode
                 location = Location(string(line.file), line.line, 0)
@@ -213,8 +223,7 @@ function code_mlir(f, types)
     end
 
     input_types = IR.Type[
-        IR.type(IR.argument(entry_block, i))
-        for i in 1:IR.nargs(entry_block)
+        IR.type(IR.argument(entry_block, i)) for i in 1:IR.nargs(entry_block)
     ]
     result_types = [IR.Type(ret)]
 
@@ -232,7 +241,7 @@ function code_mlir(f, types)
 
     IR.verifyall(op)
 
-    op
+    return op
 end
 
 """
@@ -241,12 +250,12 @@ end
 macro code_mlir(call)
     @assert Meta.isexpr(call, :call) "only calls are supported"
 
-    f = first(call.args) |> esc
-    args = Expr(:curly,
+    f = esc(first(call.args))
+    args = esc(Expr(
+        :curly,
         Tuple,
-        map(arg -> :($(Core.Typeof)($arg)),
-            call.args[begin+1:end])...,
-    ) |> esc
+        map(arg -> :($(Core.Typeof)($arg)), call.args[(begin + 1):end])...,
+    ))
 
     quote
         code_mlir($f, $args)
@@ -264,7 +273,7 @@ function pow(x::F, n) where {F}
     for _ in 1:n
         p *= x
     end
-    p
+    return p
 end
 
 function f(x)
