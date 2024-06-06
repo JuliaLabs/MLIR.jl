@@ -1,9 +1,8 @@
 module ub
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
+
 
 """
 `poison`
@@ -30,22 +29,18 @@ Examples:
 ```
 """
 function poison(; result::IR.Type, value=nothing, location=Location())
-    results = IR.Type[result,]
+    results = IR.Type[result, ]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(value) && push!(attributes, namedattribute("value", value))
-
-    return IR.create_operation(
-        "ub.poison",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "ub.poison", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 

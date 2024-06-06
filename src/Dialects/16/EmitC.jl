@@ -1,9 +1,8 @@
 module emitc
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
+
 
 """
 `apply`
@@ -24,21 +23,17 @@ can be applied to a single operand.
 ```
 """
 function apply(operand::Value; result::IR.Type, applicableOperator, location=Location())
-    results = IR.Type[result,]
-    operands = Value[operand,]
+    results = IR.Type[result, ]
+    operands = Value[operand, ]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
-
-    return IR.create_operation(
-        "emitc.apply",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator), ]
+    
+    IR.create_operation(
+        "emitc.apply", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -61,32 +56,20 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(
-    operands::Vector{Value};
-    result_0::Vector{IR.Type},
-    callee,
-    args=nothing,
-    template_args=nothing,
-    location=Location(),
-)
-    results = IR.Type[result_0...,]
-    operands = Value[operands...,]
+function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
+    results = IR.Type[result_0..., ]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee),]
+    attributes = NamedAttribute[namedattribute("callee", callee), ]
     !isnothing(args) && push!(attributes, namedattribute("args", args))
-    !isnothing(template_args) &&
-        push!(attributes, namedattribute("template_args", template_args))
-
-    return IR.create_operation(
-        "emitc.call",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    !isnothing(template_args) && push!(attributes, namedattribute("template_args", template_args))
+    
+    IR.create_operation(
+        "emitc.call", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -109,21 +92,17 @@ and EmitC types.
 ```
 """
 function cast(source::Value; dest::IR.Type, location=Location())
-    results = IR.Type[dest,]
-    operands = Value[source,]
+    results = IR.Type[dest, ]
+    operands = Value[source, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "emitc.cast",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "emitc.cast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -150,21 +129,17 @@ it should not be used with pointers.
 ```
 """
 function constant(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0,]
+    results = IR.Type[result_0, ]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
-
-    return IR.create_operation(
-        "emitc.constant",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("value", value), ]
+    
+    IR.create_operation(
+        "emitc.constant", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -195,19 +170,14 @@ function include_(; include_, is_standard_include=nothing, location=Location())
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("include", include_),]
-    !isnothing(is_standard_include) &&
-        push!(attributes, namedattribute("is_standard_include", is_standard_include))
-
-    return IR.create_operation(
-        "emitc.include",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("include", include_), ]
+    !isnothing(is_standard_include) && push!(attributes, namedattribute("is_standard_include", is_standard_include))
+    
+    IR.create_operation(
+        "emitc.include", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -246,21 +216,17 @@ emitc.call \"write\"(%2, %3) : (!emitc.ptr<i32>, !emitc.ptr<i32>) -> ()
 ```
 """
 function variable(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0,]
+    results = IR.Type[result_0, ]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
-
-    return IR.create_operation(
-        "emitc.variable",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("value", value), ]
+    
+    IR.create_operation(
+        "emitc.variable", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 

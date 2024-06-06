@@ -1,9 +1,8 @@
 module shape
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
+
 
 """
 `add`
@@ -15,25 +14,19 @@ the result must be of type `size`. If error propagation is not possible
 because both operands are of type `index` then the result may be of type
 `size` or `index`.
 """
-function add(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function add(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs]
+    operands = Value[lhs, rhs, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.add",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.add", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -54,21 +47,17 @@ inputs have differing ranks or differ in extents of shared dimensions.
 ```
 """
 function any(inputs::Vector{Value}; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[inputs...,]
+    results = IR.Type[result, ]
+    operands = Value[inputs..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.any",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.any", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -92,25 +81,19 @@ ready to execute.
 %wt = shape.assuming_all %w0, %w2 // Passing
 ```
 """
-function assuming_all(
-    inputs::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function assuming_all(inputs::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[inputs...,]
+    operands = Value[inputs..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.assuming_all",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.assuming_all", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -124,24 +107,18 @@ compiler, information for dependent code to rely on (by assuming), and
 nothing else. They should not exist after a program is fully lowered and
 ready to execute.
 """
-function assuming(
-    witness::Value; results::Vector{IR.Type}, doRegion::Region, location=Location()
-)
-    results = IR.Type[results...,]
-    operands = Value[witness,]
-    owned_regions = Region[doRegion,]
+function assuming(witness::Value; results_::Vector{IR.Type}, doRegion::Region, location=Location())
+    results = IR.Type[results_..., ]
+    operands = Value[witness, ]
+    owned_regions = Region[doRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.assuming",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.assuming", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -153,22 +130,18 @@ This yield operation represents a return operation within the
 operands and produces no results. The operand number and types must match
 the number and types of parent `shape.assuming` results.
 """
-function assuming_yield(operands::Vector{Value}; location=Location())
+function assuming_yield(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.assuming_yield",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.assuming_yield", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -195,25 +168,19 @@ value. If the result type is an extent tensor (and can therefore not hold
 the error value) the behavior may be undefined. The optional string
 attribute can be used to describe the error case.
 """
-function broadcast(
-    shapes::Vector{Value}; result::IR.Type, error=nothing, location=Location()
-)
-    results = IR.Type[result,]
-    operands = Value[shapes...,]
+function broadcast(shapes::Vector{Value}; result::IR.Type, error=nothing, location=Location())
+    results = IR.Type[result, ]
+    operands = Value[shapes..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(error) && push!(attributes, namedattribute("error", error))
-
-    return IR.create_operation(
-        "shape.broadcast",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.broadcast", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -229,21 +196,17 @@ concat([], []) -> []
 concat([], [4,5,6]) -> [4,5,6]
 """
 function concat(lhs::Value, rhs::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[lhs, rhs]
+    results = IR.Type[result, ]
+    operands = Value[lhs, rhs, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.concat",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.concat", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -260,23 +223,19 @@ rank.
 %2 = shape.const_shape [4, 5, 6] : tensor<3xindex>
 ```
 """
-function const_shape(; result=nothing::Union{Nothing,IR.Type}, shape, location=Location())
+function const_shape(; result=nothing::Union{Nothing, IR.Type}, shape, location=Location())
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("shape", shape),]
+    attributes = NamedAttribute[namedattribute("shape", shape), ]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.const_shape",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.const_shape", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -289,23 +248,19 @@ Creates a `shape.size` type representing the constant size given by `value`.
 %x = shape.const_size 10
 ```
 """
-function const_size(; result=nothing::Union{Nothing,IR.Type}, value, location=Location())
+function const_size(; result=nothing::Union{Nothing, IR.Type}, value, location=Location())
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
+    attributes = NamedAttribute[namedattribute("value", value), ]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.const_size",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.const_size", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -324,25 +279,19 @@ pass.
 %w2 = shape.assuming_all(%w0, %w2) // Can be folded to \"const_witness true\"
 ```
 """
-function const_witness(;
-    result=nothing::Union{Nothing,IR.Type}, passing, location=Location()
-)
+function const_witness(; result=nothing::Union{Nothing, IR.Type}, passing, location=Location())
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("passing", passing),]
+    attributes = NamedAttribute[namedattribute("passing", passing), ]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.const_witness",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.const_witness", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -361,25 +310,19 @@ shape.broadcast documents.
 %w1 = shape.cstr_broadcastable [2,2], [3,2] // Failure
 ```
 """
-function cstr_broadcastable(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function cstr_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[shapes...,]
+    operands = Value[shapes..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.cstr_broadcastable",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.cstr_broadcastable", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -396,25 +339,19 @@ Given 1 or more input shapes, determine if all shapes are the exact same.
 %w1 = shape.cstr_eq [2,2], [1,2] // Failure
 ```
 """
-function cstr_eq(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function cstr_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[shapes...,]
+    operands = Value[shapes..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.cstr_eq",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.cstr_eq", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -437,25 +374,19 @@ Since this op can be used to express many different possible assertions
 (depending on whatever computation calculated `pred`), the `msg`
 should clarify the nature of the assertion for users.
 """
-function cstr_require(
-    pred::Value; result=nothing::Union{Nothing,IR.Type}, msg, location=Location()
-)
+function cstr_require(pred::Value; result=nothing::Union{Nothing, IR.Type}, msg, location=Location())
     results = IR.Type[]
-    operands = Value[pred,]
+    operands = Value[pred, ]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("msg", msg),]
+    attributes = NamedAttribute[namedattribute("msg", msg), ]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.cstr_require",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.cstr_require", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -467,21 +398,17 @@ Prints the input dim or shape and passes through input.
 Note: This is intended for testing and debugging only.
 """
 function debug_print(input::Value; output::IR.Type, location=Location())
-    results = IR.Type[output,]
-    operands = Value[input,]
+    results = IR.Type[output, ]
+    operands = Value[input, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.debug_print",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.debug_print", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -502,25 +429,19 @@ negative infinity, i.e. floor(lhs / rhs), such that
 always holds. If any of the values is of type `size`, the behavior for
 negative value is undefined.
 """
-function div(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function div(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs]
+    operands = Value[lhs, rhs, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.div",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.div", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -531,25 +452,19 @@ Creates a shape from a 1D integral tensor of extents. The rank of the
 resulting shape equals the number of elements in the tensor, and the
 extents match the values of the elements.
 """
-function from_extent_tensor(
-    input::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function from_extent_tensor(input::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[input,]
+    operands = Value[input, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.from_extent_tensor",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.from_extent_tensor", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -566,25 +481,19 @@ the shape.
 %s1 = shape.from_extents
 ```
 """
-function from_extents(
-    extents::Vector{Value}; shape=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function from_extents(extents::Vector{Value}; shape=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[extents...,]
+    operands = Value[extents..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(shape) && push!(results, shape)
-
-    return IR.create_operation(
-        "shape.from_extents",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.from_extents", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -595,28 +504,19 @@ An operation with a name containing a single `SSACFG` region which
 represents a shape transfer function or helper function for shape transfer
 function.
 """
-function func(;
-    sym_name, function_type, sym_visibility=nothing, body::Region, location=Location()
-)
+function func(; sym_name, function_type, sym_visibility=nothing, body::Region, location=Location())
     results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body,]
+    owned_regions = Region[body, ]
     successors = Block[]
-    attributes = NamedAttribute[
-        namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
-    ]
-    !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
-
-    return IR.create_operation(
-        "shape.func",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    
+    IR.create_operation(
+        "shape.func", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -642,19 +542,15 @@ shape.function_library {
 function function_library(; mapping, body::Region, location=Location())
     results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body,]
+    owned_regions = Region[body, ]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("mapping", mapping),]
-
-    return IR.create_operation(
-        "shape.function_library",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("mapping", mapping), ]
+    
+    IR.create_operation(
+        "shape.function_library", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -664,25 +560,19 @@ end
 Gets the extent indexed by `dim` from the `shape` operand. If the shape is
 an error then it returns an invalid size.
 """
-function get_extent(
-    shape::Value, dim::Value; extent=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function get_extent(shape::Value, dim::Value; extent=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[shape, dim]
+    operands = Value[shape, dim, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(extent) && push!(results, extent)
-
-    return IR.create_operation(
-        "shape.get_extent",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.get_extent", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -695,25 +585,19 @@ and the shape dialect.
 
 The behavior is undefined for negative indices.
 """
-function index_to_size(
-    arg::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function index_to_size(arg::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[arg,]
+    operands = Value[arg, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.index_to_size",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.index_to_size", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -735,25 +619,19 @@ assertion failure.
 %false = shape.is_broadcastable [2,2], [3,2]
 ```
 """
-function is_broadcastable(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function is_broadcastable(shapes::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[shapes...,]
+    operands = Value[shapes..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.is_broadcastable",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.is_broadcastable", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -765,25 +643,19 @@ If either operand is an error, then an error will be propagated to the
 result. If the input types mismatch or the ranks do not match, then the
 result is an error.
 """
-function max(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function max(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs]
+    operands = Value[lhs, rhs, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.max",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.max", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -814,30 +686,20 @@ used to return an error to the user upon mismatch of dimensions.
 %c = shape.meet %a, %b, error=\"<reason>\" : !shape.shape, !shape.shape -> !shape.shape
 ```
 """
-function meet(
-    arg0::Value,
-    arg1::Value;
-    result=nothing::Union{Nothing,IR.Type},
-    error=nothing,
-    location=Location(),
-)
+function meet(arg0::Value, arg1::Value; result=nothing::Union{Nothing, IR.Type}, error=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[arg0, arg1]
+    operands = Value[arg0, arg1, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
     !isnothing(error) && push!(attributes, namedattribute("error", error))
-
-    return IR.create_operation(
-        "shape.meet",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.meet", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -849,25 +711,19 @@ If either operand is an error, then an error will be propagated to the
 result. If the input types mismatch or the ranks do not match, then the
 result is an error.
 """
-function min(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function min(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs]
+    operands = Value[lhs, rhs, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.min",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.min", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -881,25 +737,19 @@ the result must be of type `size`. If error propagation is not possible
 because both operands are of type `index` then the result may be of type
 `size` or `index`.
 """
-function mul(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function mul(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs]
+    operands = Value[lhs, rhs, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.mul",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.mul", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -912,25 +762,19 @@ extents. If the argument is of type `shape` then the result will be of type
 is and extent tensor `tensor<?xindex>` then the result will be of type
 `index`.
 """
-function num_elements(
-    shape::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function num_elements(shape::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[shape,]
+    operands = Value[shape, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.num_elements",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.num_elements", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -939,23 +783,19 @@ end
 
 Returns the rank of the shape or extent tensor, i.e. the number of extents.
 """
-function rank(shape::Value; rank=nothing::Union{Nothing,IR.Type}, location=Location())
+function rank(shape::Value; rank=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[shape,]
+    operands = Value[shape, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(rank) && push!(results, rank)
-
-    return IR.create_operation(
-        "shape.rank",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.rank", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -992,28 +832,18 @@ func.func @reduce(%shape : !shape.shape, %init : !shape.size) -> !shape.size {
 }
 ```
 """
-function reduce(
-    shape::Value,
-    initVals::Vector{Value};
-    result::Vector{IR.Type},
-    region::Region,
-    location=Location(),
-)
-    results = IR.Type[result...,]
-    operands = Value[shape, initVals...]
-    owned_regions = Region[region,]
+function reduce(shape::Value, initVals::Vector{Value}; result::Vector{IR.Type}, region::Region, location=Location())
+    results = IR.Type[result..., ]
+    operands = Value[shape, initVals..., ]
+    owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.reduce",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.reduce", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -1023,22 +853,18 @@ end
 The `shape.return` operation represents a return operation within a function.
 The operation takes variable number of operands and produces no results.
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.return",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.return", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -1051,25 +877,19 @@ as their equivalent non-error shapes. Error shapes can be tested for
 equality like any other shape value, meaning that the error value is equal
 to itself.
 """
-function shape_eq(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function shape_eq(shapes::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[shapes...,]
+    operands = Value[shapes..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.shape_eq",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.shape_eq", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -1079,23 +899,19 @@ end
 The operation takes a value or a shaped operand as an argument and it
 returns a shape or extent tensor.
 """
-function shape_of(arg::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+function shape_of(arg::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[arg,]
+    operands = Value[arg, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.shape_of",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.shape_of", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -1107,25 +923,19 @@ inverse, `index_to_size`, facilitate index conversion between the standard
 and the shape dialect. The behavior is undefined for unknown and invalid
 arguments.
 """
-function size_to_index(
-    arg::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
+function size_to_index(arg::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[arg,]
+    operands = Value[arg, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.size_to_index",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.size_to_index", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -1153,24 +963,18 @@ Examples:
 Requires:
 - `index` is in the range [-rank(operand),rank(operand)]
 """
-function split_at(
-    operand::Value, index::Value; head::IR.Type, tail::IR.Type, location=Location()
-)
-    results = IR.Type[head, tail]
-    operands = Value[operand, index]
+function split_at(operand::Value, index::Value; head::IR.Type, tail::IR.Type, location=Location())
+    results = IR.Type[head, tail, ]
+    operands = Value[operand, index, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.split_at",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.split_at", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -1184,21 +988,17 @@ extents of the shape.
 If the shape represents an error, this op\'s behavior is undefined.
 """
 function to_extent_tensor(input::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[input,]
+    results = IR.Type[result, ]
+    operands = Value[input, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.to_extent_tensor",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.to_extent_tensor", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -1220,21 +1020,17 @@ representing sizes) then this propagages the error shape. E.g.,
 This operation is the compliment of `shape_of` wrt ValueShape values.
 """
 function value_as_shape(arg::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[arg,]
+    results = IR.Type[result, ]
+    operands = Value[arg, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.value_as_shape",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.value_as_shape", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -1273,28 +1069,19 @@ the result may be less specified than `operand`\'s shape as `shape` is
 merely used to construct the new ValueShape. If join behavior is desired
 then a join op should be used.
 """
-function with_shape(
-    operand::Value,
-    shape::Value;
-    result=nothing::Union{Nothing,IR.Type},
-    location=Location(),
-)
+function with_shape(operand::Value, shape::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, shape]
+    operands = Value[operand, shape, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "shape.with_shape",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.with_shape", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -1302,22 +1089,18 @@ end
 `yield`
 
 """
-function yield(operands::Vector{Value}; location=Location())
+function yield(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "shape.yield",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "shape.yield", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 

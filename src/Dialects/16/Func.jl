@@ -1,9 +1,8 @@
 module func
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
+
 
 """
 `call_indirect`
@@ -22,27 +21,18 @@ Function values can be created with the
 %result = func.call_indirect %func(%0, %1) : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
 """
-function call_indirect(
-    callee::Value,
-    callee_operands::Vector{Value};
-    results::Vector{IR.Type},
-    location=Location(),
-)
-    results = IR.Type[results...,]
-    operands = Value[callee, callee_operands...]
+function call_indirect(callee::Value, callee_operands::Vector{Value}; results_::Vector{IR.Type}, location=Location())
+    results = IR.Type[results_..., ]
+    operands = Value[callee, callee_operands..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "func.call_indirect",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "func.call_indirect", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -60,24 +50,18 @@ symbol reference attribute named \"callee\".
 %2 = func.call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(
-    operands::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
-)
-    results = IR.Type[result_0...,]
-    operands = Value[operands...,]
+function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location())
+    results = IR.Type[result_0..., ]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee),]
-
-    return IR.create_operation(
-        "func.call",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("callee", callee), ]
+    
+    IR.create_operation(
+        "func.call", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -103,21 +87,17 @@ reference a function simplifies this
 ([rationale](../Rationale/Rationale.md#multithreading-the-compiler)).
 """
 function constant(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0,]
+    results = IR.Type[result_0, ]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
-
-    return IR.create_operation(
-        "func.constant",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("value", value), ]
+    
+    IR.create_operation(
+        "func.constant", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -160,36 +140,21 @@ func.func @example_fn_result() -> (f64 {dialectName.attrName = 0 : i64})
 func.func @example_fn_attr() attributes {dialectName.attrName = false}
 ```
 """
-function func_(;
-    sym_name,
-    function_type,
-    sym_visibility=nothing,
-    arg_attrs=nothing,
-    res_attrs=nothing,
-    body::Region,
-    location=Location(),
-)
+function func_(; sym_name, function_type, sym_visibility=nothing, arg_attrs=nothing, res_attrs=nothing, body::Region, location=Location())
     results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body,]
+    owned_regions = Region[body, ]
     successors = Block[]
-    attributes = NamedAttribute[
-        namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
-    ]
-    !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
+    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
     !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
     !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
-
-    return IR.create_operation(
-        "func.func",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "func.func", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -210,22 +175,18 @@ func.func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "func.return",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "func.return", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
