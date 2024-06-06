@@ -1,9 +1,8 @@
 module std
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
+
 
 """
 `assert`
@@ -21,20 +20,16 @@ assert %b, \"Expected ... to be true\"
 """
 function assert(arg::Value; msg, location=Location())
     results = IR.Type[]
-    operands = Value[arg,]
+    operands = Value[arg, ]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("msg", msg),]
-
-    return IR.create_operation(
-        "std.assert",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("msg", msg), ]
+    
+    IR.create_operation(
+        "std.assert", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -57,20 +52,16 @@ the block successor.
 """
 function br(destOperands::Vector{Value}; dest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[destOperands...,]
+    operands = Value[destOperands..., ]
     owned_regions = Region[]
-    successors = Block[dest,]
+    successors = Block[dest, ]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "std.br",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "std.br", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -92,27 +83,18 @@ Function values can be created with the
         : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
 """
-function call_indirect(
-    callee::Value,
-    callee_operands::Vector{Value};
-    results::Vector{IR.Type},
-    location=Location(),
-)
-    results = IR.Type[results...,]
-    operands = Value[callee, callee_operands...]
+function call_indirect(callee::Value, callee_operands::Vector{Value}; results_::Vector{IR.Type}, location=Location())
+    results = IR.Type[results_..., ]
+    operands = Value[callee, callee_operands..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "std.call_indirect",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "std.call_indirect", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -130,24 +112,18 @@ symbol reference attribute named \"callee\".
 %2 = call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(
-    operands::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
-)
-    results = IR.Type[result_0...,]
-    operands = Value[operands...,]
+function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location())
+    results = IR.Type[result_0..., ]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee),]
-
-    return IR.create_operation(
-        "std.call",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("callee", callee), ]
+    
+    IR.create_operation(
+        "std.call", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -179,33 +155,19 @@ func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
 }
 ```
 """
-function cond_br(
-    condition::Value,
-    trueDestOperands::Vector{Value},
-    falseDestOperands::Vector{Value};
-    trueDest::Block,
-    falseDest::Block,
-    location=Location(),
-)
+function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; trueDest::Block, falseDest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands...]
+    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest]
+    successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[]
-    push!(
-        attributes,
-        operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands)]),
-    )
-
-    return IR.create_operation(
-        "std.cond_br",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands), ]))
+    
+    IR.create_operation(
+        "std.cond_br", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -245,21 +207,17 @@ reference a function simplifies this
 ([rationale](../Rationale/Rationale.md#multithreading-the-compiler)).
 """
 function constant(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0,]
+    results = IR.Type[result_0, ]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
-
-    return IR.create_operation(
-        "std.constant",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    attributes = NamedAttribute[namedattribute("value", value), ]
+    
+    IR.create_operation(
+        "std.constant", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -280,22 +238,18 @@ func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "std.return",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "std.return", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -332,29 +286,19 @@ to implement `min` and `max` with signed or unsigned comparison semantics.
 %vx = std.select %cond, %vtrue, %vfalse : vector<42xf32>
 ```
 """
-function select(
-    condition::Value,
-    true_value::Value,
-    false_value::Value;
-    result=nothing::Union{Nothing,IR.Type},
-    location=Location(),
-)
+function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[condition, true_value, false_value]
+    operands = Value[condition, true_value, false_value, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
-
-    return IR.create_operation(
-        "std.select",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "std.select", location;
+        operands, owned_regions, successors, attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -385,21 +329,17 @@ tensors in the same way dynamically shaped memrefs are handled.
 ```
 """
 function splat(input::Value; aggregate::IR.Type, location=Location())
-    results = IR.Type[aggregate,]
-    operands = Value[input,]
+    results = IR.Type[aggregate, ]
+    operands = Value[input, ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "std.splat",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "std.splat", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
@@ -422,37 +362,20 @@ switch %flag : i32, [
 ]
 ```
 """
-function switch(
-    flag::Value,
-    defaultOperands::Vector{Value},
-    caseOperands::Vector{Value};
-    case_values=nothing,
-    case_operand_segments,
-    defaultDestination::Block,
-    caseDestinations::Vector{Block},
-    location=Location(),
-)
+function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = IR.Type[]
-    operands = Value[flag, defaultOperands..., caseOperands...]
+    operands = Value[flag, defaultOperands..., caseOperands..., ]
     owned_regions = Region[]
-    successors = Block[defaultDestination, caseDestinations...]
-    attributes = NamedAttribute[namedattribute(
-        "case_operand_segments", case_operand_segments
-    ),]
-    push!(
-        attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
-    )
+    successors = Block[defaultDestination, caseDestinations..., ]
+    attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
+    push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands), ]))
     !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
-
-    return IR.create_operation(
-        "std.switch",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+    
+    IR.create_operation(
+        "std.switch", location;
+        operands, owned_regions, successors, attributes,
         results=results,
-        result_inference=false,
+        result_inference=false
     )
 end
 
