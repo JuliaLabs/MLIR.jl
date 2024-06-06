@@ -3,7 +3,6 @@ module omp
 import ...IR:
     IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
 
 """
 `atomic_capture`
@@ -714,17 +713,20 @@ function target(
     !isnothing(if_expr) && push!(operands, if_expr)
     !isnothing(device) && push!(operands, device)
     !isnothing(thread_limit) && push!(operands, thread_limit)
-    push!(attributes, operandsegmentsizes([
-        if (if_expr == nothing)
-            0
-        elseif 1(device == nothing)
-            0
-        elseif 1(thread_limit == nothing)
-            0
-        else
-            1
-        end,
-    ]))
+    push!(
+        attributes,
+        operandsegmentsizes([
+            if (if_expr == nothing)
+                0
+            elseif 1(device == nothing)
+                0
+            elseif 1(thread_limit == nothing)
+                0
+            else
+                1
+            end,
+        ]),
+    )
     !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(

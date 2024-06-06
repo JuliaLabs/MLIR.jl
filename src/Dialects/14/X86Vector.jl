@@ -3,7 +3,6 @@ module x86vector
 import ...IR:
     IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-import ...API
 
 """
 `avx_intr_dp_ps_256`

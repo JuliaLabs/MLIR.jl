@@ -1,26 +1,32 @@
 module llvm
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-
 
 """
 `ashr`
 
 """
-function ashr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function ashr(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.ashr", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.ashr",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -41,13 +47,17 @@ function access_group(; sym_name, location=Location())
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
-    
-    IR.create_operation(
-        "llvm.access_group", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("sym_name", sym_name),]
+
+    return IR.create_operation(
+        "llvm.access_group",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -55,19 +65,25 @@ end
 `add`
 
 """
-function add(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function add(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.add", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.add",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -76,17 +92,21 @@ end
 
 """
 function addrspacecast(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.addrspacecast", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.addrspacecast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -120,17 +140,21 @@ llvm.mlir.global @const(42 : i32) : i32
 ```
 """
 function mlir_addressof(; res::IR.Type, global_name, location=Location())
-    results = IR.Type[res, ]
+    results = IR.Type[res,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("global_name", global_name), ]
-    
-    IR.create_operation(
-        "llvm.mlir.addressof", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("global_name", global_name),]
+
+    return IR.create_operation(
+        "llvm.mlir.addressof",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -147,14 +171,18 @@ function alias_scope_domain(; sym_name, description=nothing, location=Location()
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
+    attributes = NamedAttribute[namedattribute("sym_name", sym_name),]
     !isnothing(description) && push!(attributes, namedattribute("description", description))
-    
-    IR.create_operation(
-        "llvm.alias_scope_domain", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.alias_scope_domain",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -196,14 +224,20 @@ function alias_scope(; sym_name, domain, description=nothing, location=Location(
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("domain", domain), ]
+    attributes = NamedAttribute[
+        namedattribute("sym_name", sym_name), namedattribute("domain", domain)
+    ]
     !isnothing(description) && push!(attributes, namedattribute("description", description))
-    
-    IR.create_operation(
-        "llvm.alias_scope", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.alias_scope",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -211,20 +245,30 @@ end
 `alloca`
 
 """
-function alloca(arraySize::Value; res::IR.Type, alignment=nothing, elem_type=nothing, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arraySize, ]
+function alloca(
+    arraySize::Value;
+    res::IR.Type,
+    alignment=nothing,
+    elem_type=nothing,
+    location=Location(),
+)
+    results = IR.Type[res,]
+    operands = Value[arraySize,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     !isnothing(elem_type) && push!(attributes, namedattribute("elem_type", elem_type))
-    
-    IR.create_operation(
-        "llvm.alloca", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.alloca",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -232,19 +276,25 @@ end
 `and`
 
 """
-function and(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function and(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.and", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.and",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -252,18 +302,33 @@ end
 `cmpxchg`
 
 """
-function cmpxchg(ptr::Value, cmp::Value, val::Value; res::IR.Type, success_ordering, failure_ordering, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[ptr, cmp, val, ]
+function cmpxchg(
+    ptr::Value,
+    cmp::Value,
+    val::Value;
+    res::IR.Type,
+    success_ordering,
+    failure_ordering,
+    location=Location(),
+)
+    results = IR.Type[res,]
+    operands = Value[ptr, cmp, val]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("success_ordering", success_ordering), namedattribute("failure_ordering", failure_ordering), ]
-    
-    IR.create_operation(
-        "llvm.cmpxchg", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("success_ordering", success_ordering),
+        namedattribute("failure_ordering", failure_ordering),
+    ]
+
+    return IR.create_operation(
+        "llvm.cmpxchg",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -271,18 +336,26 @@ end
 `atomicrmw`
 
 """
-function atomicrmw(ptr::Value, val::Value; res::IR.Type, bin_op, ordering, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[ptr, val, ]
+function atomicrmw(
+    ptr::Value, val::Value; res::IR.Type, bin_op, ordering, location=Location()
+)
+    results = IR.Type[res,]
+    operands = Value[ptr, val]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("bin_op", bin_op), namedattribute("ordering", ordering), ]
-    
-    IR.create_operation(
-        "llvm.atomicrmw", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("bin_op", bin_op), namedattribute("ordering", ordering)
+    ]
+
+    return IR.create_operation(
+        "llvm.atomicrmw",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -291,17 +364,21 @@ end
 
 """
 function bitcast(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.bitcast", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.bitcast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -311,16 +388,20 @@ end
 """
 function br(destOperands::Vector{Value}; dest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[destOperands..., ]
+    operands = Value[destOperands...,]
     owned_regions = Region[]
-    successors = Block[dest, ]
+    successors = Block[dest,]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.br", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.br",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -354,20 +435,31 @@ llvm.call @bar(%0) : (f32) -> ()
 llvm.call %1(%0) : (f32) -> ()
 ```
 """
-function call(operand_0::Vector{Value}; result_0::Vector{IR.Type}, callee=nothing, fastmathFlags=nothing, location=Location())
-    results = IR.Type[result_0..., ]
-    operands = Value[operand_0..., ]
+function call(
+    operand_0::Vector{Value};
+    result_0::Vector{IR.Type},
+    callee=nothing,
+    fastmathFlags=nothing,
+    location=Location(),
+)
+    results = IR.Type[result_0...,]
+    operands = Value[operand_0...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(callee) && push!(attributes, namedattribute("callee", callee))
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.call", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.call",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -375,20 +467,36 @@ end
 `cond_br`
 
 """
-function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; branch_weights=nothing, trueDest::Block, falseDest::Block, location=Location())
+function cond_br(
+    condition::Value,
+    trueDestOperands::Vector{Value},
+    falseDestOperands::Vector{Value};
+    branch_weights=nothing,
+    trueDest::Block,
+    falseDest::Block,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
+    operands = Value[condition, trueDestOperands..., falseDestOperands...]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
+    successors = Block[trueDest, falseDest]
     attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands), ]))
-    !isnothing(branch_weights) && push!(attributes, namedattribute("branch_weights", branch_weights))
-    
-    IR.create_operation(
-        "llvm.cond_br", location;
-        operands, owned_regions, successors, attributes,
+    push!(
+        attributes,
+        operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands)]),
+    )
+    !isnothing(branch_weights) &&
+        push!(attributes, namedattribute("branch_weights", branch_weights))
+
+    return IR.create_operation(
+        "llvm.cond_br",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -423,17 +531,21 @@ Examples:
 ```
 """
 function mlir_constant(; res::IR.Type, value, location=Location())
-    results = IR.Type[res, ]
+    results = IR.Type[res,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
-    IR.create_operation(
-        "llvm.mlir.constant", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("value", value),]
+
+    return IR.create_operation(
+        "llvm.mlir.constant",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -442,17 +554,21 @@ end
 
 """
 function extractelement(vector::Value, position::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[vector, position, ]
+    results = IR.Type[res,]
+    operands = Value[vector, position]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.extractelement", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.extractelement",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -461,17 +577,21 @@ end
 
 """
 function extractvalue(container::Value; res::IR.Type, position, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[container, ]
+    results = IR.Type[res,]
+    operands = Value[container,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("position", position), ]
-    
-    IR.create_operation(
-        "llvm.extractvalue", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("position", position),]
+
+    return IR.create_operation(
+        "llvm.extractvalue",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -479,20 +599,31 @@ end
 `fadd`
 
 """
-function fadd(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fadd(
+    lhs::Value,
+    rhs::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    fastmathFlags=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.fadd", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.fadd",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -500,19 +631,31 @@ end
 `fcmp`
 
 """
-function fcmp(lhs::Value, rhs::Value; res::IR.Type, predicate, fastmathFlags=nothing, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[lhs, rhs, ]
+function fcmp(
+    lhs::Value,
+    rhs::Value;
+    res::IR.Type,
+    predicate,
+    fastmathFlags=nothing,
+    location=Location(),
+)
+    results = IR.Type[res,]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.fcmp", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.fcmp",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -520,20 +663,31 @@ end
 `fdiv`
 
 """
-function fdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fdiv(
+    lhs::Value,
+    rhs::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    fastmathFlags=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.fdiv", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.fdiv",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -541,20 +695,31 @@ end
 `fmul`
 
 """
-function fmul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fmul(
+    lhs::Value,
+    rhs::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    fastmathFlags=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.fmul", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.fmul",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -562,20 +727,30 @@ end
 `fneg`
 
 """
-function fneg(operand::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fneg(
+    operand::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    fastmathFlags=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.fneg", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.fneg",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -584,17 +759,21 @@ end
 
 """
 function fpext(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.fpext", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.fpext",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -603,17 +782,21 @@ end
 
 """
 function fptosi(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.fptosi", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.fptosi",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -622,17 +805,21 @@ end
 
 """
 function fptoui(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.fptoui", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.fptoui",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -641,17 +828,21 @@ end
 
 """
 function fptrunc(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.fptrunc", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.fptrunc",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -659,20 +850,31 @@ end
 `frem`
 
 """
-function frem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function frem(
+    lhs::Value,
+    rhs::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    fastmathFlags=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.frem", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.frem",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -680,20 +882,31 @@ end
 `fsub`
 
 """
-function fsub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fsub(
+    lhs::Value,
+    rhs::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    fastmathFlags=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    !isnothing(fastmathFlags) && push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-    
-    IR.create_operation(
-        "llvm.fsub", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.fsub",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -706,13 +919,19 @@ function fence(; ordering, syncscope, location=Location())
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("ordering", ordering), namedattribute("syncscope", syncscope), ]
-    
-    IR.create_operation(
-        "llvm.fence", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("ordering", ordering), namedattribute("syncscope", syncscope)
+    ]
+
+    return IR.create_operation(
+        "llvm.fence",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -720,19 +939,23 @@ end
 `freeze`
 
 """
-function freeze(val::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function freeze(val::Value; res=nothing::Union{Nothing,IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[val, ]
+    operands = Value[val,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.freeze", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.freeze",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -740,19 +963,30 @@ end
 `getelementptr`
 
 """
-function getelementptr(base::Value, indices::Vector{Value}; res::IR.Type, structIndices, elem_type=nothing, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[base, indices..., ]
+function getelementptr(
+    base::Value,
+    indices::Vector{Value};
+    res::IR.Type,
+    structIndices,
+    elem_type=nothing,
+    location=Location(),
+)
+    results = IR.Type[res,]
+    operands = Value[base, indices...]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("structIndices", structIndices), ]
+    attributes = NamedAttribute[namedattribute("structIndices", structIndices),]
     !isnothing(elem_type) && push!(attributes, namedattribute("elem_type", elem_type))
-    
-    IR.create_operation(
-        "llvm.getelementptr", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.getelementptr",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -783,13 +1017,19 @@ function mlir_global_ctors(; ctors, priorities, location=Location())
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("ctors", ctors), namedattribute("priorities", priorities), ]
-    
-    IR.create_operation(
-        "llvm.mlir.global_ctors", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("ctors", ctors), namedattribute("priorities", priorities)
+    ]
+
+    return IR.create_operation(
+        "llvm.mlir.global_ctors",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -817,13 +1057,19 @@ function mlir_global_dtors(; dtors, priorities, location=Location())
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("dtors", dtors), namedattribute("priorities", priorities), ]
-    
-    IR.create_operation(
-        "llvm.mlir.global_dtors", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("dtors", dtors), namedattribute("priorities", priorities)
+    ]
+
+    return IR.create_operation(
+        "llvm.mlir.global_dtors",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -924,26 +1170,50 @@ Examples:
 llvm.mlir.global private constant @y(dense<1.0> : tensor<8xf32>) { alignment = 32 : i64 } : !llvm.array<8 x f32>
 ```
 """
-function mlir_global(; global_type, constant=nothing, sym_name, linkage, dso_local=nothing, thread_local_=nothing, value=nothing, alignment=nothing, addr_space=nothing, unnamed_addr=nothing, section=nothing, initializer::Region, location=Location())
+function mlir_global(;
+    global_type,
+    constant=nothing,
+    sym_name,
+    linkage,
+    dso_local=nothing,
+    thread_local_=nothing,
+    value=nothing,
+    alignment=nothing,
+    addr_space=nothing,
+    unnamed_addr=nothing,
+    section=nothing,
+    initializer::Region,
+    location=Location(),
+)
     results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[initializer, ]
+    owned_regions = Region[initializer,]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("global_type", global_type), namedattribute("sym_name", sym_name), namedattribute("linkage", linkage), ]
+    attributes = NamedAttribute[
+        namedattribute("global_type", global_type),
+        namedattribute("sym_name", sym_name),
+        namedattribute("linkage", linkage),
+    ]
     !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
     !isnothing(dso_local) && push!(attributes, namedattribute("dso_local", dso_local))
-    !isnothing(thread_local_) && push!(attributes, namedattribute("thread_local_", thread_local_))
+    !isnothing(thread_local_) &&
+        push!(attributes, namedattribute("thread_local_", thread_local_))
     !isnothing(value) && push!(attributes, namedattribute("value", value))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     !isnothing(addr_space) && push!(attributes, namedattribute("addr_space", addr_space))
-    !isnothing(unnamed_addr) && push!(attributes, namedattribute("unnamed_addr", unnamed_addr))
+    !isnothing(unnamed_addr) &&
+        push!(attributes, namedattribute("unnamed_addr", unnamed_addr))
     !isnothing(section) && push!(attributes, namedattribute("section", section))
-    
-    IR.create_operation(
-        "llvm.mlir.global", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.mlir.global",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -952,17 +1222,21 @@ end
 
 """
 function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[lhs, rhs, ]
+    results = IR.Type[res,]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("predicate", predicate), ]
-    
-    IR.create_operation(
-        "llvm.icmp", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("predicate", predicate),]
+
+    return IR.create_operation(
+        "llvm.icmp",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -976,23 +1250,42 @@ written, or referenced.
 Attempting to define or reference any symbol or any global behavior is
 considered undefined behavior at this time.
 """
-function inline_asm(operands_::Vector{Value}; res=nothing::Union{Nothing, IR.Type}, asm_string, constraints, has_side_effects=nothing, is_align_stack=nothing, asm_dialect=nothing, operand_attrs=nothing, location=Location())
+function inline_asm(
+    operands::Vector{Value};
+    res=nothing::Union{Nothing,IR.Type},
+    asm_string,
+    constraints,
+    has_side_effects=nothing,
+    is_align_stack=nothing,
+    asm_dialect=nothing,
+    operand_attrs=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("asm_string", asm_string), namedattribute("constraints", constraints), ]
+    attributes = NamedAttribute[
+        namedattribute("asm_string", asm_string), namedattribute("constraints", constraints)
+    ]
     !isnothing(res) && push!(results, res)
-    !isnothing(has_side_effects) && push!(attributes, namedattribute("has_side_effects", has_side_effects))
-    !isnothing(is_align_stack) && push!(attributes, namedattribute("is_align_stack", is_align_stack))
+    !isnothing(has_side_effects) &&
+        push!(attributes, namedattribute("has_side_effects", has_side_effects))
+    !isnothing(is_align_stack) &&
+        push!(attributes, namedattribute("is_align_stack", is_align_stack))
     !isnothing(asm_dialect) && push!(attributes, namedattribute("asm_dialect", asm_dialect))
-    !isnothing(operand_attrs) && push!(attributes, namedattribute("operand_attrs", operand_attrs))
-    
-    IR.create_operation(
-        "llvm.inline_asm", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(operand_attrs) &&
+        push!(attributes, namedattribute("operand_attrs", operand_attrs))
+
+    return IR.create_operation(
+        "llvm.inline_asm",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1000,18 +1293,24 @@ end
 `insertelement`
 
 """
-function insertelement(vector::Value, value::Value, position::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[vector, value, position, ]
+function insertelement(
+    vector::Value, value::Value, position::Value; res::IR.Type, location=Location()
+)
+    results = IR.Type[res,]
+    operands = Value[vector, value, position]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.insertelement", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.insertelement",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1019,18 +1318,24 @@ end
 `insertvalue`
 
 """
-function insertvalue(container::Value, value::Value; res::IR.Type, position, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[container, value, ]
+function insertvalue(
+    container::Value, value::Value; res::IR.Type, position, location=Location()
+)
+    results = IR.Type[res,]
+    operands = Value[container, value]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("position", position), ]
-    
-    IR.create_operation(
-        "llvm.insertvalue", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("position", position),]
+
+    return IR.create_operation(
+        "llvm.insertvalue",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1039,17 +1344,21 @@ end
 
 """
 function inttoptr(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.inttoptr", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.inttoptr",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1057,20 +1366,38 @@ end
 `invoke`
 
 """
-function invoke(callee_operands::Vector{Value}, normalDestOperands::Vector{Value}, unwindDestOperands::Vector{Value}; result_0::Vector{IR.Type}, callee=nothing, normalDest::Block, unwindDest::Block, location=Location())
-    results = IR.Type[result_0..., ]
-    operands = Value[callee_operands..., normalDestOperands..., unwindDestOperands..., ]
+function invoke(
+    callee_operands::Vector{Value},
+    normalDestOperands::Vector{Value},
+    unwindDestOperands::Vector{Value};
+    result_0::Vector{IR.Type},
+    callee=nothing,
+    normalDest::Block,
+    unwindDest::Block,
+    location=Location(),
+)
+    results = IR.Type[result_0...,]
+    operands = Value[callee_operands..., normalDestOperands..., unwindDestOperands...]
     owned_regions = Region[]
-    successors = Block[normalDest, unwindDest, ]
+    successors = Block[normalDest, unwindDest]
     attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(callee_operands), length(normalDestOperands), length(unwindDestOperands), ]))
+    push!(
+        attributes,
+        operandsegmentsizes([
+            length(callee_operands), length(normalDestOperands), length(unwindDestOperands)
+        ]),
+    )
     !isnothing(callee) && push!(attributes, namedattribute("callee", callee))
-    
-    IR.create_operation(
-        "llvm.invoke", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.invoke",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1103,24 +1430,39 @@ llvm.func internal @internal_func() {
 }
 ```
 """
-function func(; function_type, linkage=nothing, dso_local=nothing, CConv=nothing, personality=nothing, garbageCollector=nothing, passthrough=nothing, body::Region, location=Location())
+function func(;
+    function_type,
+    linkage=nothing,
+    dso_local=nothing,
+    CConv=nothing,
+    personality=nothing,
+    garbageCollector=nothing,
+    passthrough=nothing,
+    body::Region,
+    location=Location(),
+)
     results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body, ]
+    owned_regions = Region[body,]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("function_type", function_type), ]
+    attributes = NamedAttribute[namedattribute("function_type", function_type),]
     !isnothing(linkage) && push!(attributes, namedattribute("linkage", linkage))
     !isnothing(dso_local) && push!(attributes, namedattribute("dso_local", dso_local))
     !isnothing(CConv) && push!(attributes, namedattribute("CConv", CConv))
     !isnothing(personality) && push!(attributes, namedattribute("personality", personality))
-    !isnothing(garbageCollector) && push!(attributes, namedattribute("garbageCollector", garbageCollector))
+    !isnothing(garbageCollector) &&
+        push!(attributes, namedattribute("garbageCollector", garbageCollector))
     !isnothing(passthrough) && push!(attributes, namedattribute("passthrough", passthrough))
-    
-    IR.create_operation(
-        "llvm.func", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.func",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1128,19 +1470,25 @@ end
 `lshr`
 
 """
-function lshr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function lshr(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.lshr", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.lshr",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1148,19 +1496,25 @@ end
 `landingpad`
 
 """
-function landingpad(operand_0::Vector{Value}; res::IR.Type, cleanup=nothing, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[operand_0..., ]
+function landingpad(
+    operand_0::Vector{Value}; res::IR.Type, cleanup=nothing, location=Location()
+)
+    results = IR.Type[res,]
+    operands = Value[operand_0...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(cleanup) && push!(attributes, namedattribute("cleanup", cleanup))
-    
-    IR.create_operation(
-        "llvm.landingpad", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.landingpad",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1168,24 +1522,41 @@ end
 `load`
 
 """
-function load(addr::Value; res::IR.Type, access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[addr, ]
+function load(
+    addr::Value;
+    res::IR.Type,
+    access_groups=nothing,
+    alias_scopes=nothing,
+    noalias_scopes=nothing,
+    alignment=nothing,
+    volatile_=nothing,
+    nontemporal=nothing,
+    location=Location(),
+)
+    results = IR.Type[res,]
+    operands = Value[addr,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(access_groups) && push!(attributes, namedattribute("access_groups", access_groups))
-    !isnothing(alias_scopes) && push!(attributes, namedattribute("alias_scopes", alias_scopes))
-    !isnothing(noalias_scopes) && push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
+    !isnothing(access_groups) &&
+        push!(attributes, namedattribute("access_groups", access_groups))
+    !isnothing(alias_scopes) &&
+        push!(attributes, namedattribute("alias_scopes", alias_scopes))
+    !isnothing(noalias_scopes) &&
+        push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     !isnothing(volatile_) && push!(attributes, namedattribute("volatile_", volatile_))
     !isnothing(nontemporal) && push!(attributes, namedattribute("nontemporal", nontemporal))
-    
-    IR.create_operation(
-        "llvm.load", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.load",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1204,15 +1575,19 @@ llvm.metadata op defines one or more metadata nodes.
 function metadata(; sym_name, body::Region, location=Location())
     results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body, ]
+    owned_regions = Region[body,]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name), ]
-    
-    IR.create_operation(
-        "llvm.metadata", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("sym_name", sym_name),]
+
+    return IR.create_operation(
+        "llvm.metadata",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1220,19 +1595,25 @@ end
 `mul`
 
 """
-function mul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function mul(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.mul", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.mul",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1255,17 +1636,21 @@ Examples:
 ```
 """
 function mlir_null(; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
+    results = IR.Type[res,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.mlir.null", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.mlir.null",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1273,19 +1658,25 @@ end
 `or`
 
 """
-function or(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function or(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.or", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.or",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1294,17 +1685,21 @@ end
 
 """
 function ptrtoint(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.ptrtoint", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.ptrtoint",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1314,16 +1709,20 @@ end
 """
 function resume(value::Value; location=Location())
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.resume", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.resume",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1333,16 +1732,20 @@ end
 """
 function return_(args::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[args...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.return", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.return",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1350,19 +1753,25 @@ end
 `sdiv`
 
 """
-function sdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function sdiv(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.sdiv", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.sdiv",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1371,17 +1780,21 @@ end
 
 """
 function sext(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.sext", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.sext",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1390,17 +1803,21 @@ end
 
 """
 function sitofp(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.sitofp", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.sitofp",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1408,19 +1825,25 @@ end
 `srem`
 
 """
-function srem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function srem(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.srem", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.srem",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1428,19 +1851,29 @@ end
 `select`
 
 """
-function select(condition::Value, trueValue::Value, falseValue::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function select(
+    condition::Value,
+    trueValue::Value,
+    falseValue::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[condition, trueValue, falseValue, ]
+    operands = Value[condition, trueValue, falseValue]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.select", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.select",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1448,19 +1881,25 @@ end
 `shl`
 
 """
-function shl(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function shl(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.shl", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.shl",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1469,17 +1908,21 @@ end
 
 """
 function shufflevector(v1::Value, v2::Value; res::IR.Type, mask, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[v1, v2, ]
+    results = IR.Type[res,]
+    operands = Value[v1, v2]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("mask", mask), ]
-    
-    IR.create_operation(
-        "llvm.shufflevector", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("mask", mask),]
+
+    return IR.create_operation(
+        "llvm.shufflevector",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1487,24 +1930,41 @@ end
 `store`
 
 """
-function store(value::Value, addr::Value; access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
+function store(
+    value::Value,
+    addr::Value;
+    access_groups=nothing,
+    alias_scopes=nothing,
+    noalias_scopes=nothing,
+    alignment=nothing,
+    volatile_=nothing,
+    nontemporal=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[value, addr, ]
+    operands = Value[value, addr]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(access_groups) && push!(attributes, namedattribute("access_groups", access_groups))
-    !isnothing(alias_scopes) && push!(attributes, namedattribute("alias_scopes", alias_scopes))
-    !isnothing(noalias_scopes) && push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
+    !isnothing(access_groups) &&
+        push!(attributes, namedattribute("access_groups", access_groups))
+    !isnothing(alias_scopes) &&
+        push!(attributes, namedattribute("alias_scopes", alias_scopes))
+    !isnothing(noalias_scopes) &&
+        push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     !isnothing(volatile_) && push!(attributes, namedattribute("volatile_", volatile_))
     !isnothing(nontemporal) && push!(attributes, namedattribute("nontemporal", nontemporal))
-    
-    IR.create_operation(
-        "llvm.store", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.store",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1512,19 +1972,25 @@ end
 `sub`
 
 """
-function sub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function sub(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.sub", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.sub",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1532,21 +1998,40 @@ end
 `switch`
 
 """
-function switch(value::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, branch_weights=nothing, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
+function switch(
+    value::Value,
+    defaultOperands::Vector{Value},
+    caseOperands::Vector{Value};
+    case_values=nothing,
+    case_operand_segments,
+    branch_weights=nothing,
+    defaultDestination::Block,
+    caseDestinations::Vector{Block},
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[value, defaultOperands..., caseOperands..., ]
+    operands = Value[value, defaultOperands..., caseOperands...]
     owned_regions = Region[]
-    successors = Block[defaultDestination, caseDestinations..., ]
-    attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
-    push!(attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands), ]))
+    successors = Block[defaultDestination, caseDestinations...]
+    attributes = NamedAttribute[namedattribute(
+        "case_operand_segments", case_operand_segments
+    ),]
+    push!(
+        attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
+    )
     !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
-    !isnothing(branch_weights) && push!(attributes, namedattribute("branch_weights", branch_weights))
-    
-    IR.create_operation(
-        "llvm.switch", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(branch_weights) &&
+        push!(attributes, namedattribute("branch_weights", branch_weights))
+
+    return IR.create_operation(
+        "llvm.switch",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1555,17 +2040,21 @@ end
 
 """
 function trunc(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.trunc", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.trunc",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1573,19 +2062,25 @@ end
 `udiv`
 
 """
-function udiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function udiv(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.udiv", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.udiv",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1594,17 +2089,21 @@ end
 
 """
 function uitofp(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.uitofp", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.uitofp",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1612,19 +2111,25 @@ end
 `urem`
 
 """
-function urem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function urem(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.urem", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.urem",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1644,17 +2149,21 @@ IR dialect type wrapping an LLVM IR structure type.
 ```
 """
 function mlir_undef(; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
+    results = IR.Type[res,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.mlir.undef", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.mlir.undef",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1668,12 +2177,16 @@ function unreachable(; location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.unreachable", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.unreachable",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1681,19 +2194,25 @@ end
 `xor`
 
 """
-function xor(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function xor(
+    lhs::Value, rhs::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(res) && push!(results, res)
-    
-    IR.create_operation(
-        "llvm.xor", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.xor",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false)
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1702,17 +2221,21 @@ end
 
 """
 function zext(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "llvm.zext", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "llvm.zext",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 

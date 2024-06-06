@@ -1,8 +1,8 @@
 module quant
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-
 
 """
 `dcast`
@@ -19,17 +19,21 @@ all operands to ops that must operate with the expressed type (typically
 math ops prior to lowering to target-specific, quantized kernels).
 """
 function dcast(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "quant.dcast", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "quant.dcast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -58,17 +62,21 @@ it is legal to use a quantized representation (but is not known to be
 acceptable).
 """
 function qcast(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "quant.qcast", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "quant.qcast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -94,17 +102,21 @@ vector<4xi8> -> vector<4x!quant<\"uniform[i8:f32]{1.0}\">>
 ```
 """
 function scast(arg::Value; res::IR.Type, location=Location())
-    results = IR.Type[res, ]
-    operands = Value[arg, ]
+    results = IR.Type[res,]
+    operands = Value[arg,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "quant.scast", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "quant.scast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
