@@ -3,6 +3,7 @@ module linalg
 import ...IR:
     IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
+import ...API
 
 """
 `index`
@@ -234,6 +235,7 @@ end
 import ...IR:
     IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
+import ...API
 
 """
 `batch_matmul`
