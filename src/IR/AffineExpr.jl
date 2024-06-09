@@ -124,11 +124,11 @@ ConstantExpr(constant; context::Context=context()) =
     AffineExpr(API.mlirAffineConstantExprGet(context, constant))
 
 """
-    value(affineExpr)
+    constvalue(affineExpr)
 
 Returns the value of the given affine constant expression.
 """
-function value(expr::AffineExpr)
+function constvalue(expr::AffineExpr)
     @assert isconstantexpr(expr) "The given affine expression is not a constant expression"
     return API.mlirAffineConstantExprGetValue(expr)
 end
