@@ -1,6 +1,6 @@
 module tensor
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -27,9 +27,9 @@ converting to a mismatching constant dimension.
 %5 = tensor.cast %4 : tensor<?x?xf32> to tensor<*xf32>
 ```
 """
-function cast(source::Value; dest::IR.Type, location=Location())
+function cast(source; dest::IR.Type, location=Location())
     results = IR.Type[dest, ]
-    operands = Value[source, ]
+    operands = Value[value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -67,9 +67,9 @@ Examples:
     : tensor<?x?x?xf32> into tensor<?x?xf32>
 ```
 """
-function collapse_shape(src::Value; result::IR.Type, reassociation, location=Location())
+function collapse_shape(src; result::IR.Type, reassociation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[src, ]
+    operands = Value[value(src), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
@@ -107,9 +107,9 @@ The specified tensor type is that of the first operand.
 %y = \"tensor.dim\"(%A, %c1) : (memref<4x?xf32>, index) -> index
 ```
 """
-function dim(source::Value, index::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function dim(source, index; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[source, index, ]
+    operands = Value[value(source), value(index), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -148,9 +148,9 @@ Examples:
     : tensor<?x?xf32> into tensor<?x?x?xf32>
 ```
 """
-function expand_shape(src::Value; result::IR.Type, reassociation, location=Location())
+function expand_shape(src; result::IR.Type, reassociation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[src, ]
+    operands = Value[value(src), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
@@ -181,9 +181,9 @@ indices should all be of `index` type.
 %6 = tensor.extract %ut[%1, %2] : tensor<*xi32>
 ```
 """
-function extract(tensor::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+function extract(tensor, indices; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, indices..., ]
+    operands = Value[value(tensor), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -238,9 +238,9 @@ between different flavors of ops on that operate on tensors.
   tensor<8x16x4xf32> to tensor<1x?xf32>
 ```
 """
-function extract_slice(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
+function extract_slice(source, offsets, sizes, strides; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+    operands = Value[value(source), value.(offsets)..., value.(sizes)..., value.(strides)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
@@ -272,9 +272,9 @@ will result in a tensor
 [[%a, %b, %c]
  [%d, %e, %f]]
 """
-function from_elements(elements::Vector{Value}; result::IR.Type, location=Location())
+function from_elements(elements; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[elements..., ]
+    operands = Value[value.(elements)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -309,9 +309,9 @@ a \"parallel map\" operation.
   } : tensor<?x3x?f32>
 ```
 """
-function generate(dynamicExtents::Vector{Value}; result::IR.Type, body::Region, location=Location())
+function generate(dynamicExtents; result::IR.Type, body::Region, location=Location())
     results = IR.Type[result, ]
-    operands = Value[dynamicExtents..., ]
+    operands = Value[value.(dynamicExtents)..., ]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -345,9 +345,9 @@ indices should all be of `index` type.
 %6 = tensor.insert %ut into %dest[%1, %2] : tensor<*xi32>
 ```
 """
-function insert(scalar::Value, dest::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+function insert(scalar, dest, indices; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[scalar, dest, indices..., ]
+    operands = Value[value(scalar), value(dest), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -410,9 +410,9 @@ behavior of tensor.extract_slice.
   tensor<1x?xf32> into tensor<8x16x4xf32>
 ```
 """
-function insert_slice(source::Value, dest::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
+function insert_slice(source, dest, offsets, sizes, strides; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, dest, offsets..., sizes..., strides..., ]
+    operands = Value[value(source), value(dest), value.(offsets)..., value.(sizes)..., value.(strides)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
@@ -498,9 +498,9 @@ Example 4:
   } : tensor<2x3xf32> to tensor<2x3xf32>
 ```
 """
-function pad(source::Value, low::Vector{Value}, high::Vector{Value}; result::IR.Type, static_low, static_high, nofold=nothing, region::Region, location=Location())
+function pad(source, low, high; result::IR.Type, static_low, static_high, nofold=nothing, region::Region, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, low..., high..., ]
+    operands = Value[value(source), value.(low)..., value.(high)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_low", static_low), namedattribute("static_high", static_high), ]
@@ -527,9 +527,9 @@ The `tensor.rank` operation takes a tensor operand and returns its rank.
 %1 = tensor.rank %arg1 : tensor<?x?xf32>
 ```
 """
-function rank(tensor::Value; result_0=nothing::Union{Nothing, IR.Type}, location=Location())
+function rank(tensor; result_0=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -577,9 +577,9 @@ Result type is unranked.
          : (tensor<*xf32>, tensor<?xi32>) -> tensor<*xf32>
 ```
 """
-function reshape(source::Value, shape::Value; result::IR.Type, location=Location())
+function reshape(source, shape; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, shape, ]
+    operands = Value[value(source), value(shape), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -599,9 +599,9 @@ This operation is used to yield a single value from a within a region. It
 is used to create dynamically sized tensors
 (see `tensor.generate` and `tensor.pad` ops).
 """
-function yield(value::Value; location=Location())
+function yield(value; location=Location())
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

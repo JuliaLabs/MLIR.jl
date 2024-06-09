@@ -1,6 +1,6 @@
 module bufferization
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -20,9 +20,9 @@ views or create an actual copy. Mutating the source or result
 of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
-function clone(input::Value; output::IR.Type, location=Location())
+function clone(input; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -52,9 +52,9 @@ This operation is a specialized variant of the built-in
 unrealized_conversion_cast and is intended for use in the context of
 gradual bufferization.
 """
-function to_memref(tensor::Value; memref::IR.Type, location=Location())
+function to_memref(tensor; memref::IR.Type, location=Location())
     results = IR.Type[memref, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -88,9 +88,9 @@ involving tensors and memrefs.
 If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
-function to_tensor(memref::Value; result::IR.Type, location=Location())
+function to_tensor(memref; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[memref, ]
+    operands = Value[value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

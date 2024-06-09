@@ -1,6 +1,6 @@
 module memref
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -14,9 +14,9 @@ the buffer isn\'t aligned to the given alignment, the behavior is undefined.
 This operation doesn\'t affect the semantics of a correct program. It\'s for
 optimization only, and the optimization is best-effort.
 """
-function assume_alignment(memref::Value; alignment, location=Location())
+function assume_alignment(memref; alignment, location=Location())
     results = IR.Type[]
-    operands = Value[memref, ]
+    operands = Value[value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("alignment", alignment), ]
@@ -46,9 +46,9 @@ result represents the latest value that was stored.
 %x = memref.atomic_rmw \"addf\" %value, %I[%i] : (f32, memref<10xf32>) -> f32
 ```
 """
-function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result::IR.Type, kind, location=Location())
+function atomic_rmw(value, memref, indices; result::IR.Type, kind, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, memref, indices..., ]
+    operands = Value[value(value), value(memref), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kind", kind), ]
@@ -67,9 +67,9 @@ end
 \"memref.atomic_yield\" yields an SSA value from a
 GenericAtomicRMWOp region.
 """
-function atomic_yield(result::Value; location=Location())
+function atomic_yield(result; location=Location())
     results = IR.Type[]
-    operands = Value[result, ]
+    operands = Value[value(result), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -96,9 +96,9 @@ memref.copy %arg0, %arg1 : memref<?xf32> to memref<?xf32>
 Source and destination are expected to have the same element type and shape.
 Otherwise, the result is undefined. They may have different layouts.
 """
-function copy(source::Value, target::Value; location=Location())
+function copy(source, target; location=Location())
     results = IR.Type[]
-    operands = Value[source, target, ]
+    operands = Value[value(source), value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -135,9 +135,9 @@ body of `GenericAtomicRMWOp`.
 }
 ```
 """
-function generic_atomic_rmw(memref::Value, indices::Vector{Value}; result::IR.Type, atomic_body::Region, location=Location())
+function generic_atomic_rmw(memref, indices; result::IR.Type, atomic_body::Region, location=Location())
     results = IR.Type[result, ]
-    operands = Value[memref, indices..., ]
+    operands = Value[value(memref), value.(indices)..., ]
     owned_regions = Region[atomic_body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -188,9 +188,9 @@ techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
 """
-function load(memref::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+function load(memref, indices; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[memref, indices..., ]
+    operands = Value[value(memref), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -244,9 +244,9 @@ boundary.
   memref<8x64xf32, affine_map<(d0, d1)[s0] -> ((d0 + s0), d1)>, 1>
 ```
 """
-function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::IR.Type, alignment=nothing, location=Location())
+function alloc(dynamicSizes, symbolOperands; memref::IR.Type, alignment=nothing, location=Location())
     results = IR.Type[memref, ]
-    operands = Value[dynamicSizes..., symbolOperands..., ]
+    operands = Value[value.(dynamicSizes)..., value.(symbolOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -298,9 +298,9 @@ specified, guarantees alignment at least to that boundary. If not specified,
 an alignment on any convenient boundary compatible with the type will be
 chosen.
 """
-function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::IR.Type, alignment=nothing, location=Location())
+function alloca(dynamicSizes, symbolOperands; memref::IR.Type, alignment=nothing, location=Location())
     results = IR.Type[memref, ]
-    operands = Value[dynamicSizes..., symbolOperands..., ]
+    operands = Value[value.(dynamicSizes)..., value.(symbolOperands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -376,9 +376,9 @@ to indicate which values are going to be returned. For example:
 memref.alloca_scope.return %value
 ```
 """
-function alloca_scope_return(results_::Vector{Value}; location=Location())
+function alloca_scope_return(results_; location=Location())
     results = IR.Type[]
-    operands = Value[results_..., ]
+    operands = Value[value.(results_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -447,9 +447,9 @@ Erase rank information.
     %5 = memref.cast %1 : memref<4x?xf32> to memref<*xf32>
 ```
 """
-function cast(source::Value; dest::IR.Type, location=Location())
+function cast(source; dest::IR.Type, location=Location())
     results = IR.Type[dest, ]
-    operands = Value[source, ]
+    operands = Value[value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -496,9 +496,9 @@ Examples:
   memref<?x?x?xf32, stride_spec> into memref<?x?xf32, stride_spec_2>
 ```
 """
-function collapse_shape(src::Value; result::IR.Type, reassociation, location=Location())
+function collapse_shape(src; result::IR.Type, reassociation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[src, ]
+    operands = Value[value(src), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
@@ -526,9 +526,9 @@ alloc\'d memref (e.g. memrefs returned by `view` operations).
 memref.dealloc %0 : memref<8x64xf32,  affine_map<(d0, d1) -> (d0, d1), 1>>
 ```
 """
-function dealloc(memref::Value; location=Location())
+function dealloc(memref; location=Location())
     results = IR.Type[]
-    operands = Value[memref, ]
+    operands = Value[value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -566,9 +566,9 @@ The specified memref type is that of the first operand.
 %y = \"memref.dim\"(%A, %c1) : (memref<4 x ? x f32>, index) -> index
 ```
 """
-function dim(source::Value, index::Value; result::IR.Type, location=Location())
+function dim(source, index; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, index, ]
+    operands = Value[value(source), value(index), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -628,9 +628,9 @@ TODO: add additional operands to allow source and destination striding, and
 multiple stride levels.
 TODO: Consider replacing src/dst memref indices with view memrefs.
 """
-function dma_start(operands_::Vector{Value}; location=Location())
+function dma_start(operands_; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -663,9 +663,9 @@ number of elements associated with the DMA operation.
  dma_wait %tag[%index], %num_elements : memref<1 x i32, affine_map<(d0) -> (d0)>, 2>
  ```
 """
-function dma_wait(tagMemRef::Value, tagIndices::Vector{Value}, numElements::Value; location=Location())
+function dma_wait(tagMemRef, tagIndices, numElements; location=Location())
     results = IR.Type[]
-    operands = Value[tagMemRef, tagIndices..., numElements, ]
+    operands = Value[value(tagMemRef), value.(tagIndices)..., value(numElements), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -712,9 +712,9 @@ smaller rank.
   memref<?x?xf32, stride_spec> into memref<?x?x?xf32, stride_spec_2>
 ```
 """
-function expand_shape(src::Value; result::IR.Type, reassociation, location=Location())
+function expand_shape(src; result::IR.Type, reassociation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[src, ]
+    operands = Value[value(src), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
@@ -831,9 +831,9 @@ in cache). The cache type specifier is either \'data\' or \'instr\'
 and specifies whether the prefetch is performed on data cache or on
 instruction cache.
 """
-function prefetch(memref::Value, indices::Vector{Value}; isWrite, localityHint, isDataCache, location=Location())
+function prefetch(memref, indices; isWrite, localityHint, isDataCache, location=Location())
     results = IR.Type[]
-    operands = Value[memref, indices..., ]
+    operands = Value[value(memref), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("isWrite", isWrite), namedattribute("localityHint", localityHint), namedattribute("isDataCache", isDataCache), ]
@@ -858,9 +858,9 @@ The `memref.rank` operation takes a memref operand and returns its rank.
 %1 = memref.rank %arg1 : memref<?x?xf32>
 ```
 """
-function rank(memref::Value; result_0::IR.Type, location=Location())
+function rank(memref; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[memref, ]
+    operands = Value[value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -893,9 +893,9 @@ memref.reinterpret_cast %unranked to
 : memref<*xf32> to memref<?x?xf32, offset: ?, strides: [?, ?]>
 ```
 """
-function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
+function reinterpret_cast(source, offsets, sizes, strides; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+    operands = Value[value(source), value.(offsets)..., value.(sizes)..., value.(strides)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
@@ -944,9 +944,9 @@ Result type is unranked.
          : (memref<*xf32>, memref<?xi32>) to memref<*xf32>
 ```
 """
-function reshape(source::Value, shape::Value; result::IR.Type, location=Location())
+function reshape(source, shape; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, shape, ]
+    operands = Value[value(source), value(shape), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -989,9 +989,9 @@ techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
 """
-function store(value::Value, memref::Value, indices::Vector{Value}; location=Location())
+function store(value, memref, indices; location=Location())
     results = IR.Type[]
-    operands = Value[value, memref, indices..., ]
+    operands = Value[value(value), value(memref), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1017,9 +1017,9 @@ transformation.
 %1 = memref.transpose %0 (i, j) -> (j, i) : memref<?x?xf32> to memref<?x?xf32, affine_map<(d0, d1)[s0] -> (d1 * s0 + d0)>>
 ```
 """
-function transpose(in::Value; result_0::IR.Type, permutation, location=Location())
+function transpose(in; result_0::IR.Type, permutation, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("permutation", permutation), ]
@@ -1070,9 +1070,9 @@ For now, a \"view\" op:
   memref<2048xi8> to memref<?x4x?xf32>
 ```
 """
-function view(source::Value, byte_shift::Value, sizes::Vector{Value}; result_0::IR.Type, location=Location())
+function view(source, byte_shift, sizes; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[source, byte_shift, sizes..., ]
+    operands = Value[value(source), value(byte_shift), value.(sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1220,9 +1220,9 @@ Example 5:
 ```
 }
 """
-function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
+function subview(source, offsets, sizes, strides; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+    operands = Value[value(source), value.(offsets)..., value.(sizes)..., value.(strides)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
@@ -1251,9 +1251,9 @@ element types of these must match, and are specified by the memref type.
 memref.tensor_store %8, %10 : memref<4x?xf32, #layout, memspace0>
 ```
 """
-function tensor_store(tensor::Value, memref::Value; location=Location())
+function tensor_store(tensor, memref; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, memref, ]
+    operands = Value[value(tensor), value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -1,6 +1,6 @@
 module emitc
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -22,9 +22,9 @@ can be applied to a single operand.
 
 ```
 """
-function apply(operand::Value; result::IR.Type, applicableOperator, location=Location())
+function apply(operand; result::IR.Type, applicableOperator, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator), ]
@@ -56,9 +56,9 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
+function call(operands_; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
     results = IR.Type[result_0..., ]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
