@@ -1,5 +1,6 @@
 using Pkg
-import BinaryBuilderBase: PkgSpec, Prefix, temp_prefix, setup_dependencies, cleanup_dependencies, destdir
+import BinaryBuilderBase:
+    PkgSpec, Prefix, temp_prefix, setup_dependencies, cleanup_dependencies, destdir
 using Clang.Generators
 
 function mlir_dialects(version::VersionNumber)
@@ -23,7 +24,11 @@ function mlir_dialects(version::VersionNumber)
             # ("dlti", "DLTI.jl", ["DLTI/DLTI.td"]), # TODO crashes
             ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
             ("gpu", "GPU.jl", ["GPU/GPUOps.td"]), # moved to IR subfolder in v15
-            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            (
+                "linalg",
+                "Linalg.jl",
+                ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"],
+            ),
             ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
             ("math", "Math.jl", ["Math/IR/MathOps.td"]),
             ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
@@ -59,7 +64,11 @@ function mlir_dialects(version::VersionNumber)
             ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
             ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
             ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
-            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            (
+                "linalg",
+                "Linalg.jl",
+                ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"],
+            ),
             ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
             ("math", "Math.jl", ["Math/IR/MathOps.td"]),
             ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
@@ -75,12 +84,16 @@ function mlir_dialects(version::VersionNumber)
             ("spv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]), # dialect name renamed to 'spirv' in v16
             ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
             ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
-            ("transform", "Transform.jl", [
-                "Bufferization/TransformOps/BufferizationTransformOps.td",
-                "Linalg/TransformOps/LinalgTransformOps.td",
-                "SCF/TransformOps/SCFTransformOps.td",
-                "Transform/IR/TransformOps.td",
-            ]), # more ops files in v16
+            (
+                "transform",
+                "Transform.jl",
+                [
+                    "Bufferization/TransformOps/BufferizationTransformOps.td",
+                    "Linalg/TransformOps/LinalgTransformOps.td",
+                    "SCF/TransformOps/SCFTransformOps.td",
+                    "Transform/IR/TransformOps.td",
+                ],
+            ), # more ops files in v16
             ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
             ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
         ]
@@ -103,7 +116,11 @@ function mlir_dialects(version::VersionNumber)
             ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
             ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
             ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
-            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            (
+                "linalg",
+                "Linalg.jl",
+                ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"],
+            ),
             ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
             ("math", "Math.jl", ["Math/IR/MathOps.td"]),
             ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
@@ -119,16 +136,20 @@ function mlir_dialects(version::VersionNumber)
             ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
             ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
             ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
-            ("transform", "Transform.jl", [
-                "Affine/TransformOps/AffineTransformOps.td",
-                "Bufferization/TransformOps/BufferizationTransformOps.td",
-                "GPU/TransformOps/GPUTransformOps.td",
-                "Linalg/TransformOps/LinalgTransformOps.td",
-                "MemRef/TransformOps/MemRefTransformOps.td",
-                "SCF/TransformOps/SCFTransformOps.td",
-                "Transform/IR/TransformOps.td",
-                "Vector/TransformOps/VectorTransformOps.td",
-            ]), # more ops files in v17
+            (
+                "transform",
+                "Transform.jl",
+                [
+                    "Affine/TransformOps/AffineTransformOps.td",
+                    "Bufferization/TransformOps/BufferizationTransformOps.td",
+                    "GPU/TransformOps/GPUTransformOps.td",
+                    "Linalg/TransformOps/LinalgTransformOps.td",
+                    "MemRef/TransformOps/MemRefTransformOps.td",
+                    "SCF/TransformOps/SCFTransformOps.td",
+                    "Transform/IR/TransformOps.td",
+                    "Vector/TransformOps/VectorTransformOps.td",
+                ],
+            ), # more ops files in v17
             ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
             ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
         ]
@@ -153,7 +174,11 @@ function mlir_dialects(version::VersionNumber)
             ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
             ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
             ("irdl", "IRDL.jl", ["IRDL/IR/IRDLOps.td"]),
-            ("linalg", "Linalg.jl", ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"]),
+            (
+                "linalg",
+                "Linalg.jl",
+                ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"],
+            ),
             ("llvm", "LLVMIR.jl", ["LLVMIR/LLVMOps.td"]),
             ("math", "Math.jl", ["Math/IR/MathOps.td"]),
             ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
@@ -169,19 +194,23 @@ function mlir_dialects(version::VersionNumber)
             ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
             ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
             ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
-            ("transform", "Transform.jl", [
-                "Affine/TransformOps/AffineTransformOps.td",
-                "Bufferization/TransformOps/BufferizationTransformOps.td",
-                "GPU/TransformOps/GPUTransformOps.td",
-                "Linalg/TransformOps/LinalgMatchOps.td",
-                "Linalg/TransformOps/LinalgTransformOps.td",
-                "MemRef/TransformOps/MemRefTransformOps.td",
-                "NVGPU/TransformOps/NVGPUTransformOps.td",
-                "SCF/TransformOps/SCFTransformOps.td",
-                "Tensor/TransformOps/TensorTransformOps.td",
-                "Transform/IR/TransformOps.td",
-                "Vector/TransformOps/VectorTransformOps.td",
-            ]),
+            (
+                "transform",
+                "Transform.jl",
+                [
+                    "Affine/TransformOps/AffineTransformOps.td",
+                    "Bufferization/TransformOps/BufferizationTransformOps.td",
+                    "GPU/TransformOps/GPUTransformOps.td",
+                    "Linalg/TransformOps/LinalgMatchOps.td",
+                    "Linalg/TransformOps/LinalgTransformOps.td",
+                    "MemRef/TransformOps/MemRefTransformOps.td",
+                    "NVGPU/TransformOps/NVGPUTransformOps.td",
+                    "SCF/TransformOps/SCFTransformOps.td",
+                    "Tensor/TransformOps/TensorTransformOps.td",
+                    "Transform/IR/TransformOps.td",
+                    "Vector/TransformOps/VectorTransformOps.td",
+                ],
+            ),
             ("ub", "UB.jl", ["UB/IR/UBOps.td"]),
             ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
             ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
@@ -195,7 +224,12 @@ end
 
 function rewrite!(dag::ExprDAG) end
 
-julia_llvm = Dict([v"1.9" => v"14.0.5+3", v"1.10" => v"15.0.7+10", v"1.11" => v"16.0.6+2", v"1.12" => v"17.0.6+3"])
+julia_llvm = Dict([
+    v"1.9" => v"14.0.5+3",
+    v"1.10" => v"15.0.7+10",
+    v"1.11" => v"16.0.6+2",
+    v"1.12" => v"17.0.6+3",
+])
 options = load_options(joinpath(@__DIR__, "wrap.toml"))
 
 @add_def off_t
@@ -212,7 +246,7 @@ for (julia_version, llvm_version) in julia_llvm
         # Note: 1.10
         dependencies = PkgSpec[
             PkgSpec(; name="LLVM_full_jll", version=llvm_version),
-            PkgSpec(; name="mlir_jl_tblgen_jll")
+            PkgSpec(; name="mlir_jl_tblgen_jll"),
         ]
 
         artifact_paths = setup_dependencies(prefix, dependencies, platform; verbose=true)
@@ -224,7 +258,14 @@ for (julia_version, llvm_version) in julia_llvm
         mkpath(joinpath(@__DIR__, "..", "src", "API", string(llvm_version.major)))
 
         let options = deepcopy(options)
-            output_file_path = joinpath(@__DIR__, "..", "src", "API", string(llvm_version.major), options["general"]["output_file_path"])
+            output_file_path = joinpath(
+                @__DIR__,
+                "..",
+                "src",
+                "API",
+                string(llvm_version.major),
+                options["general"]["output_file_path"],
+            )
             isdir(dirname(output_file_path)) || mkpath(dirname(output_file_path))
             options["general"]["output_file_path"] = output_file_path
 
@@ -233,7 +274,9 @@ for (julia_version, llvm_version) in julia_llvm
             push!(args, "-I$include_dir")
             push!(args, "-xc++")
 
-            headers = detect_headers(libmlir_header_dir, args, Dict(), endswith("Python/Interop.h"))
+            headers = detect_headers(
+                libmlir_header_dir, args, Dict(), endswith("Python/Interop.h")
+            )
             ctx = create_context(headers, args, options)
 
             # build without printing so we can do custom rewriting
@@ -256,15 +299,20 @@ for (julia_version, llvm_version) in julia_llvm
                     "--generator=jl-op-defs",
                     "--disable-module-wrap",
                     tdpath,
-                    "-I", dirname(tdpath),
-                    "-I", include_dir,
-                    "-o", tempfile,
+                    "-I",
+                    dirname(tdpath),
+                    "-I",
+                    include_dir,
+                    "-o",
+                    tempfile,
                 ]
                 run(`$mlir_jl_tblgen $flags`)
                 return tempfile
             end
 
-            output = joinpath(@__DIR__, "..", "src", "Dialects", string(llvm_version.major), binding)
+            output = joinpath(
+                @__DIR__, "..", "src", "Dialects", string(llvm_version.major), binding
+            )
             open(output, "w") do io
                 println(io, "module $dialect_name\n")
                 for tempfile in tempfiles

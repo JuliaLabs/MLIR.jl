@@ -5,7 +5,9 @@ Pkg.activate(@__DIR__)
 Pkg.instantiate()
 
 if haskey(ENV, "GITHUB_ACTIONS")
-    println("::warning ::Using a locally-built mlir-jl-tblgen; A bump of mlir_jl_tblgen_jll will be required before releasing MLIR.jl.")
+    println(
+        "::warning ::Using a locally-built mlir-jl-tblgen; A bump of mlir_jl_tblgen_jll will be required before releasing MLIR.jl.",
+    )
 end
 
 using Pkg, Scratch, Preferences, Libdl, CMake_jll
@@ -35,11 +37,11 @@ catch
 end
 llvm_pkg_version = "$(Base.libllvm_version.major).$(Base.libllvm_version.minor)"
 LLVM = if llvm_assertions
-    Pkg.add(name="LLVM_full_assert_jll", version=llvm_pkg_version)
+    Pkg.add(; name="LLVM_full_assert_jll", version=llvm_pkg_version)
     using LLVM_full_assert_jll
     LLVM_full_assert_jll
 else
-    Pkg.add(name="LLVM_full_jll", version=llvm_pkg_version)
+    Pkg.add(; name="LLVM_full_jll", version=llvm_pkg_version)
     using LLVM_full_jll
     LLVM_full_jll
 end
