@@ -24,8 +24,7 @@ value(::NonConvertible, x::T) where T = error("Type $T does not have the Convert
 unpack(T) = unpack(IR.ValueTrait(T), T)
 unpack(::IR.Convertible, T) = (T, )
 function unpack(::IR.NonConvertible, T)
-    @assert isbitstype(T) "Cannot unpack type $T that is not `isbitstype`"
-    @info T
+    isbitstype(T) || error("Cannot unpack type $T that is not `isbitstype`")
     fc = fieldcount(T)
     if (fc == 0)
         if (sizeof(T) == 0)
