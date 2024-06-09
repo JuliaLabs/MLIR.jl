@@ -108,7 +108,6 @@ function generate!(cg, ir::CC.IRCode, ret)
     original_currentblock = IR.currentblock[]
     
     reg = IR.Region()
-    @info "ping!" reg
 
     blocks = [
         prepare_block(ir, bb)
@@ -141,8 +140,6 @@ function generate!(cg, ir::CC.IRCode, ret)
     builder!(args...)
 
     IR.setcurrentblock!(original_currentblock) # restore original currentblock (needed for recursion)
-
-    @info argtypes
 
     argtypes = IR.Type[IR.type(IR.argument(entryblock, i)) for i in 1:IR.nargs(entryblock)]
     rettypes = IR.Type[IR.Type.(IR.unpack(ret))...]
@@ -307,7 +304,6 @@ function transform(cg, ir, blocks, next_block)
     interp = CC.NativeInterpreter()
     mi = get_toplevel_mi_from_ir(ir, @__MODULE__);
     ir = infer_ir!(ir, interp, mi)
-    @info "transformed IR: " ir
 
     # inlining
     inline_state = CC.InliningState(interp)
