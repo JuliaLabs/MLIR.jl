@@ -1,7 +1,6 @@
 module func
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -21,27 +20,18 @@ Function values can be created with the
 %result = func.call_indirect %func(%0, %1) : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
 """
-function call_indirect(
-    callee::Value,
-    callee_operands::Vector{Value};
-    results::Vector{IR.Type},
-    location=Location(),
-)
-    _results = IR.Type[results...,]
-    _operands = Value[callee, callee_operands...]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "func.call_indirect",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function call_indirect(callee, callee_operands; results_::Vector{IR.Type}, location=Location())
+    results = IR.Type[results_..., ]
+    operands = Value[value(callee), value.(callee_operands)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "func.call_indirect", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -59,24 +49,18 @@ symbol reference attribute named \"callee\".
 %2 = func.call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(
-    operands::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
-)
-    _results = IR.Type[result_0...,]
-    _operands = Value[operands...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("callee", callee),]
-
-    return IR.create_operation(
-        "func.call",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function call(operands_; result_0::Vector{IR.Type}, callee, location=Location())
+    results = IR.Type[result_0..., ]
+    operands = Value[value.(operands_)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("callee", callee), ]
+    
+    IR.create_operation(
+        "func.call", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -209,22 +193,18 @@ func.func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands::Vector{Value}; location=Location())
-    _results = IR.Type[]
-    _operands = Value[operands...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "func.return",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function return_(operands_; location=Location())
+    results = IR.Type[]
+    operands = Value[value.(operands_)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "func.return", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 

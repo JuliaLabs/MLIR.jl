@@ -1,7 +1,6 @@
 module bufferization
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -55,39 +54,22 @@ return %0 : tensor<?x?xf32, #SparseMatrix>
   : tensor<?x?xf32, #SparseMatrix>
 ```
 """
-function alloc_tensor(
-    dynamic_sizes::Vector{Value},
-    copy=nothing::Union{Nothing,Value};
-    size_hint=nothing::Union{Nothing,Value},
-    result::IR.Type,
-    memory_space=nothing,
-    location=Location(),
-)
-    _results = IR.Type[result,]
-    _operands = Value[dynamic_sizes...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(copy) && push!(_operands, copy)
-    !isnothing(size_hint) && push!(_operands, size_hint)
-    push!(
-        _attributes,
-        operandsegmentsizes([
-            length(dynamic_sizes), isnothing(copy) ? 0 : 1, isnothing(size_hint) ? 0 : 1
-        ]),
-    )
-    !isnothing(memory_space) &&
-        push!(_attributes, namedattribute("memory_space", memory_space))
-
-    return IR.create_operation(
-        "bufferization.alloc_tensor",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function alloc_tensor(dynamic_sizes, copy=nothing; size_hint=nothing, result::IR.Type, memory_space=nothing, location=Location())
+    results = IR.Type[result, ]
+    operands = Value[value.(dynamic_sizes)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(copy) && push!(operands, value(copy))
+    !isnothing(size_hint) && push!(operands, value(size_hint))
+    push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy==nothing) ? 0 : 1(size_hint==nothing) ? 0 : 1]))
+    !isnothing(memory_space) && push!(attributes, namedattribute("memory_space", memory_space))
+    
+    IR.create_operation(
+        "bufferization.alloc_tensor", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -107,22 +89,18 @@ views or create an actual copy. Mutating the source or result
 of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
-function clone(input::Value; output::IR.Type, location=Location())
-    _results = IR.Type[output,]
-    _operands = Value[input,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "bufferization.clone",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function clone(input; output::IR.Type, location=Location())
+    results = IR.Type[output, ]
+    operands = Value[value(input), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "bufferization.clone", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -152,22 +130,18 @@ tensor returns undefined results.
 bufferization.dealloc_tensor %tensor : tensor<1024x1024xf64, #CSR>
 ```
 """
-function dealloc_tensor(tensor::Value; location=Location())
-    _results = IR.Type[]
-    _operands = Value[tensor,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "bufferization.dealloc_tensor",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function dealloc_tensor(tensor; location=Location())
+    results = IR.Type[]
+    operands = Value[value(tensor), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "bufferization.dealloc_tensor", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -188,22 +162,18 @@ This operation is a specialized variant of the built-in
 `unrealized_conversion_cast` and is intended for use in the context of
 gradual bufferization.
 """
-function to_memref(tensor::Value; memref::IR.Type, location=Location())
-    _results = IR.Type[memref,]
-    _operands = Value[tensor,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "bufferization.to_memref",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function to_memref(tensor; memref::IR.Type, location=Location())
+    results = IR.Type[memref, ]
+    operands = Value[value(tensor), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "bufferization.to_memref", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -228,25 +198,18 @@ involving tensors and memrefs.
 If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
-function to_tensor(
-    memref::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[memref,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "bufferization.to_tensor",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function to_tensor(memref; result::IR.Type, location=Location())
+    results = IR.Type[result, ]
+    operands = Value[value(memref), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "bufferization.to_tensor", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 

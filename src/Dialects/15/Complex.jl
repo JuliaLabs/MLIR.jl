@@ -1,7 +1,6 @@
 module complex
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -15,22 +14,18 @@ The `abs` op takes a single complex number and computes its absolute value.
 %a = complex.abs %b : complex<f32>
 ```
 """
-function abs(complex::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "complex.abs",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function abs(complex; result::IR.Type, location=Location())
+    results = IR.Type[result, ]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "complex.abs", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -45,25 +40,19 @@ The `add` operation takes two complex numbers and returns their sum.
 %a = complex.add %b, %c : complex<f32>
 ```
 """
-function add(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.add",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function add(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.add", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -78,22 +67,18 @@ The `angle` op takes a single complex number and computes its argument value wit
      %a = complex.angle %b : complex<f32>
 ```
 """
-function angle(complex::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "complex.angle",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function angle(complex; result::IR.Type, location=Location())
+    results = IR.Type[result, ]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "complex.angle", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -109,25 +94,19 @@ atan2(y, x) = -i * log((x + i * y) / sqrt(x**2 + y**2))
 %a = complex.atan2 %b, %c : complex<f32>
 ```
 """
-function atan2(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.atan2",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function atan2(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.atan2", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -143,23 +122,19 @@ complex conjugate.
 %a = complex.conj %b: complex<f32>
 ```
 """
-function conj(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.conj",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function conj(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.conj", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -206,23 +181,19 @@ it, i.e. `cos(x)`, where `x` is the input value.
 %a = complex.cos %b : complex<f32>
 ```
 """
-function cos(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.cos",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function cos(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.cos", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -238,22 +209,18 @@ floating-point operands, the real and the imaginary part.
 %a = complex.create %b, %c : complex<f32>
 ```
 """
-function create(real::Value, imaginary::Value; complex::IR.Type, location=Location())
-    _results = IR.Type[complex,]
-    _operands = Value[real, imaginary]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "complex.create",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function create(real, imaginary; complex::IR.Type, location=Location())
+    results = IR.Type[complex, ]
+    operands = Value[value(real), value(imaginary), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "complex.create", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -267,25 +234,19 @@ division:
 %a = complex.div %b, %c : complex<f32>
 ```
 """
-function div(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.div",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function div(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.div", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -300,25 +261,19 @@ The `eq` op takes two complex numbers and returns whether they are equal.
 %a = complex.eq %b, %c : complex<f32>
 ```
 """
-function eq(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.eq",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function eq(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.eq", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -335,23 +290,19 @@ it, i.e. `exp(x)` or `e^(x)`, where `x` is the input value.
 %a = complex.exp %b : complex<f32>
 ```
 """
-function exp(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.exp",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function exp(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.exp", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -372,23 +323,19 @@ complex.expm1(x) := complex.exp(x) - 1
 %a = complex.expm1 %b : complex<f32>
 ```
 """
-function expm1(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.expm1",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function expm1(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.expm1", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -403,22 +350,18 @@ The `im` op takes a single complex number and extracts the imaginary part.
 %a = complex.im %b : complex<f32>
 ```
 """
-function im(complex::Value; imaginary::IR.Type, location=Location())
-    _results = IR.Type[imaginary,]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "complex.im",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function im(complex; imaginary::IR.Type, location=Location())
+    results = IR.Type[imaginary, ]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "complex.im", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -436,23 +379,19 @@ approximately equal to 2.718281.
 %a = complex.log1p %b : complex<f32>
 ```
 """
-function log1p(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.log1p",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function log1p(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.log1p", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -469,23 +408,19 @@ logarithm of it, i.e. `log(x)` or `log_e(x)`, where `x` is the input value.
 %a = complex.log %b : complex<f32>
 ```
 """
-function log(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.log",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function log(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.log", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -498,25 +433,19 @@ The `mul` operation takes two complex numbers and returns their product:
 %a = complex.mul %b, %c : complex<f32>
 ```
 """
-function mul(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.mul",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function mul(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.mul", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -531,23 +460,19 @@ The `neg` op takes a single complex number `complex` and returns `-complex`.
 %a = complex.neg %b : complex<f32>
 ```
 """
-function neg(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.neg",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function neg(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.neg", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -563,25 +488,19 @@ equal.
 %a = complex.neq %b, %c : complex<f32>
 ```
 """
-function neq(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.neq",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function neq(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.neq", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -597,25 +516,19 @@ exponent.
 %a = complex.pow %b, %c : complex<f32>
 ```
 """
-function pow(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.pow",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function pow(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.pow", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -630,22 +543,18 @@ The `re` op takes a single complex number and extracts the real part.
 %a = complex.re %b : complex<f32>
 ```
 """
-function re(complex::Value; real::IR.Type, location=Location())
-    _results = IR.Type[real,]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "complex.re",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function re(complex; real::IR.Type, location=Location())
+    results = IR.Type[real, ]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "complex.re", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -660,23 +569,19 @@ The `rsqrt` operation computes reciprocal of square root.
 %a = complex.rsqrt %b : complex<f32>
 ```
 """
-function rsqrt(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.rsqrt",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function rsqrt(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.rsqrt", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -692,23 +597,19 @@ it, i.e. `y = sign(x) = x / |x|` if `x != 0`, otherwise `y = 0`.
 %a = complex.sign %b : complex<f32>
 ```
 """
-function sign(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.sign",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function sign(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.sign", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -724,23 +625,19 @@ it, i.e. `sin(x)`, where `x` is the input value.
 %a = complex.sin %b : complex<f32>
 ```
 """
-function sin(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.sin",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function sin(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.sin", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -755,23 +652,19 @@ The `sqrt` operation takes a complex number and returns its square root.
 %a = complex.sqrt %b : complex<f32>
 ```
 """
-function sqrt(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.sqrt",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function sqrt(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.sqrt", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -786,25 +679,19 @@ The `sub` operation takes two complex numbers and returns their difference.
 %a = complex.sub %b, %c : complex<f32>
 ```
 """
-function sub(
-    lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
-    _operands = Value[lhs, rhs]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.sub",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function sub(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(lhs), value(rhs), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.sub", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -820,23 +707,19 @@ it, i.e. `tan(x)`, where `x` is the input value.
 %a = complex.tan %b : complex<f32>
 ```
 """
-function tan(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.tan",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function tan(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.tan", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 
@@ -852,23 +735,19 @@ tangent.
 %a = complex.tanh %b : complex<f32>
 ```
 """
-function tanh(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    _results = IR.Type[]
-    _operands = Value[complex,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
-
-    return IR.create_operation(
-        "complex.tanh",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+function tanh(complex; result=nothing::Union{Nothing, IR.Type}, location=Location())
+    results = IR.Type[]
+    operands = Value[value(complex), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    
+    IR.create_operation(
+        "complex.tanh", location;
+        operands, owned_regions, successors, attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false)
     )
 end
 

@@ -1,7 +1,6 @@
 module emitc
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -22,22 +21,18 @@ can be applied to a single operand.
 
 ```
 """
-function apply(operand::Value; result::IR.Type, applicableOperator, location=Location())
-    _results = IR.Type[result,]
-    _operands = Value[operand,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
-
-    return IR.create_operation(
-        "emitc.apply",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function apply(operand; result::IR.Type, applicableOperator, location=Location())
+    results = IR.Type[result, ]
+    operands = Value[value(operand), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator), ]
+    
+    IR.create_operation(
+        "emitc.apply", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -60,32 +55,20 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(
-    operands::Vector{Value};
-    result_0::Vector{IR.Type},
-    callee,
-    args=nothing,
-    template_args=nothing,
-    location=Location(),
-)
-    _results = IR.Type[result_0...,]
-    _operands = Value[operands...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("callee", callee),]
-    !isnothing(args) && push!(_attributes, namedattribute("args", args))
-    !isnothing(template_args) &&
-        push!(_attributes, namedattribute("template_args", template_args))
-
-    return IR.create_operation(
-        "emitc.call",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function call(operands_; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
+    results = IR.Type[result_0..., ]
+    operands = Value[value.(operands_)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("callee", callee), ]
+    !isnothing(args) && push!(attributes, namedattribute("args", args))
+    !isnothing(template_args) && push!(attributes, namedattribute("template_args", template_args))
+    
+    IR.create_operation(
+        "emitc.call", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -107,22 +90,18 @@ and EmitC types.
     !emitc.ptr<!emitc.opaque<\"void\">> to !emitc.ptr<i32>
 ```
 """
-function cast(source::Value; dest::IR.Type, location=Location())
-    _results = IR.Type[dest,]
-    _operands = Value[source,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "emitc.cast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function cast(source; dest::IR.Type, location=Location())
+    results = IR.Type[dest, ]
+    operands = Value[value(source), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "emitc.cast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 

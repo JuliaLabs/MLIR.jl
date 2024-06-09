@@ -1,7 +1,6 @@
 module pdl
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -18,22 +17,18 @@ entities.
 pdl.apply_native_constraint \"myConstraint\"(%input, %attr, %op : !pdl.value, !pdl.attribute, !pdl.operation)
 ```
 """
-function apply_native_constraint(args::Vector{Value}; name, location=Location())
-    _results = IR.Type[]
-    _operands = Value[args...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("name", name),]
-
-    return IR.create_operation(
-        "pdl.apply_native_constraint",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function apply_native_constraint(args; name, location=Location())
+    results = IR.Type[]
+    operands = Value[value.(args)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("name", name), ]
+    
+    IR.create_operation(
+        "pdl.apply_native_constraint", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -65,24 +60,18 @@ void registerNativeRewrite(PDLPatternModule &pdlModule) {
 }
 ```
 """
-function apply_native_rewrite(
-    args::Vector{Value}; results::Vector{IR.Type}, name, location=Location()
-)
-    _results = IR.Type[results...,]
-    _operands = Value[args...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("name", name),]
-
-    return IR.create_operation(
-        "pdl.apply_native_rewrite",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function apply_native_rewrite(args; results_::Vector{IR.Type}, name, location=Location())
+    results = IR.Type[results_..., ]
+    operands = Value[value.(args)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("name", name), ]
+    
+    IR.create_operation(
+        "pdl.apply_native_rewrite", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -111,29 +100,20 @@ defined within a `pdl.rewrite` region, the constant value must be specified.
 %attr = pdl.attribute = \"hello\"
 ```
 """
-function attribute(
-    valueType=nothing::Union{Nothing,Value};
-    attr::IR.Type,
-    value=nothing,
-    location=Location(),
-)
-    _results = IR.Type[attr,]
-    _operands = Value[]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(valueType) && push!(_operands, valueType)
-    !isnothing(value) && push!(_attributes, namedattribute("value", value))
-
-    return IR.create_operation(
-        "pdl.attribute",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function attribute(valueType=nothing; attr::IR.Type, value=nothing, location=Location())
+    results = IR.Type[attr, ]
+    operands = Value[]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(valueType) && push!(operands, value(valueType))
+    !isnothing(value) && push!(attributes, namedattribute("value", value))
+    
+    IR.create_operation(
+        "pdl.attribute", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -150,22 +130,18 @@ operation correspond with the `eraseOp` method on a `PatternRewriter`.
 pdl.erase %root
 ```
 """
-function erase(opValue::Value; location=Location())
-    _results = IR.Type[]
-    _operands = Value[opValue,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "pdl.erase",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function erase(opValue; location=Location())
+    results = IR.Type[]
+    operands = Value[value(opValue), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "pdl.erase", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -190,25 +166,19 @@ may partially constrain an operand by specifying an expected value type
 %operand = pdl.operand : %type
 ```
 """
-function operand(
-    valueType=nothing::Union{Nothing,Value}; value::IR.Type, location=Location()
-)
-    _results = IR.Type[value,]
-    _operands = Value[]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(valueType) && push!(_operands, valueType)
-
-    return IR.create_operation(
-        "pdl.operand",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function operand(valueType=nothing; value::IR.Type, location=Location())
+    results = IR.Type[value, ]
+    operands = Value[]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(valueType) && push!(operands, value(valueType))
+    
+    IR.create_operation(
+        "pdl.operand", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -233,25 +203,19 @@ operands by specifying expected value types (via `pdl.types` operations).
 %typed_operands = pdl.operands : %types
 ```
 """
-function operands(
-    valueType=nothing::Union{Nothing,Value}; value::IR.Type, location=Location()
-)
-    _results = IR.Type[value,]
-    _operands = Value[]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(valueType) && push!(_operands, valueType)
-
-    return IR.create_operation(
-        "pdl.operands",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function operands_(valueType=nothing; value::IR.Type, location=Location())
+    results = IR.Type[value, ]
+    operands = Value[]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(valueType) && push!(operands, value(valueType))
+    
+    IR.create_operation(
+        "pdl.operands", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -352,37 +316,20 @@ def MyOp {
 %op = pdl.operation \"foo.op\" -> (%result, %otherResults : !pdl.type, !pdl.range<type>)
 ```
 """
-function operation(
-    operandValues::Vector{Value},
-    attributeValues::Vector{Value},
-    typeValues::Vector{Value};
-    op::IR.Type,
-    opName=nothing,
-    attributeValueNames,
-    location=Location(),
-)
-    _results = IR.Type[op,]
-    _operands = Value[operandValues..., attributeValues..., typeValues...]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("attributeValueNames", attributeValueNames),]
-    push!(
-        _attributes,
-        operandsegmentsizes([
-            length(operandValues), length(attributeValues), length(typeValues)
-        ]),
-    )
-    !isnothing(opName) && push!(_attributes, namedattribute("opName", opName))
-
-    return IR.create_operation(
-        "pdl.operation",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function operation(operandValues, attributeValues, typeValues; op::IR.Type, opName=nothing, attributeValueNames, location=Location())
+    results = IR.Type[op, ]
+    operands = Value[value.(operandValues)..., value.(attributeValues)..., value.(typeValues)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("attributeValueNames", attributeValueNames), ]
+    push!(attributes, operandsegmentsizes([length(operandValues), length(attributeValues), length(typeValues), ]))
+    !isnothing(opName) && push!(attributes, namedattribute("opName", opName))
+    
+    IR.create_operation(
+        "pdl.operation", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -457,22 +404,18 @@ determine how to extract the underlying elements. If we can\'t, e.g. if
 there are multiple sub ranges used for construction, we won\'t be able
 to determine their sizes during constraint time.
 """
-function range(arguments::Vector{Value}; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
-    _operands = Value[arguments...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "pdl.range",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function range(arguments; result::IR.Type, location=Location())
+    results = IR.Type[result, ]
+    operands = Value[value.(arguments)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "pdl.range", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -501,32 +444,20 @@ pdl.replace %root with (%vals : !pdl.range<value>)
 pdl.replace %root with %otherOp
 ```
 """
-function replace(
-    opValue::Value,
-    replOperation=nothing::Union{Nothing,Value};
-    replValues::Vector{Value},
-    location=Location(),
-)
-    _results = IR.Type[]
-    _operands = Value[opValue, replValues...]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(replOperation) && push!(_operands, replOperation)
-    push!(
-        _attributes,
-        operandsegmentsizes([1, isnothing(replOperation) ? 0 : 1, length(replValues)]),
-    )
-
-    return IR.create_operation(
-        "pdl.replace",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function replace(opValue, replOperation=nothing; replValues, location=Location())
+    results = IR.Type[]
+    operands = Value[value(opValue), value.(replValues)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(replOperation) && push!(operands, value(replOperation))
+    push!(attributes, operandsegmentsizes([1, (replOperation==nothing) ? 0 : 1length(replValues), ]))
+    
+    IR.create_operation(
+        "pdl.replace", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -552,22 +483,18 @@ as defined by the ODS definition of the operation.
 // the IR snippet, `%pdl_result` would correspond to `%result_1`.
 ```
 """
-function result(parent::Value; val::IR.Type, index, location=Location())
-    _results = IR.Type[val,]
-    _operands = Value[parent,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("index", index),]
-
-    return IR.create_operation(
-        "pdl.result",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function result(parent; val::IR.Type, index, location=Location())
+    results = IR.Type[val, ]
+    operands = Value[value(parent), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("index", index), ]
+    
+    IR.create_operation(
+        "pdl.result", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -600,23 +527,19 @@ operation.
 %results = pdl.results 1 of %operation -> !pdl.value
 ```
 """
-function results(parent::Value; val::IR.Type, index=nothing, location=Location())
-    _results = IR.Type[val,]
-    _operands = Value[parent,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(index) && push!(_attributes, namedattribute("index", index))
-
-    return IR.create_operation(
-        "pdl.results",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function results_(parent; val::IR.Type, index=nothing, location=Location())
+    results = IR.Type[val, ]
+    operands = Value[value(parent), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(index) && push!(attributes, namedattribute("index", index))
+    
+    IR.create_operation(
+        "pdl.results", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -659,31 +582,21 @@ pdl.rewrite {
 }
 ```
 """
-function rewrite(
-    root=nothing::Union{Nothing,Value};
-    externalArgs::Vector{Value},
-    name=nothing,
-    bodyRegion::Region,
-    location=Location(),
-)
-    _results = IR.Type[]
-    _operands = Value[externalArgs...,]
-    _owned_regions = Region[bodyRegion,]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(root) && push!(_operands, root)
-    push!(_attributes, operandsegmentsizes([isnothing(root) ? 0 : 1, length(externalArgs)]))
-    !isnothing(name) && push!(_attributes, namedattribute("name", name))
-
-    return IR.create_operation(
-        "pdl.rewrite",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function rewrite(root=nothing; externalArgs, name=nothing, bodyRegion::Region, location=Location())
+    results = IR.Type[]
+    operands = Value[value.(externalArgs)..., ]
+    owned_regions = Region[bodyRegion, ]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(root) && push!(operands, value(root))
+    push!(attributes, operandsegmentsizes([(root==nothing) ? 0 : 1length(externalArgs), ]))
+    !isnothing(name) && push!(attributes, namedattribute("name", name))
+    
+    IR.create_operation(
+        "pdl.rewrite", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 

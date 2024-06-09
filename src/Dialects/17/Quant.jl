@@ -1,7 +1,6 @@
 module quant
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -18,22 +17,18 @@ Especially early in transformation, it is common to have `dcast`s on
 all operands to ops that must operate with the expressed type (typically
 math ops prior to lowering to target-specific, quantized kernels).
 """
-function dcast(arg::Value; res::IR.Type, location=Location())
-    _results = IR.Type[res,]
-    _operands = Value[arg,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "quant.dcast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function dcast(arg; res::IR.Type, location=Location())
+    results = IR.Type[res, ]
+    operands = Value[value(arg), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "quant.dcast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -61,22 +56,18 @@ required. In addition, it is also common to have an identity `qcast`
 it is legal to use a quantized representation (but is not known to be
 acceptable).
 """
-function qcast(arg::Value; res::IR.Type, location=Location())
-    _results = IR.Type[res,]
-    _operands = Value[arg,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "quant.qcast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function qcast(arg; res::IR.Type, location=Location())
+    results = IR.Type[res, ]
+    operands = Value[value(arg), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "quant.qcast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -101,22 +92,18 @@ tensor<4xi8> -> tensor<4x!quant<\"uniform[i8:f32]{1.0}\">>
 vector<4xi8> -> vector<4x!quant<\"uniform[i8:f32]{1.0}\">>
 ```
 """
-function scast(arg::Value; res::IR.Type, location=Location())
-    _results = IR.Type[res,]
-    _operands = Value[arg,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "quant.scast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function scast(arg; res::IR.Type, location=Location())
+    results = IR.Type[res, ]
+    operands = Value[value(arg), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "quant.scast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
