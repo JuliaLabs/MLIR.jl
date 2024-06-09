@@ -1,6 +1,6 @@
 module quant
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -12,9 +12,9 @@ same uniform quantization simulation as is done by the TensorFlow
 fake_quant_with_min_max_args op. See the fakeQuantAttrsToType() utility
 method and the quant-convert-simulated-quantization pass for further details.
 """
-function const_fake_quant(inputs::Value; outputs=nothing::Union{Nothing, IR.Type}, min, max, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
+function const_fake_quant(inputs; outputs=nothing::Union{Nothing, IR.Type}, min, max, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[inputs, ]
+    operands = Value[value(inputs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("num_bits", num_bits), ]
@@ -39,9 +39,9 @@ fake_quant_with_min_max_vars_per_channel op. See the fakeQuantAttrsToType()
 utility method and the quant-convert-simulated-quantization pass for further
 details.
 """
-function const_fake_quant_per_axis(inputs::Value; outputs=nothing::Union{Nothing, IR.Type}, min, max, axis, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
+function const_fake_quant_per_axis(inputs; outputs=nothing::Union{Nothing, IR.Type}, min, max, axis, num_bits, narrow_range=nothing, is_signed=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[inputs, ]
+    operands = Value[value(inputs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min", min), namedattribute("max", max), namedattribute("axis", axis), namedattribute("num_bits", num_bits), ]
@@ -67,9 +67,9 @@ external connections. In such a case, during analysis, all coupled_ref
 nodes in a module which share a coupledKey will be considered to be
 directly connected as via an identity op for the purpose of type inference.
 """
-function coupled_ref(arg::Value; result_0=nothing::Union{Nothing, IR.Type}, coupledKey, location=Location())
+function coupled_ref(arg; result_0=nothing::Union{Nothing, IR.Type}, coupledKey, location=Location())
     results = IR.Type[]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("coupledKey", coupledKey), ]
@@ -87,9 +87,9 @@ end
 `dcast`
 
 """
-function dcast(arg::Value; result_0::IR.Type, location=Location())
+function dcast(arg; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -106,9 +106,9 @@ end
 `qcast`
 
 """
-function qcast(arg::Value; result_0::IR.Type, location=Location())
+function qcast(arg; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -125,9 +125,9 @@ end
 `region`
 
 """
-function region(inputs::Vector{Value}; outputs::Vector{IR.Type}, input_specs, output_specs, logical_kernel, body::Region, location=Location())
+function region(inputs; outputs::Vector{IR.Type}, input_specs, output_specs, logical_kernel, body::Region, location=Location())
     results = IR.Type[outputs..., ]
-    operands = Value[inputs..., ]
+    operands = Value[value.(inputs)..., ]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("input_specs", input_specs), namedattribute("output_specs", output_specs), namedattribute("logical_kernel", logical_kernel), ]
@@ -144,9 +144,9 @@ end
 `return_`
 
 """
-function return_(results_::Vector{Value}; location=Location())
+function return_(results_; location=Location())
     results = IR.Type[]
-    operands = Value[results_..., ]
+    operands = Value[value.(results_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -179,9 +179,9 @@ Currently, only dim=2 is supported, which is interpreted as [min, max].
 <?x?x3x2>, axis=2 => N=6
 ```
 """
-function stats(arg::Value; result_0=nothing::Union{Nothing, IR.Type}, layerStats, axisStats=nothing, axis=nothing, location=Location())
+function stats(arg; result_0=nothing::Union{Nothing, IR.Type}, layerStats, axisStats=nothing, axis=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("layerStats", layerStats), ]
@@ -206,9 +206,9 @@ Such statistics will be stored with the provided key, allowing this node
 to later be converted to a \'stats\' op if statistics with that key have been
 encountered.
 """
-function stats_ref(arg::Value; result_0=nothing::Union{Nothing, IR.Type}, statsKey, location=Location())
+function stats_ref(arg; result_0=nothing::Union{Nothing, IR.Type}, statsKey, location=Location())
     results = IR.Type[]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("statsKey", statsKey), ]
@@ -226,9 +226,9 @@ end
 `scast`
 
 """
-function scast(arg::Value; result_0::IR.Type, location=Location())
+function scast(arg; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

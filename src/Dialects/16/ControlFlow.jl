@@ -1,6 +1,6 @@
 module cf
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -18,9 +18,9 @@ runtime to propagate the error to the user.
 assert %b, \"Expected ... to be true\"
 ```
 """
-function assert(arg::Value; msg, location=Location())
+function assert(arg; msg, location=Location())
     results = IR.Type[]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("msg", msg), ]
@@ -50,9 +50,9 @@ target block.
 ^bb3(%3: tensor<*xf32>):
 ```
 """
-function br(destOperands::Vector{Value}; dest::Block, location=Location())
+function br(destOperands; dest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[destOperands..., ]
+    operands = Value[value.(destOperands)..., ]
     owned_regions = Region[]
     successors = Block[dest, ]
     attributes = NamedAttribute[]
@@ -93,9 +93,9 @@ func.func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
 }
 ```
 """
-function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; trueDest::Block, falseDest::Block, location=Location())
+function cond_br(condition, trueDestOperands, falseDestOperands; trueDest::Block, falseDest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
+    operands = Value[value(condition), value.(trueDestOperands)..., value.(falseDestOperands)..., ]
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[]
@@ -128,9 +128,9 @@ switch %flag : i32, [
 ]
 ```
 """
-function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
+function switch(flag, defaultOperands, caseOperands; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = IR.Type[]
-    operands = Value[flag, defaultOperands..., caseOperands..., ]
+    operands = Value[value(flag), value.(defaultOperands)..., value.(caseOperands)..., ]
     owned_regions = Region[]
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]

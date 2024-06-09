@@ -1,6 +1,6 @@
 module async
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -19,9 +19,9 @@ for the group lifetime.
 %2 = async.add_to_group %1, %0 : !async.token
 ```
 """
-function add_to_group(operand::Value, group::Value; rank=nothing::Union{Nothing, IR.Type}, location=Location())
+function add_to_group(operand, group; rank=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, group, ]
+    operands = Value[value(operand), value(group), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -55,9 +55,9 @@ group become ready.
 async.await_all %0
 ```
 """
-function await_all(operand::Value; location=Location())
+function await_all(operand; location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -86,9 +86,9 @@ async.await %0 : !async.token
 %2 = async.await %1 : !async.value<f32>
 ```
 """
-function await(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function await(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -108,9 +108,9 @@ end
 The `async.coro.begin` allocates a coroutine frame and returns a handle to
 the coroutine.
 """
-function coro_begin(id::Value; handle=nothing::Union{Nothing, IR.Type}, location=Location())
+function coro_begin(id; handle=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[id, ]
+    operands = Value[value(id), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -131,9 +131,9 @@ The `async.coro.end` marks the point where a coroutine needs to return
 control back to the caller if it is not an initial invocation of the
 coroutine. It the start part of the coroutine is is no-op.
 """
-function coro_end(handle::Value; location=Location())
+function coro_end(handle; location=Location())
     results = IR.Type[]
-    operands = Value[handle, ]
+    operands = Value[value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -152,9 +152,9 @@ end
 The `async.coro.free` deallocates the coroutine frame created by the
 async.coro.begin operation.
 """
-function coro_free(id::Value, handle::Value; location=Location())
+function coro_free(id, handle; location=Location())
     results = IR.Type[]
-    operands = Value[id, handle, ]
+    operands = Value[value(id), value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -193,9 +193,9 @@ end
 
 The `async.coro.saves` saves the coroutine state.
 """
-function coro_save(handle::Value; state=nothing::Union{Nothing, IR.Type}, location=Location())
+function coro_save(handle; state=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[handle, ]
+    operands = Value[value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -221,9 +221,9 @@ In switched-resume lowering coroutine can be already in resumed state when
 suspend operation is called, in this case control will be transferred to the
 `resume` successor skipping the `suspend` successor.
 """
-function coro_suspend(state::Value; suspendDest::Block, resumeDest::Block, cleanupDest::Block, location=Location())
+function coro_suspend(state; suspendDest::Block, resumeDest::Block, cleanupDest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[state, ]
+    operands = Value[value(state), ]
     owned_regions = Region[]
     successors = Block[suspendDest, resumeDest, cleanupDest, ]
     attributes = NamedAttribute[]
@@ -253,9 +253,9 @@ wait until the number of added tokens or values reaches the group size.
 async.await_all %group
 ```
 """
-function create_group(size::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function create_group(size; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[size, ]
+    operands = Value[value(size), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -310,9 +310,9 @@ In the example above asynchronous execution starts only after dependency
 token and value argument become ready. Unwrapped value passed to the
 attached body region as an %unwrapped value of f32 type.
 """
-function execute(dependencies::Vector{Value}, operands_::Vector{Value}; token::IR.Type, results_::Vector{IR.Type}, body::Region, location=Location())
+function execute(dependencies, operands_; token::IR.Type, results_::Vector{IR.Type}, body::Region, location=Location())
     results = IR.Type[token, results_..., ]
-    operands = Value[dependencies..., operands_..., ]
+    operands = Value[value.(dependencies)..., value.(operands_)..., ]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -332,9 +332,9 @@ end
 The `async.runtime.add_ref` operation adds a reference(s) to async value
 (token, value or group).
 """
-function runtime_add_ref(operand::Value; count, location=Location())
+function runtime_add_ref(operand; count, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("count", count), ]
@@ -353,9 +353,9 @@ end
 The `async.runtime.add_to_group` adds an async token or value to the async
 group. Returns the rank of the added element in the group.
 """
-function runtime_add_to_group(operand::Value, group::Value; rank=nothing::Union{Nothing, IR.Type}, location=Location())
+function runtime_add_to_group(operand, group; rank=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, group, ]
+    operands = Value[value(operand), value(group), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -376,9 +376,9 @@ The `async.runtime.await_and_resume` operation awaits for the operand to
 become available or error and resumes the coroutine on a thread managed by
 the runtime.
 """
-function runtime_await_and_resume(operand::Value, handle::Value; location=Location())
+function runtime_await_and_resume(operand, handle; location=Location())
     results = IR.Type[]
-    operands = Value[operand, handle, ]
+    operands = Value[value(operand), value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -397,9 +397,9 @@ end
 The `async.runtime.await` operation blocks the caller thread until the
 operand becomes available or error.
 """
-function runtime_await(operand::Value; location=Location())
+function runtime_await(operand; location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -418,9 +418,9 @@ end
 The `async.runtime.create_group` operation creates an async dialect group
 of the given size. Group created in the empty state.
 """
-function runtime_create_group(size::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function runtime_create_group(size; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[size, ]
+    operands = Value[value(size), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -461,9 +461,9 @@ end
 The `async.runtime.drop_ref` operation drops a reference(s) to async value
 (token, value or group).
 """
-function runtime_drop_ref(operand::Value; count, location=Location())
+function runtime_drop_ref(operand; count, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("count", count), ]
@@ -484,9 +484,9 @@ group (any of the async runtime values) is in the error state. It is the
 caller responsibility to check error state after the call to `await` or
 resuming after `await_and_resume`.
 """
-function runtime_is_error(operand::Value; is_error=nothing::Union{Nothing, IR.Type}, location=Location())
+function runtime_is_error(operand; is_error=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -506,9 +506,9 @@ end
 The `async.runtime.load` operation loads the value from the runtime
 async.value storage.
 """
-function runtime_load(storage::Value; result::IR.Type, location=Location())
+function runtime_load(storage; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[storage, ]
+    operands = Value[value(storage), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -549,9 +549,9 @@ end
 The `async.runtime.resume` operation resumes the coroutine on a thread
 managed by the runtime.
 """
-function runtime_resume(handle::Value; location=Location())
+function runtime_resume(handle; location=Location())
     results = IR.Type[]
-    operands = Value[handle, ]
+    operands = Value[value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -570,9 +570,9 @@ end
 The `async.runtime.set_available` operation switches async token or value
 state to available.
 """
-function runtime_set_available(operand::Value; location=Location())
+function runtime_set_available(operand; location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -591,9 +591,9 @@ end
 The `async.runtime.set_error` operation switches async token or value
 state to error.
 """
-function runtime_set_error(operand::Value; location=Location())
+function runtime_set_error(operand; location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -612,9 +612,9 @@ end
 The `async.runtime.store` operation stores the value into the runtime
 async.value storage.
 """
-function runtime_store(value::Value, storage::Value; location=Location())
+function runtime_store(value, storage; location=Location())
     results = IR.Type[]
-    operands = Value[value, storage, ]
+    operands = Value[value(value), value(storage), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -633,9 +633,9 @@ end
 The `async.yield` is a special terminator operation for the block inside
 `async.execute` operation.
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands_; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -1,6 +1,6 @@
 module transform
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -33,9 +33,9 @@ handles.
 TODO: Support affine.apply targets.
 TODO: Allow mixed PDL_Operation/int64_t for lower_bounds and upper_bounds.
 """
-function affine_simplify_bounded_affine_ops(target::Value, bounded_values::Vector{Value}; lower_bounds, upper_bounds, location=Location())
+function affine_simplify_bounded_affine_ops(target, bounded_values; lower_bounds, upper_bounds, location=Location())
     results = IR.Type[]
-    operands = Value[target, bounded_values..., ]
+    operands = Value[value(target), value.(bounded_values)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("lower_bounds", lower_bounds), namedattribute("upper_bounds", upper_bounds), ]
@@ -48,7 +48,7 @@ function affine_simplify_bounded_affine_ops(target::Value, bounded_values::Vecto
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -61,9 +61,9 @@ deallocation ops in the IR.
 
 This transform reads the `target` handle and modifies the payload.
 """
-function bufferization_buffer_loop_hoisting(target::Value; location=Location())
+function bufferization_buffer_loop_hoisting(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -119,9 +119,9 @@ See `-eliminate-empty-tensors` for more details.
 This transform reads the target handle and modifies the payload. It does
 not produce any handle.
 """
-function bufferization_eliminate_empty_tensors(target::Value; location=Location())
+function bufferization_eliminate_empty_tensors(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -145,9 +145,9 @@ This operation consumes the `target` handle and produces the `transformed`
 handle. `target` is expected to be a `tensor.empty` operation. The transform
 always succeeds.
 """
-function bufferization_empty_tensor_to_alloc_tensor(target::Value; transformed::IR.Type, location=Location())
+function bufferization_empty_tensor_to_alloc_tensor(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -184,9 +184,9 @@ otherwise, said ops would be considered non-bufferizable.
 This operation consumes the `target` handle and produces the `transformed`
 handle.
 """
-function bufferization_one_shot_bufferize(target::Value; transformed::IR.Type, function_boundary_type_conversion=nothing, allow_return_allocs=nothing, allow_unknown_ops=nothing, bufferize_function_boundaries=nothing, create_deallocs=nothing, test_analysis_only=nothing, print_conflicts=nothing, memcpy_op=nothing, location=Location())
+function bufferization_one_shot_bufferize(target; transformed::IR.Type, function_boundary_type_conversion=nothing, allow_return_allocs=nothing, allow_unknown_ops=nothing, bufferize_function_boundaries=nothing, create_deallocs=nothing, test_analysis_only=nothing, print_conflicts=nothing, memcpy_op=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -207,7 +207,7 @@ function bufferization_one_shot_bufferize(target::Value; transformed::IR.Type, f
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -291,9 +291,9 @@ The returned handle points to the same LaunchOp operand, consuming it and
 producing a new SSA value to satisfy chaining and linearity of the IR
 properties.
 """
-function gpu_map_forall_to_blocks(target::Value; result::IR.Type, grid_dims=nothing, generate_gpu_launch=nothing, location=Location())
+function gpu_map_forall_to_blocks(target; result::IR.Type, grid_dims=nothing, generate_gpu_launch=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -399,9 +399,9 @@ gpu.launch blocks(%bx, %by, %bz) in (%x = %0, %y = %1, %z = %2)
 }
 ```
 """
-function gpu_map_nested_forall_to_threads(target::Value; result::IR.Type, block_dims=nothing, warp_dims=nothing, sync_after_distribute=nothing, location=Location())
+function gpu_map_nested_forall_to_threads(target; result::IR.Type, block_dims=nothing, warp_dims=nothing, sync_after_distribute=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -417,7 +417,7 @@ function gpu_map_nested_forall_to_threads(target::Value; result::IR.Type, block_
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -452,9 +452,9 @@ Succeeds if the operation body satisfies the specified criteria, produces a
 silenceable failure otherwise. Produces a definite failure if the operand is
 not associated with a single payload op.
 """
-function match_structured_body(operand_handle::Value; reduction_position=nothing, passthrough=nothing, contraction=nothing, location=Location())
+function match_structured_body(operand_handle; reduction_position=nothing, passthrough=nothing, contraction=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -498,9 +498,9 @@ to have been already checked for being a single structured op.
 Succeeds if the operation has the contraction-like dimensions, produces a
 silenceable failure otherwise.
 """
-function match_structured_classify_contraction_dims(operand_handle::Value; batch::IR.Type, m::IR.Type, n::IR.Type, k::IR.Type, location=Location())
+function match_structured_classify_contraction_dims(operand_handle; batch::IR.Type, m::IR.Type, n::IR.Type, k::IR.Type, location=Location())
     results = IR.Type[batch, m, n, k, ]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -562,9 +562,9 @@ Succeeds if the specified dimensions satisfy the specified criteria,
 produces a silenceable failure otherwise. Produces a definite failure if
 the operand is not associated with a single payload op.
 """
-function match_structured_dim(operand_handle::Value; result=nothing::Union{Nothing, IR.Type}, raw_dim_list, is_inverted=nothing, is_all=nothing, parallel=nothing, reduction=nothing, location=Location())
+function match_structured_dim(operand_handle; result=nothing::Union{Nothing, IR.Type}, raw_dim_list, is_inverted=nothing, is_all=nothing, parallel=nothing, reduction=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("raw_dim_list", raw_dim_list), ]
@@ -597,9 +597,9 @@ to have been already checked for being a single structured op.
 Succeeds if the operand is associated with exactly one payload value of
 `ShapedType`. Produces a silenceable failure otherwise.
 """
-function match_structured_elemental_bitwidth(operand_handle::Value; result::IR.Type, location=Location())
+function match_structured_elemental_bitwidth(operand_handle; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -673,9 +673,9 @@ failure otherwise. Additionally, when the result is an operation handle,
 produces a silenceable failure if the init(outs) specification defines
 more than one init(outs) or if the operand is not an operation result.
 """
-function match_structured_init(operand_handle::Value; result=nothing::Union{Nothing, IR.Type}, raw_position_list, is_inverted=nothing, is_all=nothing, permutation=nothing, projected_permutation=nothing, location=Location())
+function match_structured_init(operand_handle; result=nothing::Union{Nothing, IR.Type}, raw_position_list, is_inverted=nothing, is_all=nothing, permutation=nothing, projected_permutation=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("raw_position_list", raw_position_list), ]
@@ -755,9 +755,9 @@ otherwise. Additionally, when the result is an operation handle, produces a
 silenceable failure if the input specification defines more than one input
 or if the operand is not an operation result.
 """
-function match_structured_input(operand_handle::Value; result=nothing::Union{Nothing, IR.Type}, raw_position_list, is_inverted=nothing, is_all=nothing, permutation=nothing, projected_permutation=nothing, location=Location())
+function match_structured_input(operand_handle; result=nothing::Union{Nothing, IR.Type}, raw_position_list, is_inverted=nothing, is_all=nothing, permutation=nothing, projected_permutation=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("raw_position_list", raw_position_list), ]
@@ -793,9 +793,9 @@ to have been already checked for being a single structured op.
 Succeeds if the operand is associated with exactly one structured payload
 operation. Produces a silenceable failure otherwise.
 """
-function match_structured_num_inits(operand_handle::Value; result::IR.Type, location=Location())
+function match_structured_num_inits(operand_handle; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -826,9 +826,9 @@ to have been already checked for being a single structured op.
 Succeeds if the operand is associated with exactly one structured payload
 operation. Produces a silenceable failure otherwise.
 """
-function match_structured_num_inputs(operand_handle::Value; result::IR.Type, location=Location())
+function match_structured_num_inputs(operand_handle; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -878,9 +878,9 @@ in \"suppress\" mode as long as the operand handle is associated with exactly
 one payload operation. It produces a definite failure when the handle is
 not associated with exactly one payload operation.
 """
-function match_structured(current::Value; outputs::Vector{IR.Type}, failure_propagation_mode=nothing, body_region::Region, location=Location())
+function match_structured(current; outputs::Vector{IR.Type}, failure_propagation_mode=nothing, body_region::Region, location=Location())
     results = IR.Type[outputs..., ]
-    operands = Value[current, ]
+    operands = Value[value(current), ]
     owned_regions = Region[body_region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -912,9 +912,9 @@ to have been already checked for being a single structured op.
 Succeeds if the operand is associated with exactly one structured payload
 operation. Produces a silenceable failure otherwise.
 """
-function match_structured_rank(operand_handle::Value; rank::IR.Type, location=Location())
+function match_structured_rank(operand_handle; rank::IR.Type, location=Location())
     results = IR.Type[rank, ]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -959,9 +959,9 @@ to have been already checked for being a single structured op.
 Succeeds if the position is in bounds and if the user operation could be
 found when requested. Produces a silenceable failure otherwise.
 """
-function match_structured_result(operand_handle::Value; result::IR.Type, position, any=nothing, single=nothing, location=Location())
+function match_structured_result(operand_handle; result::IR.Type, position, any=nothing, single=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
@@ -982,9 +982,9 @@ end
 Forwards the payload association from the operands to the results of the
 parent op. Always succeeds.
 """
-function match_structured_yield(handles::Vector{Value}; location=Location())
+function match_structured_yield(handles; location=Location())
     results = IR.Type[]
-    operands = Value[handles..., ]
+    operands = Value[value.(handles)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -997,7 +997,7 @@ function match_structured_yield(handles::Vector{Value}; location=Location())
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -1145,9 +1145,9 @@ op are bufferized to a new memory allocation, but not the op itself.
 This operation consumes the `target` handle and produces the
 `allocated_buffer` and `new_ops` handles. It always succeeds.
 """
-function structured_bufferize_to_allocation(target::Value; allocated_buffer::IR.Type, new_ops::IR.Type, memory_space=nothing, memcpy_op=nothing, alloc_op=nothing, bufferize_destination_only=nothing, location=Location())
+function structured_bufferize_to_allocation(target; allocated_buffer::IR.Type, new_ops::IR.Type, memory_space=nothing, memcpy_op=nothing, alloc_op=nothing, bufferize_destination_only=nothing, location=Location())
     results = IR.Type[allocated_buffer, new_ops, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1212,9 +1212,9 @@ Returns two handles:
 Returns a definite failure if target is not isolated from above.
 Returns a silenceable failure if the pattern application failed.
 """
-function structured_convert_conv2d_to_img2col(target::Value; img2col_tensor::IR.Type, transformed::IR.Type, location=Location())
+function structured_convert_conv2d_to_img2col(target; img2col_tensor::IR.Type, transformed::IR.Type, location=Location())
     results = IR.Type[img2col_tensor, transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1232,9 +1232,9 @@ end
 
 TODO
 """
-function structured_decompose_interface(target::Value; transformed::IR.Type, location=Location())
+function structured_decompose_interface(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1262,9 +1262,9 @@ properly, the transform succeeds. Otherwise the transform silently fails.
 The return handle points to only the subset of successfully produced
 computational operations, which can be empty.
 """
-function structured_decompose(target::Value; transformed::IR.Type, location=Location())
+function structured_decompose(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1331,9 +1331,9 @@ bufferize without an allocation (in the absence of other conflicts).
 This transform reads the target handle and modifies the payload. It does
 not produce any handle.
 """
-function structured_eliminate_empty_tensors(target::Value; location=Location())
+function structured_eliminate_empty_tensors(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1381,9 +1381,9 @@ op are rejected by this operation.
 This operation consumes the producer handle.
 This operation only reads the containing op handle.
 """
-function structured_fuse_into_containing_op(producer_op::Value, containing_op::Value; fused_op::IR.Type, new_containing_op::IR.Type, location=Location())
+function structured_fuse_into_containing_op(producer_op, containing_op; fused_op::IR.Type, new_containing_op::IR.Type, location=Location())
     results = IR.Type[fused_op, new_containing_op, ]
-    operands = Value[producer_op, containing_op, ]
+    operands = Value[value(producer_op), value(containing_op), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1402,9 +1402,9 @@ end
 Tiles the operations pointed to by the target handle and fuses their
 producers greedily using the options provided as attributes.
 """
-function structured_fuse(target::Value; transformed::IR.Type, loops::Vector{IR.Type}, tile_sizes=nothing, tile_interchange=nothing, location=Location())
+function structured_fuse(target; transformed::IR.Type, loops::Vector{IR.Type}, tile_sizes=nothing, tile_interchange=nothing, location=Location())
     results = IR.Type[transformed, loops..., ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1434,9 +1434,9 @@ The return handle points to only the subset of successfully produced
 equivalent generic operations, which can be empty or contain the original
 ops if they were already in generic form.
 """
-function structured_generalize(target::Value; transformed::IR.Type, location=Location())
+function structured_generalize(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1467,9 +1467,9 @@ If any non-tensor.pad is passed, the transform emits a silenceable failure.
 The return handle points to only the subset of successfully created packing
 loop nests, which can be empty.
 """
-function structured_hoist_pad_build_packing_loop_nest(target::Value, loop::Value; packing_loop::IR.Type, transpose=nothing, location=Location())
+function structured_hoist_pad_build_packing_loop_nest(target, loop; packing_loop::IR.Type, transpose=nothing, location=Location())
     results = IR.Type[packing_loop, ]
-    operands = Value[target, loop, ]
+    operands = Value[value(target), value(loop), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1504,9 +1504,9 @@ transform succeeds. Otherwise the transform silently fails.
 The return handle points to only the subset of successfully hoisted 
 tensor.pad operations, which can be empty.
 """
-function structured_hoist_pad(target::Value; transformed::IR.Type, num_loops, transpose=nothing, location=Location())
+function structured_hoist_pad(target; transformed::IR.Type, num_loops, transpose=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("num_loops", num_loops), ]
@@ -1543,9 +1543,9 @@ When applied to:
 
 The operation always succeeds and returns nothing.
 """
-function structured_hoist_redundant_tensor_subsets(target::Value; location=Location())
+function structured_hoist_redundant_tensor_subsets(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1578,9 +1578,9 @@ TODO: obsolete and should be retired.
 The operation always succeeds and returns a handle to the transformed
 function op.
 """
-function structured_hoist_redundant_vector_transfers(target::Value; transformed::IR.Type, location=Location())
+function structured_hoist_redundant_vector_transfers(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1608,9 +1608,9 @@ op (i.e. do not create an additional linalg.copy op).
 The operation always succeeds and returns a handle to the relevant 
 linalg.copy op.
 """
-function structured_insert_slice_to_copy(target::Value; transformed::IR.Type, location=Location())
+function structured_insert_slice_to_copy(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1639,9 +1639,9 @@ If any interchange fails, the transform definitely fails.
 The return handle points to only the subset of successfully produced
 interchanged operations, which can be empty.
 """
-function structured_interchange(target::Value; transformed::IR.Type, iterator_interchange=nothing, location=Location())
+function structured_interchange(target; transformed::IR.Type, iterator_interchange=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1669,9 +1669,9 @@ If all the operations referred to by the `target` are rewritten, the
 transform succeeds.
 Return handles to the newly produced pad, expand_shape and transpose ops.
 """
-function structured_lower_pack(target::Value; pad_op::IR.Type, expand_shape_op::IR.Type, transpose_op::IR.Type, location=Location())
+function structured_lower_pack(target; pad_op::IR.Type, expand_shape_op::IR.Type, transpose_op::IR.Type, location=Location())
     results = IR.Type[pad_op, expand_shape_op, transpose_op, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1699,9 +1699,9 @@ If all the operations referred to by the `target` are rewritten, the
 transform succeeds.
 Return handles to the newly produced empty, transpose, collapse_shape and extract_slice ops.
 """
-function structured_lower_unpack(target::Value; empty_op::IR.Type, transpose_op::IR.Type, collapse_shape_op::IR.Type, extract_slice_op::IR.Type, location=Location())
+function structured_lower_unpack(target; empty_op::IR.Type, transpose_op::IR.Type, collapse_shape_op::IR.Type, extract_slice_op::IR.Type, location=Location())
     results = IR.Type[empty_op, transpose_op, collapse_shape_op, extract_slice_op, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1737,9 +1737,9 @@ linalg.copy / tensor.pad) among the targeted op. Otherwise, the operation
 always succeeds and returns a handle to the relevant tiled linalg.copy /
 tensor.pad op and the enclosing scf.forall op.
 """
-function structured_gpu_map_copy_to_threads(target::Value; forall_op::IR.Type, tiled_op::IR.Type, total_num_threads, desired_bit_alignment, location=Location())
+function structured_gpu_map_copy_to_threads(target; forall_op::IR.Type, tiled_op::IR.Type, total_num_threads, desired_bit_alignment, location=Location())
     results = IR.Type[forall_op, tiled_op, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("total_num_threads", total_num_threads), namedattribute("desired_bit_alignment", desired_bit_alignment), ]
@@ -1775,9 +1775,9 @@ values) do not satisfy the constraints mentioned above. It produces a
 silenceable failure if at least one target op is not a Linalg op or fails to
 vectorize.
 """
-function structured_masked_vectorize(target::Value, vector_sizes::Vector{Value}; vectorize_nd_extract=nothing, scalable_sizes=nothing, static_vector_sizes=nothing, location=Location())
+function structured_masked_vectorize(target, vector_sizes; vectorize_nd_extract=nothing, scalable_sizes=nothing, static_vector_sizes=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[target, vector_sizes..., ]
+    operands = Value[value(target), value.(vector_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1823,9 +1823,9 @@ Otherwise it succeeds.
 This operation does not consume the target handle and produces new handles:
 it is a navigation op.
 """
-function structured_match(target::Value; results_::IR.Type, ops=nothing, interface=nothing, op_attrs=nothing, filter_result_type=nothing, location=Location())
+function structured_match(target; results_::IR.Type, ops=nothing, interface=nothing, op_attrs=nothing, filter_result_type=nothing, location=Location())
     results = IR.Type[results_, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1898,9 +1898,9 @@ structured.split %common after %splitr { dimension = 0 }
 // ...
 ```
 """
-function structured_multitile_sizes(target::Value; low_size::IR.Type, high_size::IR.Type, split_point::IR.Type, dimension, target_size, divisor=nothing, location=Location())
+function structured_multitile_sizes(target; low_size::IR.Type, high_size::IR.Type, split_point::IR.Type, dimension, target_size, divisor=nothing, location=Location())
     results = IR.Type[low_size, high_size, split_point, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), namedattribute("target_size", target_size), ]
@@ -1971,9 +1971,9 @@ This operation ignores non-Linalg ops and drops them in the return.
 It returns the list of packed Linalg ops or the original op when all available
 packing strategies failed to apply.
 """
-function structured_pack_greedily(target::Value, matmul_packed_sizes::Vector{Value}; packed_op::IR.Type, static_matmul_packed_sizes=nothing, matmul_padded_sizes_next_multiple_of=nothing, matmul_inner_dims_order=nothing, location=Location())
+function structured_pack_greedily(target, matmul_packed_sizes; packed_op::IR.Type, static_matmul_packed_sizes=nothing, matmul_padded_sizes_next_multiple_of=nothing, matmul_inner_dims_order=nothing, location=Location())
     results = IR.Type[packed_op, ]
-    operands = Value[target, matmul_packed_sizes..., ]
+    operands = Value[value(target), value.(matmul_packed_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2050,9 +2050,9 @@ reason.
 
 The returned handle point to the packed LinalgOp.
 """
-function structured_pack(target::Value, packed_sizes::Vector{Value}; packed_op::IR.Type, static_packed_sizes=nothing, location=Location())
+function structured_pack(target, packed_sizes; packed_op::IR.Type, static_packed_sizes=nothing, location=Location())
     results = IR.Type[packed_op, ]
-    operands = Value[target, packed_sizes..., ]
+    operands = Value[value(target), value.(packed_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2104,9 +2104,9 @@ the transformed `tensor.pack` and one to the transformed `tensor.unpack`.
 The last handle for `tensor.unpack` is empty if `target_pack_or_unpack_op` 
 was not itself a `tensor.unpack`.
 """
-function structured_pack_transpose(target_pack_or_un_pack_op::Value, target_linalg_op::Value; packed_op::IR.Type, pack_op::IR.Type, un_pack_op::IR.Type, outer_perm=nothing, inner_perm=nothing, location=Location())
+function structured_pack_transpose(target_pack_or_un_pack_op, target_linalg_op; packed_op::IR.Type, pack_op::IR.Type, un_pack_op::IR.Type, outer_perm=nothing, inner_perm=nothing, location=Location())
     results = IR.Type[packed_op, pack_op, un_pack_op, ]
-    operands = Value[target_pack_or_un_pack_op, target_linalg_op, ]
+    operands = Value[value(target_pack_or_un_pack_op), value(target_linalg_op), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2139,9 +2139,9 @@ properly, the transform succeeds. Otherwise the transform silently fails.
 The return handle points to only the subset of successfully produced
 padded operations, which can be empty.
 """
-function structured_pad(target::Value; padded::IR.Type, pad::IR.Type, padding_values=nothing, padding_dimensions=nothing, pad_to_multiple_of=nothing, pack_paddings=nothing, transpose_paddings=nothing, copy_back=nothing, location=Location())
+function structured_pad(target; padded::IR.Type, pad::IR.Type, padding_values=nothing, padding_dimensions=nothing, pad_to_multiple_of=nothing, pack_paddings=nothing, transpose_paddings=nothing, copy_back=nothing, location=Location())
     results = IR.Type[padded, pad, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2179,9 +2179,9 @@ properly, the transform succeeds.
 When successful, the return handle points to the \$target operation that
 was modified inplace.
 """
-function structured_promote(target::Value; transformed::IR.Type, operands_to_promote=nothing, use_full_tile_buffers=nothing, use_full_tiles_by_default=nothing, use_alloca=nothing, mapping=nothing, alignment=nothing, location=Location())
+function structured_promote(target; transformed::IR.Type, operands_to_promote=nothing, use_full_tile_buffers=nothing, use_full_tiles_by_default=nothing, use_alloca=nothing, mapping=nothing, alignment=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2213,9 +2213,9 @@ This op is for debugging/experiments only.
 
 This operation consumes the `target` handle.
 """
-function structured_replace(target::Value; replacement::IR.Type, bodyRegion::Region, location=Location())
+function structured_replace(target; replacement::IR.Type, bodyRegion::Region, location=Location())
     results = IR.Type[replacement, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[bodyRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2251,9 +2251,9 @@ The return handle points to a subset of successfully produced operations:
   - `tensor.from_elements` case, the returned handle points to the last 
     `tensor.insert`.
 """
-function structured_rewrite_in_destination_passing_style(target::Value; transformed::IR.Type, location=Location())
+function structured_rewrite_in_destination_passing_style(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2290,9 +2290,9 @@ dimensions after multiple transformations have been applied).
 Loops can always be recovered by navigating from the tiled operations if
 needed.
 """
-function structured_scalarize(target::Value; result::IR.Type, location=Location())
+function structured_scalarize(target; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2326,13 +2326,13 @@ of the structured op after splitting, in the same order as the target
 operand, with the first handle corresponding to the part with lower
 iteration space indices.
 """
-function structured_split(target::Value, dynamic_split_point=nothing::Union{Nothing, Value}; first::IR.Type, second::IR.Type, dimension, static_split_point, location=Location())
+function structured_split(target, dynamic_split_point=nothing; first::IR.Type, second::IR.Type, dimension, static_split_point, location=Location())
     results = IR.Type[first, second, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), namedattribute("static_split_point", static_split_point), ]
-    !isnothing(dynamic_split_point) && push!(operands, dynamic_split_point)
+    !isnothing(dynamic_split_point) && push!(operands, value(dynamic_split_point))
     
     IR.create_operation(
         "transform.structured.split", location;
@@ -2478,9 +2478,9 @@ Is transformed to:
  return %4 : tensor<16x32xf32>
 ```
 """
-function structured_split_reduction(target::Value; init_or_alloc_op::IR.Type, fill_op::IR.Type, split_linalg_op::IR.Type, combining_linalg_op::IR.Type, split_factor=nothing, insert_split_dimension=nothing, inner_parallel=nothing, use_scaling_algorithm=nothing, use_alloc=nothing, location=Location())
+function structured_split_reduction(target; init_or_alloc_op::IR.Type, fill_op::IR.Type, split_linalg_op::IR.Type, combining_linalg_op::IR.Type, split_factor=nothing, insert_split_dimension=nothing, inner_parallel=nothing, use_scaling_algorithm=nothing, use_alloc=nothing, location=Location())
     results = IR.Type[init_or_alloc_op, fill_op, split_linalg_op, combining_linalg_op, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2537,9 +2537,9 @@ that of the list associated with the `target` handle.
 If the internal implementation of tiling for any of the operations fails,
 produces a definite failure.
 """
-function structured_tile(target::Value, dynamic_sizes::Vector{Value}; tiled_linalg_op::IR.Type, loops::Vector{IR.Type}, static_sizes=nothing, interchange=nothing, scalable_sizes=nothing, location=Location())
+function structured_tile(target, dynamic_sizes; tiled_linalg_op::IR.Type, loops::Vector{IR.Type}, static_sizes=nothing, interchange=nothing, scalable_sizes=nothing, location=Location())
     results = IR.Type[tiled_linalg_op, loops..., ]
-    operands = Value[target, dynamic_sizes..., ]
+    operands = Value[value(target), value.(dynamic_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2622,9 +2622,9 @@ is transformed into:
   } -> tensor<?xf32>
 ```
 """
-function structured_tile_reduction_using_forall(target::Value; forall_op::IR.Type, fill_op::IR.Type, split_linalg_op::IR.Type, combining_linalg_op::IR.Type, num_threads=nothing, tile_sizes=nothing, mapping=nothing, location=Location())
+function structured_tile_reduction_using_forall(target; forall_op::IR.Type, fill_op::IR.Type, split_linalg_op::IR.Type, combining_linalg_op::IR.Type, num_threads=nothing, tile_sizes=nothing, mapping=nothing, location=Location())
     results = IR.Type[forall_op, fill_op, split_linalg_op, combining_linalg_op, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2710,9 +2710,9 @@ is transformed into:
   } -> tensor<?xf32>
 ```
 """
-function structured_tile_reduction_using_scf(target::Value; for_op::IR.Type, fill_op::IR.Type, split_linalg_op::IR.Type, combining_linalg_op::IR.Type, tile_sizes=nothing, location=Location())
+function structured_tile_reduction_using_scf(target; for_op::IR.Type, fill_op::IR.Type, split_linalg_op::IR.Type, combining_linalg_op::IR.Type, tile_sizes=nothing, location=Location())
     results = IR.Type[for_op, fill_op, split_linalg_op, combining_linalg_op, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2783,14 +2783,14 @@ These two returned handles point to:
 %3:2 = transform.structured.tile_to_forall_op %0 tile_sizes [0, %sz, 20]
 ```
 """
-function structured_tile_to_forall_op(target::Value, num_threads::Vector{Value}, tile_sizes::Vector{Value}, packed_num_threads=nothing::Union{Nothing, Value}; packed_tile_sizes=nothing::Union{Nothing, Value}, forall_op::IR.Type, tiled_op::IR.Type, static_num_threads=nothing, static_tile_sizes=nothing, mapping=nothing, location=Location())
+function structured_tile_to_forall_op(target, num_threads, tile_sizes, packed_num_threads=nothing; packed_tile_sizes=nothing, forall_op::IR.Type, tiled_op::IR.Type, static_num_threads=nothing, static_tile_sizes=nothing, mapping=nothing, location=Location())
     results = IR.Type[forall_op, tiled_op, ]
-    operands = Value[target, num_threads..., tile_sizes..., ]
+    operands = Value[value(target), value.(num_threads)..., value.(tile_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(packed_num_threads) && push!(operands, packed_num_threads)
-    !isnothing(packed_tile_sizes) && push!(operands, packed_tile_sizes)
+    !isnothing(packed_num_threads) && push!(operands, value(packed_num_threads))
+    !isnothing(packed_tile_sizes) && push!(operands, value(packed_tile_sizes))
     push!(attributes, operandsegmentsizes([1, length(num_threads), length(tile_sizes), (packed_num_threads==nothing) ? 0 : 1(packed_tile_sizes==nothing) ? 0 : 1]))
     !isnothing(static_num_threads) && push!(attributes, namedattribute("static_num_threads", static_num_threads))
     !isnothing(static_tile_sizes) && push!(attributes, namedattribute("static_tile_sizes", static_tile_sizes))
@@ -2843,9 +2843,9 @@ that of the list associated with the `target` handle.
 If the internal implementation of tiling for any of the operations fails,
 produces a definite failure.
 """
-function structured_tile_to_scf_for(target::Value, dynamic_sizes::Vector{Value}; tiled_linalg_op::IR.Type, loops::Vector{IR.Type}, static_sizes=nothing, interchange=nothing, location=Location())
+function structured_tile_to_scf_for(target, dynamic_sizes; tiled_linalg_op::IR.Type, loops::Vector{IR.Type}, static_sizes=nothing, interchange=nothing, location=Location())
     results = IR.Type[tiled_linalg_op, loops..., ]
-    operands = Value[target, dynamic_sizes..., ]
+    operands = Value[value(target), value.(dynamic_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2897,9 +2897,9 @@ reason.
 The operation always returns the handle to the target op that is expected
 to be isolated from above.
 """
-function structured_vectorize(target::Value; transformed::IR.Type, vectorize_padding=nothing, vectorize_nd_extract=nothing, disable_multi_reduction_to_contract_patterns=nothing, disable_transfer_permutation_map_lowering_patterns=nothing, location=Location())
+function structured_vectorize(target; transformed::IR.Type, vectorize_padding=nothing, vectorize_nd_extract=nothing, disable_multi_reduction_to_contract_patterns=nothing, disable_transfer_permutation_map_lowering_patterns=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2916,7 +2916,7 @@ function structured_vectorize(target::Value; transformed::IR.Type, vectorize_pad
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -3070,9 +3070,9 @@ Otherwise, the returned handle points to a subset of the produced ops:
 
 This transform op consumes the target handle and produces a result handle.
 """
-function memref_make_loop_independent(target::Value; transformed::IR.Type, num_loops, location=Location())
+function memref_make_loop_independent(target; transformed::IR.Type, num_loops, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("num_loops", num_loops), ]
@@ -3102,9 +3102,9 @@ iterations.
 This operation returns the new allocation if multi-buffering
 succeeds, and failure otherwise.
 """
-function memref_multibuffer(target::Value; transformed::IR.Type, factor, skip_analysis=nothing, location=Location())
+function memref_multibuffer(target; transformed::IR.Type, factor, skip_analysis=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("factor", factor), ]
@@ -3118,7 +3118,7 @@ function memref_multibuffer(target::Value; transformed::IR.Type, factor, skip_an
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -3141,9 +3141,9 @@ This op consumes the `target` handle and produces the `result` handle, which
 is mapped to the same payload operations as the `target` handle. The op
 modifies the payload.
 """
-function nvgpu_create_async_groups(target::Value; result::IR.Type, bypass_l1=nothing, location=Location())
+function nvgpu_create_async_groups(target; result::IR.Type, bypass_l1=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3191,9 +3191,9 @@ TODO: the shared memory part and behavior specific to NVGPU should be
 made orthogonal to pipelining so that `transform.loop.pipeline` becomes
 usable here.
 """
-function nvgpu_pipeline_shared_memory_copies(for_op::Value; result::IR.Type, depth, peel_epilogue=nothing, failure_propagation_mode=nothing, location=Location())
+function nvgpu_pipeline_shared_memory_copies(for_op; result::IR.Type, depth, peel_epilogue=nothing, failure_propagation_mode=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[for_op, ]
+    operands = Value[value(for_op), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("depth", depth), ]
@@ -3217,9 +3217,9 @@ Memory copies with the required access patterns are automatically inserted.
 Operations that do not have a 1-1 mapping to mma.sync operations are left
 unchanged.
 """
-function nvgpu_rewrite_matmul_as_mma_sync(target::Value; location=Location())
+function nvgpu_rewrite_matmul_as_mma_sync(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3232,7 +3232,7 @@ function nvgpu_rewrite_matmul_as_mma_sync(target::Value; location=Location())
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -3268,9 +3268,9 @@ of operations associated with the handle contains parent operations in the
 same order as the list associated with the operand, except for operations
 that are parents to more than one input which are only present once.
 """
-function loop_get_parent_for(target::Value; parent::IR.Type, num_loops=nothing, affine=nothing, location=Location())
+function loop_get_parent_for(target; parent::IR.Type, num_loops=nothing, affine=nothing, location=Location())
     results = IR.Type[parent, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3296,9 +3296,9 @@ perform loop coalescing in a bottom-up one-by-one manner.
 The return handle points to the coalesced loop if coalescing happens, or
 the given input loop if coalescing does not happen.
 """
-function loop_coalesce(target::Value; transformed::IR.Type, location=Location())
+function loop_coalesce(target; transformed::IR.Type, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3331,9 +3331,9 @@ handle.
 
 Produces a definite failure if outlining failed for any of the targets.
 """
-function loop_outline(target::Value; function_::IR.Type, call::IR.Type, func_name, location=Location())
+function loop_outline(target; function_::IR.Type, call::IR.Type, func_name, location=Location())
     results = IR.Type[function_, call, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("func_name", func_name), ]
@@ -3370,9 +3370,9 @@ one.
 
 TODO: Return both the peeled loop and the remainder loop.
 """
-function loop_peel(target::Value; transformed::IR.Type, fail_if_already_divisible=nothing, location=Location())
+function loop_peel(target; transformed::IR.Type, fail_if_already_divisible=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3409,9 +3409,9 @@ properly, the transform succeeds. Otherwise the transform silently fails.
 The return handle points to only the subset of successfully produced
 pipelined loops, which can be empty.
 """
-function loop_pipeline(target::Value; transformed::IR.Type, iteration_interval=nothing, read_latency=nothing, location=Location())
+function loop_pipeline(target; transformed::IR.Type, iteration_interval=nothing, read_latency=nothing, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3439,9 +3439,9 @@ considered loops if they implement the `LoopLikeOpInterface`. Otherwise,
 this transform always succeeds. The transform consumes the target handle and
 modifies the payload.
 """
-function loop_promote_if_one_iteration(target::Value; location=Location())
+function loop_promote_if_one_iteration(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3471,9 +3471,9 @@ fails.
 Does not return handles as the operation may result in the loop being
 removed after a full unrolling.
 """
-function loop_unroll(target::Value; factor, location=Location())
+function loop_unroll(target; factor, location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("factor", factor), ]
@@ -3507,9 +3507,9 @@ The transform only consumes its operand and does not produce any result.
 The transform definitely fails if `take_else_branch` is specified and the
 `else` region is empty.
 """
-function scf_take_assumed_branch(target::Value; take_else_branch=nothing, location=Location())
+function scf_take_assumed_branch(target; take_else_branch=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3523,7 +3523,7 @@ function scf_take_assumed_branch(target::Value; take_else_branch=nothing, locati
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -3731,9 +3731,9 @@ Otherwise, the returned handle points to a subset of the produced ops:
 
 This transform op consumes the target handle and produces a result handle.
 """
-function tensor_make_loop_independent(target::Value; transformed::IR.Type, num_loops, location=Location())
+function tensor_make_loop_independent(target; transformed::IR.Type, num_loops, location=Location())
     results = IR.Type[transformed, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("num_loops", num_loops), ]
@@ -3746,7 +3746,7 @@ function tensor_make_loop_independent(target::Value; transformed::IR.Type, num_l
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -3811,13 +3811,13 @@ Remark: this op allows one to implement a simple \"try\" construct as follows:
 }
 ```
 """
-function alternatives(scope=nothing::Union{Nothing, Value}; results_::Vector{IR.Type}, alternatives::Vector{Region}, location=Location())
+function alternatives(scope=nothing; results_::Vector{IR.Type}, alternatives::Vector{Region}, location=Location())
     results = IR.Type[results_..., ]
     operands = Value[]
     owned_regions = Region[alternatives..., ]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(scope) && push!(operands, scope)
+    !isnothing(scope) && push!(operands, value(scope))
     
     IR.create_operation(
         "transform.alternatives", location;
@@ -3839,13 +3839,13 @@ the order within the handles.
 Fails silently if the length of the parameter payload does not match the length of
 the target payload. Does not consume the provided handles.
 """
-function annotate(target::Value, param=nothing::Union{Nothing, Value}; name, location=Location())
+function annotate(target, param=nothing; name, location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("name", name), ]
-    !isnothing(param) && push!(operands, param)
+    !isnothing(param) && push!(operands, value(param))
     
     IR.create_operation(
         "transform.annotate", location;
@@ -3888,9 +3888,9 @@ necessary. Note that this can lead to situations where a handle, that was
 previously mapped to multiple distinct (but equivalent) operations, is now
 mapped to the same operation multiple times.
 """
-function apply_cse(target::Value; location=Location())
+function apply_cse(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3916,9 +3916,9 @@ op folding and region simplification.
 This transform reads the target handle and modifies the payload. Note that
 this transform may silently remove payload ops from handles.
 """
-function apply_dce(target::Value; location=Location())
+function apply_dce(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3943,9 +3943,9 @@ to each loop of the loop nest, starting with the inner-most loop.
 
 This transform reads the target handle and modifies the payload.
 """
-function apply_licm(target::Value; location=Location())
+function apply_licm(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3988,9 +3988,9 @@ This transform also fails silently if the pattern application did not
 converge within the default number of iterations/rewrites of the greedy
 pattern rewrite driver.
 """
-function apply_patterns(target::Value; apply_cse=nothing, patterns::Region, location=Location())
+function apply_patterns(target; apply_cse=nothing, patterns::Region, location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[patterns, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4019,9 +4019,9 @@ that they operate on, so the target op is guaranteed to still exist. The
 target handle is invalidated because a pass may arbitrarily modify the body
 of targeted ops.
 """
-function apply_registered_pass(target::Value; result::IR.Type, pass_name, options=nothing, location=Location())
+function apply_registered_pass(target; result::IR.Type, pass_name, options=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pass_name", pass_name), ]
@@ -4039,9 +4039,9 @@ end
 `cast`
 
 """
-function cast(input::Value; output::IR.Type, location=Location())
+function cast(input; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4106,9 +4106,9 @@ the resulting handle is associated with an empty payload. The operation
 produces a definite failure if any of the applied matchers or actions
 produced a definite failure.
 """
-function foreach_match(root::Value; updated::IR.Type, matchers, actions, location=Location())
+function foreach_match(root; updated::IR.Type, matchers, actions, location=Location())
     results = IR.Type[updated, ]
-    operands = Value[root, ]
+    operands = Value[value(root), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("matchers", matchers), namedattribute("actions", actions), ]
@@ -4143,9 +4143,9 @@ This op generates as many handles as the terminating YieldOp has operands.
 For each result, the payload ops of the corresponding YieldOp operand are
 merged and mapped to the same resulting handle.
 """
-function foreach(target::Value; results_::Vector{IR.Type}, body::Region, location=Location())
+function foreach(target; results_::Vector{IR.Type}, body::Region, location=Location())
     results = IR.Type[results_..., ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4169,9 +4169,9 @@ definitely fails.
 The return handle points to the consuming operations operations, which can
 be empty.
 """
-function get_consumers_of_result(target::Value; consumers::IR.Type, result_number, location=Location())
+function get_consumers_of_result(target; consumers::IR.Type, result_number, location=Location())
     results = IR.Type[consumers, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("result_number", result_number), ]
@@ -4192,9 +4192,9 @@ the targeted value.
 
 This transform fails silently if the targeted value is a block argument.
 """
-function get_defining_op(target::Value; result::IR.Type, location=Location())
+function get_defining_op(target; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4229,9 +4229,9 @@ on the further transformation applied to the handle produced here.
 If any of the given Payload IR ops has no such suitable parent, the
 transformation fails silently.
 """
-function get_parent_op(target::Value; parent::IR.Type, isolated_from_above=nothing, op_name=nothing, deduplicate=nothing, location=Location())
+function get_parent_op(target; parent::IR.Type, isolated_from_above=nothing, op_name=nothing, deduplicate=nothing, location=Location())
     results = IR.Type[parent, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4257,9 +4257,9 @@ a block argument), the transform silently fails.
 The return handle points to only the subset of successfully produced
 computational operations, which can be empty.
 """
-function get_producer_of_operand(target::Value; producer::IR.Type, operand_number, location=Location())
+function get_producer_of_operand(target; producer::IR.Type, operand_number, location=Location())
     results = IR.Type[producer, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("operand_number", operand_number), ]
@@ -4281,9 +4281,9 @@ The handle defined by this Transform op corresponds to the OpResult with
 This transform fails silently if the targeted operation does not have enough
 results. It reads the target handle and produces the result handle.
 """
-function get_result(target::Value; result::IR.Type, result_number, location=Location())
+function get_result(target; result::IR.Type, result_number, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("result_number", result_number), ]
@@ -4304,9 +4304,9 @@ type(s) of the value(s) associated with the operand handle.
 
 This transform never fails.
 """
-function get_type(value::Value; type_param::IR.Type, elemental=nothing, location=Location())
+function get_type(value; type_param::IR.Type, elemental=nothing, location=Location())
     results = IR.Type[type_param, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4340,9 +4340,9 @@ immediately regardless of the mode. The objects associated with the results
 of this operation are the same as those associated with the operands of the
 `transform.yield` in the referenced named sequence.
 """
-function include_(operands_::Vector{Value}; results_::Vector{IR.Type}, target, failure_propagation_mode, location=Location())
+function include_(operands_; results_::Vector{IR.Type}, target, failure_propagation_mode, location=Location())
     results = IR.Type[results_..., ]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("target", target), namedattribute("failure_propagation_mode", failure_propagation_mode), ]
@@ -4364,9 +4364,9 @@ given operation names. Produces a silenceable failure otherwise.
 If more than one payload operation is associated with the operand handle,
 produces a definite failure.
 """
-function match_operation_name(operand_handle::Value; op_names, location=Location())
+function match_operation_name(operand_handle; op_names, location=Location())
     results = IR.Type[]
-    operands = Value[operand_handle, ]
+    operands = Value[value(operand_handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("op_names", op_names), ]
@@ -4387,9 +4387,9 @@ parameters relate as specified by the predicate (greater than, less than,
 equal to, or their combinations). Comparison treats all values as signed.
 Produces a silenceable failure otherwise.
 """
-function match_param_cmpi(param::Value, reference::Value; predicate, location=Location())
+function match_param_cmpi(param, reference; predicate, location=Location())
     results = IR.Type[]
-    operands = Value[param, reference, ]
+    operands = Value[value(param), value(reference), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
@@ -4414,9 +4414,9 @@ first, then all Payload IR associated with the second handle and so on. If
 parameter more than once to the final list regardless of it coming from the
 same or different handles. Consumes the operands and produces a new handle.
 """
-function merge_handles(handles::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, deduplicate=nothing, location=Location())
+function merge_handles(handles; result=nothing::Union{Nothing, IR.Type}, deduplicate=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[handles..., ]
+    operands = Value[value.(handles)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4508,13 +4508,13 @@ specified, the top-level op is dumped.
 
 This op is useful for printf-style debugging.
 """
-function print(target=nothing::Union{Nothing, Value}; name=nothing, location=Location())
+function print(target=nothing; name=nothing, location=Location())
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(target) && push!(operands, target)
+    !isnothing(target) && push!(operands, value(target))
     !isnothing(name) && push!(attributes, namedattribute("name", name))
     
     IR.create_operation(
@@ -4550,9 +4550,9 @@ MergeHandlesOp may be used to deduplicate the associated list of payload IR
 ops when necessary. Furthermore, a combination of ReplicateOp and
 MergeHandlesOp can be used to construct arbitrary lists with repetitions.
 """
-function replicate(pattern::Value, handles::Vector{Value}; replicated::Vector{IR.Type}, location=Location())
+function replicate(pattern, handles; replicated::Vector{IR.Type}, location=Location())
     results = IR.Type[replicated..., ]
-    operands = Value[pattern, handles..., ]
+    operands = Value[value(pattern), value.(handles)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4578,9 +4578,9 @@ The result payload ops are in the same relative order as the targeted ops.
 This transform op reads the `target` handle and produces the `result`
 handle. It reads the payload, but does not modify it.
 """
-function select(target::Value; result::IR.Type, op_name, location=Location())
+function select(target; result::IR.Type, op_name, location=Location())
     results = IR.Type[result, ]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("op_name", op_name), ]
@@ -4644,13 +4644,13 @@ The body of the sequence terminates with an implicit or explicit
 `transform.yield` op. The operands of the terminator are returned as the
 results of the sequence op.
 """
-function sequence(root=nothing::Union{Nothing, Value}; extra_bindings::Vector{Value}, results_::Vector{IR.Type}, failure_propagation_mode, body::Region, location=Location())
+function sequence(root=nothing; extra_bindings, results_::Vector{IR.Type}, failure_propagation_mode, body::Region, location=Location())
     results = IR.Type[results_..., ]
-    operands = Value[extra_bindings..., ]
+    operands = Value[value.(extra_bindings)..., ]
     owned_regions = Region[body, ]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("failure_propagation_mode", failure_propagation_mode), ]
-    !isnothing(root) && push!(operands, root)
+    !isnothing(root) && push!(operands, value(root))
     push!(attributes, operandsegmentsizes([(root==nothing) ? 0 : 1length(extra_bindings), ]))
     
     IR.create_operation(
@@ -4685,9 +4685,9 @@ the remaining result handles are not mapped to any op. It also succeeds if
 `handle` is empty and `pass_through_empty_handle` is set to \"true\",
 regardless of `fail_on_payload_too_small`.
 """
-function split_handle(handle::Value; results_::Vector{IR.Type}, pass_through_empty_handle=nothing, fail_on_payload_too_small=nothing, overflow_result=nothing, location=Location())
+function split_handle(handle; results_::Vector{IR.Type}, pass_through_empty_handle=nothing, fail_on_payload_too_small=nothing, overflow_result=nothing, location=Location())
     results = IR.Type[results_..., ]
-    operands = Value[handle, ]
+    operands = Value[value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4716,9 +4716,9 @@ op.
 
 This transform reads the target handle.
 """
-function verify(target::Value; location=Location())
+function verify(target; location=Location())
     results = IR.Type[]
-    operands = Value[target, ]
+    operands = Value[value(target), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4738,9 +4738,9 @@ This terminator operation yields operation handles from regions of the
 transform IR ops back to the containing op. It is not itself associated with
 any transformation on the payload IR and is used for flow purposes only.
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands_; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4753,7 +4753,7 @@ function yield(operands_::Vector{Value}; location=Location())
     )
 end
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 

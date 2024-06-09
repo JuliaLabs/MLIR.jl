@@ -1,6 +1,6 @@
 module spirv
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -46,9 +46,9 @@ access-chain-op ::= ssa-id `=` `spirv.AccessChain` ssa-use
 %3 = spirv.Load \"Function\" %2 [\"Volatile\"] : !spirv.array<4xf32>
 ```
 """
-function AccessChain(base_ptr::Value, indices::Vector{Value}; component_ptr::IR.Type, location=Location())
+function AccessChain(base_ptr, indices; component_ptr::IR.Type, location=Location())
     results = IR.Type[component_ptr, ]
-    operands = Value[base_ptr, indices..., ]
+    operands = Value[value(base_ptr), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -137,9 +137,9 @@ atomic-and-op ::=
                    !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicAnd(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicAnd(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -198,9 +198,9 @@ atomic-compare-exchange-op ::=
                                 : !spirv.ptr<i32, WorkGroup>
 ```
 """
-function AtomicCompareExchange(pointer::Value, value::Value, comparator::Value; result::IR.Type, memory_scope, equal_semantics, unequal_semantics, location=Location())
+function AtomicCompareExchange(pointer, value, comparator; result::IR.Type, memory_scope, equal_semantics, unequal_semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, comparator, ]
+    operands = Value[value(pointer), value(value), value(comparator), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("equal_semantics", equal_semantics), namedattribute("unequal_semantics", unequal_semantics), ]
@@ -237,9 +237,9 @@ atomic-compare-exchange-weak-op ::=
                                    : !spirv.ptr<i32, WorkGroup>
 ```
 """
-function AtomicCompareExchangeWeak(pointer::Value, value::Value, comparator::Value; result::IR.Type, memory_scope, equal_semantics, unequal_semantics, location=Location())
+function AtomicCompareExchangeWeak(pointer, value, comparator; result::IR.Type, memory_scope, equal_semantics, unequal_semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, comparator, ]
+    operands = Value[value(pointer), value(value), value(comparator), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("equal_semantics", equal_semantics), namedattribute("unequal_semantics", unequal_semantics), ]
@@ -285,9 +285,9 @@ atomic-exchange-op ::=
                         : !spirv.ptr<i32, WorkGroup>
 ```
 """
-function AtomicExchange(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicExchange(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -333,9 +333,9 @@ atomic-iadd-op ::=
                     !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicIAdd(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicIAdd(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -380,9 +380,9 @@ atomic-idecrement-op ::=
                           !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicIDecrement(pointer::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicIDecrement(pointer; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, ]
+    operands = Value[value(pointer), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -426,9 +426,9 @@ atomic-iincrement-op ::=
                          !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicIIncrement(pointer::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicIIncrement(pointer; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, ]
+    operands = Value[value(pointer), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -475,9 +475,9 @@ atomic-isub-op ::=
                     !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicISub(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicISub(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -523,9 +523,9 @@ atomic-or-op ::=
                   !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicOr(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicOr(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -572,9 +572,9 @@ atomic-smax-op ::=
                     !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicSMax(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicSMax(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -621,9 +621,9 @@ atomic-smin-op ::=
                     !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicSMin(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicSMin(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -670,9 +670,9 @@ atomic-umax-op ::=
                     !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicUMax(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicUMax(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -719,9 +719,9 @@ atomic-umin-op ::=
                     !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicUMin(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicUMin(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -768,9 +768,9 @@ atomic-xor-op ::=
                    !spirv.ptr<i32, StorageBuffer>
 ```
 """
-function AtomicXor(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function AtomicXor(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -815,9 +815,9 @@ Results are computed per component.
     %3 = spirv.BitCount %1: vector<4xi32>
     ```
 """
-function BitCount(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitCount(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -873,9 +873,9 @@ The type of Base and Insert must be the same as Result Type.
     %0 = spirv.BitFieldInsert %base, %insert, %offset, %count : vector<3xi32>, i8, i8
     ```
 """
-function BitFieldInsert(base::Value, insert::Value, offset::Value, count::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitFieldInsert(base, insert, offset, count; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[base, insert, offset, count, ]
+    operands = Value[value(base), value(insert), value(offset), value(count), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -931,9 +931,9 @@ The type of Base must be the same as Result Type.
     %0 = spirv.BitFieldSExtract %base, %offset, %count : vector<3xi32>, i8, i8
     ```
 """
-function BitFieldSExtract(base::Value, offset::Value, count::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitFieldSExtract(base, offset, count; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[base, offset, count, ]
+    operands = Value[value(base), value(offset), value(count), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -971,9 +971,9 @@ bitfield-extract-u-op ::= ssa-id `=` `spirv.BitFieldUExtract` ssa-use
 %0 = spirv.BitFieldUExtract %base, %offset, %count : vector<3xi32>, i8, i8
 ```
 """
-function BitFieldUExtract(base::Value, offset::Value, count::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitFieldUExtract(base, offset, count; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[base, offset, count, ]
+    operands = Value[value(base), value(offset), value(count), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1015,9 +1015,9 @@ The type of Base must be the same as Result Type.
     %3 = spirv.BitReverse %1 : vector<4xi32>
     ```
 """
-function BitReverse(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitReverse(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1070,9 +1070,9 @@ bitcast-op ::= ssa-id `=` `spirv.Bitcast` ssa-use
 %1 = spirv.Bitcast %0 : !spirv.ptr<f32, Function> to !spirv.ptr<i32, Function>
 ```
 """
-function Bitcast(operand::Value; result::IR.Type, location=Location())
+function Bitcast(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1111,9 +1111,9 @@ Results are computed per component, and within each component, per bit.
     %2 = spirv.BitwiseAnd %0, %1 : vector<4xi32>
     ```
 """
-function BitwiseAnd(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitwiseAnd(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1153,9 +1153,9 @@ Results are computed per component, and within each component, per bit.
     %2 = spirv.BitwiseOr %0, %1 : vector<4xi32>
     ```
 """
-function BitwiseOr(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitwiseOr(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1195,9 +1195,9 @@ Results are computed per component, and within each component, per bit.
     %2 = spirv.BitwiseXor %0, %1 : vector<4xi32>
     ```
 """
-function BitwiseXor(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function BitwiseXor(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1245,9 +1245,9 @@ spirv.BranchConditional %condition, ^true_branch, ^false_branch
 spirv.BranchConditional %condition, ^true_branch(%0: i32), ^false_branch(%1: i32)
 ```
 """
-function BranchConditional(condition::Value, trueTargetOperands::Vector{Value}, falseTargetOperands::Vector{Value}; branch_weights=nothing, trueTarget::Block, falseTarget::Block, location=Location())
+function BranchConditional(condition, trueTargetOperands, falseTargetOperands; branch_weights=nothing, trueTarget::Block, falseTarget::Block, location=Location())
     results = IR.Type[]
-    operands = Value[condition, trueTargetOperands..., falseTargetOperands..., ]
+    operands = Value[value(condition), value.(trueTargetOperands)..., value.(falseTargetOperands)..., ]
     owned_regions = Region[]
     successors = Block[trueTarget, falseTarget, ]
     attributes = NamedAttribute[]
@@ -1282,9 +1282,9 @@ spirv.Branch ^target
 spirv.Branch ^target(%0, %1: i32, f32)
 ```
 """
-function Branch(targetOperands::Vector{Value}; target::Block, location=Location())
+function Branch(targetOperands; target::Block, location=Location())
     results = IR.Type[]
-    operands = Value[targetOperands..., ]
+    operands = Value[value.(targetOperands)..., ]
     owned_regions = Region[]
     successors = Block[target, ]
     attributes = NamedAttribute[]
@@ -1322,9 +1322,9 @@ ceil-op ::= ssa-id `=` `spirv.CL.ceil` ssa-use `:`
 %3 = spirv.CL.ceil %1 : vector<3xf16>
 ```
 """
-function CL_ceil(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_ceil(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1363,9 +1363,9 @@ cos-op ::= ssa-id `=` `spirv.CL.cos` ssa-use `:`
 %3 = spirv.CL.cos %1 : vector<3xf16>
 ```
 """
-function CL_cos(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_cos(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1404,9 +1404,9 @@ erf-op ::= ssa-id `=` `spirv.CL.erf` ssa-use `:`
 %3 = spirv.CL.erf %1 : vector<3xf16>
 ```
 """
-function CL_erf(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_erf(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1445,9 +1445,9 @@ exp-op ::= ssa-id `=` `spirv.CL.exp` ssa-use `:`
 %3 = spirv.CL.exp %1 : vector<3xf16>
 ```
 """
-function CL_exp(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_exp(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1486,9 +1486,9 @@ abs-op ::= ssa-id `=` `spirv.CL.fabs` ssa-use `:`
 %3 = spirv.CL.fabs %1 : vector<3xf16>
 ```
 """
-function CL_fabs(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_fabs(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1528,9 +1528,9 @@ fmax-op ::= ssa-id `=` `spirv.CL.fmax` ssa-use `:`
 %3 = spirv.CL.fmax %0, %1 : vector<3xf16>
 ```
 """
-function CL_fmax(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_fmax(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1569,9 +1569,9 @@ fmin-op ::= ssa-id `=` `spirv.CL.fmin` ssa-use `:`
 %3 = spirv.CL.fmin %0, %1 : vector<3xf16>
 ```
 """
-function CL_fmin(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_fmin(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1610,9 +1610,9 @@ floor-op ::= ssa-id `=` `spirv.CL.floor` ssa-use `:`
 %3 = spirv.CL.ceifloorl %1 : vector<3xf16>
 ```
 """
-function CL_floor(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_floor(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1649,9 +1649,9 @@ fma-op ::= ssa-id `=` `spirv.CL.fma` ssa-use, ssa-use, ssa-use `:`
 %1 = spirv.CL.fma %a, %b, %c : vector<3xf16>
 ```
 """
-function CL_fma(x::Value, y::Value, z::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_fma(x, y, z; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[x, y, z, ]
+    operands = Value[value(x), value(y), value(z), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1690,9 +1690,9 @@ log-op ::= ssa-id `=` `spirv.CL.log` ssa-use `:`
 %3 = spirv.CL.log %1 : vector<3xf16>
 ```
 """
-function CL_log(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_log(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1732,9 +1732,9 @@ pow-op ::= ssa-id `=` `spirv.CL.pow` ssa-use `:`
 %3 = spirv.CL.pow %0, %1 : vector<3xf16>
 ```
 """
-function CL_pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_pow(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1769,9 +1769,9 @@ when the end of the format string is encountered.
 %0 = spirv.CL.printf %0 %1 %2 : (!spirv.ptr<i8, UniformConstant>, (i32, i32)) -> i32
 ```
 """
-function CL_printf(format::Value, arguments::Vector{Value}; result::IR.Type, location=Location())
+function CL_printf(format, arguments; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[format, arguments..., ]
+    operands = Value[value(format), value.(arguments)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1809,9 +1809,9 @@ rint-op ::= ssa-id `=` `spirv.CL.rint` ssa-use `:`
 %1 = spirv.CL.rint %1 : vector<3xf16>
 ```
 """
-function CL_rint(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_rint(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1849,9 +1849,9 @@ round-op ::= ssa-id `=` `spirv.CL.round` ssa-use `:`
 %3 = spirv.CL.round %0 : vector<3xf16>
 ```
 """
-function CL_round(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_round(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1890,9 +1890,9 @@ rsqrt-op ::= ssa-id `=` `spirv.CL.rsqrt` ssa-use `:`
 %3 = spirv.CL.rsqrt %1 : vector<3xf16>
 ```
 """
-function CL_rsqrt(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_rsqrt(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1931,9 +1931,9 @@ abs-op ::= ssa-id `=` `spirv.CL.s_abs` ssa-use `:`
 %3 = spirv.CL.s_abs %1 : vector<3xi16>
 ```
 """
-function CL_s_abs(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_s_abs(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1969,9 +1969,9 @@ smax-op ::= ssa-id `=` `spirv.CL.s_max` ssa-use `:`
 %3 = spirv.CL.s_max %0, %1 : vector<3xi16>
 ```
 """
-function CL_s_max(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_s_max(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2007,9 +2007,9 @@ smin-op ::= ssa-id `=` `spirv.CL.s_min` ssa-use `:`
 %3 = spirv.CL.s_min %0, %1 : vector<3xi16>
 ```
 """
-function CL_s_min(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_s_min(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2048,9 +2048,9 @@ sin-op ::= ssa-id `=` `spirv.CL.sin` ssa-use `:`
 %3 = spirv.CL.sin %1 : vector<3xf16>
 ```
 """
-function CL_sin(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_sin(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2089,9 +2089,9 @@ sqrt-op ::= ssa-id `=` `spirv.CL.sqrt` ssa-use `:`
 %3 = spirv.CL.sqrt %1 : vector<3xf16>
 ```
 """
-function CL_sqrt(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_sqrt(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2130,9 +2130,9 @@ tanh-op ::= ssa-id `=` `spirv.CL.tanh` ssa-use `:`
 %3 = spirv.CL.tanh %1 : vector<3xf16>
 ```
 """
-function CL_tanh(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_tanh(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2168,9 +2168,9 @@ umax-op ::= ssa-id `=` `spirv.CL.u_max` ssa-use `:`
 %3 = spirv.CL.u_max %0, %1 : vector<3xi16>
 ```
 """
-function CL_u_max(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_u_max(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2206,9 +2206,9 @@ umin-op ::= ssa-id `=` `spirv.CL.u_min` ssa-use `:`
 %3 = spirv.CL.u_min %0, %1 : vector<3xi16>
 ```
 """
-function CL_u_min(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function CL_u_min(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2256,9 +2256,9 @@ composite-construct-op ::= ssa-id `=` `spirv.CompositeConstruct`
 %0 = spirv.CompositeConstruct %1, %2, %3 : vector<3xf32>
 ```
 """
-function CompositeConstruct(constituents::Vector{Value}; result::IR.Type, location=Location())
+function CompositeConstruct(constituents; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[constituents..., ]
+    operands = Value[value.(constituents)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2300,9 +2300,9 @@ composite-extract-op ::= ssa-id `=` `spirv.CompositeExtract` ssa-use
 %2 = spirv.CompositeExtract %1[1 : i32] : !spirv.array<4x!spirv.array<4xf32>>
 ```
 """
-function CompositeExtract(composite::Value; component::IR.Type, indices, location=Location())
+function CompositeExtract(composite; component::IR.Type, indices, location=Location())
     results = IR.Type[component, ]
-    operands = Value[composite, ]
+    operands = Value[value(composite), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("indices", indices), ]
@@ -2344,9 +2344,9 @@ composite-insert-op ::= ssa-id `=` `spirv.CompositeInsert` ssa-use, ssa-use
 %0 = spirv.CompositeInsert %object, %composite[1 : i32] : f32 into !spirv.array<4xf32>
 ```
 """
-function CompositeInsert(object::Value, composite::Value; result::IR.Type, indices, location=Location())
+function CompositeInsert(object, composite; result::IR.Type, indices, location=Location())
     results = IR.Type[result, ]
-    operands = Value[object, composite, ]
+    operands = Value[value(object), value(composite), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("indices", indices), ]
@@ -2494,9 +2494,9 @@ convert-f-to-s-op ::= ssa-id `=` `spirv.ConvertFToSOp` ssa-use
 %3 = spirv.ConvertFToS %2 : vector<3xf32> to vector<3xi32>
 ```
 """
-function ConvertFToS(operand::Value; result::IR.Type, location=Location())
+function ConvertFToS(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2534,9 +2534,9 @@ convert-f-to-u-op ::= ssa-id `=` `spirv.ConvertFToUOp` ssa-use
 %3 = spirv.ConvertFToU %2 : vector<3xf32> to vector<3xi32>
 ```
 """
-function ConvertFToU(operand::Value; result::IR.Type, location=Location())
+function ConvertFToU(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2574,9 +2574,9 @@ ptr-to-u-convert-op ::= ssa-id `=` `spirv.ConvertPtrToUOp` ssa-use
 %1 = spirv.ConvertPtrToU %0 : !spirv.ptr<i32, Generic> to i32
 ```
 """
-function ConvertPtrToU(pointer::Value; result::IR.Type, location=Location())
+function ConvertPtrToU(pointer; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, ]
+    operands = Value[value(pointer), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2613,9 +2613,9 @@ convert-s-to-f-op ::= ssa-id `=` `spirv.ConvertSToFOp` ssa-use
 %3 = spirv.ConvertSToF %2 : vector<3xi32> to vector<3xf32>
 ```
 """
-function ConvertSToF(operand::Value; result::IR.Type, location=Location())
+function ConvertSToF(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2652,9 +2652,9 @@ convert-u-to-f-op ::= ssa-id `=` `spirv.ConvertUToFOp` ssa-use
 %3 = spirv.ConvertUToF %2 : vector<3xi32> to vector<3xf32>
 ```
 """
-function ConvertUToF(operand::Value; result::IR.Type, location=Location())
+function ConvertUToF(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2693,9 +2693,9 @@ u-to-ptr-convert-op ::= ssa-id `=` `spirv.ConvertUToPtr` ssa-use
 %1 = spirv.ConvertUToPtr %0 :  i32 to !spirv.ptr<i32, Generic>
 ```
 """
-function ConvertUToPtr(operand::Value; result::IR.Type, location=Location())
+function ConvertUToPtr(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2737,9 +2737,9 @@ copy-memory-op ::= `spirv.CopyMemory ` storage-class ssa-use
 spirv.CopyMemory \"Function\" %0, \"Function\" %1 : f32
 ```
 """
-function CopyMemory(target::Value, source::Value; memory_access=nothing, alignment=nothing, source_memory_access=nothing, source_alignment=nothing, location=Location())
+function CopyMemory(target, source; memory_access=nothing, alignment=nothing, source_memory_access=nothing, source_alignment=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[target, source, ]
+    operands = Value[value(target), value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2794,9 +2794,9 @@ atomic-fadd-op ::=
                        !spirv.ptr<f32, StorageBuffer>
 ```
 """
-function EXT_AtomicFAdd(pointer::Value, value::Value; result::IR.Type, memory_scope, semantics, location=Location())
+function EXT_AtomicFAdd(pointer, value; result::IR.Type, memory_scope, semantics, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, value, ]
+    operands = Value[value(pointer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("memory_scope", memory_scope), namedattribute("semantics", semantics), ]
@@ -2933,9 +2933,9 @@ fadd-op ::= ssa-id `=` `spirv.FAdd` ssa-use, ssa-use
 %5 = spirv.FAdd %2, %3 : vector<4xf32>
 ```
 """
-function FAdd(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function FAdd(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2974,9 +2974,9 @@ f-convert-op ::= ssa-id `=` `spirv.FConvertOp` ssa-use
 %3 = spirv.FConvertOp %2 : vector<3xf32> to vector<3xf64>
 ```
 """
-function FConvert(operand::Value; result::IR.Type, location=Location())
+function FConvert(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3015,9 +3015,9 @@ fdiv-op ::= ssa-id `=` `spirv.FDiv` ssa-use, ssa-use
 %5 = spirv.FDiv %2, %3 : vector<4xf32>
 ```
 """
-function FDiv(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function FDiv(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3058,9 +3058,9 @@ fmod-op ::= ssa-id `=` `spirv.FMod` ssa-use, ssa-use
 %5 = spirv.FMod %2, %3 : vector<4xf32>
 ```
 """
-function FMod(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function FMod(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3100,9 +3100,9 @@ fmul-op ::= `spirv.FMul` ssa-use, ssa-use
 %5 = spirv.FMul %2, %3 : vector<4xf32>
 ```
 """
-function FMul(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function FMul(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3140,9 +3140,9 @@ fmul-op ::= `spirv.FNegate` ssa-use `:` float-scalar-vector-type
 %3 = spirv.FNegate %2 : vector<4xf32>
 ```
 """
-function FNegate(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function FNegate(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3182,9 +3182,9 @@ fordequal-op ::= ssa-id `=` `spirv.FOrdEqual` ssa-use, ssa-use
 %5 = spirv.FOrdEqual %2, %3 : vector<4xf32>
 ```
 """
-function FOrdEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FOrdEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3223,9 +3223,9 @@ fordgte-op ::= ssa-id `=` `spirv.FOrdGreaterThanEqual` ssa-use, ssa-use
 %5 = spirv.FOrdGreaterThanEqual %2, %3 : vector<4xf32>
 ```
 """
-function FOrdGreaterThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FOrdGreaterThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3264,9 +3264,9 @@ fordgt-op ::= ssa-id `=` `spirv.FOrdGreaterThan` ssa-use, ssa-use
 %5 = spirv.FOrdGreaterThan %2, %3 : vector<4xf32>
 ```
 """
-function FOrdGreaterThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FOrdGreaterThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3305,9 +3305,9 @@ fordlte-op ::= ssa-id `=` `spirv.FOrdLessThanEqual` ssa-use, ssa-use
 %5 = spirv.FOrdLessThanEqual %2, %3 : vector<4xf32>
 ```
 """
-function FOrdLessThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FOrdLessThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3346,9 +3346,9 @@ fordlt-op ::= ssa-id `=` `spirv.FOrdLessThan` ssa-use, ssa-use
 %5 = spirv.FOrdLessThan %2, %3 : vector<4xf32>
 ```
 """
-function FOrdLessThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FOrdLessThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3387,9 +3387,9 @@ fordneq-op ::= ssa-id `=` `spirv.FOrdNotEqual` ssa-use, ssa-use
 %5 = spirv.FOrdNotEqual %2, %3 : vector<4xf32>
 ```
 """
-function FOrdNotEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FOrdNotEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3430,9 +3430,9 @@ frem-op ::= ssa-id `=` `spirv.FRemOp` ssa-use, ssa-use
 %5 = spirv.FRemOp %2, %3 : vector<4xf32>
 ```
 """
-function FRem(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function FRem(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3471,9 +3471,9 @@ fsub-op ::= ssa-id `=` `spirv.FRemOp` ssa-use, ssa-use
 %5 = spirv.FRemOp %2, %3 : vector<4xf32>
 ```
 """
-function FSub(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function FSub(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3513,9 +3513,9 @@ funordequal-op ::= ssa-id `=` `spirv.FUnordEqual` ssa-use, ssa-use
 %5 = spirv.FUnordEqual %2, %3 : vector<4xf32>
 ```
 """
-function FUnordEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FUnordEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3554,9 +3554,9 @@ funordgte-op ::= ssa-id `=` `spirv.FUnordGreaterThanEqual` ssa-use, ssa-use
 %5 = spirv.FUnordGreaterThanEqual %2, %3 : vector<4xf32>
 ```
 """
-function FUnordGreaterThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FUnordGreaterThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3595,9 +3595,9 @@ funordgt-op ::= ssa-id `=` `spirv.FUnordGreaterThan` ssa-use, ssa-use
 %5 = spirv.FUnordGreaterThan %2, %3 : vector<4xf32>
 ```
 """
-function FUnordGreaterThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FUnordGreaterThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3636,9 +3636,9 @@ funordlte-op ::= ssa-id `=` `spirv.FUnordLessThanEqual` ssa-use, ssa-use
 %5 = spirv.FUnordLessThanEqual %2, %3 : vector<4xf32>
 ```
 """
-function FUnordLessThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FUnordLessThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3677,9 +3677,9 @@ funordlt-op ::= ssa-id `=` `spirv.FUnordLessThan` ssa-use, ssa-use
 %5 = spirv.FUnordLessThan %2, %3 : vector<4xf32>
 ```
 """
-function FUnordLessThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FUnordLessThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3718,9 +3718,9 @@ funordneq-op ::= ssa-id `=` `spirv.FUnordNotEqual` ssa-use, ssa-use
 %5 = spirv.FUnordNotEqual %2, %3 : vector<4xf32>
 ```
 """
-function FUnordNotEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function FUnordNotEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3810,9 +3810,9 @@ spirv.FunctionCall @f_void(%arg0) : (i32) ->  ()
 %0 = spirv.FunctionCall @f_iadd(%arg0, %arg1) : (i32, i32) -> i32
 ```
 """
-function FunctionCall(arguments::Vector{Value}; return_value=nothing::Union{Nothing, IR.Type}, callee, location=Location())
+function FunctionCall(arguments; return_value=nothing::Union{Nothing, IR.Type}, callee, location=Location())
     results = IR.Type[]
-    operands = Value[arguments..., ]
+    operands = Value[value.(arguments)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
@@ -3855,9 +3855,9 @@ acos-op ::= ssa-id `=` `spirv.GL.Acos` ssa-use `:`
 %3 = spirv.GL.Acos %1 : vector<3xf16>
 ```
 """
-function GL_Acos(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Acos(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3900,9 +3900,9 @@ asin-op ::= ssa-id `=` `spirv.GL.Asin` ssa-use `:`
 %3 = spirv.GL.Asin %1 : vector<3xf16>
 ```
 """
-function GL_Asin(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Asin(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3945,9 +3945,9 @@ atan-op ::= ssa-id `=` `spirv.GL.Atan` ssa-use `:`
 %3 = spirv.GL.Atan %1 : vector<3xf16>
 ```
 """
-function GL_Atan(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Atan(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3987,9 +3987,9 @@ ceil-op ::= ssa-id `=` `spirv.GL.Ceil` ssa-use `:`
 %3 = spirv.GL.Ceil %1 : vector<3xf16>
 ```
 """
-function GL_Ceil(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Ceil(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4030,9 +4030,9 @@ cos-op ::= ssa-id `=` `spirv.GL.Cos` ssa-use `:`
 %3 = spirv.GL.Cos %1 : vector<3xf16>
 ```
 """
-function GL_Cos(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Cos(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4073,9 +4073,9 @@ cosh-op ::= ssa-id `=` `spirv.GL.Cosh` ssa-use `:`
 %3 = spirv.GL.Cosh %1 : vector<3xf16>
 ```
 """
-function GL_Cosh(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Cosh(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4116,9 +4116,9 @@ exp-op ::= ssa-id `=` `spirv.GL.Exp` ssa-use `:`
 %3 = spirv.GL.Exp %1 : vector<3xf16>
 ```
 """
-function GL_Exp(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Exp(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4157,9 +4157,9 @@ abs-op ::= ssa-id `=` `spirv.GL.FAbs` ssa-use `:`
 %3 = spirv.GL.FAbs %1 : vector<3xf16>
 ```
 """
-function GL_FAbs(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_FAbs(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4198,9 +4198,9 @@ fclamp-op ::= ssa-id `=` `spirv.GL.FClamp` ssa-use, ssa-use, ssa-use `:`
 %3 = spirv.GL.FClamp %x, %min, %max : vector<3xf16>
 ```
 """
-function GL_FClamp(x::Value, y::Value, z::Value; result::IR.Type, location=Location())
+function GL_FClamp(x, y, z; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[x, y, z, ]
+    operands = Value[value(x), value(y), value(z), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4239,9 +4239,9 @@ fmax-op ::= ssa-id `=` `spirv.GL.FMax` ssa-use `:`
 %3 = spirv.GL.FMax %0, %1 : vector<3xf16>
 ```
 """
-function GL_FMax(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_FMax(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4281,9 +4281,9 @@ fmin-op ::= ssa-id `=` `spirv.GL.FMin` ssa-use `:`
 %3 = spirv.GL.FMin %0, %1 : vector<3xf16>
 ```
 """
-function GL_FMin(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_FMin(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4315,9 +4315,9 @@ Result Type and the type of all operands must be the same type. Results are comp
 %0 = spirv.GL.FMix %x : vector<4xf32>, %y : vector<4xf32>, %a : vector<4xf32> -> vector<4xf32>
 ```
 """
-function GL_FMix(x::Value, y::Value, a::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_FMix(x, y, a; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[x, y, a, ]
+    operands = Value[value(x), value(y), value(a), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4356,9 +4356,9 @@ sign-op ::= ssa-id `=` `spirv.GL.FSign` ssa-use `:`
 %3 = spirv.GL.FSign %1 : vector<3xf16>
 ```
 """
-function GL_FSign(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_FSign(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4385,9 +4385,9 @@ computed per component.
 
 This instruction is currently limited to 32-bit width components.
 """
-function GL_FindUMsb(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_FindUMsb(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4427,9 +4427,9 @@ floor-op ::= ssa-id `=` `spirv.GL.Floor` ssa-use `:`
 %3 = spirv.GL.Floor %1 : vector<3xf16>
 ```
 """
-function GL_Floor(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Floor(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4478,9 +4478,9 @@ fma-op ::= ssa-id `=` `spirv.GL.Fma` ssa-use, ssa-use, ssa-use `:`
 %1 = spirv.GL.Fma %a, %b, %c : vector<3xf16>
 ```
 """
-function GL_Fma(x::Value, y::Value, z::Value; result::IR.Type, location=Location())
+function GL_Fma(x, y, z; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[x, y, z, ]
+    operands = Value[value(x), value(y), value(z), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4531,9 +4531,9 @@ frexpstruct-op ::= ssa-id `=` `spirv.GL.FrexpStruct` ssa-use `:`
 %3 = spirv.GL.FrexpStruct %0 : vector<3xf32> -> !spirv.struct<vector<3xf32>, vector<3xi32>>
 ```
 """
-function GL_FrexpStruct(operand::Value; result::IR.Type, location=Location())
+function GL_FrexpStruct(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4571,9 +4571,9 @@ rsqrt-op ::= ssa-id `=` `spirv.GL.InverseSqrt` ssa-use `:`
 %3 = spirv.GL.InverseSqrt %1 : vector<3xf16>
 ```
 """
-function GL_InverseSqrt(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_InverseSqrt(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4621,9 +4621,9 @@ component.
 %y = spirv.GL.Ldexp %x : vector<3xf32>, %exp : vector<3xi32> -> vector<3xf32>
 ```
 """
-function GL_Ldexp(x::Value, exp::Value; y=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Ldexp(x, exp; y=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[x, exp, ]
+    operands = Value[value(x), value(exp), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4665,9 +4665,9 @@ log-op ::= ssa-id `=` `spirv.GL.Log` ssa-use `:`
 %3 = spirv.GL.Log %1 : vector<3xf16>
 ```
 """
-function GL_Log(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Log(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4710,9 +4710,9 @@ pow-op ::= ssa-id `=` `spirv.GL.Pow` ssa-use `:`
 %3 = spirv.GL.Pow %0, %1 : vector<3xf16>
 ```
 """
-function GL_Pow(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Pow(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4753,9 +4753,9 @@ round-even-op ::= ssa-id `=` `spirv.GL.RoundEven` ssa-use `:`
 %3 = spirv.GL.RoundEven %1 : vector<3xf16>
 ```
 """
-function GL_RoundEven(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_RoundEven(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4797,9 +4797,9 @@ round-op ::= ssa-id `=` `spirv.GL.Round` ssa-use `:`
 %3 = spirv.GL.Round %1 : vector<3xf16>
 ```
 """
-function GL_Round(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Round(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4837,9 +4837,9 @@ abs-op ::= ssa-id `=` `spirv.GL.SAbs` ssa-use `:`
 %3 = spirv.GL.SAbs %1 : vector<3xi16>
 ```
 """
-function GL_SAbs(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_SAbs(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4877,9 +4877,9 @@ uclamp-op ::= ssa-id `=` `spirv.GL.UClamp` ssa-use, ssa-use, ssa-use `:`
 %3 = spirv.GL.SClamp %x, %min, %max : vector<3xsi16>
 ```
 """
-function GL_SClamp(x::Value, y::Value, z::Value; result::IR.Type, location=Location())
+function GL_SClamp(x, y, z; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[x, y, z, ]
+    operands = Value[value(x), value(y), value(z), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4917,9 +4917,9 @@ smax-op ::= ssa-id `=` `spirv.GL.SMax` ssa-use `:`
 %3 = spirv.GL.SMax %0, %1 : vector<3xi16>
 ```
 """
-function GL_SMax(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_SMax(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4958,9 +4958,9 @@ smin-op ::= ssa-id `=` `spirv.GL.SMin` ssa-use `:`
 %3 = spirv.GL.SMin %0, %1 : vector<3xi16>
 ```
 """
-function GL_SMin(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_SMin(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -4998,9 +4998,9 @@ sign-op ::= ssa-id `=` `spirv.GL.SSign` ssa-use `:`
 %3 = spirv.GL.SSign %1 : vector<3xi16>
 ```
 """
-function GL_SSign(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_SSign(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5041,9 +5041,9 @@ sin-op ::= ssa-id `=` `spirv.GL.Sin` ssa-use `:`
 %3 = spirv.GL.Sin %1 : vector<3xf16>
 ```
 """
-function GL_Sin(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Sin(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5084,9 +5084,9 @@ sinh-op ::= ssa-id `=` `spirv.GL.Sinh` ssa-use `:`
 %3 = spirv.GL.Sinh %1 : vector<3xf16>
 ```
 """
-function GL_Sinh(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Sinh(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5125,9 +5125,9 @@ sqrt-op ::= ssa-id `=` `spirv.GL.Sqrt` ssa-use `:`
 %3 = spirv.GL.Sqrt %1 : vector<3xf16>
 ```
 """
-function GL_Sqrt(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Sqrt(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5168,9 +5168,9 @@ tan-op ::= ssa-id `=` `spirv.GL.Tan` ssa-use `:`
 %3 = spirv.GL.Tan %1 : vector<3xf16>
 ```
 """
-function GL_Tan(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Tan(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5211,9 +5211,9 @@ tanh-op ::= ssa-id `=` `spirv.GL.Tanh` ssa-use `:`
 %3 = spirv.GL.Tanh %1 : vector<3xf16>
 ```
 """
-function GL_Tanh(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_Tanh(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5251,9 +5251,9 @@ uclamp-op ::= ssa-id `=` `spirv.GL.UClamp` ssa-use, ssa-use, ssa-use `:`
 %3 = spirv.GL.UClamp %x, %min, %max : vector<3xui16>
 ```
 """
-function GL_UClamp(x::Value, y::Value, z::Value; result::IR.Type, location=Location())
+function GL_UClamp(x, y, z; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[x, y, z, ]
+    operands = Value[value(x), value(y), value(z), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5291,9 +5291,9 @@ smax-op ::= ssa-id `=` `spirv.GL.UMax` ssa-use `:`
 %3 = spirv.GL.UMax %0, %1 : vector<3xi16>
 ```
 """
-function GL_UMax(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_UMax(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5332,9 +5332,9 @@ smin-op ::= ssa-id `=` `spirv.GL.UMin` ssa-use `:`
 %3 = spirv.GL.UMin %0, %1 : vector<3xi16>
 ```
 """
-function GL_UMin(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function GL_UMin(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5370,9 +5370,9 @@ Workgroup, CrossWorkgroup, or Function.
    !spirv.ptr<f32, CrossWorkGroup>
 ```
 """
-function GenericCastToPtrExplicit(pointer::Value; result::IR.Type, location=Location())
+function GenericCastToPtrExplicit(pointer; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, ]
+    operands = Value[value(pointer), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5404,9 +5404,9 @@ Result Type and Pointer must point to the same type.
    !spirv.ptr<f32, CrossWorkGroup>
 ```
 """
-function GenericCastToPtr(pointer::Value; result::IR.Type, location=Location())
+function GenericCastToPtr(pointer; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, ]
+    operands = Value[value(pointer), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -5525,9 +5525,9 @@ group-broadcast-op ::= ssa-id `=` `spirv.GroupBroadcast` scope ssa_use,
   vector<4xf32>, vector<3xi32>
 ```
 """
-function GroupBroadcast(value::Value, localid::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
+function GroupBroadcast(value, localid; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
     results = IR.Type[]
-    operands = Value[value, localid, ]
+    operands = Value[value(value), value(localid), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
@@ -5573,9 +5573,9 @@ op ::= ssa-id `=` `spirv.GroupFAdd` scope operation ssa-use
 %0 = spirv.GroupFAdd <Workgroup> <Reduce> %value : f32
 ```
 """
-function GroupFAdd(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupFAdd(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -5621,9 +5621,9 @@ op ::= ssa-id `=` `spirv.GroupFMax` scope operation ssa-use
 %0 = spirv.GroupFMax <Workgroup> <Reduce> %value : f32
 ```
 """
-function GroupFMax(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupFMax(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -5669,9 +5669,9 @@ op ::= ssa-id `=` `spirv.GroupFMin` scope operation ssa-use
 %0 = spirv.GroupFMin <Workgroup> <Reduce> %value : f32
 ```
 """
-function GroupFMin(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupFMin(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -5718,9 +5718,9 @@ op ::= ssa-id `=` `spirv.KHR.GroupFMul` scope operation ssa-use
 %0 = spirv.KHR.GroupFMul <Workgroup> <Reduce> %value : f32
 ```
 """
-function KHR_GroupFMul(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function KHR_GroupFMul(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -5766,9 +5766,9 @@ op ::= ssa-id `=` `spirv.GroupIAdd` scope operation ssa-use
 %0 = spirv.GroupIAdd <Workgroup> <Reduce> %value : i32
 ```
 """
-function GroupIAdd(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupIAdd(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -5815,9 +5815,9 @@ op ::= ssa-id `=` `spirv.KHR.GroupIMul` scope operation ssa-use
 %0 = spirv.KHR.GroupIMul <Workgroup> <Reduce> %value : i32
 ```
 """
-function KHR_GroupIMul(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function KHR_GroupIMul(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -5860,9 +5860,9 @@ non-uniform-ballot-op ::= ssa-id `=` `spirv.GroupNonUniformBallot` scope
 %0 = spirv.GroupNonUniformBallot \"SubGroup\" %predicate : vector<4xi32>
 ```
 """
-function GroupNonUniformBallot(predicate::Value; result::IR.Type, execution_scope, location=Location())
+function GroupNonUniformBallot(predicate; result::IR.Type, execution_scope, location=Location())
     results = IR.Type[result, ]
-    operands = Value[predicate, ]
+    operands = Value[value(predicate), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
@@ -5916,9 +5916,9 @@ group-non-uniform-broadcast-op ::= ssa-id `=`
   vector<4xf32>, i32
 ```
 """
-function GroupNonUniformBroadcast(value::Value, id::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
+function GroupNonUniformBroadcast(value, id; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
     results = IR.Type[]
-    operands = Value[value, id, ]
+    operands = Value[value(value), value(id), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
@@ -6011,13 +6011,13 @@ non-uniform-fadd-op ::= ssa-id `=` `spirv.GroupNonUniformFAdd` scope operation
 %1 = spirv.GroupNonUniformFAdd \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xf32>
 ```
 """
-function GroupNonUniformFAdd(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformFAdd(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformFAdd", location;
@@ -6072,13 +6072,13 @@ non-uniform-fmax-op ::= ssa-id `=` `spirv.GroupNonUniformFMax` scope operation
 %1 = spirv.GroupNonUniformFMax \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xf32>
 ```
 """
-function GroupNonUniformFMax(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformFMax(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformFMax", location;
@@ -6133,13 +6133,13 @@ non-uniform-fmin-op ::= ssa-id `=` `spirv.GroupNonUniformFMin` scope operation
 %1 = spirv.GroupNonUniformFMin \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xf32>
 ```
 """
-function GroupNonUniformFMin(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformFMin(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformFMin", location;
@@ -6191,13 +6191,13 @@ non-uniform-fmul-op ::= ssa-id `=` `spirv.GroupNonUniformFMul` scope operation
 %1 = spirv.GroupNonUniformFMul \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xf32>
 ```
 """
-function GroupNonUniformFMul(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformFMul(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformFMul", location;
@@ -6247,13 +6247,13 @@ non-uniform-iadd-op ::= ssa-id `=` `spirv.GroupNonUniformIAdd` scope operation
 %1 = spirv.GroupNonUniformIAdd \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xi32>
 ```
 """
-function GroupNonUniformIAdd(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformIAdd(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformIAdd", location;
@@ -6303,13 +6303,13 @@ non-uniform-imul-op ::= ssa-id `=` `spirv.GroupNonUniformIMul` scope operation
 %1 = spirv.GroupNonUniformIMul \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xi32>
 ```
 """
-function GroupNonUniformIMul(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformIMul(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformIMul", location;
@@ -6359,13 +6359,13 @@ non-uniform-smax-op ::= ssa-id `=` `spirv.GroupNonUniformSMax` scope operation
 %1 = spirv.GroupNonUniformSMax \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xi32>
 ```
 """
-function GroupNonUniformSMax(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformSMax(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformSMax", location;
@@ -6415,13 +6415,13 @@ non-uniform-smin-op ::= ssa-id `=` `spirv.GroupNonUniformSMin` scope operation
 %1 = spirv.GroupNonUniformSMin \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xi32>
 ```
 """
-function GroupNonUniformSMin(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformSMin(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformSMin", location;
@@ -6456,9 +6456,9 @@ invocation or greater than or equal to the size of the group.
 %0 = spirv.GroupNonUniformShuffleDown <Subgroup> %val, %delta : f32, i32
 ```
 """
-function GroupNonUniformShuffleDown(value::Value, delta::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
+function GroupNonUniformShuffleDown(value, delta; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
     results = IR.Type[]
-    operands = Value[value, delta, ]
+    operands = Value[value(value), value(delta), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
@@ -6495,9 +6495,9 @@ greater than or equal to the size of the group.
 %0 = spirv.GroupNonUniformShuffle <Subgroup> %val, %id : f32, i32
 ```
 """
-function GroupNonUniformShuffle(value::Value, id::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
+function GroupNonUniformShuffle(value, id; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
     results = IR.Type[]
-    operands = Value[value, id, ]
+    operands = Value[value(value), value(id), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
@@ -6535,9 +6535,9 @@ the selected lane is inactive.
 %0 = spirv.GroupNonUniformShuffleUp <Subgroup> %val, %delta : f32, i32
 ```
 """
-function GroupNonUniformShuffleUp(value::Value, delta::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
+function GroupNonUniformShuffleUp(value, delta; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
     results = IR.Type[]
-    operands = Value[value, delta, ]
+    operands = Value[value(value), value(delta), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
@@ -6575,9 +6575,9 @@ equal to the size of the group.
 %0 = spirv.GroupNonUniformShuffleXor <Subgroup> %val, %mask : f32, i32
 ```
 """
-function GroupNonUniformShuffleXor(value::Value, mask::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
+function GroupNonUniformShuffleXor(value, mask; result=nothing::Union{Nothing, IR.Type}, execution_scope, location=Location())
     results = IR.Type[]
-    operands = Value[value, mask, ]
+    operands = Value[value(value), value(mask), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), ]
@@ -6632,13 +6632,13 @@ non-uniform-umax-op ::= ssa-id `=` `spirv.GroupNonUniformUMax` scope operation
 %1 = spirv.GroupNonUniformUMax \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xi32>
 ```
 """
-function GroupNonUniformUMax(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformUMax(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformUMax", location;
@@ -6689,13 +6689,13 @@ non-uniform-umin-op ::= ssa-id `=` `spirv.GroupNonUniformUMin` scope operation
 %1 = spirv.GroupNonUniformUMin \"Subgroup\" \"ClusteredReduce\" %vector cluster_size(%four) : vector<4xi32>
 ```
 """
-function GroupNonUniformUMin(value::Value, cluster_size=nothing::Union{Nothing, Value}; result::IR.Type, execution_scope, group_operation, location=Location())
+function GroupNonUniformUMin(value, cluster_size=nothing; result::IR.Type, execution_scope, group_operation, location=Location())
     results = IR.Type[result, ]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(operands, value(cluster_size))
     
     IR.create_operation(
         "spirv.GroupNonUniformUMin", location;
@@ -6738,9 +6738,9 @@ op ::= ssa-id `=` `spirv.GroupSMax` scope operation ssa-use
 %0 = spirv.GroupSMax <Workgroup> <Reduce> %value : i32
 ```
 """
-function GroupSMax(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupSMax(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -6787,9 +6787,9 @@ op ::= ssa-id `=` `spirv.GroupSMin` scope operation ssa-use
 %0 = spirv.GroupSMin <Workgroup> <Reduce> %value : i32
 ```
 """
-function GroupSMin(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupSMin(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -6835,9 +6835,9 @@ op ::= ssa-id `=` `spirv.GroupUMax` scope operation ssa-use
 %0 = spirv.GroupUMax <Workgroup> <Reduce> %value : i32
 ```
 """
-function GroupUMax(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupUMax(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -6884,9 +6884,9 @@ op ::= ssa-id `=` `spirv.GroupUMin` scope operation ssa-use
 %0 = spirv.GroupUMin <Workgroup> <Reduce> %value : i32
 ```
 """
-function GroupUMin(x::Value; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
+function GroupUMin(x; result=nothing::Union{Nothing, IR.Type}, execution_scope, group_operation, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("execution_scope", execution_scope), namedattribute("group_operation", group_operation), ]
@@ -6929,9 +6929,9 @@ the component width, and 0 otherwise.
 %2 = spirv.IAddCarry %0, %1 : !spirv.struct<(vector<2xi32>, vector<2xi32>)>
 ```
 """
-function IAddCarry(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function IAddCarry(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -6975,9 +6975,9 @@ iadd-op ::= ssa-id `=` `spirv.IAdd` ssa-use, ssa-use
 
 ```
 """
-function IAdd(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function IAdd(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7017,9 +7017,9 @@ iequal-op ::= ssa-id `=` `spirv.IEqual` ssa-use, ssa-use
 
 ```
 """
-function IEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function IEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7063,9 +7063,9 @@ imul-op ::= ssa-id `=` `spirv.IMul` ssa-use, ssa-use
 
 ```
 """
-function IMul(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function IMul(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7103,9 +7103,9 @@ convert-bf16-to-f-op ::= ssa-id `=` `spirv.INTEL.ConvertBF16ToF` ssa-use
 %3 = spirv.ConvertBF16ToF %2 : vector<3xi16> to vector<3xf32>
 ```
 """
-function INTEL_ConvertBF16ToF(operand::Value; result::IR.Type, location=Location())
+function INTEL_ConvertBF16ToF(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7144,9 +7144,9 @@ convert-f-to-bf16-op ::= ssa-id `=` `spirv.INTEL.ConvertFToBF16` ssa-use
 %3 = spirv.ConvertFToBF16 %2 : vector<3xf32> to vector<3xi16>
 ```
 """
-function INTEL_ConvertFToBF16(operand::Value; result::IR.Type, location=Location())
+function INTEL_ConvertFToBF16(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7189,9 +7189,9 @@ present, it is the same as specifying the memory operand None.
      !spirv.jointmatrix<8x16xi32, ColumnMajor, Subgroup>
 ```
 """
-function INTEL_JointMatrixLoad(pointer::Value, stride::Value; result::IR.Type, layout, scope, memory_access=nothing, alignment=nothing, location=Location())
+function INTEL_JointMatrixLoad(pointer, stride; result::IR.Type, layout, scope, memory_access=nothing, alignment=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, stride, ]
+    operands = Value[value(pointer), value(stride), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("layout", layout), namedattribute("scope", scope), ]
@@ -7240,9 +7240,9 @@ integer type.
      -> !spirv.jointmatrix<8x8xi32,  RowMajor, Subgroup>
 ```
 """
-function INTEL_JointMatrixMad(a::Value, b::Value, c::Value; result=nothing::Union{Nothing, IR.Type}, scope, location=Location())
+function INTEL_JointMatrixMad(a, b, c; result=nothing::Union{Nothing, IR.Type}, scope, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, c, ]
+    operands = Value[value(a), value(b), value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("scope", scope), ]
@@ -7290,9 +7290,9 @@ spirv.INTEL.JointMatrixStore <Subgroup> <ColumnMajor> %ptr, %m, %stride
 !spirv.jointmatrix<8x16xi32, RowMajor, Subgroup>, i32)
 ```
 """
-function INTEL_JointMatrixStore(pointer::Value, object::Value, stride::Value; layout, scope, memory_access=nothing, alignment=nothing, location=Location())
+function INTEL_JointMatrixStore(pointer, object, stride; layout, scope, memory_access=nothing, alignment=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[pointer, object, stride, ]
+    operands = Value[value(pointer), value(object), value(stride), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("layout", layout), namedattribute("scope", scope), ]
@@ -7375,9 +7375,9 @@ subgroup-block-read-INTEL-op ::= ssa-id `=` `spirv.INTEL.SubgroupBlockRead`
 %0 = spirv.INTEL.SubgroupBlockRead \"StorageBuffer\" %ptr : i32
 ```
 """
-function INTEL_SubgroupBlockRead(ptr::Value; value::IR.Type, location=Location())
+function INTEL_SubgroupBlockRead(ptr; value::IR.Type, location=Location())
     results = IR.Type[value, ]
-    operands = Value[ptr, ]
+    operands = Value[value(ptr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7420,9 +7420,9 @@ subgroup-block-write-INTEL-op ::= ssa-id `=` `spirv.INTEL.SubgroupBlockWrite`
 spirv.INTEL.SubgroupBlockWrite \"StorageBuffer\" %ptr, %value : i32
 ```
 """
-function INTEL_SubgroupBlockWrite(ptr::Value, value::Value; location=Location())
+function INTEL_SubgroupBlockWrite(ptr, value; location=Location())
     results = IR.Type[]
-    operands = Value[ptr, value, ]
+    operands = Value[value(ptr), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7461,9 +7461,9 @@ inot-equal-op ::= ssa-id `=` `spirv.INotEqual` ssa-use, ssa-use
 
 ```
 """
-function INotEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function INotEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7507,9 +7507,9 @@ otherwise.
 %2 = spirv.ISubBorrow %0, %1 : !spirv.struct<(vector<2xi32>, vector<2xi32>)>
 ```
 """
-function ISubBorrow(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function ISubBorrow(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7553,9 +7553,9 @@ isub-op ::= `spirv.ISub` ssa-use, ssa-use
 
 ```
 """
-function ISub(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function ISub(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7605,9 +7605,9 @@ image-operands ::= `\"None\"` | `\"Bias\"` | `\"Lod\"` | `\"Grad\"`
 %0 = spirv.ImageDrefGather %1 : !spirv.sampled_image<!spirv.image<i32, Dim2D, NoDepth, NonArrayed, SingleSampled, NoSampler, Unknown>>, %2 : vector<4xf32>, %3 : f32 [\"NonPrivateTexel\"] : f32, f32 -> vector<4xi32>
 ```
 """
-function ImageDrefGather(sampledimage::Value, coordinate::Value, dref::Value, operand_arguments::Vector{Value}; result::IR.Type, imageoperands=nothing, location=Location())
+function ImageDrefGather(sampledimage, coordinate, dref, operand_arguments; result::IR.Type, imageoperands=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[sampledimage, coordinate, dref, operand_arguments..., ]
+    operands = Value[value(sampledimage), value(coordinate), value(dref), value.(operand_arguments)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7637,9 +7637,9 @@ same as Result Type.
 %0 = spirv.Image %1 : !spirv.sampled_image<!spirv.image<f32, Cube, NoDepth, NonArrayed, SingleSampled, NoSampler, Unknown>>
 ```
 """
-function Image(sampledimage::Value; result::IR.Type, location=Location())
+function Image(sampledimage; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[sampledimage, ]
+    operands = Value[value(sampledimage), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7686,9 +7686,9 @@ See the client API specification for additional image type restrictions.
 %5 = spirv.ImageQuerySize %2 : !spirv.image<i32, Dim2D, NoDepth, Arrayed, SingleSampled, NoSampler, Unknown> -> vector<3xi32>
 ```
 """
-function ImageQuerySize(image::Value; result::IR.Type, location=Location())
+function ImageQuerySize(image; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[image, ]
+    operands = Value[value(image), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7723,9 +7723,9 @@ func @inbounds_ptr_access_chain(%arg0: !spirv.ptr<f32, CrossWorkgroup>, %arg1 : 
 }
 ```
 """
-function InBoundsPtrAccessChain(base_ptr::Value, element::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+function InBoundsPtrAccessChain(base_ptr, element, indices; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[base_ptr, element, indices..., ]
+    operands = Value[value(base_ptr), value(element), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7764,9 +7764,9 @@ isinf-op ::= ssa-id `=` `spirv.IsInf` ssa-use
 %3 = spirv.IsInf %1: vector<4xi32>
 ```
 """
-function IsInf(operand::Value; result::IR.Type, location=Location())
+function IsInf(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7805,9 +7805,9 @@ isnan-op ::= ssa-id `=` `spirv.IsNan` ssa-use
 %3 = spirv.IsNan %1: vector<4xi32>
 ```
 """
-function IsNan(operand::Value; result::IR.Type, location=Location())
+function IsNan(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7837,9 +7837,9 @@ assumetruekhr-op ::= `spirv.KHR.AssumeTrue` ssa-use
 spirv.KHR.AssumeTrue %arg
 ```
 """
-function KHR_AssumeTrue(condition::Value; location=Location())
+function KHR_AssumeTrue(condition; location=Location())
     results = IR.Type[]
-    operands = Value[condition, ]
+    operands = Value[value(condition), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -7936,9 +7936,9 @@ cooperative-matrix-load-op ::= ssa-id `=` `spirv.KHR.CooperativeMatrixLoad`
          as !spirv.KHR.coopmatrix<16x8xi32, Workgroup, MatrixA>
 ```
 """
-function KHR_CooperativeMatrixLoad(pointer::Value, stride::Value; result::IR.Type, matrix_layout, memory_operand=nothing, location=Location())
+function KHR_CooperativeMatrixLoad(pointer, stride; result::IR.Type, matrix_layout, memory_operand=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, stride, ]
+    operands = Value[value(pointer), value(stride), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("matrix_layout", matrix_layout), ]
@@ -7999,9 +7999,9 @@ inactive.
     !spirv.ptr<i32, StorageBuffer>, !spirv.coopmatrix<16x8xi32, Workgroup, MatrixA>
 ```
 """
-function KHR_CooperativeMatrixStore(pointer::Value, object::Value, stride::Value; matrix_layout, memory_operand=nothing, location=Location())
+function KHR_CooperativeMatrixStore(pointer, object, stride; matrix_layout, memory_operand=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[pointer, object, stride, ]
+    operands = Value[value(pointer), value(object), value(stride), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("matrix_layout", matrix_layout), ]
@@ -8045,9 +8045,9 @@ subgroup-ballot-op ::= ssa-id `=` `spirv.KHR.SubgroupBallot`
 %0 = spirv.KHR.SubgroupBallot %predicate : vector<4xi32>
 ```
 """
-function KHR_SubgroupBallot(predicate::Value; result::IR.Type, location=Location())
+function KHR_SubgroupBallot(predicate; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[predicate, ]
+    operands = Value[value(predicate), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8093,9 +8093,9 @@ load-op ::= ssa-id ` = spirv.Load ` storage-class ssa-use
 %3 = spirv.Load \"Function\" %0 [\"Aligned\", 4] : f32
 ```
 """
-function Load(ptr::Value; value::IR.Type, memory_access=nothing, alignment=nothing, location=Location())
+function Load(ptr; value::IR.Type, memory_access=nothing, alignment=nothing, location=Location())
     results = IR.Type[value, ]
-    operands = Value[ptr, ]
+    operands = Value[value(ptr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8135,9 +8135,9 @@ logical-and ::= `spirv.LogicalAnd` ssa-use `,` ssa-use
 %2 = spirv.LogicalAnd %0, %1 : vector<4xi1>
 ```
 """
-function LogicalAnd(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function LogicalAnd(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8175,9 +8175,9 @@ logical-equal ::= `spirv.LogicalEqual` ssa-use `,` ssa-use
 %2 = spirv.LogicalEqual %0, %1 : vector<4xi1>
 ```
 """
-function LogicalEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function LogicalEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8215,9 +8215,9 @@ logical-not-equal ::= `spirv.LogicalNotEqual` ssa-use `,` ssa-use
 %2 = spirv.LogicalNotEqual %0, %1 : vector<4xi1>
 ```
 """
-function LogicalNotEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function LogicalNotEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8252,9 +8252,9 @@ logical-not ::= `spirv.LogicalNot` ssa-use `:` operand-type
 %2 = spirv.LogicalNot %0 : vector<4xi1>
 ```
 """
-function LogicalNot(operand::Value; result::IR.Type, location=Location())
+function LogicalNot(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8292,9 +8292,9 @@ logical-or ::= `spirv.LogicalOr` ssa-use `,` ssa-use
 %2 = spirv.LogicalOr %0, %1 : vector<4xi1>
 ```
 """
-function LogicalOr(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function LogicalOr(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8378,9 +8378,9 @@ ssa-use `:` matrix-type `,` matrix-type `->` matrix-type
     !spirv.matrix<4 x vector<4xf32>>
 ```
 """
-function MatrixTimesMatrix(leftmatrix::Value, rightmatrix::Value; result::IR.Type, location=Location())
+function MatrixTimesMatrix(leftmatrix, rightmatrix; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[leftmatrix, rightmatrix, ]
+    operands = Value[value(leftmatrix), value(rightmatrix), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8420,9 +8420,9 @@ ssa-use `:` matrix-type `,` float-type `->` matrix-type
 
 ```
 """
-function MatrixTimesScalar(matrix::Value, scalar::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function MatrixTimesScalar(matrix, scalar; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[matrix, scalar, ]
+    operands = Value[value(matrix), value(scalar), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8659,9 +8659,9 @@ For example:
      : !spirv.ptr<i32, StorageBuffer> as !spirv.NV.coopmatrix<16x8xi32, Workgroup>
 ```
 """
-function NV_CooperativeMatrixLoad(pointer::Value, stride::Value, columnmajor::Value; result::IR.Type, memory_access=nothing, location=Location())
+function NV_CooperativeMatrixLoad(pointer, stride, columnmajor; result::IR.Type, memory_access=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, stride, columnmajor, ]
+    operands = Value[value(pointer), value(stride), value(columnmajor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8722,9 +8722,9 @@ For example:
   !spirv.NV.coopmatrix<8x16xi32, Subgroup>
 ```
 """
-function NV_CooperativeMatrixMulAdd(a::Value, b::Value, c::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function NV_CooperativeMatrixMulAdd(a, b, c; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, c, ]
+    operands = Value[value(a), value(b), value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8777,9 +8777,9 @@ For example:
     !spirv.ptr<i32, StorageBuffer>, !spirv.NV.coopmatrix<16x8xi32, Workgroup>
 ```
 """
-function NV_CooperativeMatrixStore(pointer::Value, object::Value, stride::Value, columnmajor::Value; memory_access=nothing, location=Location())
+function NV_CooperativeMatrixStore(pointer, object, stride, columnmajor; memory_access=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[pointer, object, stride, columnmajor, ]
+    operands = Value[value(pointer), value(object), value(stride), value(columnmajor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8819,9 +8819,9 @@ Results are computed per component, and within each component, per bit.
     %3 = spirv.Not %1 : vector<4xi32>
     ```
 """
-function Not(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function Not(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8862,9 +8862,9 @@ ordered-op ::= ssa-id `=` `spirv.Ordered` ssa-use, ssa-use
 %5 = spirv.Ordered %2, %3 : vector<4xf32>
 ```
 """
-function Ordered(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function Ordered(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8922,9 +8922,9 @@ func @ptr_access_chain(%arg0: !spirv.ptr<f32, CrossWorkgroup>, %arg1 : i64) -> (
 }
 ```
 """
-function PtrAccessChain(base_ptr::Value, element::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+function PtrAccessChain(base_ptr, element, indices; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[base_ptr, element, indices..., ]
+    operands = Value[value(base_ptr), value(element), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -8956,9 +8956,9 @@ Result Type and Pointer must point to the same type.
      !spirv.ptr<f32, Generic>
 ```
 """
-function PtrCastToGeneric(pointer::Value; result::IR.Type, location=Location())
+function PtrCastToGeneric(pointer; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[pointer, ]
+    operands = Value[value(pointer), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9058,9 +9058,9 @@ return-value-op ::= `spirv.ReturnValue` ssa-use `:` spirv-type
 spirv.ReturnValue %0 : f32
 ```
 """
-function ReturnValue(value::Value; location=Location())
+function ReturnValue(value; location=Location())
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9098,9 +9098,9 @@ s-convert-op ::= ssa-id `=` `spirv.SConvertOp` ssa-use
 %3 = spirv.SConvertOp %2 : vector<3xi32> to vector<3xi64>
 ```
 """
-function SConvert(operand::Value; result::IR.Type, location=Location())
+function SConvert(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9141,9 +9141,9 @@ sdiv-op ::= ssa-id `=` `spirv.SDiv` ssa-use, ssa-use
 
 ```
 """
-function SDiv(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function SDiv(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9196,9 +9196,9 @@ is undefined.
 %r = spirv.SDotAccSat %a, %b, %acc : (vector<4xi8>, vector<4xi8>, i32) -> i32
 ```
 """
-function SDotAccSat(vector1::Value, vector2::Value, accumulator::Value; result::IR.Type, format=nothing, location=Location())
+function SDotAccSat(vector1, vector2, accumulator; result::IR.Type, format=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector1, vector2, accumulator, ]
+    operands = Value[value(vector1), value(vector2), value(accumulator), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9246,9 +9246,9 @@ overflow and underflow.
 %r = spirv.SDot %a, %b : (vector<4xi8>, vector<4xi8>) -> i32
 ```
 """
-function SDot(vector1::Value, vector2::Value; result::IR.Type, format=nothing, location=Location())
+function SDot(vector1, vector2; result::IR.Type, format=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector1, vector2, ]
+    operands = Value[value(vector1), value(vector2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9288,9 +9288,9 @@ sgreater-than-equal-op ::= ssa-id `=` `spirv.SGreaterThanEqual` ssa-use, ssa-use
 
 ```
 """
-function SGreaterThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function SGreaterThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9329,9 +9329,9 @@ sgreater-than-op ::= ssa-id `=` `spirv.SGreaterThan` ssa-use, ssa-use
 
 ```
 """
-function SGreaterThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function SGreaterThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9370,9 +9370,9 @@ sless-than-equal-op ::= ssa-id `=` `spirv.SLessThanEqual` ssa-use, ssa-use
 
 ```
 """
-function SLessThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function SLessThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9411,9 +9411,9 @@ sless-than-op ::= ssa-id `=` `spirv.SLessThan` ssa-use, ssa-use
 
 ```
 """
-function SLessThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function SLessThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9455,9 +9455,9 @@ smod-op ::= ssa-id `=` `spirv.SMod` ssa-use, ssa-use
 
 ```
 """
-function SMod(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function SMod(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9496,9 +9496,9 @@ Member 1 of the result gets the high-order bits of the multiplication.
 %2 = spirv.SMulExtended %0, %1 : !spirv.struct<(vector<2xi32>, vector<2xi32>)>
 ```
 """
-function SMulExtended(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function SMulExtended(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9531,9 +9531,9 @@ must equal the component width in Result Type.
 %3 = spirv.SNegate %2 : vector<4xi32>
 ```
 """
-function SNegate(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function SNegate(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9576,9 +9576,9 @@ srem-op ::= ssa-id `=` `spirv.SRem` ssa-use, ssa-use
 
 ```
 """
-function SRem(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function SRem(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9633,9 +9633,9 @@ is undefined.
 %r = spirv.SUDotAccSat %a, %b, %acc : (vector<4xi8>, vector<4xi8>, i32) -> i32
 ```
 """
-function SUDotAccSat(vector1::Value, vector2::Value, accumulator::Value; result::IR.Type, format=nothing, location=Location())
+function SUDotAccSat(vector1, vector2, accumulator; result::IR.Type, format=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector1, vector2, accumulator, ]
+    operands = Value[value(vector1), value(vector2), value(accumulator), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9685,9 +9685,9 @@ avoid overflow and underflow.
 %r = spirv.SUDot %a, %b : (vector<4xi8>, vector<4xi8>) -> i32
 ```
 """
-function SUDot(vector1::Value, vector2::Value; result::IR.Type, format=nothing, location=Location())
+function SUDot(vector1, vector2; result::IR.Type, format=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector1, vector2, ]
+    operands = Value[value(vector1), value(vector2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9740,9 +9740,9 @@ select-op ::= ssa-id `=` `spirv.Select` ssa-use, ssa-use, ssa-use
 %3 = spirv.Select %0, %1, %2 : vector<3xi1>, vector<3xf32>
 ```
 """
-function Select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function Select(condition, true_value, false_value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[condition, true_value, false_value, ]
+    operands = Value[value(condition), value(true_value), value(false_value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9828,9 +9828,9 @@ shift-left-logical-op ::= ssa-id `=` `spirv.ShiftLeftLogical`
 %5 = spirv.ShiftLeftLogical %3, %4 : vector<3xi32>, vector<3xi16>
 ```
 """
-function ShiftLeftLogical(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function ShiftLeftLogical(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9877,9 +9877,9 @@ shift-right-arithmetic-op ::= ssa-id `=` `spirv.ShiftRightArithmetic`
 %5 = spirv.ShiftRightArithmetic %3, %4 : vector<3xi32>, vector<3xi16>
 ```
 """
-function ShiftRightArithmetic(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function ShiftRightArithmetic(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -9927,9 +9927,9 @@ shift-right-logical-op ::= ssa-id `=` `spirv.ShiftRightLogical`
 %5 = spirv.ShiftRightLogical %3, %4 : vector<3xi32>, vector<3xi16>
 ```
 """
-function ShiftRightLogical(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function ShiftRightLogical(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10153,9 +10153,9 @@ spirv.Store \"Function\" %0, %1 [\"Volatile\"] : f32
 spirv.Store \"Function\" %0, %1 [\"Aligned\", 4] : f32
 ```
 """
-function Store(ptr::Value, value::Value; memory_access=nothing, alignment=nothing, location=Location())
+function Store(ptr, value; memory_access=nothing, alignment=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[ptr, value, ]
+    operands = Value[value(ptr), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10198,9 +10198,9 @@ matrix-type
 
 ```
 """
-function Transpose(matrix::Value; result::IR.Type, location=Location())
+function Transpose(matrix; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[matrix, ]
+    operands = Value[value(matrix), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10239,9 +10239,9 @@ u-convert-op ::= ssa-id `=` `spirv.UConvertOp` ssa-use
 %3 = spirv.UConvertOp %2 : vector<3xi32> to vector<3xi64>
 ```
 """
-function UConvert(operand::Value; result::IR.Type, location=Location())
+function UConvert(operand; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10281,9 +10281,9 @@ udiv-op ::= ssa-id `=` `spirv.UDiv` ssa-use, ssa-use
 
 ```
 """
-function UDiv(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function UDiv(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10338,9 +10338,9 @@ is undefined.
 %r = spirv.UDotAccSat %a, %b, %acc : (vector<4xi8>, vector<4xi8>, i32) -> i32
 ```
 """
-function UDotAccSat(vector1::Value, vector2::Value, accumulator::Value; result::IR.Type, format=nothing, location=Location())
+function UDotAccSat(vector1, vector2, accumulator; result::IR.Type, format=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector1, vector2, accumulator, ]
+    operands = Value[value(vector1), value(vector2), value(accumulator), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10390,9 +10390,9 @@ overflow and underflow.
 %r = spirv.UDot %a, %b : (vector<4xi8>, vector<4xi8>) -> i32
 ```
 """
-function UDot(vector1::Value, vector2::Value; result::IR.Type, format=nothing, location=Location())
+function UDot(vector1, vector2; result::IR.Type, format=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector1, vector2, ]
+    operands = Value[value(vector1), value(vector2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10432,9 +10432,9 @@ ugreater-than-equal-op ::= ssa-id `=` `spirv.UGreaterThanEqual` ssa-use, ssa-use
 
 ```
 """
-function UGreaterThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function UGreaterThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10473,9 +10473,9 @@ ugreater-than-op ::= ssa-id `=` `spirv.UGreaterThan` ssa-use, ssa-use
 
 ```
 """
-function UGreaterThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function UGreaterThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10514,9 +10514,9 @@ uless-than-equal-op ::= ssa-id `=` `spirv.ULessThanEqual` ssa-use, ssa-use
 
 ```
 """
-function ULessThanEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function ULessThanEqual(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10555,9 +10555,9 @@ uless-than-op ::= ssa-id `=` `spirv.ULessThan` ssa-use, ssa-use
 
 ```
 """
-function ULessThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function ULessThan(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10597,9 +10597,9 @@ umod-op ::= ssa-id `=` `spirv.UMod` ssa-use, ssa-use
 
 ```
 """
-function UMod(operand1::Value, operand2::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function UMod(operand1, operand2; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10639,9 +10639,9 @@ Member 1 of the result gets the high-order bits of the multiplication.
 %2 = spirv.UMulExtended %0, %1 : !spirv.struct<(vector<2xi32>, vector<2xi32>)>
 ```
 """
-function UMulExtended(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function UMulExtended(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10718,9 +10718,9 @@ unordered-op ::= ssa-id `=` `spirv.Unordered` ssa-use, ssa-use
 %5 = spirv.Unordered %2, %3 : vector<4xf32>
 ```
 """
-function Unordered(operand1::Value, operand2::Value; result::IR.Type, location=Location())
+function Unordered(operand1, operand2; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand1, operand2, ]
+    operands = Value[value(operand1), value(operand2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10793,13 +10793,13 @@ where `init` specifies initializer.
 %2 = spirv.Variable init(%0): !spirv.ptr<f32, Function>
 ```
 """
-function Variable(initializer=nothing::Union{Nothing, Value}; pointer::IR.Type, storage_class, location=Location())
+function Variable(initializer=nothing; pointer::IR.Type, storage_class, location=Location())
     results = IR.Type[pointer, ]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("storage_class", storage_class), ]
-    !isnothing(initializer) && push!(operands, initializer)
+    !isnothing(initializer) && push!(operands, value(initializer))
     
     IR.create_operation(
         "spirv.Variable", location;
@@ -10831,9 +10831,9 @@ or equal to the number of components in Vector.
 %2 = spirv.VectorExtractDynamic %0[%1] : vector<8xf32>, i32
 ```
 """
-function VectorExtractDynamic(vector::Value, index::Value; result::IR.Type, location=Location())
+function VectorExtractDynamic(vector, index; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector, index, ]
+    operands = Value[value(vector), value(index), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10880,9 +10880,9 @@ vector-insert-dynamic-op ::= `spirv.VectorInsertDynamic ` ssa-use `,`
 %2 = spirv.VectorInsertDynamic %scalar %0[%1] : f32, vector<8xf32>, i32
 ```
 """
-function VectorInsertDynamic(vector::Value, component::Value, index::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function VectorInsertDynamic(vector, component, index; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[vector, component, index, ]
+    operands = Value[value(vector), value(component), value(index), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -10933,9 +10933,9 @@ operands, or using an OpUndef for one of the Vector operands.
                     -> vector<3xf32>
 ```
 """
-function VectorShuffle(vector1::Value, vector2::Value; result::IR.Type, components, location=Location())
+function VectorShuffle(vector1, vector2; result::IR.Type, components, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector1, vector2, ]
+    operands = Value[value(vector1), value(vector2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("components", components), ]
@@ -10966,9 +10966,9 @@ Scalar must have the same type as the Component Type in Result Type.
 %0 = spirv.VectorTimesScalar %vector, %scalar : vector<4xf32>
 ```
 """
-function VectorTimesScalar(vector::Value, scalar::Value; result::IR.Type, location=Location())
+function VectorTimesScalar(vector, scalar; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[vector, scalar, ]
+    operands = Value[value(vector), value(scalar), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -11000,9 +11000,9 @@ spirv.mlir.yield ::= `spirv.mlir.yield` ssa-id : spirv-type
 spirv.mlir.yield %0
 ```
 """
-function mlir_yield(operand::Value; location=Location())
+function mlir_yield(operand; location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

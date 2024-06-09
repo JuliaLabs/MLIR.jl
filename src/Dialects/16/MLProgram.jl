@@ -1,6 +1,6 @@
 module ml_program
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -91,9 +91,9 @@ without additional consideration to evaluation order constraints.
   ordering (%token -> !ml_program.token) : tensor<?xi32>
 ```
 """
-function global_load_graph(consumeTokens::Vector{Value}; result::IR.Type, produceToken::IR.Type, global_, location=Location())
+function global_load_graph(consumeTokens; result::IR.Type, produceToken::IR.Type, global_, location=Location())
     results = IR.Type[result, produceToken, ]
-    operands = Value[consumeTokens..., ]
+    operands = Value[value.(consumeTokens)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_), ]
@@ -209,9 +209,9 @@ without additional consideration to evaluation order constraints.
   ordering (%in_token -> !ml_program.token) : tensor<?xi32>
 ```
 """
-function global_store_graph(value::Value, consumeTokens::Vector{Value}; produceToken::IR.Type, global_, location=Location())
+function global_store_graph(value, consumeTokens; produceToken::IR.Type, global_, location=Location())
     results = IR.Type[produceToken, ]
-    operands = Value[value, consumeTokens..., ]
+    operands = Value[value(value), value.(consumeTokens)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_), ]
@@ -244,9 +244,9 @@ without additional consideration to evaluation order constraints. See
 ml_program.global_store @foobar = %0 : tensor<?xi32>
 ```
 """
-function global_store(value::Value; global_, location=Location())
+function global_store(value; global_, location=Location())
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("global", global_), ]
@@ -268,9 +268,9 @@ The operation takes variable number of operands and produces no results.
 The operand number and types must match the signature of the function
 that contains the operation.
 """
-function output(operands_::Vector{Value}; location=Location())
+function output(operands_; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -292,9 +292,9 @@ The operation takes variable number of operands and produces no results.
 The operand number and types must match the signature of the function
 that contains the operation.
 """
-function return_(operands_::Vector{Value}; location=Location())
+function return_(operands_; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

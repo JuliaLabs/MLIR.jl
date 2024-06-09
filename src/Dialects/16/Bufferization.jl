@@ -1,6 +1,6 @@
 module bufferization
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -55,14 +55,14 @@ return %0 : tensor<?x?xf32, #SparseMatrix>
   : tensor<?x?xf32, #SparseMatrix>
 ```
 """
-function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing, Value}; size_hint=nothing::Union{Nothing, Value}, result::IR.Type, memory_space=nothing, location=Location())
+function alloc_tensor(dynamic_sizes, copy=nothing; size_hint=nothing, result::IR.Type, memory_space=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[dynamic_sizes..., ]
+    operands = Value[value.(dynamic_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(copy) && push!(operands, copy)
-    !isnothing(size_hint) && push!(operands, size_hint)
+    !isnothing(copy) && push!(operands, value(copy))
+    !isnothing(size_hint) && push!(operands, value(size_hint))
     push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy==nothing) ? 0 : 1(size_hint==nothing) ? 0 : 1]))
     !isnothing(memory_space) && push!(attributes, namedattribute("memory_space", memory_space))
     
@@ -90,9 +90,9 @@ views or create an actual copy. Mutating the source or result
 of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
-function clone(input::Value; output::IR.Type, location=Location())
+function clone(input; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -131,9 +131,9 @@ tensor returns undefined results.
 bufferization.dealloc_tensor %tensor : tensor<1024x1024xf64, #CSR>
 ```
 """
-function dealloc_tensor(tensor::Value; location=Location())
+function dealloc_tensor(tensor; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -163,9 +163,9 @@ This operation is a specialized variant of the built-in
 `unrealized_conversion_cast` and is intended for use in the context of
 gradual bufferization.
 """
-function to_memref(tensor::Value; memref::IR.Type, location=Location())
+function to_memref(tensor; memref::IR.Type, location=Location())
     results = IR.Type[memref, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -199,9 +199,9 @@ involving tensors and memrefs.
 If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
-function to_tensor(memref::Value; result::IR.Type, location=Location())
+function to_tensor(memref; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[memref, ]
+    operands = Value[value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
