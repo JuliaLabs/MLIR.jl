@@ -115,17 +115,15 @@ _type(x::CC.Conditional) = Union{_type(x.thentype), _type(x.elsetype)}
 
 function CC.inlining_policy(interp::MLIRInterpreter,
     @nospecialize(src), @nospecialize(info::CC.CallInfo), stmt_flag::UInt32)
-    if (!interp.active)
+    if (!interp.active) || !isa(info, MLIRIntrinsicCallInfo)
         return @invoke CC.inlining_policy(
             interp::CC.AbstractInterpreter,
             src::Any,
             info::CC.CallInfo,
             stmt_flag::UInt32,
         )
-    elseif isa(info, MLIRIntrinsicCallInfo)
-        return nothing
     else
-        return src
+        return nothing
     end
 end
 
