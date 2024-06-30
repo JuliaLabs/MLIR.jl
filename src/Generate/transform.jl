@@ -26,6 +26,9 @@ function handle_return(cg, val::T) where T
     end
     generate_return(cg, returnvalues; location=IR.Location())
 end
+function handle_invoke(cg, fname, ret, args...)
+    generate_invoke(cg, fname, ret, args)
+end
 
 
 #Helpers:
@@ -34,7 +37,6 @@ function get_toplevel_mi_from_ir(ir, _module::Module)
     mi = ccall(:jl_new_method_instance_uninit, Ref{Core.MethodInstance}, ());
     ft = typeof(first(ir.argtypes) isa Core.Const ? first(ir.argtypes).val : first(ir.argtypes))
     mi.specTypes = Tuple{ft, ir.argtypes[2:end]...}
-    # mi.specTypes = Tuple{typeof(first(ir.argtypes).val), ir.argtypes[2:end]...}
     mi.def = _module
     return mi
 end
@@ -104,9 +106,9 @@ region = builder(args)
 
 For a more easy-to-use interface, use methods from `CodegenContext`.
 """
-function generate!(cg, ir::CC.IRCode, ret)
+function generate!(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MODULE__))
     original_currentblock = IR.currentblock[]
-    
+
     reg = IR.Region()
 
     blocks = [
@@ -144,10 +146,62 @@ function generate!(cg, ir::CC.IRCode, ret)
     argtypes = IR.Type[IR.type(IR.argument(entryblock, i)) for i in 1:IR.nargs(entryblock)]
     rettypes = IR.Type[IR.Type.(IR.unpack(ret))...]
 
-    return generate_function(cg, argtypes=>rettypes, reg)
+    return generate_function(cg, argtypes=>rettypes, reg; name=name(cg, mi))
 end
-generate(cg, ir::CC.IRCode, ret) = generate!(cg, Core.Compiler.copy(ir), ret)
+generate(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MODULE__)) = generate!(cg, Core.Compiler.copy(ir), ret; mi)
 generate(cg, f, types) = generate!(cg, only(Core.Compiler.code_ircode(f, types, interp=MLIRInterpreter()))...)
+
+
+function get_mi(f, types)
+    tt = Base.signature_type(f, types)
+    # Find all methods that are applicable to these types
+    mthds = Base._methods_by_ftype(tt, -1, Base.get_world_counter())
+    if mthds === false || length(mthds) != 1
+        error("Unable to find single applicable method for $tt")
+    end
+
+    mtypes, msp, m = mthds[1]
+
+    # Grab the appropriate method instance for these types
+    mi = Core.Compiler.specialize_method(m, mtypes, msp)
+    return mi
+end 
+
+function find_invokes(ir)
+    callees = Core.MethodInstance[]
+    for stmt in ir.stmts
+        inst = stmt[:inst]
+        if Meta.isexpr(inst, :invoke)
+            callee = inst.args[1]
+            push!(callees, callee)
+        end
+    end
+    return callees
+end
+
+function collect_methods(f, types)
+    mi = get_mi(f, types)
+    ir, rt = only(Core.Compiler.code_ircode_by_type(mi.specTypes, interp=MLIRInterpreter()))
+
+    worklist = Core.Compiler.IRCode[ir]
+    methods = Dict{Core.MethodInstance, Tuple{Core.Compiler.IRCode, Any}}(
+        mi => (ir, rt)
+    )
+    while !isempty(worklist)
+        code = pop!(worklist)
+        callees = find_invokes(code)
+        for callee in callees
+            if !haskey(methods, callee) && !is_intrinsic(callee.specTypes)
+                ir, rt = only(Core.Compiler.code_ircode_by_type(callee.specTypes, interp=MLIRInterpreter()))
+                methods[callee] = (ir, rt)
+                push!(worklist, ir)
+            end
+        end
+    end
+
+    return methods
+end
+    
 
 function transform(cg, ir, blocks, next_block)
     # insert calls to next_block at the beginning of each block and add explicit gotos if they are missing.
@@ -269,9 +323,13 @@ function transform(cg, ir, blocks, next_block)
             compact[ssa][:type] = Any
             compact[ssa][:flag] = CC.IR_FLAG_REFINED
         elseif Meta.isexpr(inst, :invoke)
-            _, called_func, args... = inst.args
+            mi, called_func, args... = inst.args
             if called_func == bool_conversion_intrinsic
                 compact[ssa][:inst] = only(args)
+            elseif !is_intrinsic(mi.specTypes)
+                fname = name(cg, mi)
+                compact[ssa][:inst] = Expr(:call, handle_invoke, cg, fname, compact[ssa][:type], args...)
+                compact[ssa][:type] = Any
             end
         end
     end
