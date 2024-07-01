@@ -6,7 +6,8 @@ for method in (
     :generate_gotoifnot,
     :generate_function,
     :name,
-    :generate_invoke
+    :generate_invoke,
+    :aggregate_funcs
 )
     @eval begin
         $method(cg::T, args...; kwargs...) where {T<:AbstractCodegenContext} = error("$method not implemented for type \$T")
@@ -19,11 +20,12 @@ mutable struct CodegenContext{T} <: AbstractCodegenContext
     function (cg::CodegenContext)(f, types)
         mod = IR.Module()
         methods = collect_methods(f, types)
+        funcs = []
         for (mi, (ir, ret)) in methods
             mlir_func = generate!(cg, ir, ret; mi)
-            push!(IR.body(mod), mlir_func)
+            push!(funcs, mlir_func)
         end
-        return mod
+        return aggregate_funcs(cg, funcs)
     end
 end
 
@@ -56,4 +58,12 @@ function generate_invoke(cg::CodegenContext, fname::String, ret, args)
     # return first(args)
     op = Dialects.func.call(args; result_0=IR.Type[IR.Type(ret)], callee=IR.FlatSymbolRefAttribute(fname))
     return ret(IR.result(op))
+end
+function aggregate_funcs(cg::CodegenContext, funcs)
+    mod = IR.Module()
+    bod = IR.body(mod)
+    for func in funcs
+        push!(bod, func)
+    end
+    return mod
 end
