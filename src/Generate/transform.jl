@@ -27,7 +27,11 @@ function handle_return(cg, val::T) where T
     generate_return(cg, returnvalues; location=IR.Location())
 end
 function handle_invoke(cg, fname, ret, args...)
-    generate_invoke(cg, fname, ret, args)
+    unpacked = []
+    for arg in args
+        push!(unpacked, reinterpret(Tuple{IR.unpack(typeof(arg))...}, arg)...)
+    end
+    generate_invoke(cg, fname, ret, unpacked)
 end
 
 
@@ -35,8 +39,14 @@ end
 "Given some IR generates a MethodInstance suitable for passing to infer_ir!, if you don't already have one with the right argument types"
 function get_toplevel_mi_from_ir(ir, _module::Module)
     mi = ccall(:jl_new_method_instance_uninit, Ref{Core.MethodInstance}, ());
-    ft = typeof(first(ir.argtypes) isa Core.Const ? first(ir.argtypes).val : first(ir.argtypes))
-    mi.specTypes = Tuple{ft, ir.argtypes[2:end]...}
+    argtypes = map(ir.argtypes) do argtype
+        if argtype isa Core.Const
+            return argtype.val
+        else
+            return argtype
+        end
+    end
+    mi.specTypes = Tuple{argtypes...}
     mi.def = _module
     return mi
 end
@@ -124,7 +134,7 @@ function generate!(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MOD
             arg = IR.push_argument!(entryblock, IR.Type(t))
             push!(temp, t(arg))
         end
-        reinterpret(argtype, Tuple(temp))
+        return reinterpret(argtype, Tuple(temp))
     end
 
     currentblockindex = 0
@@ -141,12 +151,14 @@ function generate!(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MOD
 
     builder!(args...)
 
-    IR.setcurrentblock!(original_currentblock) # restore original currentblock (needed for recursion)
-
     argtypes = IR.Type[IR.type(IR.argument(entryblock, i)) for i in 1:IR.nargs(entryblock)]
     rettypes = IR.Type[IR.Type.(IR.unpack(ret))...]
+    IR.resetcurrentblock!()
+    f_mlir = generate_function(cg, argtypes=>rettypes, reg; name=name(cg, mi))
 
-    return generate_function(cg, argtypes=>rettypes, reg; name=name(cg, mi))
+    IR.setcurrentblock!(original_currentblock) # restore original currentblock (needed for recursion)
+    
+    return f_mlir
 end
 generate(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MODULE__)) = generate!(cg, Core.Compiler.copy(ir), ret; mi)
 generate(cg, f, types) = generate!(cg, only(Core.Compiler.code_ircode(f, types, interp=MLIRInterpreter()))...)
