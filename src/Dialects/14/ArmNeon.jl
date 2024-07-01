@@ -1,6 +1,6 @@
 module arm_neon
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -15,9 +15,9 @@ vector to the destination SIMD&FP register.
 Source:
 https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsics
 """
-function intr_smull(a::Value, b::Value; res::IR.Type, location=Location())
+function intr_smull(a, b; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -42,9 +42,9 @@ corresponding entry of `a`:
 res[i] := a[i] + dot_product(b[i, ...], c[i, ...])
 ```
 """
-function _2d_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location())
+function _2d_sdot(a, b, c; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[a, b, c, ]
+    operands = Value[value(a), value(b), value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -67,9 +67,9 @@ where vector operands are partitioned into groups of four elements.
 Source:
 https://developer.arm.com/architectures/instruction-sets/simd-isas/neon/intrinsics
 """
-function intr_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location())
+function intr_sdot(a, b, c; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[a, b, c, ]
+    operands = Value[value(a), value(b), value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

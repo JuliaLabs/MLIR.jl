@@ -1,6 +1,6 @@
 module emitc
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -23,9 +23,9 @@ int32_t v5 = v1 + v2;
 float* v6 = v3 + v4;
 ```
 """
-function add(lhs::Value, rhs::Value; result_0::IR.Type, location=Location())
+function add(lhs, rhs; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -56,9 +56,9 @@ can be applied to a single operand.
 
 ```
 """
-function apply(operand::Value; result::IR.Type, applicableOperator, location=Location())
+function apply(operand; result::IR.Type, applicableOperator, location=Location())
     results = IR.Type[result, ]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator), ]
@@ -90,9 +90,9 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
+function call(operands_; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
     results = IR.Type[result_0..., ]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
@@ -125,9 +125,9 @@ and EmitC types.
     !emitc.ptr<!emitc.opaque<\"void\">> to !emitc.ptr<i32>
 ```
 """
-function cast(source::Value; dest::IR.Type, location=Location())
+function cast(source; dest::IR.Type, location=Location())
     results = IR.Type[dest, ]
-    operands = Value[source, ]
+    operands = Value[value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -196,9 +196,9 @@ int32_t v5 = v1 / v2;
 float v6 = v3 / v4;
 ```
 """
-function div(operand_0::Value, operand_1::Value; result_0::IR.Type, location=Location())
+function div(operand_0, operand_1; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -268,9 +268,9 @@ int32_t v5 = v1 * v2;
 float v6 = v3 * v4;
 ```
 """
-function mul(operand_0::Value, operand_1::Value; result_0::IR.Type, location=Location())
+function mul(operand_0, operand_1; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -300,9 +300,9 @@ be applied.
 int32_t v5 = v1 % v2;
 ```
 """
-function rem(operand_0::Value, operand_1::Value; result_0::IR.Type, location=Location())
+function rem(operand_0, operand_1; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -337,9 +337,9 @@ float* v8 = v3 - v4;
 ptrdiff_t v9 = v5 - v6;
 ```
 """
-function sub(lhs::Value, rhs::Value; result_0::IR.Type, location=Location())
+function sub(lhs, rhs; result_0::IR.Type, location=Location())
     results = IR.Type[result_0, ]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

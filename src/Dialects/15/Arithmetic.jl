@@ -1,6 +1,6 @@
 module arith
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -28,9 +28,9 @@ floating point tensor.
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
 """
-function addf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function addf(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -65,9 +65,9 @@ has no standard attributes.
 %x = arith.addi %y, %z : tensor<4x?xi8>
 ```
 """
-function addi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function addi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -102,9 +102,9 @@ has no standard attributes.
 %x = arith.andi %y, %z : tensor<4x?xi8>
 ```
 """
-function andi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function andi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -136,9 +136,9 @@ endianness for the source and target types (e.g. float is big-endian and
 integer is little-endian) a proper lowering would add operations to swap the
 order of words in addition to the bitcast.
 """
-function bitcast(in::Value; out::IR.Type, location=Location())
+function bitcast(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -166,9 +166,9 @@ value divided by -1) is TBD; do NOT assume any specific behavior.
 %a = arith.ceildivsi %b, %c : i64
 ```
 """
-function ceildivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function ceildivsi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -199,9 +199,9 @@ behavior.
 %a = arith.ceildivui %b, %c : i64
 ```
 """
-function ceildivui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function ceildivui(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -242,9 +242,9 @@ attribute by the parser.
 %r3 = \"arith.cmpf\"(%0, %1) {predicate: 0} : (f8, f8) -> i1
 ```
 """
-function cmpf(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
+function cmpf(lhs, rhs; result::IR.Type, predicate, location=Location())
     results = IR.Type[result, ]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
@@ -322,9 +322,9 @@ complement or large positives
     : (vector<4xi64>, vector<4xi64>) -> vector<4xi1>
 ```
 """
-function cmpi(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
+function cmpi(lhs, rhs; result::IR.Type, predicate, location=Location())
     results = IR.Type[result, ]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
@@ -374,9 +374,9 @@ end
 `divf`
 
 """
-function divf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function divf(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -412,9 +412,9 @@ value divided by -1) is TBD; do NOT assume any specific behavior.
 %x = arith.divsi %y, %z : tensor<4x?xi8>
 ```
 """
-function divsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function divsi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -451,9 +451,9 @@ behavior.
 %x = arith.divui %y, %z : tensor<4x?xi8>
 ```
 """
-function divui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function divui(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -474,9 +474,9 @@ Cast a floating-point value to a larger floating-point-typed value.
 The destination type must to be strictly wider than the source type.
 When operating on vectors, casts elementwise.
 """
-function extf(in::Value; out::IR.Type, location=Location())
+function extf(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -509,9 +509,9 @@ of the most-significant bit of the input.
 %5 = arith.extsi %0 : vector<2 x i32> to vector<2 x i64>
 ```
 """
-function extsi(in::Value; out::IR.Type, location=Location())
+function extsi(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -543,9 +543,9 @@ The top-most (N - M) bits of the output are filled with zeros.
   %5 = arith.extui %0 : vector<2 x i32> to vector<2 x i64>
 ```
 """
-function extui(in::Value; out::IR.Type, location=Location())
+function extui(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -565,9 +565,9 @@ Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) signed integer value. When operating on vectors, casts
 elementwise.
 """
-function fptosi(in::Value; out::IR.Type, location=Location())
+function fptosi(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -587,9 +587,9 @@ Cast from a value interpreted as floating-point to the nearest (rounding
 towards zero) unsigned integer value. When operating on vectors, casts
 elementwise.
 """
-function fptoui(in::Value; out::IR.Type, location=Location())
+function fptoui(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -618,9 +618,9 @@ value divided by -1) is TBD; do NOT assume any specific behavior.
 
 ```
 """
-function floordivsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function floordivsi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -642,9 +642,9 @@ vectors. Index is an integer of platform-specific bit width. If casting to
 a wider integer, the value is sign-extended. If casting to a narrower
 integer, the value is truncated.
 """
-function index_cast(in::Value; out::IR.Type, location=Location())
+function index_cast(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -676,9 +676,9 @@ If one of the arguments is NaN, then the result is also NaN.
 %a = arith.maxf %b, %c : f64
 ```
 """
-function maxf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function maxf(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -696,9 +696,9 @@ end
 `maxsi`
 
 """
-function maxsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function maxsi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -716,9 +716,9 @@ end
 `maxui`
 
 """
-function maxui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function maxui(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -751,9 +751,9 @@ If one of the arguments is NaN, then the result is also NaN.
 %a = arith.minf %b, %c : f64
 ```
 """
-function minf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function minf(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -771,9 +771,9 @@ end
 `minsi`
 
 """
-function minsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function minsi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -791,9 +791,9 @@ end
 `minui`
 
 """
-function minui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function minui(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -831,9 +831,9 @@ floating point tensor.
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
 """
-function mulf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function mulf(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -851,9 +851,9 @@ end
 `muli`
 
 """
-function muli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function muli(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -888,9 +888,9 @@ It has no standard attributes.
 %x = arith.negf %y : tensor<4x?xf8>
 ```
 """
-function negf(operand::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function negf(operand; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -925,9 +925,9 @@ standard attributes.
 %x = arith.ori %y, %z : tensor<4x?xi8>
 ```
 """
-function ori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function ori(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -945,9 +945,9 @@ end
 `remf`
 
 """
-function remf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function remf(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -983,9 +983,9 @@ behavior.
 %x = arith.remsi %y, %z : tensor<4x?xi8>
 ```
 """
-function remsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function remsi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1021,9 +1021,9 @@ behavior.
 %x = arith.remui %y, %z : tensor<4x?xi8>
 ```
 """
-function remui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function remui(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1045,9 +1045,9 @@ floating-point value. If the value cannot be exactly represented, it is
 rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
 """
-function sitofp(in::Value; out::IR.Type, location=Location())
+function sitofp(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1074,9 +1074,9 @@ amount. The low order bits are filled with zeros.
 %3 = arith.shli %1, %2 : (i8, i8) -> i8    // %3 is 0b00101000
 ```
 """
-function shli(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function shli(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1108,9 +1108,9 @@ value (which means that the sign of the value is preserved).
 %5 = arith.shrsi %4, %2 : (i8, i8) -> i8   // %5 is 0b00001100
 ```
 """
-function shrsi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function shrsi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1139,9 +1139,9 @@ always filled with zeros.
 %3 = arith.shrui %1, %2 : (i8, i8) -> i8   // %3 is 0b00010100
 ```
 """
-function shrui(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function shrui(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1179,9 +1179,9 @@ floating point tensor.
 TODO: In the distant future, this will accept optional attributes for fast
 math, contraction, rounding mode, and other controls.
 """
-function subf(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function subf(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1199,9 +1199,9 @@ end
 `subi`
 
 """
-function subi(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function subi(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1223,9 +1223,9 @@ The destination type must be strictly narrower than the source type.
 If the value cannot be exactly represented, it is rounded using the default
 rounding mode. When operating on vectors, casts elementwise.
 """
-function truncf(in::Value; out::IR.Type, location=Location())
+function truncf(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1256,9 +1256,9 @@ The top-most (N - M) bits of the input are discarded.
   %5 = arith.trunci %0 : vector<2 x i32> to vector<2 x i16>
 ```
 """
-function trunci(in::Value; out::IR.Type, location=Location())
+function trunci(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1279,9 +1279,9 @@ floating-point value. If the value cannot be exactly represented, it is
 rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
 """
-function uitofp(in::Value; out::IR.Type, location=Location())
+function uitofp(in; out::IR.Type, location=Location())
     results = IR.Type[out, ]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1315,9 +1315,9 @@ has no standard attributes.
 %x = arith.xori %y, %z : tensor<4x?xi8>
 ```
 """
-function xori(lhs::Value, rhs::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function xori(lhs, rhs; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1361,9 +1361,9 @@ or tensor is chosen.
 %vx = arith.select %cond, %vtrue, %vfalse : vector<42xf32>
 ```
 """
-function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function select(condition, true_value, false_value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[condition, true_value, false_value, ]
+    operands = Value[value(condition), value(true_value), value(false_value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

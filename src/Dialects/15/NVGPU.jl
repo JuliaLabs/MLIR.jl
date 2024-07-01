@@ -1,6 +1,6 @@
 module nvgpu
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -46,9 +46,9 @@ gpu.device_async_wait %token2
   memref<4x5xf32> to memref<2x7x5xf32, 3>
 ```
 """
-function device_async_copy(dst::Value, dstIndices::Vector{Value}, src::Value, srcIndices::Vector{Value}; asyncToken::IR.Type, numElements, bypassL1=nothing, location=Location())
+function device_async_copy(dst, dstIndices, src, srcIndices; asyncToken::IR.Type, numElements, bypassL1=nothing, location=Location())
     results = IR.Type[asyncToken, ]
-    operands = Value[dst, dstIndices..., src, srcIndices..., ]
+    operands = Value[value(dst), value.(dstIndices)..., value(src), value.(srcIndices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("numElements", numElements), ]
@@ -83,9 +83,9 @@ Groups are executed in the order they are created.
 %0 = gpu.device_async_create_group
 ```
 """
-function device_async_create_group(inputTokens::Vector{Value}; asyncToken::IR.Type, location=Location())
+function device_async_create_group(inputTokens; asyncToken::IR.Type, location=Location())
     results = IR.Type[asyncToken, ]
-    operands = Value[inputTokens..., ]
+    operands = Value[value.(inputTokens)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -112,9 +112,9 @@ associated with the source token is fully completed.
 gpu.device_async_wait %0
 ```
 """
-function device_async_wait(asyncDependencies::Value; numGroups=nothing, location=Location())
+function device_async_wait(asyncDependencies; numGroups=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[asyncDependencies, ]
+    operands = Value[value(asyncDependencies), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -146,9 +146,9 @@ https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#warp-level-mat
   memref<?x?xf16, 3> -> vector<4x2xf16>
 ```
 """
-function ldmatrix(srcMemref::Value, indices::Vector{Value}; res::IR.Type, transpose, numTiles, location=Location())
+function ldmatrix(srcMemref, indices; res::IR.Type, transpose, numTiles, location=Location())
     results = IR.Type[res, ]
-    operands = Value[srcMemref, indices..., ]
+    operands = Value[value(srcMemref), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("transpose", transpose), namedattribute("numTiles", numTiles), ]
@@ -184,9 +184,9 @@ nvgpu.mma.sync (%a, %b, %c) :
   (vector<4x2xf16>, vector<2x2xf16>, vector<2x2xf16>) -> vector<2x2xf16>
 ```
 """
-function mma_sync(matrixA::Value, matrixB::Value, matrixC::Value; res::IR.Type, mmaShape, location=Location())
+function mma_sync(matrixA, matrixB, matrixC; res::IR.Type, mmaShape, location=Location())
     results = IR.Type[res, ]
-    operands = Value[matrixA, matrixB, matrixC, ]
+    operands = Value[value(matrixA), value(matrixB), value(matrixC), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mmaShape", mmaShape), ]

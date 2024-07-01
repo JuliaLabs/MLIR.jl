@@ -1,6 +1,6 @@
 module arm_sme
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -42,9 +42,9 @@ look at the vector op uses and also lower them.
 Canonicalization will look through `arm_sme.cast_tile_to_vector` and fold
 the cast away if it comes from a `arm_sme.cast_vector_to_tile`.
 """
-function cast_tile_to_vector(tile_id::Value; vector::IR.Type, location=Location())
+function cast_tile_to_vector(tile_id; vector::IR.Type, location=Location())
     results = IR.Type[vector, ]
-    operands = Value[tile_id, ]
+    operands = Value[value(tile_id), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -85,9 +85,9 @@ scf.for %vnum = %c0 to %num_vectors step %c1 {
 Canonicalization will look through `arm_sme.cast_vector_to_tile` and fold
 the cast away if it comes from a `arm_sme.cast_tile_to_vector`.
 """
-function cast_vector_to_tile(vector::Value; tile_id::IR.Type, location=Location())
+function cast_vector_to_tile(vector; tile_id::IR.Type, location=Location())
     results = IR.Type[tile_id, ]
-    operands = Value[vector, ]
+    operands = Value[value(vector), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -148,9 +148,9 @@ end
 `intr_ld1b_horiz`
 
 """
-function intr_ld1b_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1b_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -167,9 +167,9 @@ end
 `intr_ld1b_vert`
 
 """
-function intr_ld1b_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1b_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -186,9 +186,9 @@ end
 `intr_ld1d_horiz`
 
 """
-function intr_ld1d_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1d_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -205,9 +205,9 @@ end
 `intr_ld1d_vert`
 
 """
-function intr_ld1d_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1d_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -224,9 +224,9 @@ end
 `intr_ld1h_horiz`
 
 """
-function intr_ld1h_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1h_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -243,9 +243,9 @@ end
 `intr_ld1h_vert`
 
 """
-function intr_ld1h_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1h_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -262,9 +262,9 @@ end
 `intr_ld1q_horiz`
 
 """
-function intr_ld1q_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1q_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -281,9 +281,9 @@ end
 `intr_ld1q_vert`
 
 """
-function intr_ld1q_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1q_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -300,9 +300,9 @@ end
 `intr_ld1w_horiz`
 
 """
-function intr_ld1w_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1w_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -319,9 +319,9 @@ end
 `intr_ld1w_vert`
 
 """
-function intr_ld1w_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_ld1w_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -338,9 +338,9 @@ end
 `intr_mopa`
 
 """
-function intr_mopa(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_mopa(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -357,9 +357,9 @@ end
 `intr_mopa_wide`
 
 """
-function intr_mopa_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_mopa_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -376,9 +376,9 @@ end
 `intr_mops`
 
 """
-function intr_mops(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_mops(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -395,9 +395,9 @@ end
 `intr_mops_wide`
 
 """
-function intr_mops_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_mops_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -414,9 +414,9 @@ end
 `intr_smopa_wide`
 
 """
-function intr_smopa_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_smopa_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -433,9 +433,9 @@ end
 `intr_smops_wide`
 
 """
-function intr_smops_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_smops_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -452,9 +452,9 @@ end
 `intr_st1b_horiz`
 
 """
-function intr_st1b_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1b_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -471,9 +471,9 @@ end
 `intr_st1b_vert`
 
 """
-function intr_st1b_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1b_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -490,9 +490,9 @@ end
 `intr_st1d_horiz`
 
 """
-function intr_st1d_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1d_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -509,9 +509,9 @@ end
 `intr_st1d_vert`
 
 """
-function intr_st1d_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1d_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -528,9 +528,9 @@ end
 `intr_st1h_horiz`
 
 """
-function intr_st1h_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1h_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -547,9 +547,9 @@ end
 `intr_st1h_vert`
 
 """
-function intr_st1h_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1h_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -566,9 +566,9 @@ end
 `intr_st1q_horiz`
 
 """
-function intr_st1q_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1q_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -585,9 +585,9 @@ end
 `intr_st1q_vert`
 
 """
-function intr_st1q_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1q_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -604,9 +604,9 @@ end
 `intr_st1w_horiz`
 
 """
-function intr_st1w_horiz(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1w_horiz(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -623,9 +623,9 @@ end
 `intr_st1w_vert`
 
 """
-function intr_st1w_vert(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value; location=Location())
+function intr_st1w_vert(operand_0, operand_1, operand_2, operand_3; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -642,9 +642,9 @@ end
 `intr_str`
 
 """
-function intr_str(operand_0::Value, operand_1::Value; location=Location())
+function intr_str(operand_0, operand_1; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -661,9 +661,9 @@ end
 `intr_sumopa_wide`
 
 """
-function intr_sumopa_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_sumopa_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -680,9 +680,9 @@ end
 `intr_sumops_wide`
 
 """
-function intr_sumops_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_sumops_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -699,9 +699,9 @@ end
 `intr_umopa_wide`
 
 """
-function intr_umopa_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_umopa_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -718,9 +718,9 @@ end
 `intr_umops_wide`
 
 """
-function intr_umops_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_umops_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -737,9 +737,9 @@ end
 `intr_usmopa_wide`
 
 """
-function intr_usmopa_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_usmopa_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -756,9 +756,9 @@ end
 `intr_usmops_wide`
 
 """
-function intr_usmops_wide(operand_0::Value, operand_1::Value, operand_2::Value, operand_3::Value, operand_4::Value; location=Location())
+function intr_usmops_wide(operand_0, operand_1, operand_2, operand_3, operand_4; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, operand_3, operand_4, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), value(operand_3), value(operand_4), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -813,9 +813,9 @@ end
 `intr_zero`
 
 """
-function intr_zero(operand_0::Value; location=Location())
+function intr_zero(operand_0; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -852,9 +852,9 @@ Example 3: Load a 128-bit element ZA tile from memory.
 %tile = arm_sme.tile_load %base[%c0, %c0] : memref<?x?xi128>, vector<[1]x[1]xi128>
 ```
 """
-function tile_load(base::Value, indices::Vector{Value}; result::IR.Type, location=Location())
+function tile_load(base, indices; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[base, indices..., ]
+    operands = Value[value(base), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -892,9 +892,9 @@ Example 3: Store a 128-bit element ZA tile to memory.
 arm_sme.tile_store %tile, %base[%c0, %c0] : vector<[1]x[1]xi128>, memref<?x?xi128>
 ```
 """
-function tile_store(valueToStore::Value, base::Value, indices::Vector{Value}; location=Location())
+function tile_store(valueToStore, base, indices; location=Location())
     results = IR.Type[]
-    operands = Value[valueToStore, base, indices..., ]
+    operands = Value[value(valueToStore), value(base), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

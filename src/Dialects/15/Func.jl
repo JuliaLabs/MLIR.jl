@@ -1,6 +1,6 @@
 module func
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -21,9 +21,9 @@ Function values can be created with the
 %result = func.call_indirect %func(%0, %1) : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
 """
-function call_indirect(callee::Value, callee_operands::Vector{Value}; results_::Vector{IR.Type}, location=Location())
+function call_indirect(callee, callee_operands; results_::Vector{IR.Type}, location=Location())
     results = IR.Type[results_..., ]
-    operands = Value[callee, callee_operands..., ]
+    operands = Value[value(callee), value.(callee_operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -50,9 +50,9 @@ symbol reference attribute named \"callee\".
 %2 = func.call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location())
+function call(operands_; result_0::Vector{IR.Type}, callee, location=Location())
     results = IR.Type[result_0..., ]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
@@ -173,9 +173,9 @@ func.func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands_::Vector{Value}; location=Location())
+function return_(operands_; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

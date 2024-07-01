@@ -1,6 +1,6 @@
 module bufferization
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -58,14 +58,14 @@ return %0 : tensor<?x?xf32, #SparseMatrix>
 Note: An `alloc_tensor` with a `copy` should also be expressed as an
 `alloc_tensor` without `copy`, followed by a `copy_tensor`.
 """
-function alloc_tensor(dynamic_sizes::Vector{Value}, copy=nothing::Union{Nothing, Value}; size_hint=nothing::Union{Nothing, Value}, result::IR.Type, memory_space=nothing, location=Location())
+function alloc_tensor(dynamic_sizes, copy=nothing; size_hint=nothing, result::IR.Type, memory_space=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[dynamic_sizes..., ]
+    operands = Value[value.(dynamic_sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(copy) && push!(operands, copy)
-    !isnothing(size_hint) && push!(operands, size_hint)
+    !isnothing(copy) && push!(operands, value(copy))
+    !isnothing(size_hint) && push!(operands, value(size_hint))
     push!(attributes, operandsegmentsizes([length(dynamic_sizes), (copy==nothing) ? 0 : 1(size_hint==nothing) ? 0 : 1]))
     !isnothing(memory_space) && push!(attributes, namedattribute("memory_space", memory_space))
     
@@ -93,9 +93,9 @@ views or create an actual copy. Mutating the source or result
 of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
-function clone(input::Value; output::IR.Type, location=Location())
+function clone(input; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -114,9 +114,9 @@ end
 Copy the contents of the source tensor into the destination tensor. This
 operation is guaranteed to bufferize to a memory copy.
 """
-function copy_tensor(source::Value, dest::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function copy_tensor(source, dest; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[source, dest, ]
+    operands = Value[value(source), value(dest), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -157,9 +157,9 @@ Deallocation will be called on `%a0` if `%cond0` is \'true\' and neither `%r0`
 or `%r1` are aliases of `%a0`. `%a1` will be deallocated when `%cond1` is
 set to \'true\' and none of `%r0`, %r1` and `%a0` are aliases.
 """
-function dealloc(memrefs::Vector{Value}, conditions::Vector{Value}, retained::Vector{Value}; updatedConditions=nothing::Union{Nothing, Vector{IR.Type}}, location=Location())
+function dealloc(memrefs, conditions, retained; updatedConditions=nothing::Union{Nothing, Vector{IR.Type}}, location=Location())
     results = IR.Type[]
-    operands = Value[memrefs..., conditions..., retained..., ]
+    operands = Value[value.(memrefs)..., value.(conditions)..., value.(retained)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -200,9 +200,9 @@ tensor returns undefined results.
 bufferization.dealloc_tensor %tensor : tensor<1024x1024xf64, #CSR>
 ```
 """
-function dealloc_tensor(tensor::Value; location=Location())
+function dealloc_tensor(tensor; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -233,9 +233,9 @@ The `read_only` attribute can optionally be set, indicating to the
 bufferization that the buffer returned by this op (or an alias created from
 the returned buffer) will not be written to.
 """
-function to_memref(tensor::Value; memref::IR.Type, read_only=nothing, location=Location())
+function to_memref(tensor; memref::IR.Type, read_only=nothing, location=Location())
     results = IR.Type[memref, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -292,9 +292,9 @@ bufferization. If there are non-bufferizable ops in the IR and
 `allowUnknownOps` is set, they may be part of the resulting IR and not fold
 away. However, such IR is no longer bufferizable with One-Shot Bufferize.
 """
-function to_tensor(memref::Value; result::IR.Type, restrict=nothing, writable=nothing, location=Location())
+function to_tensor(memref; result::IR.Type, restrict=nothing, writable=nothing, location=Location())
     results = IR.Type[result, ]
-    operands = Value[memref, ]
+    operands = Value[value(memref), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
