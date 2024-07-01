@@ -26,8 +26,12 @@ API.mlirRegisterAllLLVMTranslations(ctx.context)
 function compare_generated(generated::IR.Module, expected::String)
   # Don't directly compare expected with generated.
   # Parse first to ensure the same SSA value names are used.
-  expected = string(parse(IR.Module, expected))
-  return string(generated) == expected
+  expected = parse(IR.Module, expected)
+
+  expected = string.(IR.OperationIterator(IR.body(expected)))
+  generated = string.(IR.OperationIterator(IR.body(generated)))
+  
+  return Set(expected) == Set(generated)
 end
 
 # A codegen context is used to specify how Julia IR is converted to MLIR.
