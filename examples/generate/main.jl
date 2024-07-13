@@ -65,8 +65,6 @@ struct Line{T}
     p2::Point{T}
 end
 
-@inline Base.literal_pow(::typeof(^), x::MLIRInteger, ::Val{2}) = x*x
-
 @noinline sq_distance(l::Line) = (l.p1.x - l.p2.x)^2 + (l.p1.y - l.p2.y)^2
 
 function f2(a::Point{i64}, b::Point{i64})
