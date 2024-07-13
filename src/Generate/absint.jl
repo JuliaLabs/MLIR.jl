@@ -17,7 +17,7 @@ struct MLIRInterpreter <: CC.AbstractInterpreter
         return new(
             cache_token,
             Base.get_world_counter(),
-            CC.InferenceParams(),
+            CC.InferenceParams(; aggressive_constant_propagation=true),
             CC.OptimizationParams(),
             CC.InferenceResult[],
             true
