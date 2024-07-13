@@ -44,7 +44,7 @@ op1 = cg(f1, Tuple{i64,i64})
 @test compare_generated(
     op1,
     """
-func.func private @"Tuple{typeof(f1), i64, i64}"(%a: i64, %b: i64) -> i64 {
+func.func private @"$(Generate.name(cg, Generate.get_mi(f1, Tuple{i64,i64})))"(%a: i64, %b: i64) -> i64 {
     %sum = arith.addi %a, %b : i64
     return %sum : i64
 }
@@ -81,8 +81,8 @@ end
 @test compare_generated(
     op2,
     """
-  func.func private @"Tuple{typeof(f2), Point{i64}, Point{i64}}"(%arg0: i64, %arg1: i64, %arg2: i64, %arg3: i64) -> (i64, i64) {
-    %0 = call @"Tuple{typeof(sq_distance), Line{i64}}"(%arg0, %arg1, %arg2, %arg3) : (i64, i64, i64, i64) -> i64
+  func.func private @"$(Generate.name(cg, Generate.get_mi(f2, Tuple{Point{i64},Point{i64}})))"(%arg0: i64, %arg1: i64, %arg2: i64, %arg3: i64) -> (i64, i64) {
+    %0 = call @"$(Generate.name(cg, Generate.get_mi(sq_distance, Tuple{Line{i64}})))"(%arg0, %arg1, %arg2, %arg3) : (i64, i64, i64, i64) -> i64
     cf.br ^bb1
   ^bb1:  // pred: ^bb0
     cf.br ^bb2
@@ -121,7 +121,7 @@ end
   ^bb17:  // pred: ^bb16
     return %1, %2 : i64, i64
   }
-  func.func private @"Tuple{typeof(sq_distance), Line{i64}}"(%arg0: i64, %arg1: i64, %arg2: i64, %arg3: i64) -> i64 {
+  func.func private @"$(Generate.name(cg, Generate.get_mi(sq_distance, Tuple{Line{i64}})))"(%arg0: i64, %arg1: i64, %arg2: i64, %arg3: i64) -> i64 {
     %0 = arith.subi %arg0, %arg2 : i64
     %1 = arith.muli %0, %0 : i64
     %2 = arith.subi %arg1, %arg3 : i64
@@ -170,7 +170,7 @@ end
 op3 = cg(f3, Tuple{index})
 
 @test compare_generated(op3, """
-  func.func private @"Tuple{typeof(f3), MLIRIndex}"(%arg0: index) -> i64 {
+  func.func private @"$(Generate.name(cg, Generate.get_mi(f3, Tuple{index})))"(%arg0: index) -> i64 {
     %c0_i64 = arith.constant 0 : i64
     %idx0 = index.constant 0
     %idx1 = index.constant 1
