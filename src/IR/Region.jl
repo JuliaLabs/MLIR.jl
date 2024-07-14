@@ -30,7 +30,20 @@ Checks whether two region handles point to the same region. This does not perfor
 Base.:(==)(a::Region, b::Region) = API.mlirRegionEqual(a, b)
 
 """
-    push!(region, block)
+    Base.first(region)
+
+Gets the first block in the region.
+"""
+function Base.first(region::Region)
+    block = API.mlirRegionGetFirstBlock(region)
+    mlirIsNull(block) && return nothing
+    return Block(block, false)
+end
+
+next(region::Region) = Region(API.mlirRegionGetNextInOperation(region), false) # TODO check `owned=false` is correct
+
+"""
+    Base.push!(region, block)
 
 Takes a block owned by the caller and appends it to the given region.
 """
@@ -40,7 +53,7 @@ function Base.push!(region::Region, block::Block)
 end
 
 """
-    insert!(region, index, block)
+    Base.insert!(region, index, block)
 
 Takes a block owned by the caller and inserts it at `index` to the given region. This is an expensive operation that linearly scans the region, prefer insertAfter/Before instead.
 """
@@ -50,7 +63,8 @@ function Base.insert!(region::Region, index, block::Block)
 end
 
 function Base.pushfirst!(region::Region, block)
-    insert!(region, 1, block)
+    block1 = first(region)
+    insert_before!(region, block1, block)
     return block
 end
 
@@ -70,20 +84,26 @@ Takes a block owned by the caller and inserts it before the (non-owned) referenc
 insert_before!(region::Region, reference::Block, block::Block) =
     API.mlirRegionInsertOwnedBlockBefore(region, reference, lose_ownership!(block))
 
-"""
-    first_block(region)
-
-Gets the first block in the region.
-"""
-function first_block(region::Region)
-    block = mlirRegionGetFirstBlock(region)
-    mlirIsNull(block) && return nothing
-    return Block(block, false)
-end
-Base.first(region::Region) = first_block(region)
-
 function lose_ownership!(region::Region)
     @assert region.owned
     @atomic region.owned = false
     return region
+end
+
+Base.IteratorSize(::Core.Type{Region}) = Base.SizeUnknown()
+Base.eltype(::Region) = Block
+
+function Base.iterate(region::Region)
+    b = first(region)
+    return (b, b)
+end
+
+function Base.iterate(::Region, block)
+    raw_block = API.mlirBlockGetNextInRegion(block)
+    if mlirIsNull(raw_block)
+        nothing
+    else
+        b = Block(raw_block, false)
+        (b, b)
+    end
 end

@@ -21,7 +21,7 @@ export nattrs,
     operand!,
     nsuccessors,
     successor
-export BlockIterator, RegionIterator, OperationIterator
+export RegionIterator, OperationIterator
 export @affinemap
 
 function mlirIsNull(val)
@@ -61,7 +61,7 @@ include("Pass.jl")
 
 function visit(f, op)
     for region in RegionIterator(op)
-        for block in BlockIterator(region)
+        for block in region
             for op in OperationIterator(block)
                 f(op)
             end

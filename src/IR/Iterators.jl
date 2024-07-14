@@ -1,37 +1,4 @@
 """
-    BlockIterator(region::Region)
-
-Iterates over all blocks in the given region.
-"""
-struct BlockIterator
-    region::Region
-end
-
-Base.IteratorSize(::Core.Type{BlockIterator}) = Base.SizeUnknown()
-Base.eltype(::BlockIterator) = Block
-
-function Base.iterate(it::BlockIterator)
-    reg = it.region
-    raw_block = API.mlirRegionGetFirstBlock(reg)
-    if mlirIsNull(raw_block)
-        nothing
-    else
-        b = Block(raw_block, false)
-        (b, b)
-    end
-end
-
-function Base.iterate(::BlockIterator, block)
-    raw_block = API.mlirBlockGetNextInRegion(block)
-    if mlirIsNull(raw_block)
-        nothing
-    else
-        b = Block(raw_block, false)
-        (b, b)
-    end
-end
-
-"""
     RegionIterator(::Operation)
 
 Iterates over all sub-regions for the given operation.

@@ -73,7 +73,7 @@ end
         @test length(regions) == 1
 
         region = only(regions)
-        blocks = collect(IR.BlockIterator(region))
+        blocks = collect(region)
         @test blocks isa Vector{Block}
         @test length(blocks) == 1
     end
