@@ -12,6 +12,7 @@ export nattrs,
     attr,
     attr!,
     rmattr!,
+    regions,
     nregions,
     region,
     nresults,
@@ -21,7 +22,6 @@ export nattrs,
     operand!,
     nsuccessors,
     successor
-export RegionIterator
 export @affinemap
 
 function mlirIsNull(val)
@@ -52,7 +52,6 @@ include("AffineExpr.jl")
 include("AffineMap.jl")
 include("Attribute.jl")
 include("IntegerSet.jl")
-include("Iterators.jl")
 
 include("ExecutionEngine.jl")
 include("Pass.jl")
@@ -60,7 +59,7 @@ include("Pass.jl")
 ### Utils
 
 function visit(f, op)
-    for region in RegionIterator(op)
+    for region in regions(op)
         for block in region
             for op in block
                 f(op)

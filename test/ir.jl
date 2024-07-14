@@ -68,7 +68,7 @@ end
         @test length(ops) == 1
 
         op = only(ops)
-        regions = collect(IR.RegionIterator(op))
+        regions = collect(regions(op))
         @test regions isa Vector{Region}
         @test length(regions) == 1
 

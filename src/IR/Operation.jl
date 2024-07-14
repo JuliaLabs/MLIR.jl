@@ -59,6 +59,7 @@ name(operation::Operation) = String(API.mlirOperationGetName(operation))
 Gets the block that owns this operation, returning null if the operation is not owned.
 """
 block(operation::Operation) = Block(API.mlirOperationGetBlock(operation), false)
+Base.parent(operation::Operation) = block(operation)
 
 """
     parent_op(op)
@@ -97,6 +98,41 @@ Returns `i`-th region attached to the operation.
 function region(operation::Operation, i)
     i ∉ 1:nregions(operation) && throw(BoundsError(operation, i))
     return Region(API.mlirOperationGetRegion(operation, i - 1), false)
+end
+
+"""
+    RegionIterator(::Operation)
+
+Iterates over all sub-regions for the given operation.
+"""
+struct RegionIterator
+    op::Operation
+end
+
+regions(op::Operation) = RegionIterator(op)
+
+Base.IteratorSize(::Core.Type{RegionIterator}) = Base.HasLength()
+Base.length(it::RegionIterator) = nregions(it.op)
+Base.eltype(::RegionIterator) = Region
+
+function Base.iterate(it::RegionIterator)
+    raw_region = API.mlirOperationGetFirstRegion(it.op)
+    if mlirIsNull(raw_region)
+        nothing
+    else
+        region = Region(raw_region, false)
+        (region, region)
+    end
+end
+
+function Base.iterate(::RegionIterator, region)
+    raw_region = API.mlirRegionGetNextInOperation(region)
+    if mlirIsNull(raw_region)
+        nothing
+    else
+        region = Region(raw_region, false)
+        (region, region)
+    end
 end
 
 """
