@@ -1,8 +1,8 @@
 module memref
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-
 
 """
 `assume_alignment`
@@ -16,16 +16,20 @@ optimization only, and the optimization is best-effort.
 """
 function assume_alignment(memref::Value; alignment, location=Location())
     results = IR.Type[]
-    operands = Value[memref, ]
+    operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("alignment", alignment), ]
-    
-    IR.create_operation(
-        "memref.assume_alignment", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("alignment", alignment),]
+
+    return IR.create_operation(
+        "memref.assume_alignment",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -46,18 +50,29 @@ result represents the latest value that was stored.
 %x = memref.atomic_rmw \"addf\" %value, %I[%i] : (f32, memref<10xf32>) -> f32
 ```
 """
-function atomic_rmw(value::Value, memref::Value, indices::Vector{Value}; result::IR.Type, kind, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[value, memref, indices..., ]
+function atomic_rmw(
+    value::Value,
+    memref::Value,
+    indices::Vector{Value};
+    result::IR.Type,
+    kind,
+    location=Location(),
+)
+    results = IR.Type[result,]
+    operands = Value[value, memref, indices...]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("kind", kind), ]
-    
-    IR.create_operation(
-        "memref.atomic_rmw", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("kind", kind),]
+
+    return IR.create_operation(
+        "memref.atomic_rmw",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -69,16 +84,20 @@ GenericAtomicRMWOp region.
 """
 function atomic_yield(result::Value; location=Location())
     results = IR.Type[]
-    operands = Value[result, ]
+    operands = Value[result,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.atomic_yield", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.atomic_yield",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -98,16 +117,20 @@ Otherwise, the result is undefined. They may have different layouts.
 """
 function copy(source::Value, target::Value; location=Location())
     results = IR.Type[]
-    operands = Value[source, target, ]
+    operands = Value[source, target]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.copy", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.copy",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -135,18 +158,28 @@ body of `GenericAtomicRMWOp`.
 }
 ```
 """
-function generic_atomic_rmw(memref::Value, indices::Vector{Value}; result::IR.Type, atomic_body::Region, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[memref, indices..., ]
-    owned_regions = Region[atomic_body, ]
+function generic_atomic_rmw(
+    memref::Value,
+    indices::Vector{Value};
+    result::IR.Type,
+    atomic_body::Region,
+    location=Location(),
+)
+    results = IR.Type[result,]
+    operands = Value[memref, indices...]
+    owned_regions = Region[atomic_body,]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.generic_atomic_rmw", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.generic_atomic_rmw",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -189,17 +222,21 @@ techniques. This is possible because of the
 in these contexts.
 """
 function load(memref::Value, indices::Vector{Value}; result::IR.Type, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[memref, indices..., ]
+    results = IR.Type[result,]
+    operands = Value[memref, indices...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.load", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.load",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -244,20 +281,30 @@ boundary.
   memref<8x64xf32, affine_map<(d0, d1)[s0] -> ((d0 + s0), d1)>, 1>
 ```
 """
-function alloc(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::IR.Type, alignment=nothing, location=Location())
-    results = IR.Type[memref, ]
-    operands = Value[dynamicSizes..., symbolOperands..., ]
+function alloc(
+    dynamicSizes::Vector{Value},
+    symbolOperands::Vector{Value};
+    memref::IR.Type,
+    alignment=nothing,
+    location=Location(),
+)
+    results = IR.Type[memref,]
+    operands = Value[dynamicSizes..., symbolOperands...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands), ]))
+    push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands)]))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
-    
-    IR.create_operation(
-        "memref.alloc", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.alloc",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -298,20 +345,30 @@ specified, guarantees alignment at least to that boundary. If not specified,
 an alignment on any convenient boundary compatible with the type will be
 chosen.
 """
-function alloca(dynamicSizes::Vector{Value}, symbolOperands::Vector{Value}; memref::IR.Type, alignment=nothing, location=Location())
-    results = IR.Type[memref, ]
-    operands = Value[dynamicSizes..., symbolOperands..., ]
+function alloca(
+    dynamicSizes::Vector{Value},
+    symbolOperands::Vector{Value};
+    memref::IR.Type,
+    alignment=nothing,
+    location=Location(),
+)
+    results = IR.Type[memref,]
+    operands = Value[dynamicSizes..., symbolOperands...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands), ]))
+    push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands)]))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
-    
-    IR.create_operation(
-        "memref.alloca", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.alloca",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -349,18 +406,22 @@ operation:
 If `memref.alloca_scope` returns no value, the `memref.alloca_scope.return ` can
 be left out, and will be inserted implicitly.
 """
-function alloca_scope(; results_::Vector{IR.Type}, bodyRegion::Region, location=Location())
-    results = IR.Type[results_..., ]
+function alloca_scope(; results::Vector{IR.Type}, bodyRegion::Region, location=Location())
+    results = IR.Type[results...,]
     operands = Value[]
-    owned_regions = Region[bodyRegion, ]
+    owned_regions = Region[bodyRegion,]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.alloca_scope", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.alloca_scope",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -376,18 +437,22 @@ to indicate which values are going to be returned. For example:
 memref.alloca_scope.return %value
 ```
 """
-function alloca_scope_return(results_::Vector{Value}; location=Location())
+function alloca_scope_return(results::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[results_..., ]
+    operands = Value[results...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.alloca_scope.return", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.alloca_scope.return",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -448,17 +513,21 @@ Erase rank information.
 ```
 """
 function cast(source::Value; dest::IR.Type, location=Location())
-    results = IR.Type[dest, ]
-    operands = Value[source, ]
+    results = IR.Type[dest,]
+    operands = Value[source,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.cast", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.cast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -497,17 +566,21 @@ Examples:
 ```
 """
 function collapse_shape(src::Value; result::IR.Type, reassociation, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[src, ]
+    results = IR.Type[result,]
+    operands = Value[src,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
-    
-    IR.create_operation(
-        "memref.collapse_shape", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("reassociation", reassociation),]
+
+    return IR.create_operation(
+        "memref.collapse_shape",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -528,16 +601,20 @@ memref.dealloc %0 : memref<8x64xf32,  affine_map<(d0, d1) -> (d0, d1), 1>>
 """
 function dealloc(memref::Value; location=Location())
     results = IR.Type[]
-    operands = Value[memref, ]
+    operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.dealloc", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.dealloc",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -567,17 +644,21 @@ The specified memref type is that of the first operand.
 ```
 """
 function dim(source::Value, index::Value; result::IR.Type, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[source, index, ]
+    results = IR.Type[result,]
+    operands = Value[source, index]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.dim", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.dim",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -628,18 +709,22 @@ TODO: add additional operands to allow source and destination striding, and
 multiple stride levels.
 TODO: Consider replacing src/dst memref indices with view memrefs.
 """
-function dma_start(operands_::Vector{Value}; location=Location())
+function dma_start(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.dma_start", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.dma_start",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -663,18 +748,24 @@ number of elements associated with the DMA operation.
  dma_wait %tag[%index], %num_elements : memref<1 x i32, affine_map<(d0) -> (d0)>, 2>
  ```
 """
-function dma_wait(tagMemRef::Value, tagIndices::Vector{Value}, numElements::Value; location=Location())
+function dma_wait(
+    tagMemRef::Value, tagIndices::Vector{Value}, numElements::Value; location=Location()
+)
     results = IR.Type[]
-    operands = Value[tagMemRef, tagIndices..., numElements, ]
+    operands = Value[tagMemRef, tagIndices..., numElements]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.dma_wait", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.dma_wait",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -713,17 +804,21 @@ smaller rank.
 ```
 """
 function expand_shape(src::Value; result::IR.Type, reassociation, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[src, ]
+    results = IR.Type[result,]
+    operands = Value[src,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("reassociation", reassociation), ]
-    
-    IR.create_operation(
-        "memref.expand_shape", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("reassociation", reassociation),]
+
+    return IR.create_operation(
+        "memref.expand_shape",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -742,17 +837,21 @@ undefined.
 ```
 """
 function get_global(; result::IR.Type, name, location=Location())
-    results = IR.Type[result, ]
+    results = IR.Type[result,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("name", name), ]
-    
-    IR.create_operation(
-        "memref.get_global", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("name", name),]
+
+    return IR.create_operation(
+        "memref.get_global",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -794,22 +893,38 @@ memref.global @z : memref<3xf16> = uninitialized
 memref.global constant @c : memref<2xi32> = dense<1, 4>
 ```
 """
-function global_(; sym_name, sym_visibility=nothing, type, initial_value=nothing, constant=nothing, alignment=nothing, location=Location())
+function global_(;
+    sym_name,
+    sym_visibility=nothing,
+    type,
+    initial_value=nothing,
+    constant=nothing,
+    alignment=nothing,
+    location=Location(),
+)
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("type", type), ]
-    !isnothing(sym_visibility) && push!(attributes, namedattribute("sym_visibility", sym_visibility))
-    !isnothing(initial_value) && push!(attributes, namedattribute("initial_value", initial_value))
+    attributes = NamedAttribute[
+        namedattribute("sym_name", sym_name), namedattribute("type", type)
+    ]
+    !isnothing(sym_visibility) &&
+        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(initial_value) &&
+        push!(attributes, namedattribute("initial_value", initial_value))
     !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
-    
-    IR.create_operation(
-        "memref.global", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.global",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -831,18 +946,33 @@ in cache). The cache type specifier is either \'data\' or \'instr\'
 and specifies whether the prefetch is performed on data cache or on
 instruction cache.
 """
-function prefetch(memref::Value, indices::Vector{Value}; isWrite, localityHint, isDataCache, location=Location())
+function prefetch(
+    memref::Value,
+    indices::Vector{Value};
+    isWrite,
+    localityHint,
+    isDataCache,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[memref, indices..., ]
+    operands = Value[memref, indices...]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("isWrite", isWrite), namedattribute("localityHint", localityHint), namedattribute("isDataCache", isDataCache), ]
-    
-    IR.create_operation(
-        "memref.prefetch", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("isWrite", isWrite),
+        namedattribute("localityHint", localityHint),
+        namedattribute("isDataCache", isDataCache),
+    ]
+
+    return IR.create_operation(
+        "memref.prefetch",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -859,17 +989,21 @@ The `memref.rank` operation takes a memref operand and returns its rank.
 ```
 """
 function rank(memref::Value; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[memref, ]
+    results = IR.Type[result_0,]
+    operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.rank", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.rank",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -893,19 +1027,40 @@ memref.reinterpret_cast %unranked to
 : memref<*xf32> to memref<?x?xf32, offset: ?, strides: [?, ?]>
 ```
 """
-function reinterpret_cast(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+function reinterpret_cast(
+    source::Value,
+    offsets::Vector{Value},
+    sizes::Vector{Value},
+    strides::Vector{Value};
+    result::IR.Type,
+    static_offsets,
+    static_sizes,
+    static_strides,
+    location=Location(),
+)
+    results = IR.Type[result,]
+    operands = Value[source, offsets..., sizes..., strides...]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
-    push!(attributes, operandsegmentsizes([1, length(offsets), length(sizes), length(strides), ]))
-    
-    IR.create_operation(
-        "memref.reinterpret_cast", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("static_offsets", static_offsets),
+        namedattribute("static_sizes", static_sizes),
+        namedattribute("static_strides", static_strides),
+    ]
+    push!(
+        attributes,
+        operandsegmentsizes([1, length(offsets), length(sizes), length(strides)]),
+    )
+
+    return IR.create_operation(
+        "memref.reinterpret_cast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -945,17 +1100,21 @@ Result type is unranked.
 ```
 """
 function reshape(source::Value, shape::Value; result::IR.Type, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[source, shape, ]
+    results = IR.Type[result,]
+    operands = Value[source, shape]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.reshape", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.reshape",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -991,16 +1150,20 @@ in these contexts.
 """
 function store(value::Value, memref::Value, indices::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[value, memref, indices..., ]
+    operands = Value[value, memref, indices...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.store", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.store",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1018,17 +1181,21 @@ transformation.
 ```
 """
 function transpose(in::Value; result_0::IR.Type, permutation, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[in, ]
+    results = IR.Type[result_0,]
+    operands = Value[in,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("permutation", permutation), ]
-    
-    IR.create_operation(
-        "memref.transpose", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("permutation", permutation),]
+
+    return IR.create_operation(
+        "memref.transpose",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1070,18 +1237,28 @@ For now, a \"view\" op:
   memref<2048xi8> to memref<?x4x?xf32>
 ```
 """
-function view(source::Value, byte_shift::Value, sizes::Vector{Value}; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[source, byte_shift, sizes..., ]
+function view(
+    source::Value,
+    byte_shift::Value,
+    sizes::Vector{Value};
+    result_0::IR.Type,
+    location=Location(),
+)
+    results = IR.Type[result_0,]
+    operands = Value[source, byte_shift, sizes...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.view", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.view",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1220,19 +1397,40 @@ Example 5:
 ```
 }
 """
-function subview(source::Value, offsets::Vector{Value}, sizes::Vector{Value}, strides::Vector{Value}; result::IR.Type, static_offsets, static_sizes, static_strides, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[source, offsets..., sizes..., strides..., ]
+function subview(
+    source::Value,
+    offsets::Vector{Value},
+    sizes::Vector{Value},
+    strides::Vector{Value};
+    result::IR.Type,
+    static_offsets,
+    static_sizes,
+    static_strides,
+    location=Location(),
+)
+    results = IR.Type[result,]
+    operands = Value[source, offsets..., sizes..., strides...]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("static_offsets", static_offsets), namedattribute("static_sizes", static_sizes), namedattribute("static_strides", static_strides), ]
-    push!(attributes, operandsegmentsizes([1, length(offsets), length(sizes), length(strides), ]))
-    
-    IR.create_operation(
-        "memref.subview", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("static_offsets", static_offsets),
+        namedattribute("static_sizes", static_sizes),
+        namedattribute("static_strides", static_strides),
+    ]
+    push!(
+        attributes,
+        operandsegmentsizes([1, length(offsets), length(sizes), length(strides)]),
+    )
+
+    return IR.create_operation(
+        "memref.subview",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1253,16 +1451,20 @@ memref.tensor_store %8, %10 : memref<4x?xf32, #layout, memspace0>
 """
 function tensor_store(tensor::Value, memref::Value; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, memref, ]
+    operands = Value[tensor, memref]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "memref.tensor_store", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "memref.tensor_store",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 

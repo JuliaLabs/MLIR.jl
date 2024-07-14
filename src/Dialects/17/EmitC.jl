@@ -1,8 +1,8 @@
 module emitc
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-
 
 """
 `add`
@@ -24,17 +24,21 @@ float* v6 = v3 + v4;
 ```
 """
 function add(lhs::Value, rhs::Value; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[lhs, rhs, ]
+    results = IR.Type[result_0,]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "emitc.add", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "emitc.add",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -57,17 +61,21 @@ can be applied to a single operand.
 ```
 """
 function apply(operand::Value; result::IR.Type, applicableOperator, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[operand, ]
+    results = IR.Type[result,]
+    operands = Value[operand,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator), ]
-    
-    IR.create_operation(
-        "emitc.apply", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
+
+    return IR.create_operation(
+        "emitc.apply",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -90,20 +98,32 @@ specifying order of operands and attributes in the call as follows:
 %0 = \"emitc.call\"() {callee = \"foo\"} : () -> i32
 ```
 """
-function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, args=nothing, template_args=nothing, location=Location())
-    results = IR.Type[result_0..., ]
-    operands = Value[operands_..., ]
+function call(
+    operands::Vector{Value};
+    result_0::Vector{IR.Type},
+    callee,
+    args=nothing,
+    template_args=nothing,
+    location=Location(),
+)
+    results = IR.Type[result_0...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee), ]
+    attributes = NamedAttribute[namedattribute("callee", callee),]
     !isnothing(args) && push!(attributes, namedattribute("args", args))
-    !isnothing(template_args) && push!(attributes, namedattribute("template_args", template_args))
-    
-    IR.create_operation(
-        "emitc.call", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(template_args) &&
+        push!(attributes, namedattribute("template_args", template_args))
+
+    return IR.create_operation(
+        "emitc.call",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -126,17 +146,21 @@ and EmitC types.
 ```
 """
 function cast(source::Value; dest::IR.Type, location=Location())
-    results = IR.Type[dest, ]
-    operands = Value[source, ]
+    results = IR.Type[dest,]
+    operands = Value[source,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "emitc.cast", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "emitc.cast",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -163,17 +187,21 @@ it should not be used with pointers.
 ```
 """
 function constant(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0, ]
+    results = IR.Type[result_0,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
-    IR.create_operation(
-        "emitc.constant", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("value", value),]
+
+    return IR.create_operation(
+        "emitc.constant",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -197,17 +225,21 @@ float v6 = v3 / v4;
 ```
 """
 function div(operand_0::Value, operand_1::Value; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[operand_0, operand_1, ]
+    results = IR.Type[result_0,]
+    operands = Value[operand_0, operand_1]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "emitc.div", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "emitc.div",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -238,14 +270,19 @@ function include_(; include_, is_standard_include=nothing, location=Location())
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("include", include_), ]
-    !isnothing(is_standard_include) && push!(attributes, namedattribute("is_standard_include", is_standard_include))
-    
-    IR.create_operation(
-        "emitc.include", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("include", include_),]
+    !isnothing(is_standard_include) &&
+        push!(attributes, namedattribute("is_standard_include", is_standard_include))
+
+    return IR.create_operation(
+        "emitc.include",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -269,17 +306,21 @@ float v6 = v3 * v4;
 ```
 """
 function mul(operand_0::Value, operand_1::Value; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[operand_0, operand_1, ]
+    results = IR.Type[result_0,]
+    operands = Value[operand_0, operand_1]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "emitc.mul", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "emitc.mul",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -301,17 +342,21 @@ int32_t v5 = v1 % v2;
 ```
 """
 function rem(operand_0::Value, operand_1::Value; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[operand_0, operand_1, ]
+    results = IR.Type[result_0,]
+    operands = Value[operand_0, operand_1]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "emitc.rem", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "emitc.rem",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -338,17 +383,21 @@ ptrdiff_t v9 = v5 - v6;
 ```
 """
 function sub(lhs::Value, rhs::Value; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0, ]
-    operands = Value[lhs, rhs, ]
+    results = IR.Type[result_0,]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "emitc.sub", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "emitc.sub",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -387,17 +436,21 @@ emitc.call \"write\"(%2, %3) : (!emitc.ptr<i32>, !emitc.ptr<i32>) -> ()
 ```
 """
 function variable(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0, ]
+    results = IR.Type[result_0,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
-    IR.create_operation(
-        "emitc.variable", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("value", value),]
+
+    return IR.create_operation(
+        "emitc.variable",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 

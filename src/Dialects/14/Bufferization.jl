@@ -1,8 +1,8 @@
 module bufferization
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-
 
 """
 `clone`
@@ -21,17 +21,21 @@ of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
 function clone(input::Value; output::IR.Type, location=Location())
-    results = IR.Type[output, ]
-    operands = Value[input, ]
+    results = IR.Type[output,]
+    operands = Value[input,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "bufferization.clone", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "bufferization.clone",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -53,17 +57,21 @@ unrealized_conversion_cast and is intended for use in the context of
 gradual bufferization.
 """
 function to_memref(tensor::Value; memref::IR.Type, location=Location())
-    results = IR.Type[memref, ]
-    operands = Value[tensor, ]
+    results = IR.Type[memref,]
+    operands = Value[tensor,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "bufferization.to_memref", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "bufferization.to_memref",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -89,17 +97,21 @@ If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
 function to_tensor(memref::Value; result::IR.Type, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[memref, ]
+    results = IR.Type[result,]
+    operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "bufferization.to_tensor", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "bufferization.to_tensor",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
