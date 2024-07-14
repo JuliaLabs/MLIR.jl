@@ -63,7 +63,7 @@ end
             )
         end
         b = IR.body(mod)
-        ops = collect(IR.OperationIterator(b))
+        ops = collect(b)
         @test ops isa Vector{Operation}
         @test length(ops) == 1
 

@@ -29,35 +29,3 @@ function Base.iterate(it::RegionIterator, region)
         (region, region)
     end
 end
-
-"""
-    OperationIterator(block::Block)
-
-Iterates over all operations for the given block.
-"""
-struct OperationIterator
-    block::Block
-end
-
-Base.IteratorSize(::Core.Type{OperationIterator}) = Base.SizeUnknown()
-Base.eltype(::OperationIterator) = Operation
-
-function Base.iterate(it::OperationIterator)
-    raw_op = API.mlirBlockGetFirstOperation(it.block)
-    if mlirIsNull(raw_op)
-        nothing
-    else
-        op = Operation(raw_op, false)
-        (op, op)
-    end
-end
-
-function Base.iterate(::OperationIterator, op)
-    raw_op = API.mlirOperationGetNextInBlock(op)
-    if mlirIsNull(raw_op)
-        nothing
-    else
-        op = Operation(raw_op, false)
-        (op, op)
-    end
-end

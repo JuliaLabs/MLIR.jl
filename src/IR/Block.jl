@@ -45,9 +45,7 @@ parent_op(block::Block) = Operation(API.mlirBlockGetParentOperation(block))
 
 Returns the region that contains this block.
 """
-parent_region(block::Block) = Region(API.mlirBlockGetParentRegion(block))
-
-Base.parent(block::Block) = parent_region(block)
+Base.parent(block::Block) = Region(API.mlirBlockGetParentRegion(block))
 
 """
     next(block)
@@ -86,16 +84,15 @@ push_argument!(block::Block, type; location::Location=Location()) =
     Value(API.mlirBlockAddArgument(block, type, location))
 
 """
-    first_op(block)
+    Base.first(block)
 
 Returns the first operation in the block or `nothing` if empty.
 """
-function first_op(block::Block)
+function Base.first(block::Block)
     op = API.mlirBlockGetFirstOperation(block)
     mlirIsNull(op) && return nothing
     return Operation(op, false)
 end
-Base.first(block::Block) = first_op(block)
 
 """
     terminator(block)
@@ -130,7 +127,8 @@ function Base.insert!(block::Block, index, op::Operation)
 end
 
 function Base.pushfirst!(block::Block, op::Operation)
-    insert!(block, 1, op)
+    op1 = first(block)
+    insert_before!(block, op1, op)
     return op
 end
 
@@ -165,4 +163,19 @@ function Base.show(io::IO, block::Block)
     c_print_callback = @cfunction(print_callback, Cvoid, (API.MlirStringRef, Any))
     ref = Ref(io)
     return API.mlirBlockPrint(block, c_print_callback, ref)
+end
+
+Base.IteratorSize(::Core.Type{Block}) = Base.SizeUnknown()
+Base.eltype(::Block) = Operation
+
+Base.iterate(block::Block) = first(block)
+
+function Base.iterate(::Block, op)
+    raw_op = API.mlirOperationGetNextInBlock(op)
+    if mlirIsNull(raw_op)
+        nothing
+    else
+        op = Operation(raw_op, false)
+        (op, op)
+    end
 end
