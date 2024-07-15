@@ -76,7 +76,7 @@ insert_before!(region::Region, reference::Block, block::Block) =
 Gets the first block in the region.
 """
 function first_block(region::Region)
-    block = mlirRegionGetFirstBlock(region)
+    block = API.mlirRegionGetFirstBlock(region)
     mlirIsNull(block) && return nothing
     return Block(block, false)
 end
