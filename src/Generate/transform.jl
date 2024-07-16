@@ -27,6 +27,10 @@ function handle_return(cg, val::T) where T
     generate_return(cg, returnvalues; location=IR.Location())
 end
 function handle_invoke(cg, fname, ret, args...)
+    if (first(args) isa Core.Const)
+        # disregard first argument which contains the called function, if it is const.
+        args = args[begin+1:end]
+    end
     unpacked = []
     for arg in args
         push!(unpacked, reinterpret(Tuple{IR.unpack(typeof(arg))...}, arg)...)
@@ -127,12 +131,20 @@ function generate!(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MOD
     ]
     entryblock = first(blocks)
 
-    argtypes = ir.argtypes[begin+1:end] # the first argument is the type of the function itself, we don't need this.
-    args = map(enumerate(argtypes)) do (i, argtype)
-        temp = []
-        for t in IR.unpack(argtype)
+    # the first argument is the function object itself. In the case where this is a closure,
+    # we want the captured variables to be included as function arguments in the generated function
+    captures = if first(ir.argtypes) isa Core.Const
+            ()
+        else
+            map(IR.unpack(first(ir.argtypes))) do t
+                val = IR.push_argument!(entryblock, IR.Type(t))
+            end |> Tuple
+        end
+    
+    args = map(enumerate(ir.argtypes[begin+1:end])) do (i, argtype)
+        temp = map(IR.unpack(argtype)) do t
             arg = IR.push_argument!(entryblock, IR.Type(t))
-            push!(temp, t(arg))
+            t(arg)
         end
         return reinterpret(argtype, Tuple(temp))
     end
@@ -147,7 +159,7 @@ function generate!(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MOD
 
     transformed_ir = transform(cg, ir, blocks, next_block)
     
-    builder! = Core.OpaqueClosure(transformed_ir; do_compile=true)
+    builder! = Core.OpaqueClosure(transformed_ir, captures...; do_compile=true)
 
     builder!(args...)
 
@@ -196,7 +208,7 @@ function collect_methods(f, types)
     ir, rt = only(Core.Compiler.code_ircode_by_type(mi.specTypes, interp=MLIRInterpreter()))
 
     worklist = Core.Compiler.IRCode[ir]
-    methods = Dict{Core.MethodInstance, Tuple{Core.Compiler.IRCode, Any}}(
+    methods = Dict{Core.MethodInstance, Tuple{Core.Compiler.IRCode, Type}}(
         mi => (ir, rt)
     )
     while !isempty(worklist)
@@ -340,7 +352,7 @@ function transform(cg, ir, blocks, next_block)
                 compact[ssa][:inst] = only(args)
             elseif !is_intrinsic(mi.specTypes)
                 fname = name(cg, mi)
-                compact[ssa][:inst] = Expr(:call, handle_invoke, cg, fname, compact[ssa][:type], args...)
+                compact[ssa][:inst] = Expr(:call, handle_invoke, cg, fname, compact[ssa][:type], called_func, args...)
                 compact[ssa][:type] = Any
             end
         end
