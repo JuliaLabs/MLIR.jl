@@ -19,8 +19,13 @@ mutable struct CodegenContext{T} <: AbstractCodegenContext
 
     function (cg::CodegenContext)(f, types)
         mod = IR.Module()
-        methods = collect_methods(f, types)
+        toplevel, methods = collect_methods(f, types)
         funcs = []
+
+        captures = collect_captures(f)
+        mlir_func = generate!(cg, toplevel.ir, toplevel.ret; mi=toplevel.mi, captures)
+        push!(funcs, mlir_func)
+
         for (mi, (ir, ret)) in methods
             mlir_func = generate!(cg, ir, ret; mi)
             push!(funcs, mlir_func)
