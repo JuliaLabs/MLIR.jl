@@ -1,6 +1,6 @@
 module llvm
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -8,9 +8,9 @@ import ..Dialects: namedattribute, operandsegmentsizes
 `ashr`
 
 """
-function ashr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function ashr(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -55,9 +55,9 @@ end
 `add`
 
 """
-function add(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function add(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -75,9 +75,9 @@ end
 `addrspacecast`
 
 """
-function addrspacecast(arg::Value; res::IR.Type, location=Location())
+function addrspacecast(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -211,9 +211,9 @@ end
 `alloca`
 
 """
-function alloca(arraySize::Value; res::IR.Type, alignment=nothing, location=Location())
+function alloca(arraySize; res::IR.Type, alignment=nothing, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arraySize, ]
+    operands = Value[value(arraySize), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -231,9 +231,9 @@ end
 `and`
 
 """
-function and(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function and(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -251,9 +251,9 @@ end
 `intr_assume`
 
 """
-function intr_assume(cond::Value; location=Location())
+function intr_assume(cond; location=Location())
     results = IR.Type[]
-    operands = Value[cond, ]
+    operands = Value[value(cond), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -270,9 +270,9 @@ end
 `cmpxchg`
 
 """
-function cmpxchg(ptr::Value, cmp::Value, val::Value; res::IR.Type, success_ordering, failure_ordering, location=Location())
+function cmpxchg(ptr, cmp, val; res::IR.Type, success_ordering, failure_ordering, location=Location())
     results = IR.Type[res, ]
-    operands = Value[ptr, cmp, val, ]
+    operands = Value[value(ptr), value(cmp), value(val), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("success_ordering", success_ordering), namedattribute("failure_ordering", failure_ordering), ]
@@ -289,9 +289,9 @@ end
 `atomicrmw`
 
 """
-function atomicrmw(ptr::Value, val::Value; res::IR.Type, bin_op, ordering, location=Location())
+function atomicrmw(ptr, val; res::IR.Type, bin_op, ordering, location=Location())
     results = IR.Type[res, ]
-    operands = Value[ptr, val, ]
+    operands = Value[value(ptr), value(val), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("bin_op", bin_op), namedattribute("ordering", ordering), ]
@@ -308,9 +308,9 @@ end
 `intr_bitreverse`
 
 """
-function intr_bitreverse(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_bitreverse(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -328,9 +328,9 @@ end
 `bitcast`
 
 """
-function bitcast(arg::Value; res::IR.Type, location=Location())
+function bitcast(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -347,9 +347,9 @@ end
 `br`
 
 """
-function br(destOperands::Vector{Value}; dest::Block, location=Location())
+function br(destOperands; dest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[destOperands..., ]
+    operands = Value[value.(destOperands)..., ]
     owned_regions = Region[]
     successors = Block[dest, ]
     attributes = NamedAttribute[]
@@ -392,9 +392,9 @@ llvm.call @bar(%0) : (f32) -> ()
 llvm.call %1(%0) : (f32) -> ()
 ```
 """
-function call(operand_0::Vector{Value}; result_0::Vector{IR.Type}, callee=nothing, fastmathFlags=nothing, location=Location())
+function call(operand_0; result_0::Vector{IR.Type}, callee=nothing, fastmathFlags=nothing, location=Location())
     results = IR.Type[result_0..., ]
-    operands = Value[operand_0..., ]
+    operands = Value[value.(operand_0)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -413,9 +413,9 @@ end
 `cond_br`
 
 """
-function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; branch_weights=nothing, trueDest::Block, falseDest::Block, location=Location())
+function cond_br(condition, trueDestOperands, falseDestOperands; branch_weights=nothing, trueDest::Block, falseDest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
+    operands = Value[value(condition), value.(trueDestOperands)..., value.(falseDestOperands)..., ]
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[]
@@ -479,9 +479,9 @@ end
 `intr_copysign`
 
 """
-function intr_copysign(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_copysign(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -518,9 +518,9 @@ end
 `intr_coro_begin`
 
 """
-function intr_coro_begin(token::Value, mem::Value; res::IR.Type, location=Location())
+function intr_coro_begin(token, mem; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[token, mem, ]
+    operands = Value[value(token), value(mem), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -537,9 +537,9 @@ end
 `intr_coro_end`
 
 """
-function intr_coro_end(handle::Value, unwind::Value; res::IR.Type, location=Location())
+function intr_coro_end(handle, unwind; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[handle, unwind, ]
+    operands = Value[value(handle), value(unwind), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -556,9 +556,9 @@ end
 `intr_coro_free`
 
 """
-function intr_coro_free(id::Value, handle::Value; res::IR.Type, location=Location())
+function intr_coro_free(id, handle; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[id, handle, ]
+    operands = Value[value(id), value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -575,9 +575,9 @@ end
 `intr_coro_id`
 
 """
-function intr_coro_id(align::Value, promise::Value, coroaddr::Value, fnaddrs::Value; res::IR.Type, location=Location())
+function intr_coro_id(align, promise, coroaddr, fnaddrs; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[align, promise, coroaddr, fnaddrs, ]
+    operands = Value[value(align), value(promise), value(coroaddr), value(fnaddrs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -594,9 +594,9 @@ end
 `intr_coro_resume`
 
 """
-function intr_coro_resume(handle::Value; location=Location())
+function intr_coro_resume(handle; location=Location())
     results = IR.Type[]
-    operands = Value[handle, ]
+    operands = Value[value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -613,9 +613,9 @@ end
 `intr_coro_save`
 
 """
-function intr_coro_save(handle::Value; res::IR.Type, location=Location())
+function intr_coro_save(handle; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[handle, ]
+    operands = Value[value(handle), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -651,9 +651,9 @@ end
 `intr_coro_suspend`
 
 """
-function intr_coro_suspend(save::Value, final::Value; res::IR.Type, location=Location())
+function intr_coro_suspend(save, final; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[save, final, ]
+    operands = Value[value(save), value(final), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -670,9 +670,9 @@ end
 `intr_cos`
 
 """
-function intr_cos(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_cos(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -690,9 +690,9 @@ end
 `intr_ctlz`
 
 """
-function intr_ctlz(in::Value, zero_undefined::Value; res::IR.Type, location=Location())
+function intr_ctlz(in, zero_undefined; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[in, zero_undefined, ]
+    operands = Value[value(in), value(zero_undefined), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -709,9 +709,9 @@ end
 `intr_cttz`
 
 """
-function intr_cttz(in::Value, zero_undefined::Value; res::IR.Type, location=Location())
+function intr_cttz(in, zero_undefined; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[in, zero_undefined, ]
+    operands = Value[value(in), value(zero_undefined), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -728,9 +728,9 @@ end
 `intr_ctpop`
 
 """
-function intr_ctpop(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_ctpop(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -748,9 +748,9 @@ end
 `intr_eh_typeid_for`
 
 """
-function intr_eh_typeid_for(type_info::Value; res::IR.Type, location=Location())
+function intr_eh_typeid_for(type_info; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[type_info, ]
+    operands = Value[value(type_info), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -767,9 +767,9 @@ end
 `intr_exp2`
 
 """
-function intr_exp2(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_exp2(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -787,9 +787,9 @@ end
 `intr_exp`
 
 """
-function intr_exp(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_exp(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -807,9 +807,9 @@ end
 `extractelement`
 
 """
-function extractelement(vector::Value, position::Value; res::IR.Type, location=Location())
+function extractelement(vector, position; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[vector, position, ]
+    operands = Value[value(vector), value(position), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -826,9 +826,9 @@ end
 `extractvalue`
 
 """
-function extractvalue(container::Value; res::IR.Type, position, location=Location())
+function extractvalue(container; res::IR.Type, position, location=Location())
     results = IR.Type[res, ]
-    operands = Value[container, ]
+    operands = Value[value(container), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
@@ -845,9 +845,9 @@ end
 `intr_fabs`
 
 """
-function intr_fabs(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_fabs(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -865,9 +865,9 @@ end
 `fadd`
 
 """
-function fadd(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fadd(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -886,9 +886,9 @@ end
 `intr_ceil`
 
 """
-function intr_ceil(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_ceil(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -906,9 +906,9 @@ end
 `fcmp`
 
 """
-function fcmp(lhs::Value, rhs::Value; res::IR.Type, predicate, fastmathFlags=nothing, location=Location())
+function fcmp(lhs, rhs; res::IR.Type, predicate, fastmathFlags=nothing, location=Location())
     results = IR.Type[res, ]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
@@ -926,9 +926,9 @@ end
 `fdiv`
 
 """
-function fdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fdiv(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -947,9 +947,9 @@ end
 `intr_floor`
 
 """
-function intr_floor(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_floor(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -967,9 +967,9 @@ end
 `intr_fma`
 
 """
-function intr_fma(a::Value, b::Value, c::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_fma(a, b, c; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, c, ]
+    operands = Value[value(a), value(b), value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -987,9 +987,9 @@ end
 `intr_fmuladd`
 
 """
-function intr_fmuladd(a::Value, b::Value, c::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_fmuladd(a, b, c; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, c, ]
+    operands = Value[value(a), value(b), value(c), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1007,9 +1007,9 @@ end
 `fmul`
 
 """
-function fmul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fmul(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1028,9 +1028,9 @@ end
 `fneg`
 
 """
-function fneg(operand::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fneg(operand; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[operand, ]
+    operands = Value[value(operand), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1049,9 +1049,9 @@ end
 `fpext`
 
 """
-function fpext(arg::Value; res::IR.Type, location=Location())
+function fpext(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1068,9 +1068,9 @@ end
 `fptosi`
 
 """
-function fptosi(arg::Value; res::IR.Type, location=Location())
+function fptosi(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1087,9 +1087,9 @@ end
 `fptoui`
 
 """
-function fptoui(arg::Value; res::IR.Type, location=Location())
+function fptoui(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1106,9 +1106,9 @@ end
 `fptrunc`
 
 """
-function fptrunc(arg::Value; res::IR.Type, location=Location())
+function fptrunc(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1125,9 +1125,9 @@ end
 `frem`
 
 """
-function frem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function frem(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1146,9 +1146,9 @@ end
 `fsub`
 
 """
-function fsub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
+function fsub(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, fastmathFlags=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1186,9 +1186,9 @@ end
 `freeze`
 
 """
-function freeze(val::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function freeze(val; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[val, ]
+    operands = Value[value(val), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1206,9 +1206,9 @@ end
 `getelementptr`
 
 """
-function getelementptr(base::Value, indices::Vector{Value}; res::IR.Type, structIndices, location=Location())
+function getelementptr(base, indices; res::IR.Type, structIndices, location=Location())
     results = IR.Type[res, ]
-    operands = Value[base, indices..., ]
+    operands = Value[value(base), value.(indices)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("structIndices", structIndices), ]
@@ -1225,9 +1225,9 @@ end
 `intr_get_active_lane_mask`
 
 """
-function intr_get_active_lane_mask(base::Value, n::Value; res::IR.Type, location=Location())
+function intr_get_active_lane_mask(base, n; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[base, n, ]
+    operands = Value[value(base), value(n), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1434,9 +1434,9 @@ end
 `icmp`
 
 """
-function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location())
+function icmp(lhs, rhs; res::IR.Type, predicate, location=Location())
     results = IR.Type[res, ]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate), ]
@@ -1459,9 +1459,9 @@ written, or referenced.
 Attempting to define or reference any symbol or any global behavior is
 considered undefined behavior at this time.
 """
-function inline_asm(operands_::Vector{Value}; res=nothing::Union{Nothing, IR.Type}, asm_string, constraints, has_side_effects=nothing, is_align_stack=nothing, asm_dialect=nothing, operand_attrs=nothing, location=Location())
+function inline_asm(operands_; res=nothing::Union{Nothing, IR.Type}, asm_string, constraints, has_side_effects=nothing, is_align_stack=nothing, asm_dialect=nothing, operand_attrs=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("asm_string", asm_string), namedattribute("constraints", constraints), ]
@@ -1483,9 +1483,9 @@ end
 `insertelement`
 
 """
-function insertelement(vector::Value, value::Value, position::Value; res::IR.Type, location=Location())
+function insertelement(vector, value, position; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[vector, value, position, ]
+    operands = Value[value(vector), value(value), value(position), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1502,9 +1502,9 @@ end
 `insertvalue`
 
 """
-function insertvalue(container::Value, value::Value; res::IR.Type, position, location=Location())
+function insertvalue(container, value; res::IR.Type, position, location=Location())
     results = IR.Type[res, ]
-    operands = Value[container, value, ]
+    operands = Value[value(container), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("position", position), ]
@@ -1521,9 +1521,9 @@ end
 `inttoptr`
 
 """
-function inttoptr(arg::Value; res::IR.Type, location=Location())
+function inttoptr(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1540,9 +1540,9 @@ end
 `invoke`
 
 """
-function invoke(callee_operands::Vector{Value}, normalDestOperands::Vector{Value}, unwindDestOperands::Vector{Value}; result_0::Vector{IR.Type}, callee=nothing, normalDest::Block, unwindDest::Block, location=Location())
+function invoke(callee_operands, normalDestOperands, unwindDestOperands; result_0::Vector{IR.Type}, callee=nothing, normalDest::Block, unwindDest::Block, location=Location())
     results = IR.Type[result_0..., ]
-    operands = Value[callee_operands..., normalDestOperands..., unwindDestOperands..., ]
+    operands = Value[value.(callee_operands)..., value.(normalDestOperands)..., value.(unwindDestOperands)..., ]
     owned_regions = Region[]
     successors = Block[normalDest, unwindDest, ]
     attributes = NamedAttribute[]
@@ -1609,9 +1609,9 @@ end
 `lshr`
 
 """
-function lshr(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function lshr(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1629,9 +1629,9 @@ end
 `landingpad`
 
 """
-function landingpad(operand_0::Vector{Value}; res::IR.Type, cleanup=nothing, location=Location())
+function landingpad(operand_0; res::IR.Type, cleanup=nothing, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0..., ]
+    operands = Value[value.(operand_0)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1649,9 +1649,9 @@ end
 `load`
 
 """
-function load(addr::Value; res::IR.Type, access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
+function load(addr; res::IR.Type, access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
     results = IR.Type[res, ]
-    operands = Value[addr, ]
+    operands = Value[value(addr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1674,9 +1674,9 @@ end
 `intr_log10`
 
 """
-function intr_log10(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_log10(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1694,9 +1694,9 @@ end
 `intr_log2`
 
 """
-function intr_log2(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_log2(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1714,9 +1714,9 @@ end
 `intr_log`
 
 """
-function intr_log(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_log(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1734,9 +1734,9 @@ end
 `intr_masked_load`
 
 """
-function intr_masked_load(data::Value, mask::Value, pass_thru::Vector{Value}; res::IR.Type, alignment, location=Location())
+function intr_masked_load(data, mask, pass_thru; res::IR.Type, alignment, location=Location())
     results = IR.Type[res, ]
-    operands = Value[data, mask, pass_thru..., ]
+    operands = Value[value(data), value(mask), value.(pass_thru)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("alignment", alignment), ]
@@ -1753,9 +1753,9 @@ end
 `intr_masked_store`
 
 """
-function intr_masked_store(value::Value, data::Value, mask::Value; alignment, location=Location())
+function intr_masked_store(value, data, mask; alignment, location=Location())
     results = IR.Type[]
-    operands = Value[value, data, mask, ]
+    operands = Value[value(value), value(data), value(mask), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("alignment", alignment), ]
@@ -1772,9 +1772,9 @@ end
 `intr_matrix_column_major_load`
 
 """
-function intr_matrix_column_major_load(data::Value, stride::Value; res::IR.Type, isVolatile, rows, columns, location=Location())
+function intr_matrix_column_major_load(data, stride; res::IR.Type, isVolatile, rows, columns, location=Location())
     results = IR.Type[res, ]
-    operands = Value[data, stride, ]
+    operands = Value[value(data), value(stride), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("isVolatile", isVolatile), namedattribute("rows", rows), namedattribute("columns", columns), ]
@@ -1791,9 +1791,9 @@ end
 `intr_matrix_column_major_store`
 
 """
-function intr_matrix_column_major_store(matrix::Value, data::Value, stride::Value; isVolatile, rows, columns, location=Location())
+function intr_matrix_column_major_store(matrix, data, stride; isVolatile, rows, columns, location=Location())
     results = IR.Type[]
-    operands = Value[matrix, data, stride, ]
+    operands = Value[value(matrix), value(data), value(stride), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("isVolatile", isVolatile), namedattribute("rows", rows), namedattribute("columns", columns), ]
@@ -1810,9 +1810,9 @@ end
 `intr_matrix_multiply`
 
 """
-function intr_matrix_multiply(lhs::Value, rhs::Value; res::IR.Type, lhs_rows, lhs_columns, rhs_columns, location=Location())
+function intr_matrix_multiply(lhs, rhs; res::IR.Type, lhs_rows, lhs_columns, rhs_columns, location=Location())
     results = IR.Type[res, ]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("lhs_rows", lhs_rows), namedattribute("lhs_columns", lhs_columns), namedattribute("rhs_columns", rhs_columns), ]
@@ -1829,9 +1829,9 @@ end
 `intr_matrix_transpose`
 
 """
-function intr_matrix_transpose(matrix::Value; res::IR.Type, rows, columns, location=Location())
+function intr_matrix_transpose(matrix; res::IR.Type, rows, columns, location=Location())
     results = IR.Type[res, ]
-    operands = Value[matrix, ]
+    operands = Value[value(matrix), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("rows", rows), namedattribute("columns", columns), ]
@@ -1848,9 +1848,9 @@ end
 `intr_maxnum`
 
 """
-function intr_maxnum(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_maxnum(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1868,9 +1868,9 @@ end
 `intr_maximum`
 
 """
-function intr_maximum(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_maximum(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1888,9 +1888,9 @@ end
 `intr_memcpy_inline`
 
 """
-function intr_memcpy_inline(dst::Value, src::Value, len::Value, isVolatile::Value; location=Location())
+function intr_memcpy_inline(dst, src, len, isVolatile; location=Location())
     results = IR.Type[]
-    operands = Value[dst, src, len, isVolatile, ]
+    operands = Value[value(dst), value(src), value(len), value(isVolatile), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1907,9 +1907,9 @@ end
 `intr_memcpy`
 
 """
-function intr_memcpy(dst::Value, src::Value, len::Value, isVolatile::Value; location=Location())
+function intr_memcpy(dst, src, len, isVolatile; location=Location())
     results = IR.Type[]
-    operands = Value[dst, src, len, isVolatile, ]
+    operands = Value[value(dst), value(src), value(len), value(isVolatile), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1926,9 +1926,9 @@ end
 `intr_memmove`
 
 """
-function intr_memmove(dst::Value, src::Value, len::Value, isVolatile::Value; location=Location())
+function intr_memmove(dst, src, len, isVolatile; location=Location())
     results = IR.Type[]
-    operands = Value[dst, src, len, isVolatile, ]
+    operands = Value[value(dst), value(src), value(len), value(isVolatile), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1945,9 +1945,9 @@ end
 `intr_memset`
 
 """
-function intr_memset(dst::Value, val::Value, len::Value, isVolatile::Value; location=Location())
+function intr_memset(dst, val, len, isVolatile; location=Location())
     results = IR.Type[]
-    operands = Value[dst, val, len, isVolatile, ]
+    operands = Value[value(dst), value(val), value(len), value(isVolatile), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1991,9 +1991,9 @@ end
 `intr_minnum`
 
 """
-function intr_minnum(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_minnum(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2011,9 +2011,9 @@ end
 `intr_minimum`
 
 """
-function intr_minimum(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_minimum(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2031,9 +2031,9 @@ end
 `mul`
 
 """
-function mul(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function mul(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2084,9 +2084,9 @@ end
 `or`
 
 """
-function or(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function or(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2104,9 +2104,9 @@ end
 `intr_powi`
 
 """
-function intr_powi(a::Value, b::Value; res::IR.Type, location=Location())
+function intr_powi(a, b; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2123,9 +2123,9 @@ end
 `intr_pow`
 
 """
-function intr_pow(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_pow(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2143,9 +2143,9 @@ end
 `intr_prefetch`
 
 """
-function intr_prefetch(addr::Value, rw::Value, hint::Value, cache::Value; location=Location())
+function intr_prefetch(addr, rw, hint, cache; location=Location())
     results = IR.Type[]
-    operands = Value[addr, rw, hint, cache, ]
+    operands = Value[value(addr), value(rw), value(hint), value(cache), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2162,9 +2162,9 @@ end
 `ptrtoint`
 
 """
-function ptrtoint(arg::Value; res::IR.Type, location=Location())
+function ptrtoint(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2181,9 +2181,9 @@ end
 `resume`
 
 """
-function resume(value::Value; location=Location())
+function resume(value; location=Location())
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2200,9 +2200,9 @@ end
 `return_`
 
 """
-function return_(args::Vector{Value}; location=Location())
+function return_(args; location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2219,9 +2219,9 @@ end
 `intr_sadd_with_overflow`
 
 """
-function intr_sadd_with_overflow(operand_0::Value, operand_1::Value; res::IR.Type, location=Location())
+function intr_sadd_with_overflow(operand_0, operand_1; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2238,9 +2238,9 @@ end
 `sdiv`
 
 """
-function sdiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function sdiv(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2258,9 +2258,9 @@ end
 `sext`
 
 """
-function sext(arg::Value; res::IR.Type, location=Location())
+function sext(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2277,9 +2277,9 @@ end
 `sitofp`
 
 """
-function sitofp(arg::Value; res::IR.Type, location=Location())
+function sitofp(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2296,9 +2296,9 @@ end
 `intr_smax`
 
 """
-function intr_smax(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_smax(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2316,9 +2316,9 @@ end
 `intr_smin`
 
 """
-function intr_smin(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_smin(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2336,9 +2336,9 @@ end
 `intr_smul_with_overflow`
 
 """
-function intr_smul_with_overflow(operand_0::Value, operand_1::Value; res::IR.Type, location=Location())
+function intr_smul_with_overflow(operand_0, operand_1; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2355,9 +2355,9 @@ end
 `srem`
 
 """
-function srem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function srem(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2375,9 +2375,9 @@ end
 `intr_ssub_with_overflow`
 
 """
-function intr_ssub_with_overflow(operand_0::Value, operand_1::Value; res::IR.Type, location=Location())
+function intr_ssub_with_overflow(operand_0, operand_1; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2394,9 +2394,9 @@ end
 `select`
 
 """
-function select(condition::Value, trueValue::Value, falseValue::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function select(condition, trueValue, falseValue; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[condition, trueValue, falseValue, ]
+    operands = Value[value(condition), value(trueValue), value(falseValue), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2414,9 +2414,9 @@ end
 `shl`
 
 """
-function shl(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function shl(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2434,9 +2434,9 @@ end
 `shufflevector`
 
 """
-function shufflevector(v1::Value, v2::Value; res::IR.Type, mask, location=Location())
+function shufflevector(v1, v2; res::IR.Type, mask, location=Location())
     results = IR.Type[res, ]
-    operands = Value[v1, v2, ]
+    operands = Value[value(v1), value(v2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("mask", mask), ]
@@ -2453,9 +2453,9 @@ end
 `intr_sin`
 
 """
-function intr_sin(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_sin(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2473,9 +2473,9 @@ end
 `intr_sqrt`
 
 """
-function intr_sqrt(in::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_sqrt(in; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[in, ]
+    operands = Value[value(in), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2493,9 +2493,9 @@ end
 `intr_stackrestore`
 
 """
-function intr_stackrestore(ptr::Value; location=Location())
+function intr_stackrestore(ptr; location=Location())
     results = IR.Type[]
-    operands = Value[ptr, ]
+    operands = Value[value(ptr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2531,9 +2531,9 @@ end
 `store`
 
 """
-function store(value::Value, addr::Value; access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
+function store(value, addr; access_groups=nothing, alias_scopes=nothing, noalias_scopes=nothing, alignment=nothing, volatile_=nothing, nontemporal=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[value, addr, ]
+    operands = Value[value(value), value(addr), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2556,9 +2556,9 @@ end
 `sub`
 
 """
-function sub(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function sub(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2576,9 +2576,9 @@ end
 `switch`
 
 """
-function switch(value::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, branch_weights=nothing, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
+function switch(value, defaultOperands, caseOperands; case_values=nothing, case_operand_segments, branch_weights=nothing, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = IR.Type[]
-    operands = Value[value, defaultOperands..., caseOperands..., ]
+    operands = Value[value(value), value.(defaultOperands)..., value.(caseOperands)..., ]
     owned_regions = Region[]
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]
@@ -2598,9 +2598,9 @@ end
 `trunc`
 
 """
-function trunc(arg::Value; res::IR.Type, location=Location())
+function trunc(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2617,9 +2617,9 @@ end
 `intr_uadd_with_overflow`
 
 """
-function intr_uadd_with_overflow(operand_0::Value, operand_1::Value; res::IR.Type, location=Location())
+function intr_uadd_with_overflow(operand_0, operand_1; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2636,9 +2636,9 @@ end
 `udiv`
 
 """
-function udiv(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function udiv(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2656,9 +2656,9 @@ end
 `uitofp`
 
 """
-function uitofp(arg::Value; res::IR.Type, location=Location())
+function uitofp(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2675,9 +2675,9 @@ end
 `intr_umax`
 
 """
-function intr_umax(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_umax(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2695,9 +2695,9 @@ end
 `intr_umin`
 
 """
-function intr_umin(a::Value, b::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function intr_umin(a, b; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2715,9 +2715,9 @@ end
 `intr_umul_with_overflow`
 
 """
-function intr_umul_with_overflow(operand_0::Value, operand_1::Value; res::IR.Type, location=Location())
+function intr_umul_with_overflow(operand_0, operand_1; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2734,9 +2734,9 @@ end
 `urem`
 
 """
-function urem(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function urem(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2754,9 +2754,9 @@ end
 `intr_usub_with_overflow`
 
 """
-function intr_usub_with_overflow(operand_0::Value, operand_1::Value; res::IR.Type, location=Location())
+function intr_usub_with_overflow(operand_0, operand_1; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2822,9 +2822,9 @@ end
 `xor`
 
 """
-function xor(lhs::Value, rhs::Value; res=nothing::Union{Nothing, IR.Type}, location=Location())
+function xor(lhs, rhs; res=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[value(lhs), value(rhs), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2842,9 +2842,9 @@ end
 `zext`
 
 """
-function zext(arg::Value; res::IR.Type, location=Location())
+function zext(arg; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2861,9 +2861,9 @@ end
 `intr_masked_compressstore`
 
 """
-function intr_masked_compressstore(operand_0::Value, operand_1::Value, operand_2::Value; location=Location())
+function intr_masked_compressstore(operand_0, operand_1, operand_2; location=Location())
     results = IR.Type[]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2880,9 +2880,9 @@ end
 `intr_masked_expandload`
 
 """
-function intr_masked_expandload(operand_0::Value, operand_1::Value, operand_2::Value; res::IR.Type, location=Location())
+function intr_masked_expandload(operand_0, operand_1, operand_2; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, operand_2, ]
+    operands = Value[value(operand_0), value(operand_1), value(operand_2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2899,9 +2899,9 @@ end
 `intr_masked_gather`
 
 """
-function intr_masked_gather(ptrs::Value, mask::Value, pass_thru::Vector{Value}; res::IR.Type, alignment, location=Location())
+function intr_masked_gather(ptrs, mask, pass_thru; res::IR.Type, alignment, location=Location())
     results = IR.Type[res, ]
-    operands = Value[ptrs, mask, pass_thru..., ]
+    operands = Value[value(ptrs), value(mask), value.(pass_thru)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("alignment", alignment), ]
@@ -2918,9 +2918,9 @@ end
 `intr_masked_scatter`
 
 """
-function intr_masked_scatter(value::Value, ptrs::Value, mask::Value; alignment, location=Location())
+function intr_masked_scatter(value, ptrs, mask; alignment, location=Location())
     results = IR.Type[]
-    operands = Value[value, ptrs, mask, ]
+    operands = Value[value(value), value(ptrs), value(mask), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("alignment", alignment), ]
@@ -2937,9 +2937,9 @@ end
 `intr_vector_reduce_add`
 
 """
-function intr_vector_reduce_add(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_add(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2956,9 +2956,9 @@ end
 `intr_vector_reduce_and`
 
 """
-function intr_vector_reduce_and(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_and(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2975,9 +2975,9 @@ end
 `intr_vector_reduce_fadd`
 
 """
-function intr_vector_reduce_fadd(operand_0::Value, operand_1::Value; res::IR.Type, reassoc=nothing, location=Location())
+function intr_vector_reduce_fadd(operand_0, operand_1; res::IR.Type, reassoc=nothing, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2995,9 +2995,9 @@ end
 `intr_vector_reduce_fmax`
 
 """
-function intr_vector_reduce_fmax(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_fmax(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3014,9 +3014,9 @@ end
 `intr_vector_reduce_fmin`
 
 """
-function intr_vector_reduce_fmin(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_fmin(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3033,9 +3033,9 @@ end
 `intr_vector_reduce_fmul`
 
 """
-function intr_vector_reduce_fmul(operand_0::Value, operand_1::Value; res::IR.Type, reassoc=nothing, location=Location())
+function intr_vector_reduce_fmul(operand_0, operand_1; res::IR.Type, reassoc=nothing, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, operand_1, ]
+    operands = Value[value(operand_0), value(operand_1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3053,9 +3053,9 @@ end
 `intr_vector_reduce_mul`
 
 """
-function intr_vector_reduce_mul(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_mul(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3072,9 +3072,9 @@ end
 `intr_vector_reduce_or`
 
 """
-function intr_vector_reduce_or(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_or(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3091,9 +3091,9 @@ end
 `intr_vector_reduce_smax`
 
 """
-function intr_vector_reduce_smax(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_smax(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3110,9 +3110,9 @@ end
 `intr_vector_reduce_smin`
 
 """
-function intr_vector_reduce_smin(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_smin(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3129,9 +3129,9 @@ end
 `intr_vector_reduce_umax`
 
 """
-function intr_vector_reduce_umax(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_umax(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3148,9 +3148,9 @@ end
 `intr_vector_reduce_umin`
 
 """
-function intr_vector_reduce_umin(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_umin(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -3167,9 +3167,9 @@ end
 `intr_vector_reduce_xor`
 
 """
-function intr_vector_reduce_xor(operand_0::Value; res::IR.Type, location=Location())
+function intr_vector_reduce_xor(operand_0; res::IR.Type, location=Location())
     results = IR.Type[res, ]
-    operands = Value[operand_0, ]
+    operands = Value[value(operand_0), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

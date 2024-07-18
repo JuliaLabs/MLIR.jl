@@ -1,6 +1,6 @@
 module tosa
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -9,9 +9,9 @@ import ..Dialects: namedattribute, operandsegmentsizes
 
 Elementwise absolute value operation
 """
-function abs(input1::Value; output::IR.Type, location=Location())
+function abs(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -30,9 +30,9 @@ end
 Elementwise addition of input1 and input2. Axis of size 1 will be broadcast,
 as necessary.
 """
-function add(input1::Value, input2::Value; output::IR.Type, location=Location())
+function add(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -55,9 +55,9 @@ The commonplace implementation is to use i64 operations to avoid integer
 overflow with target specific implementations can use native operations to
 avoid wider than necessary types.
 """
-function apply_scale(value::Value, multiplier::Value, shift::Value; output::IR.Type, double_round, location=Location())
+function apply_scale(value, multiplier, shift; output::IR.Type, double_round, location=Location())
     results = IR.Type[output, ]
-    operands = Value[value, multiplier, shift, ]
+    operands = Value[value(value), value(multiplier), value(shift), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("double_round", double_round), ]
@@ -76,9 +76,9 @@ end
 This returns the index with the largest value across the given axis of the
 input tensor.
 """
-function argmax(input::Value; output::IR.Type, axis, location=Location())
+function argmax(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -97,9 +97,9 @@ end
 Elementwise arithmetic right shift of input1 by the amount specified in
 input2. Axis of size 1 will be broadcast, as necessary.
 """
-function arithmetic_right_shift(input1::Value, input2::Value; output::IR.Type, round, location=Location())
+function arithmetic_right_shift(input1, input2; output::IR.Type, round, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("round", round), ]
@@ -119,9 +119,9 @@ This performs an average pooling over the given input tensor. A sliding
 window of size given by <kernel size> is passed over the input tensor, with
 the mean value being placed in the output tensor.
 """
-function avg_pool2d(input::Value; output::IR.Type, kernel, stride, pad, quantization_info=nothing, location=Location())
+function avg_pool2d(input; output::IR.Type, kernel, stride, pad, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kernel", kernel), namedattribute("stride", stride), namedattribute("pad", pad), ]
@@ -141,9 +141,9 @@ end
 Elementwise bitwise AND of input1 and input2. Axis of size 1
 will be broadcast as necessary.
 """
-function bitwise_and(input1::Value, input2::Value; output::IR.Type, location=Location())
+function bitwise_and(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -161,9 +161,9 @@ end
 
 Elementwise bitwise NOT of input tensor.
 """
-function bitwise_not(input1::Value; output::IR.Type, location=Location())
+function bitwise_not(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -182,9 +182,9 @@ end
 Elementwise bitwise OR of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function bitwise_or(input1::Value, input2::Value; output::IR.Type, location=Location())
+function bitwise_or(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -203,9 +203,9 @@ end
 Elementwise bitwise XOR of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function bitwise_xor(input1::Value, input2::Value; output::IR.Type, location=Location())
+function bitwise_xor(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -241,9 +241,9 @@ Performs a set of permissible cast operations
     signed 8 to float       int8    float
     signed 16 to float      int16   float
 """
-function cast(input::Value; output::IR.Type, location=Location())
+function cast(input; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -261,9 +261,9 @@ end
 
 Elementwise ceiling operation
 """
-function ceil(input1::Value; output::IR.Type, location=Location())
+function ceil(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -285,9 +285,9 @@ input type.
 No zero point subtraction is done to the values, thus to clamp to the zero
 point value, the zero point itself should be supplied as the minimum value.
 """
-function clamp(input::Value; output::IR.Type, min_int, max_int, min_fp, max_fp, location=Location())
+function clamp(input; output::IR.Type, min_int, max_int, min_fp, max_fp, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("min_int", min_int), namedattribute("max_int", max_int), namedattribute("min_fp", min_fp), namedattribute("max_fp", max_fp), ]
@@ -305,9 +305,9 @@ end
 
 Elementwise count leading zeros operation
 """
-function clz(input1::Value; output::IR.Type, location=Location())
+function clz(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -326,9 +326,9 @@ end
 Concatenate a variadic amount of tensors along a given axis. No data
 conversion happens during a concat operation.
 """
-function concat(input1::Vector{Value}; output::IR.Type, axis, location=Location())
+function concat(input1; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1..., ]
+    operands = Value[value.(input1)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -369,9 +369,9 @@ end
 Performs a 2D convolution over the given tensor input, using the weight
 tensor.
 """
-function conv2d(input::Value, weight::Value, bias::Value; output::IR.Type, pad, stride, dilation, quantization_info=nothing, location=Location())
+function conv2d(input, weight, bias; output::IR.Type, pad, stride, dilation, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = Value[value(input), value(weight), value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
@@ -390,9 +390,9 @@ end
 
 Performs a 3D convolution over the given input tensor.
 """
-function conv3d(input::Value, weight::Value, bias::Value; output::IR.Type, pad, stride, dilation, quantization_info=nothing, location=Location())
+function conv3d(input, weight, bias; output::IR.Type, pad, stride, dilation, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = Value[value(input), value(weight), value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
@@ -428,9 +428,9 @@ set of attributes to the custom operator.
 `outputs is the list of tensors returned by the operator. The number of operators
 is backend specific.
 """
-function custom(inputs::Vector{Value}; outputs::Vector{IR.Type}, identifier, config, implementation_attrs, location=Location())
+function custom(inputs; outputs::Vector{IR.Type}, identifier, config, implementation_attrs, location=Location())
     results = IR.Type[outputs..., ]
-    operands = Value[inputs..., ]
+    operands = Value[value.(inputs)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("identifier", identifier), namedattribute("config", config), namedattribute("implementation_attrs", implementation_attrs), ]
@@ -449,9 +449,9 @@ end
 Performs 2D convolutions separately over each channel of the given tensor
 input, using the weight tensor.
 """
-function depthwise_conv2d(input::Value, weight::Value, bias::Value; output::IR.Type, pad, stride, dilation, quantization_info=nothing, location=Location())
+function depthwise_conv2d(input, weight, bias; output::IR.Type, pad, stride, dilation, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = Value[value(input), value(weight), value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("pad", pad), namedattribute("stride", stride), namedattribute("dilation", dilation), ]
@@ -471,9 +471,9 @@ end
 Elementwise integer divide operator of input1 by input2. Axis of size 1
 will be broadcast, as necessary.
 """
-function div(input1::Value, input2::Value; output::IR.Type, location=Location())
+function div(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -491,9 +491,9 @@ end
 
 Elementwise comparison operation
 """
-function equal(input1::Value, input2::Value; output=nothing::Union{Nothing, IR.Type}, location=Location())
+function equal(input1, input2; output=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -512,9 +512,9 @@ end
 
 Elementwise e to the x operation
 """
-function exp(input1::Value; output::IR.Type, location=Location())
+function exp(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -532,9 +532,9 @@ end
 
 Elementwise floor operation
 """
-function floor(input1::Value; output::IR.Type, location=Location())
+function floor(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -552,9 +552,9 @@ end
 
 Performs a fully connected network.
 """
-function fully_connected(input::Value, weight::Value, bias::Value; output::IR.Type, quantization_info=nothing, location=Location())
+function fully_connected(input, weight, bias; output::IR.Type, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, weight, bias, ]
+    operands = Value[value(input), value(weight), value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -574,9 +574,9 @@ end
 Generate a tensor for which each element in the output is a slice of the
 values tensor based on the value of indices.
 """
-function gather(values::Value, indices::Value; output::IR.Type, location=Location())
+function gather(values, indices; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[values, indices, ]
+    operands = Value[value(values), value(indices), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -594,9 +594,9 @@ end
 
 Elementwise comparison operation
 """
-function greater_equal(input1::Value, input2::Value; output::IR.Type, location=Location())
+function greater_equal(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -614,9 +614,9 @@ end
 
 Elementwise greater than comparison operation
 """
-function greater(input1::Value, input2::Value; output::IR.Type, location=Location())
+function greater(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -635,9 +635,9 @@ end
 Returns a tensor with the same shape, size, type
 and content as the input.
 """
-function identity(input1::Value; output::IR.Type, location=Location())
+function identity(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -656,9 +656,9 @@ end
 Evaluates a Boolean condition and then takes one of two distinct execution
 paths. This implements the semantic If-then-else structure.
 """
-function cond_if(cond::Value, inputs::Vector{Value}; output::Vector{IR.Type}, then_branch::Region, else_branch::Region, location=Location())
+function cond_if(cond, inputs; output::Vector{IR.Type}, then_branch::Region, else_branch::Region, location=Location())
     results = IR.Type[output..., ]
-    operands = Value[cond, inputs..., ]
+    operands = Value[value(cond), value.(inputs)..., ]
     owned_regions = Region[then_branch, else_branch, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -676,9 +676,9 @@ end
 
 Elementwise natural logarithm operation
 """
-function log(input1::Value; output::IR.Type, location=Location())
+function log(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -697,9 +697,9 @@ end
 Elementwise logical AND of input1 and input2. Axis of size 1 will be
 broadcast, as necessary.
 """
-function logical_and(input1::Value, input2::Value; z::IR.Type, location=Location())
+function logical_and(input1, input2; z::IR.Type, location=Location())
     results = IR.Type[z, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -718,9 +718,9 @@ end
 Elementwise left shift of input1 and input2. Axis of size 1 will be
 broadcast, as necessary.
 """
-function logical_left_shift(input1::Value, input2::Value; output::IR.Type, location=Location())
+function logical_left_shift(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -738,9 +738,9 @@ end
 
 Elementwise logical NOT of input.
 """
-function logical_not(input1::Value; output=nothing::Union{Nothing, IR.Type}, location=Location())
+function logical_not(input1; output=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -760,9 +760,9 @@ end
 Elementwise logical OR of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function logical_or(input1::Value, input2::Value; z::IR.Type, location=Location())
+function logical_or(input1, input2; z::IR.Type, location=Location())
     results = IR.Type[z, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -781,9 +781,9 @@ end
 Elementwise logical right shift of input1 by the amount specified in input2.
 Axis of size 1 will be broadcast, as necessary.
 """
-function logical_right_shift(input1::Value, input2::Value; output::IR.Type, location=Location())
+function logical_right_shift(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -802,9 +802,9 @@ end
 Elementwise logical XOR of input1 and input2.  Axis of size 1 will be
 broadcast as necessary.
 """
-function logical_xor(input1::Value, input2::Value; z::IR.Type, location=Location())
+function logical_xor(input1, input2; z::IR.Type, location=Location())
     results = IR.Type[z, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -824,9 +824,9 @@ Performs a two dimensional matrix multiplication. This allows both inputs to
 be activations, rather than reserving weights as an attribute in the
 FULLY_CONNECTED operator.
 """
-function matmul(a::Value, b::Value; c::IR.Type, quantization_info=nothing, location=Location())
+function matmul(a, b; c::IR.Type, quantization_info=nothing, location=Location())
     results = IR.Type[c, ]
-    operands = Value[a, b, ]
+    operands = Value[value(a), value(b), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -848,9 +848,9 @@ size given by <kernel size> is passed over the input tensor, with the
 maximum value being placed in the
 output tensor.
 """
-function max_pool2d(input::Value; output::IR.Type, kernel, stride, pad, location=Location())
+function max_pool2d(input; output::IR.Type, kernel, stride, pad, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("kernel", kernel), namedattribute("stride", stride), namedattribute("pad", pad), ]
@@ -869,9 +869,9 @@ end
 Elementwise max of input1 and input2. Axis of size 1 will be broadcast, as
 necessary.
 """
-function maximum(input1::Value, input2::Value; output::IR.Type, location=Location())
+function maximum(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -890,9 +890,9 @@ end
 Elementwise minimum of input1 and input2. Axis of size 1
 will be broadcast, as necessary.
 """
-function minimum(input1::Value, input2::Value; output::IR.Type, location=Location())
+function minimum(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -911,9 +911,9 @@ end
 Elementwise multiplication (Hadamard product) of input1 and input2.
 Axis of size 1 will be broadcast, as necessary.
 """
-function mul(input1::Value, input2::Value; output::IR.Type, shift, location=Location())
+function mul(input1, input2; output::IR.Type, shift, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("shift", shift), ]
@@ -931,9 +931,9 @@ end
 
 Elementwise negation operation
 """
-function negate(input1::Value; output::IR.Type, quantization_info=nothing, location=Location())
+function negate(input1; output::IR.Type, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -952,13 +952,13 @@ end
 
 Pads a tensor along borders of each dimension with pad_value.
 """
-function pad(input1::Value, padding::Value, pad_const=nothing::Union{Nothing, Value}; output::IR.Type, quantization_info=nothing, location=Location())
+function pad(input1, padding, pad_const=nothing; output::IR.Type, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, padding, ]
+    operands = Value[value(input1), value(padding), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(pad_const) && push!(operands, pad_const)
+    !isnothing(pad_const) && push!(operands, value(pad_const))
     !isnothing(quantization_info) && push!(attributes, namedattribute("quantization_info", quantization_info))
     
     IR.create_operation(
@@ -975,9 +975,9 @@ end
 Elementwise input1 raised to the power of input2.
 Axis of size 1 will be broadcast, as necessary.
 """
-function pow(input1::Value, input2::Value; z::IR.Type, location=Location())
+function pow(input1, input2; z::IR.Type, location=Location())
     results = IR.Type[z, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1000,9 +1000,9 @@ tensor arguments. RFFT2D takes advantage of Hermitian symmetry to only
 calculate the first half of the final output axis. Imaginary values with
 locations (0,0), (0,W/2), (H/2,0) and (H/2,W/2) are zero.
 """
-function rfft2d(input::Value; output_real::IR.Type, output_imag::IR.Type, location=Location())
+function rfft2d(input; output_real::IR.Type, output_imag::IR.Type, location=Location())
     results = IR.Type[output_real, output_imag, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1021,9 +1021,9 @@ end
 Elementwise reciprocal operation. For integer operation, a TABLE should be
 used with the appropriate ranges.
 """
-function reciprocal(input1::Value; output::IR.Type, location=Location())
+function reciprocal(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1041,9 +1041,9 @@ end
 
 Reduce a tensor along the given axis with a logical AND operation
 """
-function reduce_all(input::Value; output::IR.Type, axis, location=Location())
+function reduce_all(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1061,9 +1061,9 @@ end
 
 Reduce a tensor along the given axis with a logical OR operation
 """
-function reduce_any(input::Value; output::IR.Type, axis, location=Location())
+function reduce_any(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1081,9 +1081,9 @@ end
 
 Reduce a tensor along the given axis with a maximum operation
 """
-function reduce_max(input::Value; output::IR.Type, axis, location=Location())
+function reduce_max(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1101,9 +1101,9 @@ end
 
 Reduce a tensor along the given axis with a minimum operation
 """
-function reduce_min(input::Value; output::IR.Type, axis, location=Location())
+function reduce_min(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1121,9 +1121,9 @@ end
 
 Reduce a tensor along the given axis by computing the product of the axis.
 """
-function reduce_prod(input::Value; output::IR.Type, axis, location=Location())
+function reduce_prod(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1141,9 +1141,9 @@ end
 
 Reduce a tensor along the given axis by computing the sum of the axis.
 """
-function reduce_sum(input::Value; output::IR.Type, axis, location=Location())
+function reduce_sum(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1176,9 +1176,9 @@ signed 48 to 32         int48   int32
 unsigned 8 to signed 8  uint8   int8
 signed 8 to unsigned 8  int8    uint8
 """
-function rescale(input::Value; output::IR.Type, input_zp, output_zp, multiplier, shift, scale32, double_round, per_channel, location=Location())
+function rescale(input; output::IR.Type, input_zp, output_zp, multiplier, shift, scale32, double_round, per_channel, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("input_zp", input_zp), namedattribute("output_zp", output_zp), namedattribute("multiplier", multiplier), namedattribute("shift", shift), namedattribute("scale32", scale32), namedattribute("double_round", double_round), namedattribute("per_channel", per_channel), ]
@@ -1198,9 +1198,9 @@ Returns a tensor with the same type/values as the input, with a new shape
 specified by the shape argument. Reshape may operate on tensors of any rank.
 No data conversion happens during a reshape operation.
 """
-function reshape(input1::Value; output::IR.Type, new_shape, location=Location())
+function reshape(input1; output::IR.Type, new_shape, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("new_shape", new_shape), ]
@@ -1223,9 +1223,9 @@ output dimensions can be derived from the input dimensions by inverting the
 scale. And the [order_y, border_x] values adjust the output size to allow
 fractional sampling beyond integer input position (IH-1,IW-1).
 """
-function resize(input::Value; output::IR.Type, scale, offset, border, mode, location=Location())
+function resize(input; output::IR.Type, scale, offset, border, mode, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("scale", scale), namedattribute("offset", offset), namedattribute("border", border), namedattribute("mode", mode), ]
@@ -1245,9 +1245,9 @@ Returns a tensor with the same type/values as the input, with the data
 reversed along the given axis. No data conversion happens during a reverse
 operation.
 """
-function reverse(input::Value; output::IR.Type, axis, location=Location())
+function reverse(input; output::IR.Type, axis, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("axis", axis), ]
@@ -1266,9 +1266,9 @@ end
 Elementwise reciprocal square root operation. For integer operation, a TABLE
 should be used with the appropriate ranges.
 """
-function rsqrt(input1::Value; output::IR.Type, location=Location())
+function rsqrt(input1; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1287,9 +1287,9 @@ end
 The values_out tensor is set to the values_in tensor with data modified as follows:
 data from the input tensor is inserted at the positions specified by the indices tensor.
 """
-function scatter(values_in::Value, indices::Value, input::Value; values_out::IR.Type, location=Location())
+function scatter(values_in, indices, input; values_out::IR.Type, location=Location())
     results = IR.Type[values_out, ]
-    operands = Value[values_in, indices, input, ]
+    operands = Value[value(values_in), value(indices), value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1307,9 +1307,9 @@ end
 
 Elementwise select of the output based on a condition.
 """
-function select(pred::Value, on_true::Value, on_false::Value; output::IR.Type, location=Location())
+function select(pred, on_true, on_false; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[pred, on_true, on_false, ]
+    operands = Value[value(pred), value(on_true), value(on_false), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1331,9 +1331,9 @@ with the following definition.  The sigmoid table has 513 entries each of
 16-bit precision and covering the input range -16.0 to +16.0
 in steps of 1/16.
 """
-function sigmoid(input::Value; output::IR.Type, location=Location())
+function sigmoid(input; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1353,9 +1353,9 @@ Extracts a slice of the input1 on the given axis, beginning at the
 start coordinates, and extending for size elements in each direction.  No
 data conversion happens during a slice operation.
 """
-function slice(input::Value; output::IR.Type, start, size, location=Location())
+function slice(input; output::IR.Type, start, size, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("start", start), namedattribute("size", size), ]
@@ -1374,9 +1374,9 @@ end
 Elementwise subtraction of input1 and input2. Axis of size 1 will be
 broadcast as necessary.
 """
-function sub(input1::Value, input2::Value; output::IR.Type, location=Location())
+function sub(input1, input2; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, input2, ]
+    operands = Value[value(input1), value(input2), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1407,9 +1407,9 @@ The TABLE operator is expected to be used as follows:
 * If an int8_t result is required then follow the TABLE operator with a
   RESCALE with a right shift of 15
 """
-function table(input::Value, table::Value; output::IR.Type, location=Location())
+function table(input, table; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, table, ]
+    operands = Value[value(input), value(table), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1430,9 +1430,9 @@ For quantized integer data types, the TABLE operator should be used instead
 with the following definition.  The tanh_table has 513 entries each of
 16-bit precision and covering the input range -8.0 to +8.0 in steps of 1/32.
 """
-function tanh(input::Value; output::IR.Type, location=Location())
+function tanh(input; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1450,9 +1450,9 @@ end
 
 Replicates input 0 multiplies times along each dimension.
 """
-function tile(input1::Value; output::IR.Type, multiples, location=Location())
+function tile(input1; output::IR.Type, multiples, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, ]
+    operands = Value[value(input1), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("multiples", multiples), ]
@@ -1471,9 +1471,9 @@ end
 Performs a 2D transposed convolution over the given tensor input, using the
 weights tensor.
 """
-function transpose_conv2d(input::Value, filter::Value, bias::Value; output::IR.Type, out_pad, stride, out_shape, quantization_info=nothing, location=Location())
+function transpose_conv2d(input, filter, bias; output::IR.Type, out_pad, stride, out_shape, quantization_info=nothing, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input, filter, bias, ]
+    operands = Value[value(input), value(filter), value(bias), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("out_pad", out_pad), namedattribute("stride", stride), namedattribute("out_shape", out_shape), ]
@@ -1492,9 +1492,9 @@ end
 
 Permutes the dimensions based on perm.
 """
-function transpose(input1::Value, perms::Value; output::IR.Type, location=Location())
+function transpose(input1, perms; output::IR.Type, location=Location())
     results = IR.Type[output, ]
-    operands = Value[input1, perms, ]
+    operands = Value[value(input1), value(perms), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1515,9 +1515,9 @@ exits to another control point. This action is performed repeatedly after
 updating and re-evaluating the Boolean condition every iteration. This
 implements the semantic foreach or while iterative loop structure.
 """
-function while_loop(inputs::Vector{Value}; output::Vector{IR.Type}, cond::Region, body::Region, location=Location())
+function while_loop(inputs; output::Vector{IR.Type}, cond::Region, body::Region, location=Location())
     results = IR.Type[output..., ]
-    operands = Value[inputs..., ]
+    operands = Value[value.(inputs)..., ]
     owned_regions = Region[cond, body, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1537,9 +1537,9 @@ return operation within the conditional and body of
 structured control flow. Operation takes variadic operands
 but produces no results of its own.
 """
-function yield(inputs::Vector{Value}; location=Location())
+function yield(inputs; location=Location())
     results = IR.Type[]
-    operands = Value[inputs..., ]
+    operands = Value[value.(inputs)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -1,6 +1,6 @@
 module sparse_tensor
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -110,9 +110,9 @@ because we never use its values, only its sparse structure:
 } -> tensor<?x?xf64, #CSR>
 ```
 """
-function binary(x::Value, y::Value; output::IR.Type, left_identity=nothing, right_identity=nothing, overlapRegion::Region, leftRegion::Region, rightRegion::Region, location=Location())
+function binary(x, y; output::IR.Type, left_identity=nothing, right_identity=nothing, overlapRegion::Region, leftRegion::Region, rightRegion::Region, location=Location())
     results = IR.Type[output, ]
-    operands = Value[x, y, ]
+    operands = Value[value(x), value(y), ]
     owned_regions = Region[overlapRegion, leftRegion, rightRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -151,9 +151,9 @@ done \"in place\", and referencing the old SSA value is undefined behavior.
   : memref<?xf64>, memref<?xi1>, memref<?xindex>, tensor<4x4xf64, #CSR>
 ```
 """
-function compress(values::Value, filled::Value, added::Value, count::Value, tensor::Value, lvlCoords::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function compress(values, filled, added, count, tensor, lvlCoords; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[values, filled, added, count, tensor, lvlCoords..., ]
+    operands = Value[value(values), value(filled), value(added), value(count), value(tensor), value.(lvlCoords)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -186,9 +186,9 @@ can be dynamically-sized.
   : tensor<64x64xf64, #CSR>, tensor<64x64xf64, #CSR> to tensor<128x64xf64, #CSR>
 ```
 """
-function concatenate(inputs::Vector{Value}; result::IR.Type, dimension, location=Location())
+function concatenate(inputs; result::IR.Type, dimension, location=Location())
     results = IR.Type[result, ]
-    operands = Value[inputs..., ]
+    operands = Value[value.(inputs)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dimension", dimension), ]
@@ -240,9 +240,9 @@ Examples:
 %4 = sparse_tensor.convert %d : tensor<?xf64> to tensor<100xf64, #SV>
 ```
 """
-function convert(source::Value; dest::IR.Type, location=Location())
+function convert(source; dest::IR.Type, location=Location())
     results = IR.Type[dest, ]
-    operands = Value[source, ]
+    operands = Value[value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -289,9 +289,9 @@ side-effecting context that sets and resets the expanded arrays.
   : tensor<4x4xf64, #CSR> to memref<?xf64>, memref<?xi1>, memref<?xindex>
 ```
 """
-function expand(tensor::Value; values::IR.Type, filled::IR.Type, added::IR.Type, count::IR.Type, location=Location())
+function expand(tensor; values::IR.Type, filled::IR.Type, added::IR.Type, count::IR.Type, location=Location())
     results = IR.Type[values, filled, added, count, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -378,9 +378,9 @@ sparse_tensor.foreach in %0 {order=affine_map<(i,j)->(j,i)>}: tensor<2x3xf64> do
 
 ```
 """
-function foreach(tensor::Value, initArgs::Vector{Value}; results_::Vector{IR.Type}, order=nothing, region::Region, location=Location())
+function foreach(tensor, initArgs; results_::Vector{IR.Type}, order=nothing, region::Region, location=Location())
     results = IR.Type[results_..., ]
-    operands = Value[tensor, initArgs..., ]
+    operands = Value[value(tensor), value.(initArgs)..., ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -406,9 +406,9 @@ Example of querying the size of the coordinates array for level 0:
      : !sparse_tensor.storage_specifier<#COO>
 ```
 """
-function storage_specifier_get(specifier::Value; result=nothing::Union{Nothing, IR.Type}, specifierKind, level=nothing, location=Location())
+function storage_specifier_get(specifier; result=nothing::Union{Nothing, IR.Type}, specifierKind, level=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[specifier, ]
+    operands = Value[value(specifier), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("specifierKind", specifierKind), ]
@@ -452,9 +452,9 @@ This operation is scheduled to be unified with the dense counterpart
 %result = sparse_tensor.insert %val into %tensor[%i,%j] : tensor<1024x1024xf64, #CSR>
 ```
 """
-function insert(value::Value, tensor::Value, lvlCoords::Vector{Value}; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function insert(value, tensor, lvlCoords; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[value, tensor, lvlCoords..., ]
+    operands = Value[value(value), value(tensor), value.(lvlCoords)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -496,9 +496,9 @@ Examples:
 %1 = sparse_tensor.load %0 hasInserts : tensor<16x32xf32, #CSR>
 ```
 """
-function load(tensor::Value; result=nothing::Union{Nothing, IR.Type}, hasInserts=nothing, location=Location())
+function load(tensor; result=nothing::Union{Nothing, IR.Type}, hasInserts=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -535,9 +535,9 @@ symmetry support for operating on symmetric matrices is still TBD.
 sparse_tensor.new %source : !Source to tensor<1024x1024xf64, #CSR>
 ```
 """
-function new(source::Value; result::IR.Type, location=Location())
+function new(source; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, ]
+    operands = Value[value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -564,9 +564,9 @@ accurate nomenclature is used.
 %noe = sparse_tensor.number_of_entries %tensor : tensor<64x64xf64, #CSR>
 ```
 """
-function number_of_entries(tensor::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function number_of_entries(tensor; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -599,9 +599,9 @@ is solely defined by side-effects and not SSA values.
 sparse_tensor.out %t, %dest : tensor<1024x1024xf64, #CSR>, !Dest
 ```
 """
-function out(tensor::Value, dest::Value; location=Location())
+function out(tensor, dest; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, dest, ]
+    operands = Value[value(tensor), value(dest), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -651,9 +651,9 @@ does not yet support them.
 //                   |0.0, 0.0, 0.0, 0.0|
 ```
 """
-function pack(values::Value, levels::Vector{Value}; result::IR.Type, location=Location())
+function pack(values, levels; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[values, levels..., ]
+    operands = Value[value(values), value.(levels)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -710,13 +710,13 @@ through the old SSA value after this operation is undefined behavior.
    : xindex, memref<?xf64>, f64
 ```
 """
-function push_back(curSize::Value, inBuffer::Value, value::Value, n=nothing::Union{Nothing, Value}; outBuffer=nothing::Union{Nothing, IR.Type}, newSize=nothing::Union{Nothing, IR.Type}, inbounds=nothing, location=Location())
+function push_back(curSize, inBuffer, value, n=nothing; outBuffer=nothing::Union{Nothing, IR.Type}, newSize=nothing::Union{Nothing, IR.Type}, inbounds=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[curSize, inBuffer, value, ]
+    operands = Value[value(curSize), value(inBuffer), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(n) && push!(operands, n)
+    !isnothing(n) && push!(operands, value(n))
     !isnothing(outBuffer) && push!(results, outBuffer)
     !isnothing(newSize) && push!(results, newSize)
     !isnothing(inbounds) && push!(attributes, namedattribute("inbounds", inbounds))
@@ -771,9 +771,9 @@ Example of Matrix->Vector reduction using max(product(x_i), 100):
 } -> tensor<?xf64, #SparseVector>
 ```
 """
-function reduce(x::Value, y::Value, identity::Value; output=nothing::Union{Nothing, IR.Type}, region::Region, location=Location())
+function reduce(x, y, identity; output=nothing::Union{Nothing, IR.Type}, region::Region, location=Location())
     results = IR.Type[]
-    operands = Value[x, y, identity, ]
+    operands = Value[value(x), value(y), value(identity), ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -837,9 +837,9 @@ Example of selecting lower triangle of a matrix:
 } -> tensor<?x?xf64, #CSR>
 ```
 """
-function select(x::Value; output=nothing::Union{Nothing, IR.Type}, region::Region, location=Location())
+function select(x; output=nothing::Union{Nothing, IR.Type}, region::Region, location=Location())
     results = IR.Type[]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[region, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -866,9 +866,9 @@ Example of updating the sizes of the coordinates array for level 0:
    : !sparse_tensor.storage_specifier<#COO>
 ```
 """
-function storage_specifier_set(specifier::Value, value::Value; result=nothing::Union{Nothing, IR.Type}, specifierKind, level=nothing, location=Location())
+function storage_specifier_set(specifier, value; result=nothing::Union{Nothing, IR.Type}, specifierKind, level=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[specifier, value, ]
+    operands = Value[value(specifier), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("specifierKind", specifierKind), ]
@@ -911,9 +911,9 @@ sparse_tensor.sort hybrid_quick_sort %n, %xy jointly %y1
   : memref<?xi64> jointly memref<?xf32>
 ```
 """
-function sort_coo(n::Value, xy::Value, ys::Vector{Value}; nx=nothing, ny=nothing, algorithm, location=Location())
+function sort_coo(n, xy, ys; nx=nothing, ny=nothing, algorithm, location=Location())
     results = IR.Type[]
-    operands = Value[n, xy, ys..., ]
+    operands = Value[value(n), value(xy), value.(ys)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("algorithm", algorithm), ]
@@ -969,9 +969,9 @@ sparse_tensor.sort hybrid_quick_sort %n, %x1, %x2 jointly y1, %y2
   : memref<?xindex>, memref<?xindex> jointly memref<?xindex>, memref<?xf32>
 ```
 """
-function sort(n::Value, xs::Vector{Value}, ys::Vector{Value}; algorithm, location=Location())
+function sort(n, xs, ys; algorithm, location=Location())
     results = IR.Type[]
-    operands = Value[n, xs..., ys..., ]
+    operands = Value[value(n), value.(xs)..., value.(ys)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("algorithm", algorithm), ]
@@ -1012,13 +1012,13 @@ is subject to change in the future.
        !sparse_tensor.storage_specifier<#CSR_SLICE>
 ```
 """
-function storage_specifier_init(source=nothing::Union{Nothing, Value}; result::IR.Type, location=Location())
+function storage_specifier_init(source=nothing; result::IR.Type, location=Location())
     results = IR.Type[result, ]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(source) && push!(operands, source)
+    !isnothing(source) && push!(operands, value(source))
     
     IR.create_operation(
         "sparse_tensor.storage_specifier.init", location;
@@ -1053,9 +1053,9 @@ Writing into the result of this operation is undefined behavior.
    : tensor<64x64xf64, #COO> to memref<?xindex>
 ```
 """
-function coordinates_buffer(tensor::Value; result::IR.Type, location=Location())
+function coordinates_buffer(tensor; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1088,9 +1088,9 @@ Writing into the result of this operation is undefined behavior.
    : tensor<64x64xf64, #CSR> to memref<?xindex>
 ```
 """
-function coordinates(tensor::Value; result::IR.Type, level, location=Location())
+function coordinates(tensor; result::IR.Type, level, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("level", level), ]
@@ -1123,9 +1123,9 @@ Writing into the result of this operation is undefined behavior.
    : tensor<64x64xf64, #CSR> to memref<?xindex>
 ```
 """
-function positions(tensor::Value; result::IR.Type, level, location=Location())
+function positions(tensor; result::IR.Type, level, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("level", level), ]
@@ -1159,9 +1159,9 @@ with `enable-runtime-library=false`).
 // %2 = %v2
 ```
 """
-function slice_offset(slice::Value; offset=nothing::Union{Nothing, IR.Type}, dim, location=Location())
+function slice_offset(slice; offset=nothing::Union{Nothing, IR.Type}, dim, location=Location())
     results = IR.Type[]
-    operands = Value[slice, ]
+    operands = Value[value(slice), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dim", dim), ]
@@ -1197,9 +1197,9 @@ with `enable-runtime-library=false`).
 
 ```
 """
-function slice_stride(slice::Value; stride=nothing::Union{Nothing, IR.Type}, dim, location=Location())
+function slice_stride(slice; stride=nothing::Union{Nothing, IR.Type}, dim, location=Location())
     results = IR.Type[]
-    operands = Value[slice, ]
+    operands = Value[value(slice), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("dim", dim), ]
@@ -1232,9 +1232,9 @@ Writing into the result of this operation is undefined behavior.
 %1 = sparse_tensor.values %0 : tensor<64x64xf64, #CSR> to memref<?xf64>
 ```
 """
-function values(tensor::Value; result::IR.Type, location=Location())
+function values(tensor; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1331,9 +1331,9 @@ the output, while missing values are filled with 1):
 } -> tensor<?xf64, #SparseVector>
 ```
 """
-function unary(x::Value; output::IR.Type, presentRegion::Region, absentRegion::Region, location=Location())
+function unary(x; output::IR.Type, presentRegion::Region, absentRegion::Region, location=Location())
     results = IR.Type[output, ]
-    operands = Value[x, ]
+    operands = Value[value(x), ]
     owned_regions = Region[presentRegion, absentRegion, ]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1378,9 +1378,9 @@ TODO: the current implementation does not yet support non-identity mappings.
 // %c_len = 6 (3x2)
 ```
 """
-function unpack(tensor::Value, out_values::Value, out_levels::Vector{Value}; ret_values::IR.Type, ret_levels::Vector{IR.Type}, val_len::IR.Type, lvl_lens::Vector{IR.Type}, location=Location())
+function unpack(tensor, out_values, out_levels; ret_values::IR.Type, ret_levels::Vector{IR.Type}, val_len::IR.Type, lvl_lens::Vector{IR.Type}, location=Location())
     results = IR.Type[ret_values, ret_levels..., val_len, lvl_lens..., ]
-    operands = Value[tensor, out_values, out_levels..., ]
+    operands = Value[value(tensor), value(out_values), value.(out_levels)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1412,13 +1412,13 @@ Yields a value from within a `binary`, `unary`, `reduce`,
 }
 ```
 """
-function yield(result=nothing::Union{Nothing, Value}; location=Location())
+function yield(result=nothing; location=Location())
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(result) && push!(operands, result)
+    !isnothing(result) && push!(operands, value(result))
     
     IR.create_operation(
         "sparse_tensor.yield", location;

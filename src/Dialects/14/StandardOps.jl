@@ -1,6 +1,6 @@
 module std
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -18,9 +18,9 @@ runtime to propagate the error to the user.
 assert %b, \"Expected ... to be true\"
 ```
 """
-function assert(arg::Value; msg, location=Location())
+function assert(arg; msg, location=Location())
     results = IR.Type[]
-    operands = Value[arg, ]
+    operands = Value[value(arg), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("msg", msg), ]
@@ -50,9 +50,9 @@ the block successor.
 ^bb3(%3: tensor<*xf32>):
 ```
 """
-function br(destOperands::Vector{Value}; dest::Block, location=Location())
+function br(destOperands; dest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[destOperands..., ]
+    operands = Value[value.(destOperands)..., ]
     owned_regions = Region[]
     successors = Block[dest, ]
     attributes = NamedAttribute[]
@@ -83,9 +83,9 @@ Function values can be created with the
         : (tensor<16xf32>, tensor<16xf32>) -> tensor<16xf32>
 ```
 """
-function call_indirect(callee::Value, callee_operands::Vector{Value}; results_::Vector{IR.Type}, location=Location())
+function call_indirect(callee, callee_operands; results_::Vector{IR.Type}, location=Location())
     results = IR.Type[results_..., ]
-    operands = Value[callee, callee_operands..., ]
+    operands = Value[value(callee), value.(callee_operands)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -112,9 +112,9 @@ symbol reference attribute named \"callee\".
 %2 = call @my_add(%0, %1) : (f32, f32) -> f32
 ```
 """
-function call(operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location())
+function call(operands_; result_0::Vector{IR.Type}, callee, location=Location())
     results = IR.Type[result_0..., ]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee), ]
@@ -155,9 +155,9 @@ func @select(%a: i32, %b: i32, %flag: i1) -> i32 {
 }
 ```
 """
-function cond_br(condition::Value, trueDestOperands::Vector{Value}, falseDestOperands::Vector{Value}; trueDest::Block, falseDest::Block, location=Location())
+function cond_br(condition, trueDestOperands, falseDestOperands; trueDest::Block, falseDest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands..., ]
+    operands = Value[value(condition), value.(trueDestOperands)..., value.(falseDestOperands)..., ]
     owned_regions = Region[]
     successors = Block[trueDest, falseDest, ]
     attributes = NamedAttribute[]
@@ -238,9 +238,9 @@ func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands_::Vector{Value}; location=Location())
+function return_(operands_; location=Location())
     results = IR.Type[]
-    operands = Value[operands_..., ]
+    operands = Value[value.(operands_)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -286,9 +286,9 @@ to implement `min` and `max` with signed or unsigned comparison semantics.
 %vx = std.select %cond, %vtrue, %vfalse : vector<42xf32>
 ```
 """
-function select(condition::Value, true_value::Value, false_value::Value; result=nothing::Union{Nothing, IR.Type}, location=Location())
+function select(condition, true_value, false_value; result=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[condition, true_value, false_value, ]
+    operands = Value[value(condition), value(true_value), value(false_value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -328,9 +328,9 @@ tensors in the same way dynamically shaped memrefs are handled.
 %t = splat %s [%m, %n] : tensor<?x?xi32>
 ```
 """
-function splat(input::Value; aggregate::IR.Type, location=Location())
+function splat(input; aggregate::IR.Type, location=Location())
     results = IR.Type[aggregate, ]
-    operands = Value[input, ]
+    operands = Value[value(input), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -362,9 +362,9 @@ switch %flag : i32, [
 ]
 ```
 """
-function switch(flag::Value, defaultOperands::Vector{Value}, caseOperands::Vector{Value}; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
+function switch(flag, defaultOperands, caseOperands; case_values=nothing, case_operand_segments, defaultDestination::Block, caseDestinations::Vector{Block}, location=Location())
     results = IR.Type[]
-    operands = Value[flag, defaultOperands..., caseOperands..., ]
+    operands = Value[value(flag), value.(defaultOperands)..., value.(caseOperands)..., ]
     owned_regions = Region[]
     successors = Block[defaultDestination, caseDestinations..., ]
     attributes = NamedAttribute[namedattribute("case_operand_segments", case_operand_segments), ]

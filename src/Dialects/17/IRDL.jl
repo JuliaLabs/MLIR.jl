@@ -1,6 +1,6 @@
 module irdl
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -33,9 +33,9 @@ The above program defines a type `complex` inside the dialect `cmath` that
 can has one parameter that must be 32-bit long and a float (in other
 words, that must be `f32`).
 """
-function all_of(args::Vector{Value}; output=nothing::Union{Nothing, IR.Type}, location=Location())
+function all_of(args; output=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -74,9 +74,9 @@ The above program defines a type `complex` inside the dialect `cmath` that
 can have a single type parameter that can be either `i32`, `i64`, `f32` or
 `f32`.
 """
-function any_of(args::Vector{Value}; output=nothing::Union{Nothing, IR.Type}, location=Location())
+function any_of(args; output=nothing::Union{Nothing, IR.Type}, location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -192,9 +192,9 @@ irdl.dialect @example {
 The operation will expect an arbitrary attribute \"attr1\" and an
 attribute \"attr2\" with value `i64`.
 """
-function attributes_(attributeValues::Vector{Value}; attributeValueNames, location=Location())
+function attributes_(attributeValues; attributeValueNames, location=Location())
     results = IR.Type[]
-    operands = Value[attributeValues..., ]
+    operands = Value[value.(attributeValues)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("attributeValueNames", attributeValueNames), ]
@@ -357,9 +357,9 @@ When more than one operand is marked as optional or variadic, the operation
 will expect a \'operandSegmentSizes\' attribute that defines the number of
 operands in each segment.
 """
-function operands_(args::Vector{Value}; location=Location())
+function operands_(args; location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -439,9 +439,9 @@ irdl.dialect @cmath {
 The above program defines a type `complex` inside the dialect `cmath`. The
 type has a single parameter that should be either `i32` or `i64`.
 """
-function parameters(args::Vector{Value}; location=Location())
+function parameters(args; location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -481,9 +481,9 @@ irdl.dialect @cmath {
 The above program defines an operation `norm` inside the dialect `cmath` that
 for any `T` takes a `cmath.complex` with parameter `T` and returns a `T`.
 """
-function parametric(args::Vector{Value}; output=nothing::Union{Nothing, IR.Type}, base_type, location=Location())
+function parametric(args; output=nothing::Union{Nothing, IR.Type}, base_type, location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("base_type", base_type), ]
@@ -535,9 +535,9 @@ When more than one result is marked as optional or variadic, the operation
 will expect a \'resultSegmentSizes\' attribute that defines the number of
 results in each segment.
 """
-function results_(args::Vector{Value}; location=Location())
+function results_(args; location=Location())
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[value.(args)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

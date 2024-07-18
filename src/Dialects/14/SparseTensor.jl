@@ -1,6 +1,6 @@
 module sparse_tensor
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 
@@ -26,9 +26,9 @@ sparse_tensor.compress %0, %1, %values, %filled, %added, %2
 	  memref<?xi1>, memref<?xindex>, index
 ```
 """
-function compress(tensor::Value, indices::Value, values::Value, filled::Value, added::Value, count::Value; location=Location())
+function compress(tensor, indices, values, filled, added, count; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, indices, values, filled, added, count, ]
+    operands = Value[value(tensor), value(indices), value(values), value(filled), value(added), value(count), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -74,9 +74,9 @@ Examples:
 %4 = sparse_tensor.convert %d : tensor<?xf64> to tensor<100xf64, #SV>
 ```
 """
-function convert(source::Value; dest::IR.Type, location=Location())
+function convert(source; dest::IR.Type, location=Location())
     results = IR.Type[dest, ]
-    operands = Value[source, ]
+    operands = Value[value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -121,9 +121,9 @@ may be refined over time as our sparse abstractions evolve.
   : tensor<4x4xf64, #CSR> to memref<?xf64>, memref<?xi1>, memref<?xindex>, index
 ```
 """
-function expand(tensor::Value; values::IR.Type, filled::IR.Type, added::IR.Type, count::IR.Type, location=Location())
+function expand(tensor; values::IR.Type, filled::IR.Type, added::IR.Type, count::IR.Type, location=Location())
     results = IR.Type[values, filled, added, count, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -153,9 +153,9 @@ a subsequent operation that yields a sparse tensor as the result.
   outs(%c: tensor<?x?xf32, #SparseMatrix>) -> tensor<?x?xf32, #SparseMatrix>
 ```
 """
-function init(sizes::Vector{Value}; result::IR.Type, location=Location())
+function init(sizes; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[sizes..., ]
+    operands = Value[value.(sizes)..., ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -187,9 +187,9 @@ sparse_tensor.lex_insert %tensor, %indices, %val
   : tensor<1024x1024xf64, #CSR>, memref<?xindex>, f64
 ```
 """
-function lex_insert(tensor::Value, indices::Value, value::Value; location=Location())
+function lex_insert(tensor, indices, value; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, indices, value, ]
+    operands = Value[value(tensor), value(indices), value(value), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -228,9 +228,9 @@ may be refined over time as our sparse abstractions evolve.
 %1 = sparse_tensor.load %0 : tensor<8xf64, #SV>
 ```
 """
-function load(tensor::Value; result=nothing::Union{Nothing, IR.Type}, hasInserts=nothing, location=Location())
+function load(tensor; result=nothing::Union{Nothing, IR.Type}, hasInserts=nothing, location=Location())
     results = IR.Type[]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -263,9 +263,9 @@ typed sparse tensor with inital contents into a computation.
 sparse_tensor.new %source : !Source to tensor<1024x1024xf64, #CSR>
 ```
 """
-function new(source::Value; result::IR.Type, location=Location())
+function new(source; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[source, ]
+    operands = Value[value(source), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -294,9 +294,9 @@ a buffer defined by a pointer.
 sparse_tensor.out %t, %dest : tensor<1024x1024xf64, #CSR>, !Dest
 ```
 """
-function out(tensor::Value, dest::Value; location=Location())
+function out(tensor, dest; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, dest, ]
+    operands = Value[value(tensor), value(dest), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -330,9 +330,9 @@ may be refined over time as our sparse abstractions evolve.
 sparse_tensor.release %tensor : tensor<1024x1024xf64, #CSR>
 ```
 """
-function release(tensor::Value; location=Location())
+function release(tensor; location=Location())
     results = IR.Type[]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -363,9 +363,9 @@ indices array.
    : tensor<64x64xf64, #CSR> to memref<?xindex>
 ```
 """
-function indices(tensor::Value, dim::Value; result::IR.Type, location=Location())
+function indices(tensor, dim; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, dim, ]
+    operands = Value[value(tensor), value(dim), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -396,9 +396,9 @@ pointers array.
    : tensor<64x64xf64, #CSR> to memref<?xindex>
 ```
 """
-function pointers(tensor::Value, dim::Value; result::IR.Type, location=Location())
+function pointers(tensor, dim; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, dim, ]
+    operands = Value[value(tensor), value(dim), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -428,9 +428,9 @@ values array.
 %1 = sparse_tensor.values %0 : tensor<64x64xf64, #CSR> to memref<?xf64>
 ```
 """
-function values(tensor::Value; result::IR.Type, location=Location())
+function values(tensor; result::IR.Type, location=Location())
     results = IR.Type[result, ]
-    operands = Value[tensor, ]
+    operands = Value[value(tensor), ]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
