@@ -134,9 +134,13 @@ function generate!(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MOD
         # The first argument is the function object itself. In the case where this is a closure,
         # we want the captured variables to be included as function arguments in the generated function.
         func_arg = first(ir.argtypes) isa Core.Const ? first(ir.argtypes).val : first(ir.argtypes)
-        captures = map(IR.unpack(func_arg)) do t
+        captures = if func_arg isa Type
+            map(IR.unpack(func_arg)) do t
                 val = IR.push_argument!(entryblock, IR.Type(t))
             end |> Tuple
+        else
+            ()
+        end
     end
     
     args = map(enumerate(ir.argtypes[begin+1:end])) do (i, argtype)
