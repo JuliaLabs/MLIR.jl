@@ -308,7 +308,7 @@ end
       for (int i = 0; i < op.getNumOperands(); i++)
       {
         const auto &named_operand = op.getOperand(i);
-        std::string operandname = named_operand.name.str();
+        std::string operandname = sanitizeName(named_operand.name.str());
         if (operandname.empty())
         {
           operandname = "operand_" + std::to_string(i);
