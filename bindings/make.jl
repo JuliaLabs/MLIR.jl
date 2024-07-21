@@ -259,7 +259,7 @@ function mlir_dialects(version::VersionNumber)
                 "ArmSME.jl",
                 ["ArmSME/IR/ArmSMEOps.td", "ArmSME/IR/ArmSMEIntrinsicOps.td"],
             ),
-            ("arm_sve", "ArmSVE.jl", ["ArmSVE/ArmSVE.td"]),
+            ("arm_sve", "ArmSVE.jl", ["ArmSVE/IR/ArmSVE.td"]),
             ("async", "Async.jl", ["Async/IR/AsyncOps.td"]),
             ("bufferization", "Bufferization.jl", ["Bufferization/IR/BufferizationOps.td"]),
             ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
