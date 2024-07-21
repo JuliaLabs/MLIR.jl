@@ -1,4 +1,4 @@
-struct ExecutionEngine
+mutable struct ExecutionEngine
     engine::API.MlirExecutionEngine
 
     function ExecutionEngine(engine)
