@@ -17,6 +17,7 @@
 #include <regex>
 #include <optional>
 #include <iostream>
+#include <numeric>
 
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/Sequence.h"
@@ -307,7 +308,7 @@ end
       for (int i = 0; i < op.getNumOperands(); i++)
       {
         const auto &named_operand = op.getOperand(i);
-        std::string operandname = named_operand.name.str();
+        std::string operandname = sanitizeName(named_operand.name.str());
         if (operandname.empty())
         {
           operandname = "operand_" + std::to_string(i);
@@ -317,8 +318,8 @@ end
         else
           opseglist.push_back(named_operand.isVariadic() ? "length(" + operandname + "), " : "1, ");
       }
-      std::string operandsegmentsizes = std::accumulate(std::begin(x), std::end(x), string(),
-                                [](string &ss, string &s)
+      std::string operandsegmentsizes = std::accumulate(std::begin(opseglist), std::end(opseglist), std::string(),
+                                [](std::string &ss, std::string &s)
                                 {
                                     return ss.empty() ? s : ss + "," + s;
                                 });

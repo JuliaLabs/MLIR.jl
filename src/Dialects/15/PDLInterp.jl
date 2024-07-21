@@ -1,8 +1,8 @@
 module pdl_interp
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-
 
 """
 `apply_constraint`
@@ -20,18 +20,24 @@ otherwise the false destination is taken.
 pdl_interp.apply_constraint \"myConstraint\"(%input, %attr, %op : !pdl.value, !pdl.attribute, !pdl.operation) -> ^matchDest, ^failureDest
 ```
 """
-function apply_constraint(args::Vector{Value}; name, trueDest::Block, falseDest::Block, location=Location())
+function apply_constraint(
+    args::Vector{Value}; name, trueDest::Block, falseDest::Block, location=Location()
+)
     results = IR.Type[]
-    operands = Value[args..., ]
+    operands = Value[args...,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[namedattribute("name", name), ]
-    
-    IR.create_operation(
-        "pdl_interp.apply_constraint", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[trueDest, falseDest]
+    attributes = NamedAttribute[namedattribute("name", name),]
+
+    return IR.create_operation(
+        "pdl_interp.apply_constraint",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -57,18 +63,24 @@ pdl_interp.apply_rewrite \"rewriter\"(%root : !pdl.operation)
 pdl_interp.apply_rewrite \"rewriter\"(%root : !pdl.operation, %value : !pdl.value)
 ```
 """
-function apply_rewrite(args::Vector{Value}; results_::Vector{IR.Type}, name, location=Location())
-    results = IR.Type[results_..., ]
-    operands = Value[args..., ]
+function apply_rewrite(
+    args::Vector{Value}; results::Vector{IR.Type}, name, location=Location()
+)
+    results = IR.Type[results...,]
+    operands = Value[args...,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("name", name), ]
-    
-    IR.create_operation(
-        "pdl_interp.apply_rewrite", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("name", name),]
+
+    return IR.create_operation(
+        "pdl_interp.apply_rewrite",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -85,18 +97,24 @@ otherwise the false destination is taken.
 pdl_interp.are_equal %result1, %result2 : !pdl.value -> ^matchDest, ^failureDest
 ```
 """
-function are_equal(lhs::Value, rhs::Value; trueDest::Block, falseDest::Block, location=Location())
+function are_equal(
+    lhs::Value, rhs::Value; trueDest::Block, falseDest::Block, location=Location()
+)
     results = IR.Type[]
-    operands = Value[lhs, rhs, ]
+    operands = Value[lhs, rhs]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
+    successors = Block[trueDest, falseDest]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.are_equal", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.are_equal",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -117,14 +135,18 @@ function branch(; dest::Block, location=Location())
     results = IR.Type[]
     operands = Value[]
     owned_regions = Region[]
-    successors = Block[dest, ]
+    successors = Block[dest,]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.branch", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.branch",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -141,18 +163,24 @@ true destination, otherwise the false destination is taken.
 pdl_interp.check_attribute %attr is 10 -> ^matchDest, ^failureDest
 ```
 """
-function check_attribute(attribute::Value; constantValue, trueDest::Block, falseDest::Block, location=Location())
+function check_attribute(
+    attribute::Value; constantValue, trueDest::Block, falseDest::Block, location=Location()
+)
     results = IR.Type[]
-    operands = Value[attribute, ]
+    operands = Value[attribute,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[namedattribute("constantValue", constantValue), ]
-    
-    IR.create_operation(
-        "pdl_interp.check_attribute", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[trueDest, falseDest]
+    attributes = NamedAttribute[namedattribute("constantValue", constantValue),]
+
+    return IR.create_operation(
+        "pdl_interp.check_attribute",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -175,19 +203,31 @@ pdl_interp.check_operand_count of %op is 2 -> ^matchDest, ^failureDest
 pdl_interp.check_operand_count of %op is at_least 2 -> ^matchDest, ^failureDest
 ```
 """
-function check_operand_count(inputOp::Value; count, compareAtLeast=nothing, trueDest::Block, falseDest::Block, location=Location())
+function check_operand_count(
+    inputOp::Value;
+    count,
+    compareAtLeast=nothing,
+    trueDest::Block,
+    falseDest::Block,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[inputOp, ]
+    operands = Value[inputOp,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[namedattribute("count", count), ]
-    !isnothing(compareAtLeast) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
-    
-    IR.create_operation(
-        "pdl_interp.check_operand_count", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[trueDest, falseDest]
+    attributes = NamedAttribute[namedattribute("count", count),]
+    !isnothing(compareAtLeast) &&
+        push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+
+    return IR.create_operation(
+        "pdl_interp.check_operand_count",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -204,18 +244,24 @@ destination, otherwise the false destination is taken.
 pdl_interp.check_operation_name of %op is \"foo.op\" -> ^matchDest, ^failureDest
 ```
 """
-function check_operation_name(inputOp::Value; name, trueDest::Block, falseDest::Block, location=Location())
+function check_operation_name(
+    inputOp::Value; name, trueDest::Block, falseDest::Block, location=Location()
+)
     results = IR.Type[]
-    operands = Value[inputOp, ]
+    operands = Value[inputOp,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[namedattribute("name", name), ]
-    
-    IR.create_operation(
-        "pdl_interp.check_operation_name", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[trueDest, falseDest]
+    attributes = NamedAttribute[namedattribute("name", name),]
+
+    return IR.create_operation(
+        "pdl_interp.check_operation_name",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -238,19 +284,31 @@ pdl_interp.check_result_count of %op is 2 -> ^matchDest, ^failureDest
 pdl_interp.check_result_count of %op is at_least 2 -> ^matchDest, ^failureDest
 ```
 """
-function check_result_count(inputOp::Value; count, compareAtLeast=nothing, trueDest::Block, falseDest::Block, location=Location())
+function check_result_count(
+    inputOp::Value;
+    count,
+    compareAtLeast=nothing,
+    trueDest::Block,
+    falseDest::Block,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[inputOp, ]
+    operands = Value[inputOp,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[namedattribute("count", count), ]
-    !isnothing(compareAtLeast) && push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
-    
-    IR.create_operation(
-        "pdl_interp.check_result_count", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[trueDest, falseDest]
+    attributes = NamedAttribute[namedattribute("count", count),]
+    !isnothing(compareAtLeast) &&
+        push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+
+    return IR.create_operation(
+        "pdl_interp.check_result_count",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -267,18 +325,24 @@ the false destination is taken.
 pdl_interp.check_type %type is i32 -> ^matchDest, ^failureDest
 ```
 """
-function check_type(value::Value; type, trueDest::Block, falseDest::Block, location=Location())
+function check_type(
+    value::Value; type, trueDest::Block, falseDest::Block, location=Location()
+)
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[namedattribute("type", type), ]
-    
-    IR.create_operation(
-        "pdl_interp.check_type", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[trueDest, falseDest]
+    attributes = NamedAttribute[namedattribute("type", type),]
+
+    return IR.create_operation(
+        "pdl_interp.check_type",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -295,18 +359,24 @@ to the true destination, otherwise the false destination is taken.
 pdl_interp.check_types %type are [i32, i64] -> ^matchDest, ^failureDest
 ```
 """
-function check_types(value::Value; types, trueDest::Block, falseDest::Block, location=Location())
+function check_types(
+    value::Value; types, trueDest::Block, falseDest::Block, location=Location()
+)
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
-    attributes = NamedAttribute[namedattribute("types", types), ]
-    
-    IR.create_operation(
-        "pdl_interp.check_types", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[trueDest, falseDest]
+    attributes = NamedAttribute[namedattribute("types", types),]
+
+    return IR.create_operation(
+        "pdl_interp.check_types",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -329,12 +399,16 @@ function continue_(; location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.continue", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.continue",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -351,17 +425,21 @@ interpreter for a specific constant attribute value.
 ```
 """
 function create_attribute(; attribute::IR.Type, value, location=Location())
-    results = IR.Type[attribute, ]
+    results = IR.Type[attribute,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
-    IR.create_operation(
-        "pdl_interp.create_attribute", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("value", value),]
+
+    return IR.create_operation(
+        "pdl_interp.create_attribute",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -384,20 +462,42 @@ to this operation.
 %op = pdl_interp.create_operation \"foo.op\"(%arg0 : !pdl.value) {\"attrA\" = %attr0} -> <inferred>
 ```
 """
-function create_operation(inputOperands::Vector{Value}, inputAttributes::Vector{Value}, inputResultTypes::Vector{Value}; resultOp::IR.Type, name, inputAttributeNames, inferredResultTypes=nothing, location=Location())
-    results = IR.Type[resultOp, ]
-    operands = Value[inputOperands..., inputAttributes..., inputResultTypes..., ]
+function create_operation(
+    inputOperands::Vector{Value},
+    inputAttributes::Vector{Value},
+    inputResultTypes::Vector{Value};
+    resultOp::IR.Type,
+    name,
+    inputAttributeNames,
+    inferredResultTypes=nothing,
+    location=Location(),
+)
+    results = IR.Type[resultOp,]
+    operands = Value[inputOperands..., inputAttributes..., inputResultTypes...]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("name", name), namedattribute("inputAttributeNames", inputAttributeNames), ]
-    push!(attributes, operandsegmentsizes([length(inputOperands), length(inputAttributes), length(inputResultTypes), ]))
-    !isnothing(inferredResultTypes) && push!(attributes, namedattribute("inferredResultTypes", inferredResultTypes))
-    
-    IR.create_operation(
-        "pdl_interp.create_operation", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("name", name),
+        namedattribute("inputAttributeNames", inputAttributeNames),
+    ]
+    push!(
+        attributes,
+        operandsegmentsizes([
+            length(inputOperands), length(inputAttributes), length(inputResultTypes)
+        ]),
+    )
+    !isnothing(inferredResultTypes) &&
+        push!(attributes, namedattribute("inferredResultTypes", inferredResultTypes))
+
+    return IR.create_operation(
+        "pdl_interp.create_operation",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -414,17 +514,21 @@ pdl_interp.create_type i64
 ```
 """
 function create_type(; result::IR.Type, value, location=Location())
-    results = IR.Type[result, ]
+    results = IR.Type[result,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
-    IR.create_operation(
-        "pdl_interp.create_type", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("value", value),]
+
+    return IR.create_operation(
+        "pdl_interp.create_type",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -441,17 +545,21 @@ pdl_interp.create_types [i64, i64]
 ```
 """
 function create_types(; result::IR.Type, value, location=Location())
-    results = IR.Type[result, ]
+    results = IR.Type[result,]
     operands = Value[]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value), ]
-    
-    IR.create_operation(
-        "pdl_interp.create_types", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("value", value),]
+
+    return IR.create_operation(
+        "pdl_interp.create_types",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -470,16 +578,20 @@ pdl_interp.erase %root
 """
 function erase(inputOp::Value; location=Location())
     results = IR.Type[]
-    operands = Value[inputOp, ]
+    operands = Value[inputOp,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.erase", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.erase",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -497,17 +609,21 @@ at the specified index. If the index is out of range, returns null.
 ```
 """
 function extract(range::Value; result::IR.Type, index, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[range, ]
+    results = IR.Type[result,]
+    operands = Value[range,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("index", index), ]
-    
-    IR.create_operation(
-        "pdl_interp.extract", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("index", index),]
+
+    return IR.create_operation(
+        "pdl_interp.extract",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -529,12 +645,16 @@ function finalize(; location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.finalize", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.finalize",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -559,16 +679,20 @@ pdl_interp.foreach %op : !pdl.operation in %ops {
 """
 function foreach(values::Value; region::Region, successor::Block, location=Location())
     results = IR.Type[]
-    operands = Value[values, ]
-    owned_regions = Region[region, ]
-    successors = Block[successor, ]
+    operands = Value[values,]
+    owned_regions = Region[region,]
+    successors = Block[successor,]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.foreach", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.foreach",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -593,15 +717,21 @@ pdl_interp.func @rewriter(%root: !pdl.operation) {
 function func(; sym_name, function_type, body::Region, location=Location())
     results = IR.Type[]
     operands = Value[]
-    owned_regions = Region[body, ]
+    owned_regions = Region[body,]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name), namedattribute("function_type", function_type), ]
-    
-    IR.create_operation(
-        "pdl_interp.func", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[
+        namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
+    ]
+
+    return IR.create_operation(
+        "pdl_interp.func",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -619,17 +749,21 @@ returned.
 ```
 """
 function get_attribute(inputOp::Value; attribute::IR.Type, name, location=Location())
-    results = IR.Type[attribute, ]
-    operands = Value[inputOp, ]
+    results = IR.Type[attribute,]
+    operands = Value[inputOp,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("name", name), ]
-    
-    IR.create_operation(
-        "pdl_interp.get_attribute", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("name", name),]
+
+    return IR.create_operation(
+        "pdl_interp.get_attribute",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -646,17 +780,21 @@ specific attribute.
 ```
 """
 function get_attribute_type(value::Value; result::IR.Type, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[value, ]
+    results = IR.Type[result,]
+    operands = Value[value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.get_attribute_type", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.get_attribute_type",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -675,17 +813,21 @@ or range of operand results, null is returned.
 ```
 """
 function get_defining_op(value::Value; inputOp::IR.Type, location=Location())
-    results = IR.Type[inputOp, ]
-    operands = Value[value, ]
+    results = IR.Type[inputOp,]
+    operands = Value[value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.get_defining_op", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.get_defining_op",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -703,17 +845,21 @@ null value is returned.
 ```
 """
 function get_operand(inputOp::Value; value::IR.Type, index, location=Location())
-    results = IR.Type[value, ]
-    operands = Value[inputOp, ]
+    results = IR.Type[value,]
+    operands = Value[inputOp,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("index", index), ]
-    
-    IR.create_operation(
-        "pdl_interp.get_operand", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("index", index),]
+
+    return IR.create_operation(
+        "pdl_interp.get_operand",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -741,18 +887,22 @@ the returned operand group corresponds to all operands of the operation.
 ```
 """
 function get_operands(inputOp::Value; value::IR.Type, index=nothing, location=Location())
-    results = IR.Type[value, ]
-    operands = Value[inputOp, ]
+    results = IR.Type[value,]
+    operands = Value[inputOp,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(index) && push!(attributes, namedattribute("index", index))
-    
-    IR.create_operation(
-        "pdl_interp.get_operands", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.get_operands",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -770,17 +920,21 @@ null value is returned.
 ```
 """
 function get_result(inputOp::Value; value::IR.Type, index, location=Location())
-    results = IR.Type[value, ]
-    operands = Value[inputOp, ]
+    results = IR.Type[value,]
+    operands = Value[inputOp,]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("index", index), ]
-    
-    IR.create_operation(
-        "pdl_interp.get_result", location;
-        operands, owned_regions, successors, attributes,
+    attributes = NamedAttribute[namedattribute("index", index),]
+
+    return IR.create_operation(
+        "pdl_interp.get_result",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -808,18 +962,22 @@ the returned operand group corresponds to all results of the operation.
 ```
 """
 function get_results(inputOp::Value; value::IR.Type, index=nothing, location=Location())
-    results = IR.Type[value, ]
-    operands = Value[inputOp, ]
+    results = IR.Type[value,]
+    operands = Value[inputOp,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(index) && push!(attributes, namedattribute("index", index))
-    
-    IR.create_operation(
-        "pdl_interp.get_results", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.get_results",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -841,17 +999,21 @@ similarly to ResultRange::getUsers.
 ```
 """
 function get_users(value::Value; operations::IR.Type, location=Location())
-    results = IR.Type[operations, ]
-    operands = Value[value, ]
+    results = IR.Type[operations,]
+    operands = Value[value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.get_users", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.get_users",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -872,17 +1034,21 @@ value or range thereof.
 ```
 """
 function get_value_type(value::Value; result::IR.Type, location=Location())
-    results = IR.Type[result, ]
-    operands = Value[value, ]
+    results = IR.Type[result,]
+    operands = Value[value,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.get_value_type", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.get_value_type",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -902,16 +1068,20 @@ pdl_interp.is_not_null %value : !pdl.value -> ^matchDest, ^failureDest
 """
 function is_not_null(value::Value; trueDest::Block, falseDest::Block, location=Location())
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value,]
     owned_regions = Region[]
-    successors = Block[trueDest, falseDest, ]
+    successors = Block[trueDest, falseDest]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.is_not_null", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.is_not_null",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -930,21 +1100,37 @@ rewriter.
 pdl_interp.record_match @rewriters::myRewriter(%root : !pdl.operation) : benefit(1), loc([%root, %op1]), root(\"foo.op\") -> ^nextDest
 ```
 """
-function record_match(inputs::Vector{Value}, matchedOps::Vector{Value}; rewriter, rootKind=nothing, generatedOps=nothing, benefit, dest::Block, location=Location())
+function record_match(
+    inputs::Vector{Value},
+    matchedOps::Vector{Value};
+    rewriter,
+    rootKind=nothing,
+    generatedOps=nothing,
+    benefit,
+    dest::Block,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[inputs..., matchedOps..., ]
+    operands = Value[inputs..., matchedOps...]
     owned_regions = Region[]
-    successors = Block[dest, ]
-    attributes = NamedAttribute[namedattribute("rewriter", rewriter), namedattribute("benefit", benefit), ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(matchedOps), ]))
+    successors = Block[dest,]
+    attributes = NamedAttribute[
+        namedattribute("rewriter", rewriter), namedattribute("benefit", benefit)
+    ]
+    push!(attributes, operandsegmentsizes([length(inputs), length(matchedOps)]))
     !isnothing(rootKind) && push!(attributes, namedattribute("rootKind", rootKind))
-    !isnothing(generatedOps) && push!(attributes, namedattribute("generatedOps", generatedOps))
-    
-    IR.create_operation(
-        "pdl_interp.record_match", location;
-        operands, owned_regions, successors, attributes,
+    !isnothing(generatedOps) &&
+        push!(attributes, namedattribute("generatedOps", generatedOps))
+
+    return IR.create_operation(
+        "pdl_interp.record_match",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -965,16 +1151,20 @@ pdl_interp.replace %root with (%val0, %val1 : !pdl.type, !pdl.type)
 """
 function replace(inputOp::Value, replValues::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[inputOp, replValues..., ]
+    operands = Value[inputOp, replValues...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "pdl_interp.replace", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "pdl_interp.replace",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -992,18 +1182,28 @@ the default destination is taken.
 pdl_interp.switch_attribute %attr to [10, true](^10Dest, ^trueDest) -> ^defaultDest
 ```
 """
-function switch_attribute(attribute::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location())
+function switch_attribute(
+    attribute::Value;
+    caseValues,
+    defaultDest::Block,
+    cases::Vector{Block},
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[attribute, ]
+    operands = Value[attribute,]
     owned_regions = Region[]
-    successors = Block[defaultDest, cases..., ]
-    attributes = NamedAttribute[namedattribute("caseValues", caseValues), ]
-    
-    IR.create_operation(
-        "pdl_interp.switch_attribute", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[defaultDest, cases...]
+    attributes = NamedAttribute[namedattribute("caseValues", caseValues),]
+
+    return IR.create_operation(
+        "pdl_interp.switch_attribute",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1021,18 +1221,28 @@ otherwise the default destination is taken.
 pdl_interp.switch_operand_count of %op to [10, 2] -> ^10Dest, ^2Dest, ^defaultDest
 ```
 """
-function switch_operand_count(inputOp::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location())
+function switch_operand_count(
+    inputOp::Value;
+    caseValues,
+    defaultDest::Block,
+    cases::Vector{Block},
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[inputOp, ]
+    operands = Value[inputOp,]
     owned_regions = Region[]
-    successors = Block[defaultDest, cases..., ]
-    attributes = NamedAttribute[namedattribute("caseValues", caseValues), ]
-    
-    IR.create_operation(
-        "pdl_interp.switch_operand_count", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[defaultDest, cases...]
+    attributes = NamedAttribute[namedattribute("caseValues", caseValues),]
+
+    return IR.create_operation(
+        "pdl_interp.switch_operand_count",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1050,18 +1260,28 @@ the default destination is taken.
 pdl_interp.switch_operation_name of %op to [\"foo.op\", \"bar.op\"](^fooDest, ^barDest) -> ^defaultDest
 ```
 """
-function switch_operation_name(inputOp::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location())
+function switch_operation_name(
+    inputOp::Value;
+    caseValues,
+    defaultDest::Block,
+    cases::Vector{Block},
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[inputOp, ]
+    operands = Value[inputOp,]
     owned_regions = Region[]
-    successors = Block[defaultDest, cases..., ]
-    attributes = NamedAttribute[namedattribute("caseValues", caseValues), ]
-    
-    IR.create_operation(
-        "pdl_interp.switch_operation_name", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[defaultDest, cases...]
+    attributes = NamedAttribute[namedattribute("caseValues", caseValues),]
+
+    return IR.create_operation(
+        "pdl_interp.switch_operation_name",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1079,18 +1299,28 @@ otherwise the default destination is taken.
 pdl_interp.switch_result_count of %op to [0, 2](^0Dest, ^2Dest) -> ^defaultDest
 ```
 """
-function switch_result_count(inputOp::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location())
+function switch_result_count(
+    inputOp::Value;
+    caseValues,
+    defaultDest::Block,
+    cases::Vector{Block},
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[inputOp, ]
+    operands = Value[inputOp,]
     owned_regions = Region[]
-    successors = Block[defaultDest, cases..., ]
-    attributes = NamedAttribute[namedattribute("caseValues", caseValues), ]
-    
-    IR.create_operation(
-        "pdl_interp.switch_result_count", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[defaultDest, cases...]
+    attributes = NamedAttribute[namedattribute("caseValues", caseValues),]
+
+    return IR.create_operation(
+        "pdl_interp.switch_result_count",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1108,18 +1338,24 @@ is taken.
 pdl_interp.switch_type %type to [i32, i64] -> ^i32Dest, ^i64Dest, ^defaultDest
 ```
 """
-function switch_type(value::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location())
+function switch_type(
+    value::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value,]
     owned_regions = Region[]
-    successors = Block[defaultDest, cases..., ]
-    attributes = NamedAttribute[namedattribute("caseValues", caseValues), ]
-    
-    IR.create_operation(
-        "pdl_interp.switch_type", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[defaultDest, cases...]
+    attributes = NamedAttribute[namedattribute("caseValues", caseValues),]
+
+    return IR.create_operation(
+        "pdl_interp.switch_type",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -1137,18 +1373,24 @@ destination is taken.
 pdl_interp.switch_types %type is [[i32], [i64, i64]] -> ^i32Dest, ^i64Dest, ^defaultDest
 ```
 """
-function switch_types(value::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location())
+function switch_types(
+    value::Value; caseValues, defaultDest::Block, cases::Vector{Block}, location=Location()
+)
     results = IR.Type[]
-    operands = Value[value, ]
+    operands = Value[value,]
     owned_regions = Region[]
-    successors = Block[defaultDest, cases..., ]
-    attributes = NamedAttribute[namedattribute("caseValues", caseValues), ]
-    
-    IR.create_operation(
-        "pdl_interp.switch_types", location;
-        operands, owned_regions, successors, attributes,
+    successors = Block[defaultDest, cases...]
+    attributes = NamedAttribute[namedattribute("caseValues", caseValues),]
+
+    return IR.create_operation(
+        "pdl_interp.switch_types",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
