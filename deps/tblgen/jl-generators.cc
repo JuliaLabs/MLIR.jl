@@ -303,7 +303,7 @@ end
 
     if (op.getTrait("::mlir::OpTrait::AttrSizedOperandSegments"))
     {
-      std::string operandsegmentsizes = "";
+      std::vector<std::string> opseglist;
       for (int i = 0; i < op.getNumOperands(); i++)
       {
         const auto &named_operand = op.getOperand(i);
@@ -313,12 +313,15 @@ end
           operandname = "operand_" + std::to_string(i);
         }
         if (named_operand.isOptional())
-        {
-          operandsegmentsizes += "(" + operandname + "==nothing) ? 0 : 1";
-          continue;
-        }
-        operandsegmentsizes += named_operand.isVariadic() ? "length(" + operandname + "), " : "1, ";
+          opseglist.push_back("isnothing(" + operandname + ") ? 0 : 1");
+        else
+          opseglist.push_back(named_operand.isVariadic() ? "length(" + operandname + "), " : "1, ");
       }
+      std::string operandsegmentsizes = std::accumulate(std::begin(x), std::end(x), string(),
+                                [](string &ss, string &s)
+                                {
+                                    return ss.empty() ? s : ss + "," + s;
+                                });
       optionals += llvm::formatv(R"(push!(attributes, operandsegmentsizes([{0}]))
     )",
                                  operandsegmentsizes);
