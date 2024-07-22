@@ -1,8 +1,8 @@
 module amdgpu
 
-import ...IR: IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR:
+    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
-
 
 """
 `lds_barrier`
@@ -25,12 +25,16 @@ function lds_barrier(; location=Location())
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    
-    IR.create_operation(
-        "amdgpu.lds_barrier", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "amdgpu.lds_barrier",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -63,25 +67,52 @@ order (that is, v[0] will go to arg[7:0], v[1] to arg[15:8] and so on).
 The negateA, negateB, and negateC flags are only supported for double-precision
 operations on gfx940+.
 """
-function mfma(sourceA::Value, sourceB::Value, destC::Value; destD::IR.Type, m, n, k, blocks, cbsz=nothing, abid=nothing, blgp=nothing, reducePrecision=nothing, negateA=nothing, negateB=nothing, negateC=nothing, location=Location())
-    results = IR.Type[destD, ]
-    operands = Value[sourceA, sourceB, destC, ]
+function mfma(
+    sourceA::Value,
+    sourceB::Value,
+    destC::Value;
+    destD::IR.Type,
+    m,
+    n,
+    k,
+    blocks,
+    cbsz=nothing,
+    abid=nothing,
+    blgp=nothing,
+    reducePrecision=nothing,
+    negateA=nothing,
+    negateB=nothing,
+    negateC=nothing,
+    location=Location(),
+)
+    results = IR.Type[destD,]
+    operands = Value[sourceA, sourceB, destC]
     owned_regions = Region[]
     successors = Block[]
-    attributes = NamedAttribute[namedattribute("m", m), namedattribute("n", n), namedattribute("k", k), namedattribute("blocks", blocks), ]
+    attributes = NamedAttribute[
+        namedattribute("m", m),
+        namedattribute("n", n),
+        namedattribute("k", k),
+        namedattribute("blocks", blocks),
+    ]
     !isnothing(cbsz) && push!(attributes, namedattribute("cbsz", cbsz))
     !isnothing(abid) && push!(attributes, namedattribute("abid", abid))
     !isnothing(blgp) && push!(attributes, namedattribute("blgp", blgp))
-    !isnothing(reducePrecision) && push!(attributes, namedattribute("reducePrecision", reducePrecision))
+    !isnothing(reducePrecision) &&
+        push!(attributes, namedattribute("reducePrecision", reducePrecision))
     !isnothing(negateA) && push!(attributes, namedattribute("negateA", negateA))
     !isnothing(negateB) && push!(attributes, namedattribute("negateB", negateB))
     !isnothing(negateC) && push!(attributes, namedattribute("negateC", negateC))
-    
-    IR.create_operation(
-        "amdgpu.mfma", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "amdgpu.mfma",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -105,22 +136,37 @@ Out of bounds atomic operations are ignored in hardware.
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
 """
-function raw_buffer_atomic_fadd(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
+function raw_buffer_atomic_fadd(
+    value::Value,
+    memref::Value,
+    indices::Vector{Value},
+    sgprOffset=nothing::Union{Nothing,Value};
+    boundsCheck=nothing,
+    indexOffset=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[value, memref, indices..., ]
+    operands = Value[value, memref, indices...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
-    push!(attributes, operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1, ]))
+    push!(
+        attributes,
+        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
+    )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
-    
-    IR.create_operation(
-        "amdgpu.raw_buffer_atomic_fadd", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "amdgpu.raw_buffer_atomic_fadd",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -156,22 +202,36 @@ are translated to intrinsic arguments as follows:
   to 2 to disable bounds checks, otherwise it is 3
 - The cache coherency bits are off
 """
-function raw_buffer_load(memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; value::IR.Type, boundsCheck=nothing, indexOffset=nothing, location=Location())
-    results = IR.Type[value, ]
-    operands = Value[memref, indices..., ]
+function raw_buffer_load(
+    memref::Value,
+    indices::Vector{Value},
+    sgprOffset=nothing::Union{Nothing,Value};
+    value::IR.Type,
+    boundsCheck=nothing,
+    indexOffset=nothing,
+    location=Location(),
+)
+    results = IR.Type[value,]
+    operands = Value[memref, indices...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
-    push!(attributes, operandsegmentsizes([1, length(indices), isnothing(sgprOffset) ? 0 : 1, ]))
+    push!(
+        attributes, operandsegmentsizes([1, length(indices), isnothing(sgprOffset) ? 0 : 1])
+    )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
-    
-    IR.create_operation(
-        "amdgpu.raw_buffer_load", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "amdgpu.raw_buffer_load",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
@@ -195,22 +255,37 @@ components is partically completed is chipset-dependent.
 See `amdgpu.raw_buffer_load` for a description of how the underlying
 instruction is constructed.
 """
-function raw_buffer_store(value::Value, memref::Value, indices::Vector{Value}, sgprOffset=nothing::Union{Nothing, Value}; boundsCheck=nothing, indexOffset=nothing, location=Location())
+function raw_buffer_store(
+    value::Value,
+    memref::Value,
+    indices::Vector{Value},
+    sgprOffset=nothing::Union{Nothing,Value};
+    boundsCheck=nothing,
+    indexOffset=nothing,
+    location=Location(),
+)
     results = IR.Type[]
-    operands = Value[value, memref, indices..., ]
+    operands = Value[value, memref, indices...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
-    push!(attributes, operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1, ]))
+    push!(
+        attributes,
+        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
+    )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
-    
-    IR.create_operation(
-        "amdgpu.raw_buffer_store", location;
-        operands, owned_regions, successors, attributes,
+
+    return IR.create_operation(
+        "amdgpu.raw_buffer_store",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
         results=results,
-        result_inference=false
+        result_inference=false,
     )
 end
 
