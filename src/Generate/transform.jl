@@ -27,6 +27,12 @@ function handle_return(cg, val::T) where T
     generate_return(cg, returnvalues; location=IR.Location())
 end
 function handle_invoke(cg, fname, ret, args...)
+    if ret == Union{}
+        # Code contains an error, we execute the function for the error to occur.
+        args[1](args[2:end]...)
+        error("This error should never be reached.")
+    end
+
     if first(args) isa Core.Const
         args[begin] = args[begin].val
     end

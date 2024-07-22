@@ -60,7 +60,6 @@ function name(cg::CodegenContext, mi::MethodInstance)
     return "$(mi.specTypes)_$(mi.def.module)_$(mi.def.primary_world)"
 end
 function generate_invoke(cg::CodegenContext, fname::String, ret, args)
-    # return first(args)
     op = Dialects.func.call(args; result_0=IR.Type[IR.Type(ret)], callee=IR.FlatSymbolRefAttribute(fname))
     return ret(IR.result(op))
 end
