@@ -20,20 +20,20 @@ assert %b, \"Expected ... to be true\"
 ```
 """
 function assert(arg::Value; msg, location=Location())
-    results = IR.Type[]
-    operands = Value[arg,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("msg", msg),]
+    _results = IR.Type[]
+    _operands = Value[arg,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("msg", msg),]
 
     return IR.create_operation(
         "cf.assert",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -56,20 +56,20 @@ target block.
 ```
 """
 function br(destOperands::Vector{Value}; dest::Block, location=Location())
-    results = IR.Type[]
-    operands = Value[destOperands...,]
-    owned_regions = Region[]
-    successors = Block[dest,]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[destOperands...,]
+    _owned_regions = Region[]
+    _successors = Block[dest,]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "cf.br",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -110,24 +110,24 @@ function cond_br(
     falseDest::Block,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands...]
-    owned_regions = Region[]
-    successors = Block[trueDest, falseDest]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[condition, trueDestOperands..., falseDestOperands...]
+    _owned_regions = Region[]
+    _successors = Block[trueDest, falseDest]
+    _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands)]),
     )
 
     return IR.create_operation(
         "cf.cond_br",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -161,26 +161,27 @@ function switch(
     caseDestinations::Vector{Block},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[flag, defaultOperands..., caseOperands...]
-    owned_regions = Region[]
-    successors = Block[defaultDestination, caseDestinations...]
-    attributes = NamedAttribute[namedattribute(
+    _results = IR.Type[]
+    _operands = Value[flag, defaultOperands..., caseOperands...]
+    _owned_regions = Region[]
+    _successors = Block[defaultDestination, caseDestinations...]
+    _attributes = NamedAttribute[namedattribute(
         "case_operand_segments", case_operand_segments
     ),]
     push!(
-        attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
+        _attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
     )
-    !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
+    !isnothing(case_values) &&
+        push!(_attributes, namedattribute("case_values", case_values))
 
     return IR.create_operation(
         "cf.switch",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

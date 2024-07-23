@@ -43,23 +43,23 @@ axis 1
 function all_gather(
     input::Value; result::IR.Type, mesh, mesh_axes=nothing, gather_axis, location=Location()
 )
-    results = IR.Type[result,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("mesh", mesh), namedattribute("gather_axis", gather_axis)
     ]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
 
     return IR.create_operation(
         "mesh.all_gather",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -89,22 +89,22 @@ function all_reduce(
     reduction=nothing,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mesh", mesh),]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
-    !isnothing(reduction) && push!(attributes, namedattribute("reduction", reduction))
+    _results = IR.Type[result,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mesh", mesh),]
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(reduction) && push!(_attributes, namedattribute("reduction", reduction))
 
     return IR.create_operation(
         "mesh.all_reduce",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -153,25 +153,25 @@ function all_to_all(
     concat_axis,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("mesh", mesh),
         namedattribute("split_axis", split_axis),
         namedattribute("concat_axis", concat_axis),
     ]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
 
     return IR.create_operation(
         "mesh.all_to_all",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -221,21 +221,21 @@ function broadcast(
     root,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input, root_dynamic...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mesh", mesh), namedattribute("root", root)]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
+    _results = IR.Type[result,]
+    _operands = Value[input, root_dynamic...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mesh", mesh), namedattribute("root", root)]
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
 
     return IR.create_operation(
         "mesh.broadcast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -282,22 +282,22 @@ tensor<4x8xf32, #mesh.shard<@mesh0, [[0]]>>
 ```
 """
 function cluster(; sym_name, shape, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("shape", shape)
     ]
 
     return IR.create_operation(
         "mesh.cluster",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -307,21 +307,21 @@ end
 
 """
 function cluster_shape(; result::Vector{IR.Type}, mesh, axes=nothing, location=Location())
-    results = IR.Type[result...,]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mesh", mesh),]
-    !isnothing(axes) && push!(attributes, namedattribute("axes", axes))
+    _results = IR.Type[result...,]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mesh", mesh),]
+    !isnothing(axes) && push!(_attributes, namedattribute("axes", axes))
 
     return IR.create_operation(
         "mesh.cluster_shape",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -378,25 +378,25 @@ function gather(
     root,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input, root_dynamic...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result,]
+    _operands = Value[input, root_dynamic...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("mesh", mesh),
         namedattribute("gather_axis", gather_axis),
         namedattribute("root", root),
     ]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
 
     return IR.create_operation(
         "mesh.gather",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -414,22 +414,22 @@ index `(1, 2, 3)` will have linear index `3 + 30*2 + 20*30*1`.
 function process_linear_index(;
     result=nothing::Union{Nothing,IR.Type}, mesh, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mesh", mesh),]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mesh", mesh),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "mesh.process_linear_index",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -443,21 +443,21 @@ If the axes are empty then get the index along all axes.
 function process_multi_index(;
     result::Vector{IR.Type}, mesh, axes=nothing, location=Location()
 )
-    results = IR.Type[result...,]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mesh", mesh),]
-    !isnothing(axes) && push!(attributes, namedattribute("axes", axes))
+    _results = IR.Type[result...,]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mesh", mesh),]
+    !isnothing(axes) && push!(_attributes, namedattribute("axes", axes))
 
     return IR.create_operation(
         "mesh.process_multi_index",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -476,22 +476,22 @@ function recv(
     source=nothing,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input, source_dynamic...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mesh", mesh),]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
-    !isnothing(source) && push!(attributes, namedattribute("source", source))
+    _results = IR.Type[result,]
+    _operands = Value[input, source_dynamic...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mesh", mesh),]
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(source) && push!(_attributes, namedattribute("source", source))
 
     return IR.create_operation(
         "mesh.recv",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -527,22 +527,22 @@ function reduce(
     root,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input, root_dynamic...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mesh", mesh), namedattribute("root", root)]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
-    !isnothing(reduction) && push!(attributes, namedattribute("reduction", reduction))
+    _results = IR.Type[result,]
+    _operands = Value[input, root_dynamic...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mesh", mesh), namedattribute("root", root)]
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(reduction) && push!(_attributes, namedattribute("reduction", reduction))
 
     return IR.create_operation(
         "mesh.reduce",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -599,24 +599,24 @@ function reduce_scatter(
     scatter_axis,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("mesh", mesh), namedattribute("scatter_axis", scatter_axis)
     ]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
-    !isnothing(reduction) && push!(attributes, namedattribute("reduction", reduction))
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(reduction) && push!(_attributes, namedattribute("reduction", reduction))
 
     return IR.create_operation(
         "mesh.reduce_scatter",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -678,25 +678,25 @@ function scatter(
     root,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input, root_dynamic...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result,]
+    _operands = Value[input, root_dynamic...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("mesh", mesh),
         namedattribute("scatter_axis", scatter_axis),
         namedattribute("root", root),
     ]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
 
     return IR.create_operation(
         "mesh.scatter",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -715,23 +715,23 @@ function send(
     destination,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input, destination_dynamic...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result,]
+    _operands = Value[input, destination_dynamic...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("mesh", mesh), namedattribute("destination", destination)
     ]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
 
     return IR.create_operation(
         "mesh.send",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -820,24 +820,24 @@ function shard(
     annotate_for_users=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[src,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("shard", shard),]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[src,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("shard", shard),]
+    !isnothing(result) && push!(_results, result)
     !isnothing(annotate_for_users) &&
-        push!(attributes, namedattribute("annotate_for_users", annotate_for_users))
+        push!(_attributes, namedattribute("annotate_for_users", annotate_for_users))
 
     return IR.create_operation(
         "mesh.shard",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -890,26 +890,26 @@ function shift(
     rotate=nothing,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("mesh", mesh),
         namedattribute("shift_axis", shift_axis),
         namedattribute("offset", offset),
     ]
-    !isnothing(mesh_axes) && push!(attributes, namedattribute("mesh_axes", mesh_axes))
-    !isnothing(rotate) && push!(attributes, namedattribute("rotate", rotate))
+    !isnothing(mesh_axes) && push!(_attributes, namedattribute("mesh_axes", mesh_axes))
+    !isnothing(rotate) && push!(_attributes, namedattribute("rotate", rotate))
 
     return IR.create_operation(
         "mesh.shift",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

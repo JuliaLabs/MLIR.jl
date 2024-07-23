@@ -265,13 +265,17 @@ the rank of the accessed value. All indices should all be of `index` type.
 ```
 """
 function extract(
-    tensor::Value, indices::Vector{Value}; result::IR.Type, location=Location()
+    tensor::Value,
+    indices::Vector{Value};
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[tensor, indices...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "tensor.extract",
@@ -280,8 +284,8 @@ function extract(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -606,13 +610,18 @@ indices should be of `index` type.
 ```
 """
 function insert(
-    scalar::Value, dest::Value, indices::Vector{Value}; result::IR.Type, location=Location()
+    scalar::Value,
+    dest::Value,
+    indices::Vector{Value};
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[scalar, dest, indices...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "tensor.insert",
@@ -621,8 +630,8 @@ function insert(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -686,13 +695,13 @@ function insert_slice(
     offsets::Vector{Value},
     sizes::Vector{Value},
     strides::Vector{Value};
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     static_offsets,
     static_sizes,
     static_strides,
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[source, dest, offsets..., sizes..., strides...]
     _owned_regions = Region[]
     _successors = Block[]
@@ -705,6 +714,7 @@ function insert_slice(
         _attributes,
         operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides)]),
     )
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "tensor.insert_slice",
@@ -713,8 +723,8 @@ function insert_slice(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -762,13 +772,13 @@ function pack(
     dest::Value,
     padding_value=nothing::Union{Nothing,Value};
     inner_tiles::Vector{Value},
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     outer_dims_perm=nothing,
     inner_dims_pos,
     static_inner_tiles,
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[source, dest, inner_tiles...]
     _owned_regions = Region[]
     _successors = Block[]
@@ -781,6 +791,7 @@ function pack(
         _attributes,
         operandsegmentsizes([1, 1, isnothing(padding_value) ? 0 : 1, length(inner_tiles)]),
     )
+    !isnothing(result) && push!(_results, result)
     !isnothing(outer_dims_perm) &&
         push!(_attributes, namedattribute("outer_dims_perm", outer_dims_perm))
 
@@ -791,8 +802,8 @@ function pack(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1283,13 +1294,13 @@ function unpack(
     source::Value,
     dest::Value,
     inner_tiles::Vector{Value};
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     outer_dims_perm=nothing,
     inner_dims_pos,
     static_inner_tiles,
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[source, dest, inner_tiles...]
     _owned_regions = Region[]
     _successors = Block[]
@@ -1297,6 +1308,7 @@ function unpack(
         namedattribute("inner_dims_pos", inner_dims_pos),
         namedattribute("static_inner_tiles", static_inner_tiles),
     ]
+    !isnothing(result) && push!(_results, result)
     !isnothing(outer_dims_perm) &&
         push!(_attributes, namedattribute("outer_dims_perm", outer_dims_perm))
 
@@ -1307,8 +1319,8 @@ function unpack(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

@@ -42,22 +42,22 @@ scf.for %i = %c0 to %0 step %c1 {
 ```
 """
 function index(; result=nothing::Union{Nothing,IR.Type}, dim, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("dim", dim),]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("dim", dim),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "linalg.index",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -84,20 +84,20 @@ softmax.
 function softmax(
     input::Value, output::Value; result::Vector{IR.Type}, dimension, location=Location()
 )
-    results = IR.Type[result...,]
-    operands = Value[input, output]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("dimension", dimension),]
+    _results = IR.Type[result...,]
+    _operands = Value[input, output]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("dimension", dimension),]
 
     return IR.create_operation(
         "linalg.softmax",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -116,20 +116,20 @@ linalg.yield %f0, %f1 : f32, f32
 ```
 """
 function yield(values::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[values...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[values...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "linalg.yield",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -149,21 +149,21 @@ function abs(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.abs",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -185,21 +185,21 @@ function add(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.add",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -216,21 +216,21 @@ function batch_matmul(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_matmul",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -247,21 +247,21 @@ function batch_matmul_transpose_a(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_matmul_transpose_a",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -278,21 +278,21 @@ function batch_matmul_transpose_b(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_matmul_transpose_b",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -309,21 +309,21 @@ function batch_matvec(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_matvec",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -342,21 +342,21 @@ function batch_mmt4d(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_mmt4d",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -373,21 +373,21 @@ function batch_reduce_matmul(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_reduce_matmul",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -404,21 +404,21 @@ function batch_vecmat(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_vecmat",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -444,20 +444,20 @@ function broadcast(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result...,]
-    operands = Value[input, init]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("dimensions", dimensions),]
+    _results = IR.Type[result...,]
+    _operands = Value[input, init]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("dimensions", dimensions),]
 
     return IR.create_operation(
         "linalg.broadcast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -473,21 +473,21 @@ function ceil(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.ceil",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -510,23 +510,23 @@ function conv_1d_ncw_fcw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_1d_ncw_fcw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -545,23 +545,23 @@ function conv_1d_nwc_wcf(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_1d_nwc_wcf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -578,21 +578,21 @@ function conv_1d(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_1d",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -615,23 +615,23 @@ function conv_2d_nchw_fchw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_2d_nchw_fchw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -654,23 +654,23 @@ function conv_2d_ngchw_fgchw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_2d_ngchw_fgchw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -693,23 +693,23 @@ function conv_2d_ngchw_gfchw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_2d_ngchw_gfchw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -732,23 +732,23 @@ function conv_2d_nhwc_fhwc(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_2d_nhwc_fhwc",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -772,23 +772,23 @@ function conv_2d_nhwc_fhwc_q(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_2d_nhwc_fhwc_q",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -811,23 +811,23 @@ function conv_2d_nhwc_hwcf(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_2d_nhwc_hwcf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -851,23 +851,23 @@ function conv_2d_nhwc_hwcf_q(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_2d_nhwc_hwcf_q",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -884,21 +884,21 @@ function conv_2d(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_2d",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -917,23 +917,23 @@ function conv_3d_ncdhw_fcdhw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_3d_ncdhw_fcdhw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -952,23 +952,23 @@ function conv_3d_ndhwc_dhwcf(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_3d_ndhwc_dhwcf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -988,23 +988,23 @@ function conv_3d_ndhwc_dhwcf_q(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.conv_3d_ndhwc_dhwcf_q",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1021,21 +1021,21 @@ function conv_3d(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_3d",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1053,22 +1053,22 @@ function copy(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(cast) && push!(_attributes, namedattribute("cast", cast))
 
     return IR.create_operation(
         "linalg.copy",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1088,23 +1088,23 @@ function depthwise_conv_1d_ncw_cw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_1d_ncw_cw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1124,23 +1124,23 @@ function depthwise_conv_1d_nwc_wc(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_1d_nwc_wc",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1159,23 +1159,23 @@ function depthwise_conv_1d_nwc_wcm(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_1d_nwc_wcm",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1195,23 +1195,23 @@ function depthwise_conv_2d_nchw_chw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nchw_chw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1231,23 +1231,23 @@ function depthwise_conv_2d_nhwc_hwc(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwc",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1266,23 +1266,23 @@ function depthwise_conv_2d_nhwc_hwc_q(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwc_q",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1301,23 +1301,23 @@ function depthwise_conv_2d_nhwc_hwcm(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwcm",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1336,23 +1336,23 @@ function depthwise_conv_2d_nhwc_hwcm_q(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwcm_q",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1372,23 +1372,23 @@ function depthwise_conv_3d_ncdhw_cdhw(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_3d_ncdhw_cdhw",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1408,23 +1408,23 @@ function depthwise_conv_3d_ndhwc_dhwc(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_3d_ndhwc_dhwc",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1443,23 +1443,23 @@ function depthwise_conv_3d_ndhwc_dhwcm(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.depthwise_conv_3d_ndhwc_dhwcm",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1481,21 +1481,21 @@ function div(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.div",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1517,21 +1517,21 @@ function div_unsigned(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.div_unsigned",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1548,21 +1548,21 @@ function dot(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.dot",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1581,23 +1581,23 @@ function elemwise_binary(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(fun) && push!(attributes, namedattribute("fun", fun))
-    !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(fun) && push!(_attributes, namedattribute("fun", fun))
+    !isnothing(cast) && push!(_attributes, namedattribute("cast", cast))
 
     return IR.create_operation(
         "linalg.elemwise_binary",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1616,23 +1616,23 @@ function elemwise_unary(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(fun) && push!(attributes, namedattribute("fun", fun))
-    !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(fun) && push!(_attributes, namedattribute("fun", fun))
+    !isnothing(cast) && push!(_attributes, namedattribute("cast", cast))
 
     return IR.create_operation(
         "linalg.elemwise_unary",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1648,21 +1648,21 @@ function exp(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.exp",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1680,21 +1680,21 @@ function fill(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.fill",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1716,21 +1716,21 @@ function fill_rng_2d(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.fill_rng_2d",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1746,21 +1746,21 @@ function floor(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.floor",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1875,27 +1875,27 @@ function generic(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("indexing_maps", indexing_maps),
         namedattribute("iterator_types", iterator_types),
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(doc) && push!(attributes, namedattribute("doc", doc))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(doc) && push!(_attributes, namedattribute("doc", doc))
     !isnothing(library_call) &&
-        push!(attributes, namedattribute("library_call", library_call))
+        push!(_attributes, namedattribute("library_call", library_call))
 
     return IR.create_operation(
         "linalg.generic",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1911,21 +1911,21 @@ function log(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.log",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1964,20 +1964,20 @@ function map(
     mapper::Region,
     location=Location(),
 )
-    results = IR.Type[result...,]
-    operands = Value[inputs..., init]
-    owned_regions = Region[mapper,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result...,]
+    _operands = Value[inputs..., init]
+    _owned_regions = Region[mapper,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "linalg.map",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1995,22 +1995,22 @@ function matmul(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(cast) && push!(_attributes, namedattribute("cast", cast))
 
     return IR.create_operation(
         "linalg.matmul",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2028,22 +2028,22 @@ function matmul_transpose_a(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(cast) && push!(_attributes, namedattribute("cast", cast))
 
     return IR.create_operation(
         "linalg.matmul_transpose_a",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2061,22 +2061,22 @@ function matmul_transpose_b(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(cast) && push!(attributes, namedattribute("cast", cast))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(cast) && push!(_attributes, namedattribute("cast", cast))
 
     return IR.create_operation(
         "linalg.matmul_transpose_b",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2093,21 +2093,21 @@ function matmul_unsigned(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.matmul_unsigned",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2124,21 +2124,21 @@ function matvec(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.matvec",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2160,21 +2160,21 @@ function max(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.max",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2196,21 +2196,21 @@ function mmt4d(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.mmt4d",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2232,21 +2232,21 @@ function mul(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.mul",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2262,21 +2262,21 @@ function negf(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.negf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2295,23 +2295,23 @@ function pooling_nchw_max(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nchw_max",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2334,23 +2334,23 @@ function pooling_nchw_sum(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nchw_sum",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2369,23 +2369,23 @@ function pooling_ncw_max(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_ncw_max",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2408,23 +2408,23 @@ function pooling_ncw_sum(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_ncw_sum",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2443,23 +2443,23 @@ function pooling_ndhwc_max(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_ndhwc_max",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2478,23 +2478,23 @@ function pooling_ndhwc_min(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_ndhwc_min",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2513,23 +2513,23 @@ function pooling_ndhwc_sum(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_ndhwc_sum",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2548,23 +2548,23 @@ function pooling_nhwc_max(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_max",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2583,23 +2583,23 @@ function pooling_nhwc_max_unsigned(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_max_unsigned",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2618,23 +2618,23 @@ function pooling_nhwc_min(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_min",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2653,23 +2653,23 @@ function pooling_nhwc_min_unsigned(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_min_unsigned",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2692,23 +2692,23 @@ function pooling_nhwc_sum(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_sum",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2727,23 +2727,23 @@ function pooling_nwc_max(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nwc_max",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2762,23 +2762,23 @@ function pooling_nwc_max_unsigned(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nwc_max_unsigned",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2797,23 +2797,23 @@ function pooling_nwc_min(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nwc_min",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2832,23 +2832,23 @@ function pooling_nwc_min_unsigned(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nwc_min_unsigned",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2871,23 +2871,23 @@ function pooling_nwc_sum(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(strides) && push!(attributes, namedattribute("strides", strides))
-    !isnothing(dilations) && push!(attributes, namedattribute("dilations", dilations))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(strides) && push!(_attributes, namedattribute("strides", strides))
+    !isnothing(dilations) && push!(_attributes, namedattribute("dilations", dilations))
 
     return IR.create_operation(
         "linalg.pooling_nwc_sum",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2906,21 +2906,21 @@ function quantized_batch_matmul(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.quantized_batch_matmul",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2939,21 +2939,21 @@ function quantized_matmul(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.quantized_matmul",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2997,20 +2997,20 @@ function reduce(
     combiner::Region,
     location=Location(),
 )
-    results = IR.Type[result_0...,]
-    operands = Value[inputs..., inits...]
-    owned_regions = Region[combiner,]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("dimensions", dimensions),]
+    _results = IR.Type[result_0...,]
+    _operands = Value[inputs..., inits...]
+    _owned_regions = Region[combiner,]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("dimensions", dimensions),]
 
     return IR.create_operation(
         "linalg.reduce",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3032,21 +3032,21 @@ function sub(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.sub",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3076,20 +3076,20 @@ function transpose(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result...,]
-    operands = Value[input, init]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("permutation", permutation),]
+    _results = IR.Type[result...,]
+    _operands = Value[input, init]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("permutation", permutation),]
 
     return IR.create_operation(
         "linalg.transpose",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3106,21 +3106,21 @@ function vecmat(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[result_tensors...,]
-    operands = Value[inputs..., outputs...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    _results = IR.Type[result_tensors...,]
+    _operands = Value[inputs..., outputs...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.vecmat",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

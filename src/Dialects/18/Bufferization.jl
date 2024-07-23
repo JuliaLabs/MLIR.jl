@@ -66,37 +66,30 @@ function alloc_tensor(
     memory_space=nothing,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[dynamic_sizes...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(copy) && push!(operands, copy)
-    !isnothing(size_hint) && push!(operands, size_hint)
+    _results = IR.Type[result,]
+    _operands = Value[dynamic_sizes...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(copy) && push!(_operands, copy)
+    !isnothing(size_hint) && push!(_operands, size_hint)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            length(dynamic_sizes),
-            if (copy == nothing)
-                0
-            elseif 1(size_hint == nothing)
-                0
-            else
-                1
-            end,
+            length(dynamic_sizes), isnothing(copy) ? 0 : 1, isnothing(size_hint) ? 0 : 1
         ]),
     )
     !isnothing(memory_space) &&
-        push!(attributes, namedattribute("memory_space", memory_space))
+        push!(_attributes, namedattribute("memory_space", memory_space))
 
     return IR.create_operation(
         "bufferization.alloc_tensor",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -118,20 +111,20 @@ of the clone operation after the clone operation thus leads to undefined
 behavior.
 """
 function clone(input::Value; output::IR.Type, location=Location())
-    results = IR.Type[output,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[output,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "bufferization.clone",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -196,26 +189,26 @@ function dealloc(
     updatedConditions=nothing::Union{Nothing,Vector{IR.Type}},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[memrefs..., conditions..., retained...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[memrefs..., conditions..., retained...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([length(memrefs), length(conditions), length(retained)]),
     )
-    !isnothing(updatedConditions) && push!(results, updatedConditions...)
+    !isnothing(updatedConditions) && push!(_results, updatedConditions...)
 
     return IR.create_operation(
         "bufferization.dealloc",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -246,20 +239,20 @@ bufferization.dealloc_tensor %tensor : tensor<1024x1024xf64, #CSR>
 ```
 """
 function dealloc_tensor(tensor::Value; location=Location())
-    results = IR.Type[]
-    operands = Value[tensor,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[tensor,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "bufferization.dealloc_tensor",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -321,23 +314,23 @@ function materialize_in_destination(
     writable=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[source, dest]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(restrict) && push!(attributes, namedattribute("restrict", restrict))
-    !isnothing(writable) && push!(attributes, namedattribute("writable", writable))
+    _results = IR.Type[]
+    _operands = Value[source, dest]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(restrict) && push!(_attributes, namedattribute("restrict", restrict))
+    !isnothing(writable) && push!(_attributes, namedattribute("writable", writable))
 
     return IR.create_operation(
         "bufferization.materialize_in_destination",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -361,21 +354,21 @@ bufferization that the buffer returned by this op (or an alias created from
 the returned buffer) will not be written to.
 """
 function to_memref(tensor::Value; memref::IR.Type, read_only=nothing, location=Location())
-    results = IR.Type[memref,]
-    operands = Value[tensor,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(read_only) && push!(attributes, namedattribute("read_only", read_only))
+    _results = IR.Type[memref,]
+    _operands = Value[tensor,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(read_only) && push!(_attributes, namedattribute("read_only", read_only))
 
     return IR.create_operation(
         "bufferization.to_memref",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -436,24 +429,24 @@ function to_tensor(
     writable=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[memref,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(restrict) && push!(attributes, namedattribute("restrict", restrict))
-    !isnothing(writable) && push!(attributes, namedattribute("writable", writable))
+    _results = IR.Type[]
+    _operands = Value[memref,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(restrict) && push!(_attributes, namedattribute("restrict", restrict))
+    !isnothing(writable) && push!(_attributes, namedattribute("writable", writable))
 
     return IR.create_operation(
         "bufferization.to_tensor",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

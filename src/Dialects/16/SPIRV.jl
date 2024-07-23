@@ -3613,12 +3613,18 @@ fordequal-op ::= ssa-id `=` `spirv.FOrdEqual` ssa-use, ssa-use
 %5 = spirv.FOrdEqual %2, %3 : vector<4xf32>
 ```
 """
-function FOrdEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function FOrdEqual(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FOrdEqual",
@@ -3627,8 +3633,8 @@ function FOrdEqual(operand1::Value, operand2::Value; result::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3659,13 +3665,17 @@ fordgte-op ::= ssa-id `=` `spirv.FOrdGreaterThanEqual` ssa-use, ssa-use
 ```
 """
 function FOrdGreaterThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FOrdGreaterThanEqual",
@@ -3674,8 +3684,8 @@ function FOrdGreaterThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3706,13 +3716,17 @@ fordgt-op ::= ssa-id `=` `spirv.FOrdGreaterThan` ssa-use, ssa-use
 ```
 """
 function FOrdGreaterThan(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FOrdGreaterThan",
@@ -3721,8 +3735,8 @@ function FOrdGreaterThan(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3753,13 +3767,17 @@ fordlte-op ::= ssa-id `=` `spirv.FOrdLessThanEqual` ssa-use, ssa-use
 ```
 """
 function FOrdLessThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FOrdLessThanEqual",
@@ -3768,8 +3786,8 @@ function FOrdLessThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3800,13 +3818,17 @@ fordlt-op ::= ssa-id `=` `spirv.FOrdLessThan` ssa-use, ssa-use
 ```
 """
 function FOrdLessThan(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FOrdLessThan",
@@ -3815,8 +3837,8 @@ function FOrdLessThan(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3847,13 +3869,17 @@ fordneq-op ::= ssa-id `=` `spirv.FOrdNotEqual` ssa-use, ssa-use
 ```
 """
 function FOrdNotEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FOrdNotEqual",
@@ -3862,8 +3888,8 @@ function FOrdNotEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3996,12 +4022,18 @@ funordequal-op ::= ssa-id `=` `spirv.FUnordEqual` ssa-use, ssa-use
 %5 = spirv.FUnordEqual %2, %3 : vector<4xf32>
 ```
 """
-function FUnordEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function FUnordEqual(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FUnordEqual",
@@ -4010,8 +4042,8 @@ function FUnordEqual(operand1::Value, operand2::Value; result::IR.Type, location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -4042,13 +4074,17 @@ funordgte-op ::= ssa-id `=` `spirv.FUnordGreaterThanEqual` ssa-use, ssa-use
 ```
 """
 function FUnordGreaterThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FUnordGreaterThanEqual",
@@ -4057,8 +4093,8 @@ function FUnordGreaterThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -4089,13 +4125,17 @@ funordgt-op ::= ssa-id `=` `spirv.FUnordGreaterThan` ssa-use, ssa-use
 ```
 """
 function FUnordGreaterThan(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FUnordGreaterThan",
@@ -4104,8 +4144,8 @@ function FUnordGreaterThan(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -4136,13 +4176,17 @@ funordlte-op ::= ssa-id `=` `spirv.FUnordLessThanEqual` ssa-use, ssa-use
 ```
 """
 function FUnordLessThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FUnordLessThanEqual",
@@ -4151,8 +4195,8 @@ function FUnordLessThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -4183,13 +4227,17 @@ funordlt-op ::= ssa-id `=` `spirv.FUnordLessThan` ssa-use, ssa-use
 ```
 """
 function FUnordLessThan(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FUnordLessThan",
@@ -4198,8 +4246,8 @@ function FUnordLessThan(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -4230,13 +4278,17 @@ funordneq-op ::= ssa-id `=` `spirv.FUnordNotEqual` ssa-use, ssa-use
 ```
 """
 function FUnordNotEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.FUnordNotEqual",
@@ -4245,8 +4297,8 @@ function FUnordNotEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -8137,12 +8189,18 @@ iequal-op ::= ssa-id `=` `spirv.IEqual` ssa-use, ssa-use
 
 ```
 """
-function IEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function IEqual(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.IEqual",
@@ -8151,8 +8209,8 @@ function IEqual(operand1::Value, operand2::Value; result::IR.Type, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -8571,12 +8629,18 @@ inot-equal-op ::= ssa-id `=` `spirv.INotEqual` ssa-use, ssa-use
 
 ```
 """
-function INotEqual(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function INotEqual(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.INotEqual",
@@ -8585,8 +8649,8 @@ function INotEqual(operand1::Value, operand2::Value; result::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -8777,12 +8841,15 @@ same as Result Type.
 %0 = spirv.Image %1 : !spirv.sampled_image<!spirv.image<f32, Cube, NoDepth, NonArrayed, SingleSampled, NoSampler, Unknown>>
 ```
 """
-function Image(sampledimage::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function Image(
+    sampledimage::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[sampledimage,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.Image",
@@ -8791,8 +8858,8 @@ function Image(sampledimage::Value; result::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -8922,12 +8989,13 @@ isinf-op ::= ssa-id `=` `spirv.IsInf` ssa-use
 %3 = spirv.IsInf %1: vector<4xi32>
 ```
 """
-function IsInf(operand::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function IsInf(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    _results = IR.Type[]
     _operands = Value[operand,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.IsInf",
@@ -8936,8 +9004,8 @@ function IsInf(operand::Value; result::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -8967,12 +9035,13 @@ isnan-op ::= ssa-id `=` `spirv.IsNan` ssa-use
 %3 = spirv.IsNan %1: vector<4xi32>
 ```
 """
-function IsNan(operand::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function IsNan(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
+    _results = IR.Type[]
     _operands = Value[operand,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.IsNan",
@@ -8981,8 +9050,8 @@ function IsNan(operand::Value; result::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -9157,12 +9226,18 @@ logical-and ::= `spirv.LogicalAnd` ssa-use `,` ssa-use
 %2 = spirv.LogicalAnd %0, %1 : vector<4xi1>
 ```
 """
-function LogicalAnd(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function LogicalAnd(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.LogicalAnd",
@@ -9171,8 +9246,8 @@ function LogicalAnd(operand1::Value, operand2::Value; result::IR.Type, location=
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -9202,13 +9277,17 @@ logical-equal ::= `spirv.LogicalEqual` ssa-use `,` ssa-use
 ```
 """
 function LogicalEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.LogicalEqual",
@@ -9217,8 +9296,8 @@ function LogicalEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -9248,13 +9327,17 @@ logical-not-equal ::= `spirv.LogicalNotEqual` ssa-use `,` ssa-use
 ```
 """
 function LogicalNotEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.LogicalNotEqual",
@@ -9263,8 +9346,8 @@ function LogicalNotEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -9290,12 +9373,15 @@ logical-not ::= `spirv.LogicalNot` ssa-use `:` operand-type
 %2 = spirv.LogicalNot %0 : vector<4xi1>
 ```
 """
-function LogicalNot(operand::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function LogicalNot(
+    operand::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[operand,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.LogicalNot",
@@ -9304,8 +9390,8 @@ function LogicalNot(operand::Value; result::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -9334,12 +9420,18 @@ logical-or ::= `spirv.LogicalOr` ssa-use `,` ssa-use
 %2 = spirv.LogicalOr %0, %1 : vector<4xi1>
 ```
 """
-function LogicalOr(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function LogicalOr(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.LogicalOr",
@@ -9348,8 +9440,8 @@ function LogicalOr(operand1::Value, operand2::Value; result::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -9998,12 +10090,18 @@ ordered-op ::= ssa-id `=` `spirv.Ordered` ssa-use, ssa-use
 %5 = spirv.Ordered %2, %3 : vector<4xf32>
 ```
 """
-function Ordered(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function Ordered(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.Ordered",
@@ -10012,8 +10110,8 @@ function Ordered(operand1::Value, operand2::Value; result::IR.Type, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -10485,13 +10583,17 @@ sgreater-than-equal-op ::= ssa-id `=` `spirv.SGreaterThanEqual` ssa-use, ssa-use
 ```
 """
 function SGreaterThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.SGreaterThanEqual",
@@ -10500,8 +10602,8 @@ function SGreaterThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -10532,13 +10634,17 @@ sgreater-than-op ::= ssa-id `=` `spirv.SGreaterThan` ssa-use, ssa-use
 ```
 """
 function SGreaterThan(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.SGreaterThan",
@@ -10547,8 +10653,8 @@ function SGreaterThan(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -10579,13 +10685,17 @@ sless-than-equal-op ::= ssa-id `=` `spirv.SLessThanEqual` ssa-use, ssa-use
 ```
 """
 function SLessThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.SLessThanEqual",
@@ -10594,8 +10704,8 @@ function SLessThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -10625,12 +10735,18 @@ sless-than-op ::= ssa-id `=` `spirv.SLessThan` ssa-use, ssa-use
 
 ```
 """
-function SLessThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function SLessThan(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.SLessThan",
@@ -10639,8 +10755,8 @@ function SLessThan(operand1::Value, operand2::Value; result::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -11798,13 +11914,17 @@ ugreater-than-equal-op ::= ssa-id `=` `spirv.UGreaterThanEqual` ssa-use, ssa-use
 ```
 """
 function UGreaterThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.UGreaterThanEqual",
@@ -11813,8 +11933,8 @@ function UGreaterThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -11845,13 +11965,17 @@ ugreater-than-op ::= ssa-id `=` `spirv.UGreaterThan` ssa-use, ssa-use
 ```
 """
 function UGreaterThan(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.UGreaterThan",
@@ -11860,8 +11984,8 @@ function UGreaterThan(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -11892,13 +12016,17 @@ uless-than-equal-op ::= ssa-id `=` `spirv.ULessThanEqual` ssa-use, ssa-use
 ```
 """
 function ULessThanEqual(
-    operand1::Value, operand2::Value; result::IR.Type, location=Location()
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.ULessThanEqual",
@@ -11907,8 +12035,8 @@ function ULessThanEqual(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -11938,12 +12066,18 @@ uless-than-op ::= ssa-id `=` `spirv.ULessThan` ssa-use, ssa-use
 
 ```
 """
-function ULessThan(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function ULessThan(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.ULessThan",
@@ -11952,8 +12086,8 @@ function ULessThan(operand1::Value, operand2::Value; result::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -12124,12 +12258,18 @@ unordered-op ::= ssa-id `=` `spirv.Unordered` ssa-use, ssa-use
 %5 = spirv.Unordered %2, %3 : vector<4xf32>
 ```
 """
-function Unordered(operand1::Value, operand2::Value; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function Unordered(
+    operand1::Value,
+    operand2::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[operand1, operand2]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.Unordered",
@@ -12138,8 +12278,8 @@ function Unordered(operand1::Value, operand2::Value; result::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -12255,13 +12395,14 @@ or equal to the number of components in Vector.
 ```
 """
 function VectorExtractDynamic(
-    vector::Value, index::Value; result::IR.Type, location=Location()
+    vector::Value, index::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[vector, index]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "spirv.VectorExtractDynamic",
@@ -12270,8 +12411,8 @@ function VectorExtractDynamic(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

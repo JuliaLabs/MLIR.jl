@@ -35,23 +35,23 @@ function addf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.addf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -96,24 +96,24 @@ function addi(
     overflowFlags=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
     !isnothing(overflowFlags) &&
-        push!(attributes, namedattribute("overflowFlags", overflowFlags))
+        push!(_attributes, namedattribute("overflowFlags", overflowFlags))
 
     return IR.create_operation(
         "arith.addi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -141,20 +141,20 @@ indicates no overflow.
 function addui_extended(
     lhs::Value, rhs::Value; sum::IR.Type, overflow::IR.Type, location=Location()
 )
-    results = IR.Type[sum, overflow]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[sum, overflow]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.addui_extended",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -183,22 +183,22 @@ has no standard attributes.
 function andi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.andi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -221,20 +221,20 @@ integer is little-endian) a proper lowering would add operations to swap the
 order of words in addition to the bitcast.
 """
 function bitcast(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.bitcast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -259,22 +259,22 @@ signed division overflow.
 function ceildivsi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.ceildivsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -299,22 +299,22 @@ zero.
 function ceildivui(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.ceildivui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -353,23 +353,23 @@ function cmpf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("predicate", predicate),]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.cmpf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -445,22 +445,22 @@ function cmpi(
     predicate,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("predicate", predicate),]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.cmpi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -482,22 +482,22 @@ forms simple integer and floating point constants.
 ```
 """
 function constant(; result=nothing::Union{Nothing,IR.Type}, value, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("value", value),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.constant",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -512,23 +512,23 @@ function divf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.divf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -559,22 +559,22 @@ signed division overflow.
 function divsi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.divsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -605,22 +605,22 @@ zero.
 function divui(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.divui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -632,20 +632,20 @@ The destination type must to be strictly wider than the source type.
 When operating on vectors, casts elementwise.
 """
 function extf(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.extf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -671,20 +671,20 @@ of the most-significant bit of the input.
 ```
 """
 function extsi(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.extsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -709,20 +709,20 @@ The top-most (N - M) bits of the output are filled with zeros.
 ```
 """
 function extui(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.extui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -735,20 +735,20 @@ towards zero) signed integer value. When operating on vectors, casts
 elementwise.
 """
 function fptosi(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.fptosi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -761,20 +761,20 @@ towards zero) unsigned integer value. When operating on vectors, casts
 elementwise.
 """
 function fptoui(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.fptoui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -800,22 +800,22 @@ signed division overflow.
 function floordivsi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.floordivsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -828,20 +828,20 @@ a wider integer, the value is sign-extended. If casting to a narrower
 integer, the value is truncated.
 """
 function index_cast(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.index_cast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -855,20 +855,20 @@ a wider integer, the value is zero-extended. If casting to a narrower
 integer, the value is truncated.
 """
 function index_castui(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.index_castui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -894,23 +894,23 @@ function maxnumf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.maxnumf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -921,22 +921,22 @@ end
 function maxsi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.maxsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -947,22 +947,22 @@ end
 function maxui(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.maxui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -986,23 +986,23 @@ function maximumf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.maximumf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1027,23 +1027,23 @@ function minnumf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.minnumf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1054,22 +1054,22 @@ end
 function minsi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.minsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1080,22 +1080,22 @@ end
 function minui(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.minui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1119,23 +1119,23 @@ function minimumf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.minimumf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1170,23 +1170,23 @@ function mulf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.mulf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1231,24 +1231,24 @@ function muli(
     overflowFlags=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
     !isnothing(overflowFlags) &&
-        push!(attributes, namedattribute("overflowFlags", overflowFlags))
+        push!(_attributes, namedattribute("overflowFlags", overflowFlags))
 
     return IR.create_operation(
         "arith.muli",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1280,23 +1280,23 @@ function mulsi_extended(
     high=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(low) && push!(results, low)
-    !isnothing(high) && push!(results, high)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(low) && push!(_results, low)
+    !isnothing(high) && push!(_results, high)
 
     return IR.create_operation(
         "arith.mulsi_extended",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1328,23 +1328,23 @@ function mului_extended(
     high=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(low) && push!(results, low)
-    !isnothing(high) && push!(results, high)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(low) && push!(_results, low)
+    !isnothing(high) && push!(_results, high)
 
     return IR.create_operation(
         "arith.mului_extended",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1375,23 +1375,23 @@ function negf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[operand,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[operand,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.negf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1419,22 +1419,22 @@ standard attributes.
 function ori(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.ori",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1449,23 +1449,23 @@ function remf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.remf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1495,22 +1495,22 @@ zero.
 function remsi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.remsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1540,22 +1540,22 @@ zero.
 function remui(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.remui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1568,20 +1568,20 @@ rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
 """
 function sitofp(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.sitofp",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1606,22 +1606,22 @@ operation returns poison.
 function shli(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.shli",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1649,22 +1649,22 @@ poison.
 function shrsi(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.shrsi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1688,22 +1688,22 @@ of the first operand, then the operation returns poison.
 function shrui(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.shrui",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1738,23 +1738,23 @@ function subf(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.subf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1799,24 +1799,24 @@ function subi(
     overflowFlags=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
     !isnothing(overflowFlags) &&
-        push!(attributes, namedattribute("overflowFlags", overflowFlags))
+        push!(_attributes, namedattribute("overflowFlags", overflowFlags))
 
     return IR.create_operation(
         "arith.subi",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1829,20 +1829,20 @@ If the value cannot be exactly represented, it is rounded using the default
 rounding mode. When operating on vectors, casts elementwise.
 """
 function truncf(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.truncf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1866,20 +1866,20 @@ The top-most (N - M) bits of the input are discarded.
 ```
 """
 function trunci(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.trunci",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1893,20 +1893,20 @@ rounded using the default rounding mode. When operating on vectors, casts
 elementwise.
 """
 function uitofp(in::Value; out::IR.Type, location=Location())
-    results = IR.Type[out,]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[out,]
+    _operands = Value[in,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "arith.uitofp",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1935,22 +1935,22 @@ has no standard attributes.
 function xori(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.xori",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1998,22 +1998,22 @@ function select(
     result=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[condition, true_value, false_value]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[condition, true_value, false_value]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.select",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

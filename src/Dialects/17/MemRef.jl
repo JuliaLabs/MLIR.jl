@@ -225,15 +225,16 @@ in these contexts.
 function load(
     memref::Value,
     indices::Vector{Value};
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     nontemporal=nothing,
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[memref, indices...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
     !isnothing(nontemporal) &&
         push!(_attributes, namedattribute("nontemporal", nontemporal))
 
@@ -244,8 +245,8 @@ function load(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

@@ -21,23 +21,23 @@ function abs(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.abs",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -59,23 +59,23 @@ function add(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.add",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -96,23 +96,23 @@ function angle(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.angle",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -135,23 +135,23 @@ function atan2(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.atan2",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -166,20 +166,20 @@ end
 ```
 """
 function bitcast(operand::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[operand,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[operand,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "complex.bitcast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -202,23 +202,23 @@ function conj(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.conj",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -235,20 +235,20 @@ attribute containing the real and imaginary parts.
 ```
 """
 function constant(; complex::IR.Type, value, location=Location())
-    results = IR.Type[complex,]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
+    _results = IR.Type[complex,]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("value", value),]
 
     return IR.create_operation(
         "complex.constant",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -271,23 +271,23 @@ function cos(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.cos",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -304,20 +304,20 @@ floating-point operands, the real and the imaginary part.
 ```
 """
 function create(real::Value, imaginary::Value; complex::IR.Type, location=Location())
-    results = IR.Type[complex,]
-    operands = Value[real, imaginary]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[complex,]
+    _operands = Value[real, imaginary]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "complex.create",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -339,23 +339,23 @@ function div(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.div",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -373,22 +373,22 @@ The `eq` op takes two complex numbers and returns whether they are equal.
 function eq(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "complex.eq",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -411,23 +411,23 @@ function exp(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.exp",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -448,23 +448,23 @@ function expm1(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.expm1",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -485,23 +485,23 @@ function im(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(imaginary) && push!(results, imaginary)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(imaginary) && push!(_results, imaginary)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.im",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -525,23 +525,23 @@ function log1p(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.log1p",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -564,23 +564,23 @@ function log(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.log",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -600,23 +600,23 @@ function mul(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.mul",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -637,23 +637,23 @@ function neg(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.neg",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -672,22 +672,22 @@ equal.
 function neq(
     lhs::Value, rhs::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "complex.neq",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -710,23 +710,23 @@ function pow(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.pow",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -747,23 +747,23 @@ function re(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(real) && push!(results, real)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(real) && push!(_results, real)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.re",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -784,23 +784,23 @@ function rsqrt(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.rsqrt",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -822,23 +822,23 @@ function sign(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.sign",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -860,23 +860,23 @@ function sin(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.sin",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -897,23 +897,23 @@ function sqrt(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.sqrt",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -935,23 +935,23 @@ function sub(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.sub",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -973,23 +973,23 @@ function tan(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.tan",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1011,23 +1011,23 @@ function tanh(
     fastmath=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[complex,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    _results = IR.Type[]
+    _operands = Value[complex,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "complex.tanh",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

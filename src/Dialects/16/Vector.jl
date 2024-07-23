@@ -519,15 +519,16 @@ https://llvm.org/docs/LangRef.html#extractelement-instruction
 function extractelement(
     vector::Value,
     position=nothing::Union{Nothing,Value};
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[vector,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(position) && push!(_operands, position)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "vector.extractelement",
@@ -536,8 +537,8 @@ function extractelement(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

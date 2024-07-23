@@ -556,12 +556,15 @@ end
 `extractelement`
 
 """
-function extractelement(vector::Value, position::Value; res::IR.Type, location=Location())
-    _results = IR.Type[res,]
+function extractelement(
+    vector::Value, position::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[vector, position]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.extractelement",
@@ -570,8 +573,8 @@ function extractelement(vector::Value, position::Value; res::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -637,16 +640,17 @@ end
 function fcmp(
     lhs::Value,
     rhs::Value;
-    res::IR.Type,
+    res=nothing::Union{Nothing,IR.Type},
     predicate,
     fastmathFlags=nothing,
     location=Location(),
 )
-    _results = IR.Type[res,]
+    _results = IR.Type[]
     _operands = Value[lhs, rhs]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
         push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -657,8 +661,8 @@ function fcmp(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1249,12 +1253,19 @@ end
 `icmp`
 
 """
-function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location())
-    _results = IR.Type[res,]
+function icmp(
+    lhs::Value,
+    rhs::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    predicate,
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[lhs, rhs]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.icmp",
@@ -1263,8 +1274,8 @@ function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

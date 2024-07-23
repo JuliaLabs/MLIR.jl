@@ -341,13 +341,18 @@ bufferization. If there are non-bufferizable ops in the IR and
 away. However, such IR is no longer bufferizable with One-Shot Bufferize.
 """
 function to_tensor(
-    memref::Value; result::IR.Type, restrict=nothing, writable=nothing, location=Location()
+    memref::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    restrict=nothing,
+    writable=nothing,
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[memref,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
     !isnothing(restrict) && push!(_attributes, namedattribute("restrict", restrict))
     !isnothing(writable) && push!(_attributes, namedattribute("writable", writable))
 
@@ -358,8 +363,8 @@ function to_tensor(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

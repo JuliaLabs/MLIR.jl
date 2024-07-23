@@ -222,12 +222,18 @@ techniques. This is possible because of the
 [restrictions on dimensions and symbols](Affine.md/#restrictions-on-dimensions-and-symbols)
 in these contexts.
 """
-function load(memref::Value, indices::Vector{Value}; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function load(
+    memref::Value,
+    indices::Vector{Value};
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[memref, indices...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "memref.load",
@@ -236,8 +242,8 @@ function load(memref::Value, indices::Vector{Value}; result::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

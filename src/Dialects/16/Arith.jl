@@ -323,12 +323,19 @@ attribute by the parser.
 %r3 = \"arith.cmpf\"(%0, %1) {predicate: 0} : (f8, f8) -> i1
 ```
 """
-function cmpf(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
-    _results = IR.Type[result,]
+function cmpf(
+    lhs::Value,
+    rhs::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    predicate,
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[lhs, rhs]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.cmpf",
@@ -337,8 +344,8 @@ function cmpf(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -407,12 +414,19 @@ complement or large positives
     : (vector<4xi64>, vector<4xi64>) -> vector<4xi1>
 ```
 """
-function cmpi(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
-    _results = IR.Type[result,]
+function cmpi(
+    lhs::Value,
+    rhs::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    predicate,
+    location=Location(),
+)
+    _results = IR.Type[]
     _operands = Value[lhs, rhs]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.cmpi",
@@ -421,8 +435,8 @@ function cmpi(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
