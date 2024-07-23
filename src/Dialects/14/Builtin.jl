@@ -44,11 +44,11 @@ func @example_fn_attr() attributes {dialectName.attrName = false}
 ```
 """
 function func(; sym_name, type, sym_visibility=nothing, body::Region, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[body,]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[body,]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("type", type)
     ]
     !isnothing(sym_visibility) &&
@@ -57,17 +57,17 @@ function func(; sym_name, type, sym_visibility=nothing, body::Region, location=L
     return IR.create_operation(
         "builtin.func",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
 end
 
 """
-`module_`
+`_module`
 
 A `module` represents a top-level container operation. It contains a single
 [graph region](../LangRef.md#control-flow-and-ssacfg-regions) containing a single block
@@ -85,14 +85,14 @@ module {
 }
 ```
 """
-function module_(;
+function _module(;
     sym_name=nothing, sym_visibility=nothing, body::Region, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[body,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[body,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
     !isnothing(sym_visibility) &&
         push!(attributes, namedattribute("sym_visibility", sym_visibility))
@@ -100,10 +100,10 @@ function module_(;
     return IR.create_operation(
         "builtin.module",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -146,19 +146,19 @@ operands of arity 0-N.
 function unrealized_conversion_cast(
     inputs::Vector{Value}; outputs::Vector{IR.Type}, location=Location()
 )
-    results = IR.Type[outputs...,]
-    operands = Value[inputs...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[outputs...,]
+    _operands = Value[inputs...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "builtin.unrealized_conversion_cast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )

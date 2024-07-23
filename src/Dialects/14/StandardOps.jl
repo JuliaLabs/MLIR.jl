@@ -19,19 +19,19 @@ assert %b, \"Expected ... to be true\"
 ```
 """
 function assert(arg::Value; msg, location=Location())
-    results = IR.Type[]
-    operands = Value[arg,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("msg", msg),]
+    _results = IR.Type[]
+    _operands = Value[arg,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("msg", msg),]
 
     return IR.create_operation(
         "std.assert",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -55,19 +55,19 @@ the block successor.
 ```
 """
 function br(destOperands::Vector{Value}; dest::Block, location=Location())
-    results = IR.Type[]
-    operands = Value[destOperands...,]
-    owned_regions = Region[]
-    successors = Block[dest,]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[destOperands...,]
+    _owned_regions = Region[]
+    _successors = Block[dest,]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "std.br",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -97,19 +97,19 @@ function call_indirect(
     results::Vector{IR.Type},
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[callee, callee_operands...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results...,]
+    _operands = Value[callee, callee_operands...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "std.call_indirect",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -132,19 +132,19 @@ symbol reference attribute named \"callee\".
 function call(
     operands::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
 )
-    results = IR.Type[result_0...,]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee),]
+    _results = IR.Type[result_0...,]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("callee", callee),]
 
     return IR.create_operation(
         "std.call",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -186,11 +186,11 @@ function cond_br(
     falseDest::Block,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[condition, trueDestOperands..., falseDestOperands...]
-    owned_regions = Region[]
-    successors = Block[trueDest, falseDest]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[condition, trueDestOperands..., falseDestOperands...]
+    _owned_regions = Region[]
+    _successors = Block[trueDest, falseDest]
+    _attributes = NamedAttribute[]
     push!(
         attributes,
         operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands)]),
@@ -199,10 +199,10 @@ function cond_br(
     return IR.create_operation(
         "std.cond_br",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -244,26 +244,26 @@ reference a function simplifies this
 ([rationale](../Rationale/Rationale.md#multithreading-the-compiler)).
 """
 function constant(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0,]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
+    _results = IR.Type[result_0,]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("value", value),]
 
     return IR.create_operation(
         "std.constant",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
 end
 
 """
-`return_`
+`_return`
 
 The `return` operation represents a return operation within a function.
 The operation takes variable number of operands and produces no results.
@@ -279,20 +279,20 @@ func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+function _return(operands::Vector{Value}; location=Location())
+    _results = IR.Type[]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "std.return",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -338,20 +338,20 @@ function select(
     result=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[condition, true_value, false_value]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[condition, true_value, false_value]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "std.select",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=(length(results) == 0 ? nothing : results),
         result_inference=(length(results) == 0 ? true : false),
     )
@@ -384,19 +384,19 @@ tensors in the same way dynamically shaped memrefs are handled.
 ```
 """
 function splat(input::Value; aggregate::IR.Type, location=Location())
-    results = IR.Type[aggregate,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[aggregate,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "std.splat",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -431,11 +431,11 @@ function switch(
     caseDestinations::Vector{Block},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[flag, defaultOperands..., caseOperands...]
-    owned_regions = Region[]
-    successors = Block[defaultDestination, caseDestinations...]
-    attributes = NamedAttribute[namedattribute(
+    _results = IR.Type[]
+    _operands = Value[flag, defaultOperands..., caseOperands...]
+    _owned_regions = Region[]
+    _successors = Block[defaultDestination, caseDestinations...]
+    _attributes = NamedAttribute[namedattribute(
         "case_operand_segments", case_operand_segments
     ),]
     push!(
@@ -446,10 +446,10 @@ function switch(
     return IR.create_operation(
         "std.switch",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )

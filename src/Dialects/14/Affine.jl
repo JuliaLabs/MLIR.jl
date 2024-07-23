@@ -27,26 +27,26 @@ have ‘index’ type.
 ```
 """
 function apply(mapOperands::Vector{Value}; result_0::IR.Type, map, location=Location())
-    results = IR.Type[result_0,]
-    operands = Value[mapOperands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("map", map),]
+    _results = IR.Type[result_0,]
+    _operands = Value[mapOperands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("map", map),]
 
     return IR.create_operation(
         "affine.apply",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
 end
 
 """
-`for_`
+`_for`
 
 # Syntax
 
@@ -152,29 +152,29 @@ If the `affine.for` defines any values, a yield terminator must be
 explicitly present. The number and types of the \"affine.for\" results must
 match the initial values in the `iter_args` binding and the yield operands.
 """
-function for_(
+function _for(
     operand_0::Vector{Value}; results::Vector{IR.Type}, region::Region, location=Location()
 )
-    results = IR.Type[results...,]
-    operands = Value[operand_0...,]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results...,]
+    _operands = Value[operand_0...,]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "affine.for",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
 end
 
 """
-`if_`
+`_if`
 
 # Syntax
 
@@ -243,26 +243,26 @@ func @pad_edges(%I : memref<10x10xf32>) -> (memref<12x12xf32) {
 }
 ```
 """
-function if_(
+function _if(
     operand_0::Vector{Value};
     results::Vector{IR.Type},
     thenRegion::Region,
     elseRegion::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[operand_0...,]
-    owned_regions = Region[thenRegion, elseRegion]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results...,]
+    _operands = Value[operand_0...,]
+    _owned_regions = Region[thenRegion, elseRegion]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "affine.if",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -291,19 +291,19 @@ Example 2: Uses \'symbol\' keyword for symbols \'%n\' and \'%m\'.
 ```
 """
 function load(memref::Value, indices::Vector{Value}; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "affine.load",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -322,19 +322,19 @@ affine map.
 ```
 """
 function max(operands::Vector{Value}; result_0::IR.Type, map, location=Location())
-    results = IR.Type[result_0,]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("map", map),]
+    _results = IR.Type[result_0,]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("map", map),]
 
     return IR.create_operation(
         "affine.max",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -363,19 +363,19 @@ input operands and result must all have \'index\' type.
 ```
 """
 function min(operands::Vector{Value}; result_0::IR.Type, map, location=Location())
-    results = IR.Type[result_0,]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("map", map),]
+    _results = IR.Type[result_0,]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("map", map),]
 
     return IR.create_operation(
         "affine.min",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -458,11 +458,11 @@ function parallel(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[mapOperands...,]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[results...,]
+    _operands = Value[mapOperands...,]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("reductions", reductions),
         namedattribute("lowerBoundsMap", lowerBoundsMap),
         namedattribute("lowerBoundsGroups", lowerBoundsGroups),
@@ -474,10 +474,10 @@ function parallel(
     return IR.create_operation(
         "affine.parallel",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -509,11 +509,11 @@ function prefetch(
     isDataCache,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("isWrite", isWrite),
         namedattribute("localityHint", localityHint),
         namedattribute("isDataCache", isDataCache),
@@ -522,10 +522,10 @@ function prefetch(
     return IR.create_operation(
         "affine.prefetch",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -554,19 +554,19 @@ affine.store %v0, %0[%i0 + symbol(%n), %i1 + symbol(%m)] : memref<100x100xf32>
 ```
 """
 function store(value::Value, memref::Value, indices::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[value, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[value, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "affine.store",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -614,19 +614,19 @@ TODOs:
 function vector_load(
     memref::Value, indices::Vector{Value}; result::IR.Type, location=Location()
 )
-    results = IR.Type[result,]
-    operands = Value[memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "affine.vector_load",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -676,19 +676,19 @@ TODOs:
 function vector_store(
     value::Value, memref::Value, indices::Vector{Value}; location=Location()
 )
-    results = IR.Type[]
-    operands = Value[value, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[value, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "affine.vector_store",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -709,19 +709,19 @@ yielded.
 ```
 """
 function yield(operands::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "affine.yield",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )

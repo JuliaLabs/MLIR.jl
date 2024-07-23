@@ -23,19 +23,19 @@ can be applied to a single operand.
 ```
 """
 function apply(operand::Value; result::IR.Type, applicableOperator, location=Location())
-    results = IR.Type[result,]
-    operands = Value[operand,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
+    _results = IR.Type[result,]
+    _operands = Value[operand,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("applicableOperator", applicableOperator),]
 
     return IR.create_operation(
         "emitc.apply",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -68,11 +68,11 @@ function call(
     template_args=nothing,
     location=Location(),
 )
-    results = IR.Type[result_0...,]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("callee", callee),]
+    _results = IR.Type[result_0...,]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("callee", callee),]
     !isnothing(args) && push!(attributes, namedattribute("args", args))
     !isnothing(template_args) &&
         push!(attributes, namedattribute("template_args", template_args))
@@ -80,10 +80,10 @@ function call(
     return IR.create_operation(
         "emitc.call",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
@@ -111,26 +111,26 @@ attribute and the EmitC opaque type.
 ```
 """
 function constant(; result_0::IR.Type, value, location=Location())
-    results = IR.Type[result_0,]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("value", value),]
+    _results = IR.Type[result_0,]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("value", value),]
 
     return IR.create_operation(
         "emitc.constant",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
 end
 
 """
-`include_`
+`_include`
 
 The `include` operation allows to define a source file inclusion via the
 `#include` directive.
@@ -151,22 +151,22 @@ emitc.include \"myheader.h\"
 \"emitc.include\" (){include = \"myheader.h\"} : () -> ()
 ```
 """
-function include_(; include_, is_standard_include=nothing, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("include", include_),]
+function _include(; _include, is_standard_include=nothing, location=Location())
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("include", _include),]
     !isnothing(is_standard_include) &&
         push!(attributes, namedattribute("is_standard_include", is_standard_include))
 
     return IR.create_operation(
         "emitc.include",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results=results,
         result_inference=false,
     )
