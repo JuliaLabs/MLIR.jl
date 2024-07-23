@@ -124,10 +124,10 @@ function avx512_mask_compress(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(src) && push!(operands, src)
+    !isnothing(src) && push!(_operands, src)
     !isnothing(dst) && push!(_results, dst)
     !isnothing(constant_src) &&
-        push!(attributes, namedattribute("constant_src", constant_src))
+        push!(_attributes, namedattribute("constant_src", constant_src))
 
     return IR.create_operation(
         "x86vector.avx512.mask.compress",

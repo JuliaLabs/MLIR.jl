@@ -52,7 +52,7 @@ function func(; sym_name, type, sym_visibility=nothing, body::Region, location=L
         namedattribute("sym_name", sym_name), namedattribute("type", type)
     ]
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "builtin.func",
@@ -93,9 +93,9 @@ function module_(;
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
+    !isnothing(sym_name) && push!(_attributes, namedattribute("sym_name", sym_name))
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "builtin.module",

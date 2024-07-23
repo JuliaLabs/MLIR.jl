@@ -71,16 +71,16 @@ function alloc_tensor(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(copy) && push!(operands, copy)
-    !isnothing(size_hint) && push!(operands, size_hint)
+    !isnothing(copy) && push!(_operands, copy)
+    !isnothing(size_hint) && push!(_operands, size_hint)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(dynamic_sizes), isnothing(copy) ? 0 : 1, isnothing(size_hint) ? 0 : 1
         ]),
     )
     !isnothing(memory_space) &&
-        push!(attributes, namedattribute("memory_space", memory_space))
+        push!(_attributes, namedattribute("memory_space", memory_space))
 
     return IR.create_operation(
         "bufferization.alloc_tensor",
@@ -197,7 +197,7 @@ function dealloc(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([length(memrefs), length(conditions), length(retained)]),
     )
     !isnothing(updatedConditions) && push!(_results, updatedConditions...)
@@ -283,7 +283,7 @@ function to_memref(tensor::Value; memref::IR.Type, read_only=nothing, location=L
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(read_only) && push!(attributes, namedattribute("read_only", read_only))
+    !isnothing(read_only) && push!(_attributes, namedattribute("read_only", read_only))
 
     return IR.create_operation(
         "bufferization.to_memref",
@@ -348,8 +348,8 @@ function to_tensor(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(restrict) && push!(attributes, namedattribute("restrict", restrict))
-    !isnothing(writable) && push!(attributes, namedattribute("writable", writable))
+    !isnothing(restrict) && push!(_attributes, namedattribute("restrict", restrict))
+    !isnothing(writable) && push!(_attributes, namedattribute("writable", writable))
 
     return IR.create_operation(
         "bufferization.to_tensor",

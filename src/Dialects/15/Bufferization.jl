@@ -57,10 +57,12 @@ function alloc_tensor(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(copy) && push!(operands, copy)
-    push!(attributes, operandsegmentsizes([length(dynamic_sizes), isnothing(copy) ? 0 : 1]))
+    !isnothing(copy) && push!(_operands, copy)
+    push!(
+        _attributes, operandsegmentsizes([length(dynamic_sizes), isnothing(copy) ? 0 : 1])
+    )
     !isnothing(memory_space) &&
-        push!(attributes, namedattribute("memory_space", memory_space))
+        push!(_attributes, namedattribute("memory_space", memory_space))
 
     return IR.create_operation(
         "bufferization.alloc_tensor",

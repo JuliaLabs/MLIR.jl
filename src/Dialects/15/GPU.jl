@@ -42,7 +42,7 @@ function all_reduce(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result_0) && push!(_results, result_0)
-    !isnothing(op) && push!(attributes, namedattribute("op", op))
+    !isnothing(op) && push!(_attributes, namedattribute("op", op))
 
     return IR.create_operation(
         "gpu.all_reduce",
@@ -89,7 +89,7 @@ function alloc(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(asyncDependencies), length(dynamicSizes), length(symbolOperands)
         ]),
@@ -621,9 +621,9 @@ function launch_func(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("kernel", kernel),]
-    !isnothing(dynamicSharedMemorySize) && push!(operands, dynamicSharedMemorySize)
+    !isnothing(dynamicSharedMemorySize) && push!(_operands, dynamicSharedMemorySize)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(asyncDependencies),
             1,
@@ -750,9 +750,9 @@ function launch(
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(dynamicSharedMemorySize) && push!(operands, dynamicSharedMemorySize)
+    !isnothing(dynamicSharedMemorySize) && push!(_operands, dynamicSharedMemorySize)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(asyncDependencies),
             1,

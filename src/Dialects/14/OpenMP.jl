@@ -45,9 +45,9 @@ function atomic_capture(;
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(hint) && push!(attributes, namedattribute("hint", hint))
+    !isnothing(hint) && push!(_attributes, namedattribute("hint", hint))
     !isnothing(memory_order) &&
-        push!(attributes, namedattribute("memory_order", memory_order))
+        push!(_attributes, namedattribute("memory_order", memory_order))
 
     return IR.create_operation(
         "omp.atomic.capture",
@@ -84,9 +84,9 @@ function atomic_read(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(hint) && push!(attributes, namedattribute("hint", hint))
+    !isnothing(hint) && push!(_attributes, namedattribute("hint", hint))
     !isnothing(memory_order) &&
-        push!(attributes, namedattribute("memory_order", memory_order))
+        push!(_attributes, namedattribute("memory_order", memory_order))
 
     return IR.create_operation(
         "omp.atomic.read",
@@ -139,10 +139,10 @@ function atomic_update(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("binop", binop),]
     !isnothing(isXBinopExpr) &&
-        push!(attributes, namedattribute("isXBinopExpr", isXBinopExpr))
-    !isnothing(hint) && push!(attributes, namedattribute("hint", hint))
+        push!(_attributes, namedattribute("isXBinopExpr", isXBinopExpr))
+    !isnothing(hint) && push!(_attributes, namedattribute("hint", hint))
     !isnothing(memory_order) &&
-        push!(attributes, namedattribute("memory_order", memory_order))
+        push!(_attributes, namedattribute("memory_order", memory_order))
 
     return IR.create_operation(
         "omp.atomic.update",
@@ -181,9 +181,9 @@ function atomic_write(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(hint) && push!(attributes, namedattribute("hint", hint))
+    !isnothing(hint) && push!(_attributes, namedattribute("hint", hint))
     !isnothing(memory_order) &&
-        push!(attributes, namedattribute("memory_order", memory_order))
+        push!(_attributes, namedattribute("memory_order", memory_order))
 
     return IR.create_operation(
         "omp.atomic.write",
@@ -235,7 +235,7 @@ function critical_declare(; sym_name, hint=nothing, location=Location())
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("sym_name", sym_name),]
-    !isnothing(hint) && push!(attributes, namedattribute("hint", hint))
+    !isnothing(hint) && push!(_attributes, namedattribute("hint", hint))
 
     return IR.create_operation(
         "omp.critical.declare",
@@ -261,7 +261,7 @@ function critical(; name=nothing, region::Region, location=Location())
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(name) && push!(attributes, namedattribute("name", name))
+    !isnothing(name) && push!(_attributes, namedattribute("name", name))
 
     return IR.create_operation(
         "omp.critical",
@@ -357,9 +357,9 @@ function ordered(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(depend_type_val) &&
-        push!(attributes, namedattribute("depend_type_val", depend_type_val))
+        push!(_attributes, namedattribute("depend_type_val", depend_type_val))
     !isnothing(num_loops_val) &&
-        push!(attributes, namedattribute("num_loops_val", num_loops_val))
+        push!(_attributes, namedattribute("num_loops_val", num_loops_val))
 
     return IR.create_operation(
         "omp.ordered",
@@ -390,7 +390,7 @@ function ordered_region(; simd=nothing, region::Region, location=Location())
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(simd) && push!(attributes, namedattribute("simd", simd))
+    !isnothing(simd) && push!(_attributes, namedattribute("simd", simd))
 
     return IR.create_operation(
         "omp.ordered_region",
@@ -458,10 +458,10 @@ function parallel(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(if_expr_var) && push!(operands, if_expr_var)
-    !isnothing(num_threads_var) && push!(operands, num_threads_var)
+    !isnothing(if_expr_var) && push!(_operands, if_expr_var)
+    !isnothing(num_threads_var) && push!(_operands, num_threads_var)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             isnothing(if_expr_var) ? 0 : 1,
             isnothing(num_threads_var) ? 0 : 1,
@@ -473,9 +473,10 @@ function parallel(
             length(allocators_vars),
         ]),
     )
-    !isnothing(default_val) && push!(attributes, namedattribute("default_val", default_val))
+    !isnothing(default_val) &&
+        push!(_attributes, namedattribute("default_val", default_val))
     !isnothing(proc_bind_val) &&
-        push!(attributes, namedattribute("proc_bind_val", proc_bind_val))
+        push!(_attributes, namedattribute("proc_bind_val", proc_bind_val))
 
     return IR.create_operation(
         "omp.parallel",
@@ -648,7 +649,7 @@ function sections(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(private_vars),
             length(firstprivate_vars),
@@ -658,8 +659,8 @@ function sections(
             length(allocators_vars),
         ]),
     )
-    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
-    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
+    !isnothing(reductions) && push!(_attributes, namedattribute("reductions", reductions))
+    !isnothing(nowait) && push!(_attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
         "omp.sections",
@@ -706,18 +707,18 @@ function target(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(if_expr) && push!(operands, if_expr)
-    !isnothing(device) && push!(operands, device)
-    !isnothing(thread_limit) && push!(operands, thread_limit)
+    !isnothing(if_expr) && push!(_operands, if_expr)
+    !isnothing(device) && push!(_operands, device)
+    !isnothing(thread_limit) && push!(_operands, thread_limit)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             isnothing(if_expr) ? 0 : 1,
             isnothing(device) ? 0 : 1,
             isnothing(thread_limit) ? 0 : 1,
         ]),
     )
-    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
+    !isnothing(nowait) && push!(_attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
         "omp.target",
@@ -906,9 +907,9 @@ function wsloop(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(schedule_chunk_var) && push!(operands, schedule_chunk_var)
+    !isnothing(schedule_chunk_var) && push!(_operands, schedule_chunk_var)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound),
             length(upperBound),
@@ -922,19 +923,20 @@ function wsloop(
             isnothing(schedule_chunk_var) ? 0 : 1,
         ]),
     )
-    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
+    !isnothing(reductions) && push!(_attributes, namedattribute("reductions", reductions))
     !isnothing(schedule_val) &&
-        push!(attributes, namedattribute("schedule_val", schedule_val))
+        push!(_attributes, namedattribute("schedule_val", schedule_val))
     !isnothing(schedule_modifier) &&
-        push!(attributes, namedattribute("schedule_modifier", schedule_modifier))
+        push!(_attributes, namedattribute("schedule_modifier", schedule_modifier))
     !isnothing(simd_modifier) &&
-        push!(attributes, namedattribute("simd_modifier", simd_modifier))
+        push!(_attributes, namedattribute("simd_modifier", simd_modifier))
     !isnothing(collapse_val) &&
-        push!(attributes, namedattribute("collapse_val", collapse_val))
-    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
-    !isnothing(ordered_val) && push!(attributes, namedattribute("ordered_val", ordered_val))
-    !isnothing(order_val) && push!(attributes, namedattribute("order_val", order_val))
-    !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
+        push!(_attributes, namedattribute("collapse_val", collapse_val))
+    !isnothing(nowait) && push!(_attributes, namedattribute("nowait", nowait))
+    !isnothing(ordered_val) &&
+        push!(_attributes, namedattribute("ordered_val", ordered_val))
+    !isnothing(order_val) && push!(_attributes, namedattribute("order_val", order_val))
+    !isnothing(inclusive) && push!(_attributes, namedattribute("inclusive", inclusive))
 
     return IR.create_operation(
         "omp.wsloop",

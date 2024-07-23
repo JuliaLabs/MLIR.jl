@@ -346,8 +346,8 @@ function tile_muli(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(isZextLhs) && push!(attributes, namedattribute("isZextLhs", isZextLhs))
-    !isnothing(isZextRhs) && push!(attributes, namedattribute("isZextRhs", isZextRhs))
+    !isnothing(isZextLhs) && push!(_attributes, namedattribute("isZextLhs", isZextLhs))
+    !isnothing(isZextRhs) && push!(_attributes, namedattribute("isZextRhs", isZextRhs))
 
     return IR.create_operation(
         "amx.tile_muli",

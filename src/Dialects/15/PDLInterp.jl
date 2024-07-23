@@ -217,7 +217,7 @@ function check_operand_count(
     _successors = Block[trueDest, falseDest]
     _attributes = NamedAttribute[namedattribute("count", count),]
     !isnothing(compareAtLeast) &&
-        push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+        push!(_attributes, namedattribute("compareAtLeast", compareAtLeast))
 
     return IR.create_operation(
         "pdl_interp.check_operand_count",
@@ -298,7 +298,7 @@ function check_result_count(
     _successors = Block[trueDest, falseDest]
     _attributes = NamedAttribute[namedattribute("count", count),]
     !isnothing(compareAtLeast) &&
-        push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+        push!(_attributes, namedattribute("compareAtLeast", compareAtLeast))
 
     return IR.create_operation(
         "pdl_interp.check_result_count",
@@ -481,13 +481,13 @@ function create_operation(
         namedattribute("inputAttributeNames", inputAttributeNames),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(inputOperands), length(inputAttributes), length(inputResultTypes)
         ]),
     )
     !isnothing(inferredResultTypes) &&
-        push!(attributes, namedattribute("inferredResultTypes", inferredResultTypes))
+        push!(_attributes, namedattribute("inferredResultTypes", inferredResultTypes))
 
     return IR.create_operation(
         "pdl_interp.create_operation",
@@ -892,7 +892,7 @@ function get_operands(inputOp::Value; value::IR.Type, index=nothing, location=Lo
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(index) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(_attributes, namedattribute("index", index))
 
     return IR.create_operation(
         "pdl_interp.get_operands",
@@ -967,7 +967,7 @@ function get_results(inputOp::Value; value::IR.Type, index=nothing, location=Loc
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(index) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(_attributes, namedattribute("index", index))
 
     return IR.create_operation(
         "pdl_interp.get_results",
@@ -1117,10 +1117,10 @@ function record_match(
     _attributes = NamedAttribute[
         namedattribute("rewriter", rewriter), namedattribute("benefit", benefit)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(matchedOps)]))
-    !isnothing(rootKind) && push!(attributes, namedattribute("rootKind", rootKind))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(matchedOps)]))
+    !isnothing(rootKind) && push!(_attributes, namedattribute("rootKind", rootKind))
     !isnothing(generatedOps) &&
-        push!(attributes, namedattribute("generatedOps", generatedOps))
+        push!(_attributes, namedattribute("generatedOps", generatedOps))
 
     return IR.create_operation(
         "pdl_interp.record_match",

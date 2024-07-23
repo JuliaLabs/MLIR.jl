@@ -30,7 +30,7 @@ function absf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.absf",
@@ -118,7 +118,7 @@ function atan2(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.atan2",
@@ -164,7 +164,7 @@ function atan(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.atan",
@@ -206,7 +206,7 @@ function cbrt(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.cbrt",
@@ -252,7 +252,7 @@ function ceil(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.ceil",
@@ -300,7 +300,7 @@ function copysign(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.copysign",
@@ -346,7 +346,7 @@ function cos(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.cos",
@@ -491,7 +491,7 @@ function erf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.erf",
@@ -537,7 +537,7 @@ function exp2(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.exp2",
@@ -585,7 +585,7 @@ function expm1(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.expm1",
@@ -631,7 +631,7 @@ function exp(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.exp",
@@ -690,7 +690,7 @@ function fpowi(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.fpowi",
@@ -736,7 +736,7 @@ function floor(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.floor",
@@ -789,7 +789,7 @@ function fma(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.fma",
@@ -871,7 +871,7 @@ function log10(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.log10",
@@ -913,7 +913,7 @@ function log1p(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.log1p",
@@ -953,7 +953,7 @@ function log2(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.log2",
@@ -993,7 +993,7 @@ function log(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.log",
@@ -1040,7 +1040,7 @@ function powf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.powf",
@@ -1089,7 +1089,7 @@ function roundeven(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.roundeven",
@@ -1138,7 +1138,7 @@ function round(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.round",
@@ -1178,7 +1178,7 @@ function rsqrt(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.rsqrt",
@@ -1224,7 +1224,7 @@ function sin(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.sin",
@@ -1264,7 +1264,7 @@ function sqrt(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.sqrt",
@@ -1304,7 +1304,7 @@ function tan(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.tan",
@@ -1344,7 +1344,7 @@ function tanh(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.tanh",
@@ -1392,7 +1392,7 @@ function trunc(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "math.trunc",

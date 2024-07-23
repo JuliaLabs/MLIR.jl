@@ -70,14 +70,14 @@ function device_async_copy(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("dstElements", dstElements),]
-    !isnothing(srcElements) && push!(operands, srcElements)
+    !isnothing(srcElements) && push!(_operands, srcElements)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             1, length(dstIndices), 1, length(srcIndices), isnothing(srcElements) ? 0 : 1
         ]),
     )
-    !isnothing(bypassL1) && push!(attributes, namedattribute("bypassL1", bypassL1))
+    !isnothing(bypassL1) && push!(_attributes, namedattribute("bypassL1", bypassL1))
 
     return IR.create_operation(
         "nvgpu.device_async_copy",
@@ -156,7 +156,7 @@ function device_async_wait(asyncDependencies::Value; numGroups=nothing, location
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(numGroups) && push!(attributes, namedattribute("numGroups", numGroups))
+    !isnothing(numGroups) && push!(_attributes, namedattribute("numGroups", numGroups))
 
     return IR.create_operation(
         "nvgpu.device_async_wait",
@@ -490,8 +490,9 @@ function mma_sp_sync(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("mmaShape", mmaShape),]
     !isnothing(sparsitySelector) &&
-        push!(attributes, namedattribute("sparsitySelector", sparsitySelector))
-    !isnothing(tf32Enabled) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
+        push!(_attributes, namedattribute("sparsitySelector", sparsitySelector))
+    !isnothing(tf32Enabled) &&
+        push!(_attributes, namedattribute("tf32Enabled", tf32Enabled))
 
     return IR.create_operation(
         "nvgpu.mma.sp.sync",
@@ -541,7 +542,8 @@ function mma_sync(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("mmaShape", mmaShape),]
-    !isnothing(tf32Enabled) && push!(attributes, namedattribute("tf32Enabled", tf32Enabled))
+    !isnothing(tf32Enabled) &&
+        push!(_attributes, namedattribute("tf32Enabled", tf32Enabled))
 
     return IR.create_operation(
         "nvgpu.mma.sync",

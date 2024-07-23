@@ -34,7 +34,7 @@ function poison(; result::IR.Type, value=nothing, location=Location())
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(value) && push!(attributes, namedattribute("value", value))
+    !isnothing(value) && push!(_attributes, namedattribute("value", value))
 
     return IR.create_operation(
         "ub.poison",

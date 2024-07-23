@@ -73,9 +73,9 @@ function call(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("callee", callee),]
-    !isnothing(args) && push!(attributes, namedattribute("args", args))
+    !isnothing(args) && push!(_attributes, namedattribute("args", args))
     !isnothing(template_args) &&
-        push!(attributes, namedattribute("template_args", template_args))
+        push!(_attributes, namedattribute("template_args", template_args))
 
     return IR.create_operation(
         "emitc.call",
@@ -158,7 +158,7 @@ function include_(; include_, is_standard_include=nothing, location=Location())
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("include", include_),]
     !isnothing(is_standard_include) &&
-        push!(attributes, namedattribute("is_standard_include", is_standard_include))
+        push!(_attributes, namedattribute("is_standard_include", is_standard_include))
 
     return IR.create_operation(
         "emitc.include",

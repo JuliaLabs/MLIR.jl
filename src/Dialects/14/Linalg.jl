@@ -175,7 +175,7 @@ function tiled_loop(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("iterator_types", iterator_types),]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound),
             length(upperBound),
@@ -185,7 +185,7 @@ function tiled_loop(
         ]),
     )
     !isnothing(distribution_types) &&
-        push!(attributes, namedattribute("distribution_types", distribution_types))
+        push!(_attributes, namedattribute("distribution_types", distribution_types))
 
     return IR.create_operation(
         "linalg.tiled_loop",
@@ -253,7 +253,7 @@ function batch_matmul(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_matmul",
@@ -285,7 +285,7 @@ function batch_matvec(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.batch_matvec",
@@ -321,7 +321,7 @@ function conv_1d_nwc_wcf(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_1d_nwc_wcf",
@@ -353,7 +353,7 @@ function conv_1d(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_1d",
@@ -393,7 +393,7 @@ function conv_2d_nchw_fchw(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_2d_nchw_fchw",
@@ -433,7 +433,7 @@ function conv_2d_nhwc_hwcf(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_2d_nhwc_hwcf",
@@ -474,7 +474,7 @@ function conv_2d_nhwc_hwcf_q(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_2d_nhwc_hwcf_q",
@@ -506,7 +506,7 @@ function conv_2d(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_2d",
@@ -542,7 +542,7 @@ function conv_3d_ndhwc_dhwcf(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_3d_ndhwc_dhwcf",
@@ -574,7 +574,7 @@ function conv_3d(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.conv_3d",
@@ -611,7 +611,7 @@ function depthwise_conv_1d_nwc_wc(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.depthwise_conv_1d_nwc_wc",
@@ -648,7 +648,7 @@ function depthwise_conv_2d_nhwc_hwc(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwc",
@@ -684,7 +684,7 @@ function depthwise_conv_2d_nhwc_hwc_q(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwc_q",
@@ -720,7 +720,7 @@ function depthwise_conv_2d_nhwc_hwcm(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwcm",
@@ -756,7 +756,7 @@ function depthwise_conv_2d_nhwc_hwcm_q(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.depthwise_conv_2d_nhwc_hwcm_q",
@@ -788,7 +788,7 @@ function dot(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.dot",
@@ -855,7 +855,7 @@ function fill_rng_2d(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.fill_rng_2d",
@@ -987,10 +987,10 @@ function generic(
         namedattribute("indexing_maps", indexing_maps),
         namedattribute("iterator_types", iterator_types),
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
-    !isnothing(doc) && push!(attributes, namedattribute("doc", doc))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    !isnothing(doc) && push!(_attributes, namedattribute("doc", doc))
     !isnothing(library_call) &&
-        push!(attributes, namedattribute("library_call", library_call))
+        push!(_attributes, namedattribute("library_call", library_call))
 
     return IR.create_operation(
         "linalg.generic",
@@ -1022,7 +1022,7 @@ function matmul(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.matmul",
@@ -1054,7 +1054,7 @@ function matmul_unsigned(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.matmul_unsigned",
@@ -1086,7 +1086,7 @@ function matvec(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.matvec",
@@ -1123,7 +1123,7 @@ function mmt4d(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.mmt4d",
@@ -1159,7 +1159,7 @@ function pooling_nchw_max(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_nchw_max",
@@ -1195,7 +1195,7 @@ function pooling_ndhwc_max(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_ndhwc_max",
@@ -1231,7 +1231,7 @@ function pooling_ndhwc_min(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_ndhwc_min",
@@ -1267,7 +1267,7 @@ function pooling_ndhwc_sum(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_ndhwc_sum",
@@ -1303,7 +1303,7 @@ function pooling_nhwc_max(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_max",
@@ -1339,7 +1339,7 @@ function pooling_nhwc_max_unsigned(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_max_unsigned",
@@ -1375,7 +1375,7 @@ function pooling_nhwc_min(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_min",
@@ -1411,7 +1411,7 @@ function pooling_nhwc_min_unsigned(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_min_unsigned",
@@ -1447,7 +1447,7 @@ function pooling_nhwc_sum(
     _attributes = NamedAttribute[
         namedattribute("strides", strides), namedattribute("dilations", dilations)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.pooling_nhwc_sum",
@@ -1481,7 +1481,7 @@ function quantized_batch_matmul(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.quantized_batch_matmul",
@@ -1515,7 +1515,7 @@ function quantized_matmul(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.quantized_matmul",
@@ -1547,7 +1547,7 @@ function soft_plus_2d(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.soft_plus_2d",
@@ -1579,7 +1579,7 @@ function vecmat(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(inputs), length(outputs)]))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(outputs)]))
 
     return IR.create_operation(
         "linalg.vecmat",

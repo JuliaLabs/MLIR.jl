@@ -43,8 +43,8 @@ function all_reduce(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result_0) && push!(_results, result_0)
-    !isnothing(op) && push!(attributes, namedattribute("op", op))
-    !isnothing(uniform) && push!(attributes, namedattribute("uniform", uniform))
+    !isnothing(op) && push!(_attributes, namedattribute("op", op))
+    !isnothing(uniform) && push!(_attributes, namedattribute("uniform", uniform))
 
     return IR.create_operation(
         "gpu.all_reduce",
@@ -95,13 +95,13 @@ function alloc(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(asyncDependencies), length(dynamicSizes), length(symbolOperands)
         ]),
     )
     !isnothing(asyncToken) && push!(_results, asyncToken)
-    !isnothing(hostShared) && push!(attributes, namedattribute("hostShared", hostShared))
+    !isnothing(hostShared) && push!(_attributes, namedattribute("hostShared", hostShared))
 
     return IR.create_operation(
         "gpu.alloc",
@@ -341,8 +341,8 @@ function func(;
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("function_type", function_type),]
-    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
+    !isnothing(arg_attrs) && push!(_attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(_attributes, namedattribute("res_attrs", res_attrs))
 
     return IR.create_operation(
         "gpu.func",
@@ -640,9 +640,9 @@ function launch_func(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("kernel", kernel),]
-    !isnothing(dynamicSharedMemorySize) && push!(operands, dynamicSharedMemorySize)
+    !isnothing(dynamicSharedMemorySize) && push!(_operands, dynamicSharedMemorySize)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(asyncDependencies),
             1,
@@ -769,9 +769,9 @@ function launch(
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(dynamicSharedMemorySize) && push!(operands, dynamicSharedMemorySize)
+    !isnothing(dynamicSharedMemorySize) && push!(_operands, dynamicSharedMemorySize)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(asyncDependencies),
             1,
@@ -1144,8 +1144,10 @@ function subgroup_mma_compute(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
-    !isnothing(a_transpose) && push!(attributes, namedattribute("a_transpose", a_transpose))
-    !isnothing(b_transpose) && push!(attributes, namedattribute("b_transpose", b_transpose))
+    !isnothing(a_transpose) &&
+        push!(_attributes, namedattribute("a_transpose", a_transpose))
+    !isnothing(b_transpose) &&
+        push!(_attributes, namedattribute("b_transpose", b_transpose))
 
     return IR.create_operation(
         "gpu.subgroup_mma_compute",
@@ -1279,7 +1281,7 @@ function subgroup_mma_load_matrix(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("leadDimension", leadDimension),]
-    !isnothing(transpose) && push!(attributes, namedattribute("transpose", transpose))
+    !isnothing(transpose) && push!(_attributes, namedattribute("transpose", transpose))
 
     return IR.create_operation(
         "gpu.subgroup_mma_load_matrix",
@@ -1329,7 +1331,7 @@ function subgroup_mma_store_matrix(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("leadDimension", leadDimension),]
-    !isnothing(transpose) && push!(attributes, namedattribute("transpose", transpose))
+    !isnothing(transpose) && push!(_attributes, namedattribute("transpose", transpose))
 
     return IR.create_operation(
         "gpu.subgroup_mma_store_matrix",
@@ -1371,7 +1373,7 @@ function subgroup_reduce(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("op", op),]
     !isnothing(result_0) && push!(_results, result_0)
-    !isnothing(uniform) && push!(attributes, namedattribute("uniform", uniform))
+    !isnothing(uniform) && push!(_attributes, namedattribute("uniform", uniform))
 
     return IR.create_operation(
         "gpu.subgroup_reduce",

@@ -275,7 +275,7 @@ function load(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(hasInserts) && push!(attributes, namedattribute("hasInserts", hasInserts))
+    !isnothing(hasInserts) && push!(_attributes, namedattribute("hasInserts", hasInserts))
 
     return IR.create_operation(
         "sparse_tensor.load",

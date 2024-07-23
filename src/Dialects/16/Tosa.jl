@@ -167,7 +167,7 @@ function avg_pool2d(
         namedattribute("pad", pad),
     ]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.avg_pool2d",
@@ -483,7 +483,7 @@ function conv2d(
         namedattribute("dilation", dilation),
     ]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.conv2d",
@@ -523,7 +523,7 @@ function conv3d(
         namedattribute("dilation", dilation),
     ]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.conv3d",
@@ -616,7 +616,7 @@ function depthwise_conv2d(
         namedattribute("dilation", dilation),
     ]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.depthwise_conv2d",
@@ -752,7 +752,7 @@ function fully_connected(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.fully_connected",
@@ -1092,7 +1092,7 @@ function matmul(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.matmul",
@@ -1226,7 +1226,7 @@ function negate(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.negate",
@@ -1258,9 +1258,9 @@ function pad(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(pad_const) && push!(operands, pad_const)
+    !isnothing(pad_const) && push!(_operands, pad_const)
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.pad",
@@ -1919,7 +1919,7 @@ function transpose_conv2d(
         namedattribute("out_shape", out_shape),
     ]
     !isnothing(quantization_info) &&
-        push!(attributes, namedattribute("quantization_info", quantization_info))
+        push!(_attributes, namedattribute("quantization_info", quantization_info))
 
     return IR.create_operation(
         "tosa.transpose_conv2d",

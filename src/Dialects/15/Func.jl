@@ -170,7 +170,7 @@ function func_(;
         namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
     ]
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "func.func",

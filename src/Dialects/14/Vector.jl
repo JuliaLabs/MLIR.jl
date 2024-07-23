@@ -372,7 +372,7 @@ function contract(
         namedattribute("indexing_maps", indexing_maps),
         namedattribute("iterator_types", iterator_types),
     ]
-    !isnothing(kind) && push!(attributes, namedattribute("kind", kind))
+    !isnothing(kind) && push!(_attributes, namedattribute("kind", kind))
 
     return IR.create_operation(
         "vector.contract",
@@ -525,7 +525,7 @@ function extractelement(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(position) && push!(operands, position)
+    !isnothing(position) && push!(_operands, position)
 
     return IR.create_operation(
         "vector.extractelement",
@@ -860,7 +860,7 @@ function insertelement(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(position) && push!(operands, position)
+    !isnothing(position) && push!(_operands, position)
 
     return IR.create_operation(
         "vector.insertelement",
@@ -1361,7 +1361,7 @@ function outerproduct(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(kind) && push!(attributes, namedattribute("kind", kind))
+    !isnothing(kind) && push!(_attributes, namedattribute("kind", kind))
 
     return IR.create_operation(
         "vector.outerproduct",
@@ -1559,7 +1559,7 @@ function reshape(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("fixed_vector_sizes", fixed_vector_sizes),]
-    push!(attributes, operandsegmentsizes([1, length(input_shape), length(output_shape)]))
+    push!(_attributes, operandsegmentsizes([1, length(input_shape), length(output_shape)]))
 
     return IR.create_operation(
         "vector.reshape",
@@ -2035,9 +2035,11 @@ function transfer_read(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
-    !isnothing(mask) && push!(operands, mask)
-    push!(attributes, operandsegmentsizes([1, length(indices), 1, isnothing(mask) ? 0 : 1]))
-    !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
+    !isnothing(mask) && push!(_operands, mask)
+    push!(
+        _attributes, operandsegmentsizes([1, length(indices), 1, isnothing(mask) ? 0 : 1])
+    )
+    !isnothing(in_bounds) && push!(_attributes, namedattribute("in_bounds", in_bounds))
 
     return IR.create_operation(
         "vector.transfer_read",
@@ -2156,10 +2158,12 @@ function transfer_write(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
-    !isnothing(mask) && push!(operands, mask)
-    push!(attributes, operandsegmentsizes([1, 1, length(indices), isnothing(mask) ? 0 : 1]))
+    !isnothing(mask) && push!(_operands, mask)
+    push!(
+        _attributes, operandsegmentsizes([1, 1, length(indices), isnothing(mask) ? 0 : 1])
+    )
     !isnothing(result) && push!(_results, result)
-    !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
+    !isnothing(in_bounds) && push!(_attributes, namedattribute("in_bounds", in_bounds))
 
     return IR.create_operation(
         "vector.transfer_write",

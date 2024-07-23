@@ -40,10 +40,10 @@ function func(;
     _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
     ]
-    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
+    !isnothing(arg_attrs) && push!(_attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(_attributes, namedattribute("res_attrs", res_attrs))
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "ml_program.func",
@@ -219,10 +219,10 @@ function global_(;
     _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("type", type)
     ]
-    !isnothing(is_mutable) && push!(attributes, namedattribute("is_mutable", is_mutable))
-    !isnothing(value) && push!(attributes, namedattribute("value", value))
+    !isnothing(is_mutable) && push!(_attributes, namedattribute("is_mutable", is_mutable))
+    !isnothing(value) && push!(_attributes, namedattribute("value", value))
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "ml_program.global",
@@ -412,10 +412,10 @@ function subgraph(;
     _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
     ]
-    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
+    !isnothing(arg_attrs) && push!(_attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(_attributes, namedattribute("res_attrs", res_attrs))
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "ml_program.subgraph",

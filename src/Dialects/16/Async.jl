@@ -410,7 +410,7 @@ function execute(
     _owned_regions = Region[bodyRegion,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dependencies), length(bodyOperands)]))
+    push!(_attributes, operandsegmentsizes([length(dependencies), length(bodyOperands)]))
 
     return IR.create_operation(
         "async.execute",
@@ -472,9 +472,9 @@ function func(;
         namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
     ]
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
-    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
+    !isnothing(arg_attrs) && push!(_attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(_attributes, namedattribute("res_attrs", res_attrs))
 
     return IR.create_operation(
         "async.func",

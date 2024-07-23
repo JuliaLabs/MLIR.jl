@@ -1590,11 +1590,11 @@ function BranchConditional(
     _successors = Block[trueTarget, falseTarget]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(trueTargetOperands), length(falseTargetOperands)]),
     )
     !isnothing(branch_weights) &&
-        push!(attributes, namedattribute("branch_weights", branch_weights))
+        push!(_attributes, namedattribute("branch_weights", branch_weights))
 
     return IR.create_operation(
         "spv.BranchConditional",
@@ -2210,7 +2210,7 @@ function CooperativeMatrixLoadNV(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
+        push!(_attributes, namedattribute("memory_access", memory_access))
 
     return IR.create_operation(
         "spv.CooperativeMatrixLoadNV",
@@ -2350,7 +2350,7 @@ function CooperativeMatrixStoreNV(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
+        push!(_attributes, namedattribute("memory_access", memory_access))
 
     return IR.create_operation(
         "spv.CooperativeMatrixStoreNV",
@@ -2408,12 +2408,12 @@ function CopyMemory(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
     !isnothing(source_memory_access) &&
-        push!(attributes, namedattribute("source_memory_access", source_memory_access))
+        push!(_attributes, namedattribute("source_memory_access", source_memory_access))
     !isnothing(source_alignment) &&
-        push!(attributes, namedattribute("source_alignment", source_alignment))
+        push!(_attributes, namedattribute("source_alignment", source_alignment))
 
     return IR.create_operation(
         "spv.CopyMemory",
@@ -5227,12 +5227,13 @@ function GlobalVariable(;
     _attributes = NamedAttribute[
         namedattribute("type", type), namedattribute("sym_name", sym_name)
     ]
-    !isnothing(initializer) && push!(attributes, namedattribute("initializer", initializer))
-    !isnothing(location) && push!(attributes, namedattribute("location", location_))
-    !isnothing(binding) && push!(attributes, namedattribute("binding", binding))
+    !isnothing(initializer) &&
+        push!(_attributes, namedattribute("initializer", initializer))
+    !isnothing(location) && push!(_attributes, namedattribute("location", location_))
+    !isnothing(binding) && push!(_attributes, namedattribute("binding", binding))
     !isnothing(descriptorSet) &&
-        push!(attributes, namedattribute("descriptorSet", descriptorSet))
-    !isnothing(builtin) && push!(attributes, namedattribute("builtin", builtin))
+        push!(_attributes, namedattribute("descriptorSet", descriptorSet))
+    !isnothing(builtin) && push!(_attributes, namedattribute("builtin", builtin))
 
     return IR.create_operation(
         "spv.GlobalVariable",
@@ -5535,7 +5536,7 @@ function GroupNonUniformFAdd(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformFAdd",
@@ -5610,7 +5611,7 @@ function GroupNonUniformFMax(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformFMax",
@@ -5685,7 +5686,7 @@ function GroupNonUniformFMin(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformFMin",
@@ -5757,7 +5758,7 @@ function GroupNonUniformFMul(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformFMul",
@@ -5827,7 +5828,7 @@ function GroupNonUniformIAdd(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformIAdd",
@@ -5897,7 +5898,7 @@ function GroupNonUniformIMul(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformIMul",
@@ -5967,7 +5968,7 @@ function GroupNonUniformSMax(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformSMax",
@@ -6037,7 +6038,7 @@ function GroupNonUniformSMin(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformSMin",
@@ -6108,7 +6109,7 @@ function GroupNonUniformUMax(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformUMax",
@@ -6179,7 +6180,7 @@ function GroupNonUniformUMin(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spv.GroupNonUniformUMin",
@@ -6502,7 +6503,7 @@ function ImageDrefGather(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(imageoperands) &&
-        push!(attributes, namedattribute("imageoperands", imageoperands))
+        push!(_attributes, namedattribute("imageoperands", imageoperands))
 
     return IR.create_operation(
         "spv.ImageDrefGather",
@@ -6787,8 +6788,8 @@ function Load(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "spv.Load",
@@ -7311,8 +7312,8 @@ function module_(;
         namedattribute("addressing_model", addressing_model),
         namedattribute("memory_model", memory_model),
     ]
-    !isnothing(vce_triple) && push!(attributes, namedattribute("vce_triple", vce_triple))
-    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
+    !isnothing(vce_triple) && push!(_attributes, namedattribute("vce_triple", vce_triple))
+    !isnothing(sym_name) && push!(_attributes, namedattribute("sym_name", sym_name))
 
     return IR.create_operation(
         "spv.module",
@@ -9116,8 +9117,8 @@ function Store(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "spv.Store",
@@ -9823,7 +9824,7 @@ function Variable(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("storage_class", storage_class),]
-    !isnothing(initializer) && push!(operands, initializer)
+    !isnothing(initializer) && push!(_operands, initializer)
 
     return IR.create_operation(
         "spv.Variable",

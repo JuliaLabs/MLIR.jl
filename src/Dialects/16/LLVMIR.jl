@@ -172,7 +172,8 @@ function alias_scope_domain(; sym_name, description=nothing, location=Location()
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("sym_name", sym_name),]
-    !isnothing(description) && push!(attributes, namedattribute("description", description))
+    !isnothing(description) &&
+        push!(_attributes, namedattribute("description", description))
 
     return IR.create_operation(
         "llvm.alias_scope_domain",
@@ -226,7 +227,8 @@ function alias_scope(; sym_name, domain, description=nothing, location=Location(
     _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("domain", domain)
     ]
-    !isnothing(description) && push!(attributes, namedattribute("description", description))
+    !isnothing(description) &&
+        push!(_attributes, namedattribute("description", description))
 
     return IR.create_operation(
         "llvm.alias_scope",
@@ -256,8 +258,8 @@ function alloca(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
-    !isnothing(elem_type) && push!(attributes, namedattribute("elem_type", elem_type))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
+    !isnothing(elem_type) && push!(_attributes, namedattribute("elem_type", elem_type))
 
     return IR.create_operation(
         "llvm.alloca",
@@ -446,11 +448,11 @@ function call(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(callee) && push!(attributes, namedattribute("callee", callee))
+    !isnothing(callee) && push!(_attributes, namedattribute("callee", callee))
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
     !isnothing(branch_weights) &&
-        push!(attributes, namedattribute("branch_weights", branch_weights))
+        push!(_attributes, namedattribute("branch_weights", branch_weights))
 
     return IR.create_operation(
         "llvm.call",
@@ -483,11 +485,11 @@ function cond_br(
     _successors = Block[trueDest, falseDest]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands)]),
     )
     !isnothing(branch_weights) &&
-        push!(attributes, namedattribute("branch_weights", branch_weights))
+        push!(_attributes, namedattribute("branch_weights", branch_weights))
 
     return IR.create_operation(
         "llvm.cond_br",
@@ -614,7 +616,7 @@ function fadd(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.fadd",
@@ -646,7 +648,7 @@ function fcmp(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("predicate", predicate),]
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.fcmp",
@@ -678,7 +680,7 @@ function fdiv(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.fdiv",
@@ -710,7 +712,7 @@ function fmul(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.fmul",
@@ -741,7 +743,7 @@ function fneg(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.fneg",
@@ -865,7 +867,7 @@ function frem(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.frem",
@@ -897,7 +899,7 @@ function fsub(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.fsub",
@@ -1001,8 +1003,8 @@ function getelementptr(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("rawConstantIndices", rawConstantIndices),]
-    !isnothing(elem_type) && push!(attributes, namedattribute("elem_type", elem_type))
-    !isnothing(inbounds) && push!(attributes, namedattribute("inbounds", inbounds))
+    !isnothing(elem_type) && push!(_attributes, namedattribute("elem_type", elem_type))
+    !isnothing(inbounds) && push!(_attributes, namedattribute("inbounds", inbounds))
 
     return IR.create_operation(
         "llvm.getelementptr",
@@ -1220,16 +1222,16 @@ function mlir_global(;
         namedattribute("sym_name", sym_name),
         namedattribute("linkage", linkage),
     ]
-    !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
-    !isnothing(dso_local) && push!(attributes, namedattribute("dso_local", dso_local))
+    !isnothing(constant) && push!(_attributes, namedattribute("constant", constant))
+    !isnothing(dso_local) && push!(_attributes, namedattribute("dso_local", dso_local))
     !isnothing(thread_local_) &&
-        push!(attributes, namedattribute("thread_local_", thread_local_))
-    !isnothing(value) && push!(attributes, namedattribute("value", value))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
-    !isnothing(addr_space) && push!(attributes, namedattribute("addr_space", addr_space))
+        push!(_attributes, namedattribute("thread_local_", thread_local_))
+    !isnothing(value) && push!(_attributes, namedattribute("value", value))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
+    !isnothing(addr_space) && push!(_attributes, namedattribute("addr_space", addr_space))
     !isnothing(unnamed_addr) &&
-        push!(attributes, namedattribute("unnamed_addr", unnamed_addr))
-    !isnothing(section) && push!(attributes, namedattribute("section", section))
+        push!(_attributes, namedattribute("unnamed_addr", unnamed_addr))
+    !isnothing(section) && push!(_attributes, namedattribute("section", section))
 
     return IR.create_operation(
         "llvm.mlir.global",
@@ -1296,12 +1298,13 @@ function inline_asm(
     ]
     !isnothing(res) && push!(_results, res)
     !isnothing(has_side_effects) &&
-        push!(attributes, namedattribute("has_side_effects", has_side_effects))
+        push!(_attributes, namedattribute("has_side_effects", has_side_effects))
     !isnothing(is_align_stack) &&
-        push!(attributes, namedattribute("is_align_stack", is_align_stack))
-    !isnothing(asm_dialect) && push!(attributes, namedattribute("asm_dialect", asm_dialect))
+        push!(_attributes, namedattribute("is_align_stack", is_align_stack))
+    !isnothing(asm_dialect) &&
+        push!(_attributes, namedattribute("asm_dialect", asm_dialect))
     !isnothing(operand_attrs) &&
-        push!(attributes, namedattribute("operand_attrs", operand_attrs))
+        push!(_attributes, namedattribute("operand_attrs", operand_attrs))
 
     return IR.create_operation(
         "llvm.inline_asm",
@@ -1419,14 +1422,14 @@ function invoke(
     _successors = Block[normalDest, unwindDest]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(callee_operands), length(normalDestOperands), length(unwindDestOperands)
         ]),
     )
-    !isnothing(callee) && push!(attributes, namedattribute("callee", callee))
+    !isnothing(callee) && push!(_attributes, namedattribute("callee", callee))
     !isnothing(branch_weights) &&
-        push!(attributes, namedattribute("branch_weights", branch_weights))
+        push!(_attributes, namedattribute("branch_weights", branch_weights))
 
     return IR.create_operation(
         "llvm.invoke",
@@ -1492,18 +1495,20 @@ function func(;
     _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
     ]
-    !isnothing(linkage) && push!(attributes, namedattribute("linkage", linkage))
-    !isnothing(dso_local) && push!(attributes, namedattribute("dso_local", dso_local))
-    !isnothing(CConv) && push!(attributes, namedattribute("CConv", CConv))
-    !isnothing(personality) && push!(attributes, namedattribute("personality", personality))
+    !isnothing(linkage) && push!(_attributes, namedattribute("linkage", linkage))
+    !isnothing(dso_local) && push!(_attributes, namedattribute("dso_local", dso_local))
+    !isnothing(CConv) && push!(_attributes, namedattribute("CConv", CConv))
+    !isnothing(personality) &&
+        push!(_attributes, namedattribute("personality", personality))
     !isnothing(garbageCollector) &&
-        push!(attributes, namedattribute("garbageCollector", garbageCollector))
-    !isnothing(passthrough) && push!(attributes, namedattribute("passthrough", passthrough))
-    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
+        push!(_attributes, namedattribute("garbageCollector", garbageCollector))
+    !isnothing(passthrough) &&
+        push!(_attributes, namedattribute("passthrough", passthrough))
+    !isnothing(arg_attrs) && push!(_attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(_attributes, namedattribute("res_attrs", res_attrs))
     !isnothing(function_entry_count) &&
-        push!(attributes, namedattribute("function_entry_count", function_entry_count))
-    !isnothing(memory) && push!(attributes, namedattribute("memory", memory))
+        push!(_attributes, namedattribute("function_entry_count", function_entry_count))
+    !isnothing(memory) && push!(_attributes, namedattribute("memory", memory))
 
     return IR.create_operation(
         "llvm.func",
@@ -1555,7 +1560,7 @@ function landingpad(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(cleanup) && push!(attributes, namedattribute("cleanup", cleanup))
+    !isnothing(cleanup) && push!(_attributes, namedattribute("cleanup", cleanup))
 
     return IR.create_operation(
         "llvm.landingpad",
@@ -1590,14 +1595,15 @@ function load(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(access_groups) &&
-        push!(attributes, namedattribute("access_groups", access_groups))
+        push!(_attributes, namedattribute("access_groups", access_groups))
     !isnothing(alias_scopes) &&
-        push!(attributes, namedattribute("alias_scopes", alias_scopes))
+        push!(_attributes, namedattribute("alias_scopes", alias_scopes))
     !isnothing(noalias_scopes) &&
-        push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
-    !isnothing(volatile_) && push!(attributes, namedattribute("volatile_", volatile_))
-    !isnothing(nontemporal) && push!(attributes, namedattribute("nontemporal", nontemporal))
+        push!(_attributes, namedattribute("noalias_scopes", noalias_scopes))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
+    !isnothing(volatile_) && push!(_attributes, namedattribute("volatile_", volatile_))
+    !isnothing(nontemporal) &&
+        push!(_attributes, namedattribute("nontemporal", nontemporal))
 
     return IR.create_operation(
         "llvm.load",
@@ -1786,7 +1792,7 @@ function return_(arg=nothing::Union{Nothing,Value}; location=Location())
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(arg) && push!(operands, arg)
+    !isnothing(arg) && push!(_operands, arg)
 
     return IR.create_operation(
         "llvm.return",
@@ -1998,14 +2004,15 @@ function store(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(access_groups) &&
-        push!(attributes, namedattribute("access_groups", access_groups))
+        push!(_attributes, namedattribute("access_groups", access_groups))
     !isnothing(alias_scopes) &&
-        push!(attributes, namedattribute("alias_scopes", alias_scopes))
+        push!(_attributes, namedattribute("alias_scopes", alias_scopes))
     !isnothing(noalias_scopes) &&
-        push!(attributes, namedattribute("noalias_scopes", noalias_scopes))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
-    !isnothing(volatile_) && push!(attributes, namedattribute("volatile_", volatile_))
-    !isnothing(nontemporal) && push!(attributes, namedattribute("nontemporal", nontemporal))
+        push!(_attributes, namedattribute("noalias_scopes", noalias_scopes))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
+    !isnothing(volatile_) && push!(_attributes, namedattribute("volatile_", volatile_))
+    !isnothing(nontemporal) &&
+        push!(_attributes, namedattribute("nontemporal", nontemporal))
 
     return IR.create_operation(
         "llvm.store",
@@ -2068,11 +2075,12 @@ function switch(
         "case_operand_segments", case_operand_segments
     ),]
     push!(
-        attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
+        _attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
     )
-    !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
+    !isnothing(case_values) &&
+        push!(_attributes, namedattribute("case_values", case_values))
     !isnothing(branch_weights) &&
-        push!(attributes, namedattribute("branch_weights", branch_weights))
+        push!(_attributes, namedattribute("branch_weights", branch_weights))
 
     return IR.create_operation(
         "llvm.switch",
@@ -2181,7 +2189,7 @@ function tbaa_tag(;
         namedattribute("access_type", access_type),
         namedattribute("offset", offset),
     ]
-    !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
+    !isnothing(constant) && push!(_attributes, namedattribute("constant", constant))
 
     return IR.create_operation(
         "llvm.tbaa_tag",
@@ -2243,7 +2251,7 @@ function tbaa_type_desc(; sym_name, identity=nothing, members, offsets, location
         namedattribute("members", members),
         namedattribute("offsets", offsets),
     ]
-    !isnothing(identity) && push!(attributes, namedattribute("identity", identity))
+    !isnothing(identity) && push!(_attributes, namedattribute("identity", identity))
 
     return IR.create_operation(
         "llvm.tbaa_type_desc",
@@ -2582,7 +2590,7 @@ function intr_copysign(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.copysign",
@@ -2827,7 +2835,7 @@ function intr_cos(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.cos",
@@ -3020,7 +3028,7 @@ function intr_exp2(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.exp2",
@@ -3051,7 +3059,7 @@ function intr_exp(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.exp",
@@ -3082,7 +3090,7 @@ function intr_fabs(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.fabs",
@@ -3113,7 +3121,7 @@ function intr_ceil(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.ceil",
@@ -3144,7 +3152,7 @@ function intr_floor(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.floor",
@@ -3177,7 +3185,7 @@ function intr_fma(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.fma",
@@ -3210,7 +3218,7 @@ function intr_fmuladd(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.fmuladd",
@@ -3241,7 +3249,7 @@ function intr_trunc(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.trunc",
@@ -3364,7 +3372,7 @@ function intr_log10(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.log10",
@@ -3395,7 +3403,7 @@ function intr_log2(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.log2",
@@ -3426,7 +3434,7 @@ function intr_log(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.log",
@@ -3639,7 +3647,7 @@ function intr_maxnum(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.maxnum",
@@ -3671,7 +3679,7 @@ function intr_maximum(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.maximum",
@@ -3803,7 +3811,7 @@ function intr_minnum(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.minnum",
@@ -3835,7 +3843,7 @@ function intr_minimum(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.minimum",
@@ -3862,7 +3870,7 @@ function intr_powi(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.powi",
@@ -3894,7 +3902,7 @@ function intr_pow(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.pow",
@@ -3950,7 +3958,7 @@ function intr_roundeven(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.roundeven",
@@ -3981,7 +3989,7 @@ function intr_round(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.round",
@@ -4139,7 +4147,7 @@ function intr_sin(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.sin",
@@ -4170,7 +4178,7 @@ function intr_sqrt(
     _attributes = NamedAttribute[]
     !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+        push!(_attributes, namedattribute("fastmathFlags", fastmathFlags))
 
     return IR.create_operation(
         "llvm.intr.sqrt",
@@ -5992,7 +6000,7 @@ function intr_vector_reduce_fadd(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(reassoc) && push!(attributes, namedattribute("reassoc", reassoc))
+    !isnothing(reassoc) && push!(_attributes, namedattribute("reassoc", reassoc))
 
     return IR.create_operation(
         "llvm.intr.vector.reduce.fadd",
@@ -6064,7 +6072,7 @@ function intr_vector_reduce_fmul(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(reassoc) && push!(attributes, namedattribute("reassoc", reassoc))
+    !isnothing(reassoc) && push!(_attributes, namedattribute("reassoc", reassoc))
 
     return IR.create_operation(
         "llvm.intr.vector.reduce.fmul",
@@ -6462,7 +6470,7 @@ function cp_async_shared_global(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("size", size),]
-    !isnothing(bypass_l1) && push!(attributes, namedattribute("bypass_l1", bypass_l1))
+    !isnothing(bypass_l1) && push!(_attributes, namedattribute("bypass_l1", bypass_l1))
 
     return IR.create_operation(
         "nvvm.cp.async.shared.global",
@@ -6708,16 +6716,16 @@ function mma_sync(
         namedattribute("layoutB", layoutB),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([length(operandA), length(operandB), length(operandC)]),
     )
-    !isnothing(b1Op) && push!(attributes, namedattribute("b1Op", b1Op))
+    !isnothing(b1Op) && push!(_attributes, namedattribute("b1Op", b1Op))
     !isnothing(intOverflowBehavior) &&
-        push!(attributes, namedattribute("intOverflowBehavior", intOverflowBehavior))
+        push!(_attributes, namedattribute("intOverflowBehavior", intOverflowBehavior))
     !isnothing(multiplicandAPtxType) &&
-        push!(attributes, namedattribute("multiplicandAPtxType", multiplicandAPtxType))
+        push!(_attributes, namedattribute("multiplicandAPtxType", multiplicandAPtxType))
     !isnothing(multiplicandBPtxType) &&
-        push!(attributes, namedattribute("multiplicandBPtxType", multiplicandBPtxType))
+        push!(_attributes, namedattribute("multiplicandBPtxType", multiplicandBPtxType))
 
     return IR.create_operation(
         "nvvm.mma.sync",
@@ -6799,7 +6807,7 @@ function shfl_sync(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("kind", kind),]
     !isnothing(return_value_and_is_valid) && push!(
-        attributes,
+        _attributes,
         namedattribute("return_value_and_is_valid", return_value_and_is_valid),
     )
 

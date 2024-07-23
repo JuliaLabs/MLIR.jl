@@ -375,7 +375,7 @@ function execute(
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dependencies), length(operands)]))
+    push!(_attributes, operandsegmentsizes([length(dependencies), length(operands)]))
 
     return IR.create_operation(
         "async.execute",

@@ -531,18 +531,12 @@ irdl.dialect @cmath {
 The above program defines an operation `norm` inside the dialect `cmath` that
 for any `T` takes a `cmath.complex` with parameter `T` and returns a `T`.
 """
-function parametric(
-    args::Vector{Value};
-    output=nothing::Union{Nothing,IR.Type},
-    base_type,
-    location=Location(),
-)
-    _results = IR.Type[]
+function parametric(args::Vector{Value}; output::IR.Type, base_type, location=Location())
+    _results = IR.Type[output,]
     _operands = Value[args...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("base_type", base_type),]
-    !isnothing(output) && push!(_results, output)
 
     return IR.create_operation(
         "irdl.parametric",
@@ -551,8 +545,8 @@ function parametric(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 

@@ -293,8 +293,8 @@ function alloc(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands)]))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    push!(_attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands)]))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "memref.alloc",
@@ -357,8 +357,8 @@ function alloca(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands)]))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    push!(_attributes, operandsegmentsizes([length(dynamicSizes), length(symbolOperands)]))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "memref.alloca",
@@ -910,11 +910,11 @@ function global_(;
         namedattribute("sym_name", sym_name), namedattribute("type", type)
     ]
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
     !isnothing(initial_value) &&
-        push!(attributes, namedattribute("initial_value", initial_value))
-    !isnothing(constant) && push!(attributes, namedattribute("constant", constant))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("initial_value", initial_value))
+    !isnothing(constant) && push!(_attributes, namedattribute("constant", constant))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "memref.global",
@@ -1048,7 +1048,7 @@ function reinterpret_cast(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(offsets), length(sizes), length(strides)]),
     )
 
@@ -1418,7 +1418,7 @@ function subview(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(offsets), length(sizes), length(strides)]),
     )
 

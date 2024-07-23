@@ -399,7 +399,7 @@ function forall(
         namedattribute("staticStep", staticStep),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(dynamicLowerBound),
             length(dynamicUpperBound),
@@ -407,7 +407,7 @@ function forall(
             length(outputs),
         ]),
     )
-    !isnothing(mapping) && push!(attributes, namedattribute("mapping", mapping))
+    !isnothing(mapping) && push!(_attributes, namedattribute("mapping", mapping))
 
     return IR.create_operation(
         "scf.forall",
@@ -645,7 +645,7 @@ function parallel(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound), length(upperBound), length(step), length(initVals)
         ]),

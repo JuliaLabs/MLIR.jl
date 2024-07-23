@@ -302,7 +302,7 @@ function extract_slice(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(offsets), length(sizes), length(strides)]),
     )
 
@@ -517,7 +517,7 @@ function insert_slice(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides)]),
     )
 
@@ -623,8 +623,8 @@ function pad(
     _attributes = NamedAttribute[
         namedattribute("static_low", static_low), namedattribute("static_high", static_high)
     ]
-    push!(attributes, operandsegmentsizes([1, length(low), length(high)]))
-    !isnothing(nofold) && push!(attributes, namedattribute("nofold", nofold))
+    push!(_attributes, operandsegmentsizes([1, length(low), length(high)]))
+    !isnothing(nofold) && push!(_attributes, namedattribute("nofold", nofold))
 
     return IR.create_operation(
         "tensor.pad",
@@ -720,7 +720,7 @@ function parallel_insert_slice(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides)]),
     )
 

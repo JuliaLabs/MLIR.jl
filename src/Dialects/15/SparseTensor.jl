@@ -121,9 +121,9 @@ function binary(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(left_identity) &&
-        push!(attributes, namedattribute("left_identity", left_identity))
+        push!(_attributes, namedattribute("left_identity", left_identity))
     !isnothing(right_identity) &&
-        push!(attributes, namedattribute("right_identity", right_identity))
+        push!(_attributes, namedattribute("right_identity", right_identity))
 
     return IR.create_operation(
         "sparse_tensor.binary",
@@ -374,7 +374,7 @@ function load(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(hasInserts) && push!(attributes, namedattribute("hasInserts", hasInserts))
+    !isnothing(hasInserts) && push!(_attributes, namedattribute("hasInserts", hasInserts))
 
     return IR.create_operation(
         "sparse_tensor.load",

@@ -339,7 +339,7 @@ function parallel(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound), length(upperBound), length(step), length(initVals)
         ]),

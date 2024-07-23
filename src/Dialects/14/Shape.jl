@@ -199,7 +199,7 @@ function broadcast(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(error) && push!(attributes, namedattribute("error", error))
+    !isnothing(error) && push!(_attributes, namedattribute("error", error))
 
     return IR.create_operation(
         "shape.broadcast",
@@ -791,7 +791,7 @@ function meet(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(error) && push!(attributes, namedattribute("error", error))
+    !isnothing(error) && push!(_attributes, namedattribute("error", error))
 
     return IR.create_operation(
         "shape.meet",

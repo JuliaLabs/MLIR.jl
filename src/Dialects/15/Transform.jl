@@ -42,21 +42,21 @@ function bufferization_one_shot_bufferize(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(allow_return_allocs) &&
-        push!(attributes, namedattribute("allow_return_allocs", allow_return_allocs))
+        push!(_attributes, namedattribute("allow_return_allocs", allow_return_allocs))
     !isnothing(allow_unknown_ops) &&
-        push!(attributes, namedattribute("allow_unknown_ops", allow_unknown_ops))
+        push!(_attributes, namedattribute("allow_unknown_ops", allow_unknown_ops))
     !isnothing(bufferize_function_boundaries) && push!(
-        attributes,
+        _attributes,
         namedattribute("bufferize_function_boundaries", bufferize_function_boundaries),
     )
     !isnothing(create_deallocs) &&
-        push!(attributes, namedattribute("create_deallocs", create_deallocs))
+        push!(_attributes, namedattribute("create_deallocs", create_deallocs))
     !isnothing(target_is_module) &&
-        push!(attributes, namedattribute("target_is_module", target_is_module))
+        push!(_attributes, namedattribute("target_is_module", target_is_module))
     !isnothing(test_analysis_only) &&
-        push!(attributes, namedattribute("test_analysis_only", test_analysis_only))
+        push!(_attributes, namedattribute("test_analysis_only", test_analysis_only))
     !isnothing(print_conflicts) &&
-        push!(attributes, namedattribute("print_conflicts", print_conflicts))
+        push!(_attributes, namedattribute("print_conflicts", print_conflicts))
 
     return IR.create_operation(
         "transform.bufferization.one_shot_bufferize",
@@ -152,9 +152,9 @@ function structured_fuse(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(tile_sizes) && push!(attributes, namedattribute("tile_sizes", tile_sizes))
+    !isnothing(tile_sizes) && push!(_attributes, namedattribute("tile_sizes", tile_sizes))
     !isnothing(tile_interchange) &&
-        push!(attributes, namedattribute("tile_interchange", tile_interchange))
+        push!(_attributes, namedattribute("tile_interchange", tile_interchange))
 
     return IR.create_operation(
         "transform.structured.fuse",
@@ -227,7 +227,7 @@ function structured_interchange(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(iterator_interchange) &&
-        push!(attributes, namedattribute("iterator_interchange", iterator_interchange))
+        push!(_attributes, namedattribute("iterator_interchange", iterator_interchange))
 
     return IR.create_operation(
         "transform.structured.interchange",
@@ -283,9 +283,9 @@ function structured_match(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(ops) && push!(attributes, namedattribute("ops", ops))
-    !isnothing(interface) && push!(attributes, namedattribute("interface", interface))
-    !isnothing(attribute) && push!(attributes, namedattribute("attribute", attribute))
+    !isnothing(ops) && push!(_attributes, namedattribute("ops", ops))
+    !isnothing(interface) && push!(_attributes, namedattribute("interface", interface))
+    !isnothing(attribute) && push!(_attributes, namedattribute("attribute", attribute))
 
     return IR.create_operation(
         "transform.structured.match",
@@ -361,7 +361,7 @@ function structured_multitile_sizes(
     _attributes = NamedAttribute[
         namedattribute("dimension", dimension), namedattribute("target_size", target_size)
     ]
-    !isnothing(divisor) && push!(attributes, namedattribute("divisor", divisor))
+    !isnothing(divisor) && push!(_attributes, namedattribute("divisor", divisor))
 
     return IR.create_operation(
         "transform.structured.multitile_sizes",
@@ -407,15 +407,15 @@ function structured_pad(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(padding_values) &&
-        push!(attributes, namedattribute("padding_values", padding_values))
+        push!(_attributes, namedattribute("padding_values", padding_values))
     !isnothing(padding_dimensions) &&
-        push!(attributes, namedattribute("padding_dimensions", padding_dimensions))
+        push!(_attributes, namedattribute("padding_dimensions", padding_dimensions))
     !isnothing(pack_paddings) &&
-        push!(attributes, namedattribute("pack_paddings", pack_paddings))
+        push!(_attributes, namedattribute("pack_paddings", pack_paddings))
     !isnothing(hoist_paddings) &&
-        push!(attributes, namedattribute("hoist_paddings", hoist_paddings))
+        push!(_attributes, namedattribute("hoist_paddings", hoist_paddings))
     !isnothing(transpose_paddings) &&
-        push!(attributes, namedattribute("transpose_paddings", transpose_paddings))
+        push!(_attributes, namedattribute("transpose_paddings", transpose_paddings))
 
     return IR.create_operation(
         "transform.structured.pad",
@@ -464,15 +464,15 @@ function structured_promote(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(operands_to_promote) &&
-        push!(attributes, namedattribute("operands_to_promote", operands_to_promote))
+        push!(_attributes, namedattribute("operands_to_promote", operands_to_promote))
     !isnothing(use_full_tile_buffers) &&
-        push!(attributes, namedattribute("use_full_tile_buffers", use_full_tile_buffers))
+        push!(_attributes, namedattribute("use_full_tile_buffers", use_full_tile_buffers))
     !isnothing(use_full_tiles_by_default) && push!(
-        attributes,
+        _attributes,
         namedattribute("use_full_tiles_by_default", use_full_tiles_by_default),
     )
-    !isnothing(use_alloca) && push!(attributes, namedattribute("use_alloca", use_alloca))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+    !isnothing(use_alloca) && push!(_attributes, namedattribute("use_alloca", use_alloca))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "transform.structured.promote",
@@ -567,7 +567,7 @@ function structured_split(
         namedattribute("dimension", dimension),
         namedattribute("static_split_point", static_split_point),
     ]
-    !isnothing(dynamic_split_point) && push!(operands, dynamic_split_point)
+    !isnothing(dynamic_split_point) && push!(_operands, dynamic_split_point)
 
     return IR.create_operation(
         "transform.structured.split",
@@ -733,12 +733,12 @@ function structured_split_reduction(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(split_factor) &&
-        push!(attributes, namedattribute("split_factor", split_factor))
+        push!(_attributes, namedattribute("split_factor", split_factor))
     !isnothing(insert_split_dimension) &&
-        push!(attributes, namedattribute("insert_split_dimension", insert_split_dimension))
+        push!(_attributes, namedattribute("insert_split_dimension", insert_split_dimension))
     !isnothing(use_scaling_algorithm) &&
-        push!(attributes, namedattribute("use_scaling_algorithm", use_scaling_algorithm))
-    !isnothing(use_alloc) && push!(attributes, namedattribute("use_alloc", use_alloc))
+        push!(_attributes, namedattribute("use_scaling_algorithm", use_scaling_algorithm))
+    !isnothing(use_alloc) && push!(_attributes, namedattribute("use_alloc", use_alloc))
 
     return IR.create_operation(
         "transform.structured.split_reduction",
@@ -806,8 +806,9 @@ function structured_tile(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(static_sizes) &&
-        push!(attributes, namedattribute("static_sizes", static_sizes))
-    !isnothing(interchange) && push!(attributes, namedattribute("interchange", interchange))
+        push!(_attributes, namedattribute("static_sizes", static_sizes))
+    !isnothing(interchange) &&
+        push!(_attributes, namedattribute("interchange", interchange))
 
     return IR.create_operation(
         "transform.structured.tile",
@@ -880,10 +881,11 @@ function structured_tile_to_foreach_thread_op(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(num_threads) && push!(attributes, namedattribute("num_threads", num_threads))
-    !isnothing(tile_sizes) && push!(attributes, namedattribute("tile_sizes", tile_sizes))
+    !isnothing(num_threads) &&
+        push!(_attributes, namedattribute("num_threads", num_threads))
+    !isnothing(tile_sizes) && push!(_attributes, namedattribute("tile_sizes", tile_sizes))
     !isnothing(thread_dim_mapping) &&
-        push!(attributes, namedattribute("thread_dim_mapping", thread_dim_mapping))
+        push!(_attributes, namedattribute("thread_dim_mapping", thread_dim_mapping))
 
     return IR.create_operation(
         "transform.structured.tile_to_foreach_thread_op",
@@ -931,7 +933,7 @@ function structured_vectorize(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(vectorize_padding) &&
-        push!(attributes, namedattribute("vectorize_padding", vectorize_padding))
+        push!(_attributes, namedattribute("vectorize_padding", vectorize_padding))
 
     return IR.create_operation(
         "transform.structured.vectorize",
@@ -967,7 +969,7 @@ function loop_get_parent_for(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(num_loops) && push!(attributes, namedattribute("num_loops", num_loops))
+    !isnothing(num_loops) && push!(_attributes, namedattribute("num_loops", num_loops))
 
     return IR.create_operation(
         "transform.loop.get_parent_for",
@@ -1050,7 +1052,7 @@ function loop_peel(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(fail_if_already_divisible) && push!(
-        attributes,
+        _attributes,
         namedattribute("fail_if_already_divisible", fail_if_already_divisible),
     )
 
@@ -1102,9 +1104,9 @@ function loop_pipeline(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(iteration_interval) &&
-        push!(attributes, namedattribute("iteration_interval", iteration_interval))
+        push!(_attributes, namedattribute("iteration_interval", iteration_interval))
     !isnothing(read_latency) &&
-        push!(attributes, namedattribute("read_latency", read_latency))
+        push!(_attributes, namedattribute("read_latency", read_latency))
 
     return IR.create_operation(
         "transform.loop.pipeline",
@@ -1229,7 +1231,7 @@ function alternatives(
     _owned_regions = Region[alternatives...,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(scope) && push!(operands, scope)
+    !isnothing(scope) && push!(_operands, scope)
 
     return IR.create_operation(
         "transform.alternatives",
@@ -1337,7 +1339,8 @@ function merge_handles(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(deduplicate) && push!(attributes, namedattribute("deduplicate", deduplicate))
+    !isnothing(deduplicate) &&
+        push!(_attributes, namedattribute("deduplicate", deduplicate))
 
     return IR.create_operation(
         "transform.merge_handles",
@@ -1461,7 +1464,7 @@ function sequence(
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(root) && push!(operands, root)
+    !isnothing(root) && push!(_operands, root)
 
     return IR.create_operation(
         "transform.sequence",
@@ -1519,7 +1522,7 @@ function with_pdl_patterns(
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(root) && push!(operands, root)
+    !isnothing(root) && push!(_operands, root)
 
     return IR.create_operation(
         "transform.with_pdl_patterns",

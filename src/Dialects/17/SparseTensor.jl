@@ -127,9 +127,9 @@ function binary(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(left_identity) &&
-        push!(attributes, namedattribute("left_identity", left_identity))
+        push!(_attributes, namedattribute("left_identity", left_identity))
     !isnothing(right_identity) &&
-        push!(attributes, namedattribute("right_identity", right_identity))
+        push!(_attributes, namedattribute("right_identity", right_identity))
 
     return IR.create_operation(
         "sparse_tensor.binary",
@@ -174,15 +174,14 @@ function compress(
     count::Value,
     tensor::Value,
     lvlCoords::Vector{Value};
-    result=nothing::Union{Nothing,IR.Type},
+    result::IR.Type,
     location=Location(),
 )
-    _results = IR.Type[]
+    _results = IR.Type[result,]
     _operands = Value[values, filled, added, count, tensor, lvlCoords...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "sparse_tensor.compress",
@@ -191,8 +190,8 @@ function compress(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -439,7 +438,7 @@ function foreach(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(order) && push!(attributes, namedattribute("order", order))
+    !isnothing(order) && push!(_attributes, namedattribute("order", order))
 
     return IR.create_operation(
         "sparse_tensor.foreach",
@@ -478,7 +477,7 @@ function storage_specifier_get(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("specifierKind", specifierKind),]
     !isnothing(result) && push!(_results, result)
-    !isnothing(level) && push!(attributes, namedattribute("level", level))
+    !isnothing(level) && push!(_attributes, namedattribute("level", level))
 
     return IR.create_operation(
         "sparse_tensor.storage_specifier.get",
@@ -525,15 +524,14 @@ function insert(
     value::Value,
     tensor::Value,
     lvlCoords::Vector{Value};
-    result=nothing::Union{Nothing,IR.Type},
+    result::IR.Type,
     location=Location(),
 )
-    _results = IR.Type[]
+    _results = IR.Type[result,]
     _operands = Value[value, tensor, lvlCoords...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "sparse_tensor.insert",
@@ -542,8 +540,8 @@ function insert(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -587,7 +585,7 @@ function load(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(hasInserts) && push!(attributes, namedattribute("hasInserts", hasInserts))
+    !isnothing(hasInserts) && push!(_attributes, namedattribute("hasInserts", hasInserts))
 
     return IR.create_operation(
         "sparse_tensor.load",
@@ -831,10 +829,10 @@ function push_back(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(n) && push!(operands, n)
+    !isnothing(n) && push!(_operands, n)
     !isnothing(outBuffer) && push!(_results, outBuffer)
     !isnothing(newSize) && push!(_results, newSize)
-    !isnothing(inbounds) && push!(attributes, namedattribute("inbounds", inbounds))
+    !isnothing(inbounds) && push!(_attributes, namedattribute("inbounds", inbounds))
 
     return IR.create_operation(
         "sparse_tensor.push_back",
@@ -1016,7 +1014,7 @@ function storage_specifier_set(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("specifierKind", specifierKind),]
     !isnothing(result) && push!(_results, result)
-    !isnothing(level) && push!(attributes, namedattribute("level", level))
+    !isnothing(level) && push!(_attributes, namedattribute("level", level))
 
     return IR.create_operation(
         "sparse_tensor.storage_specifier.set",
@@ -1072,8 +1070,8 @@ function sort_coo(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("algorithm", algorithm),]
-    !isnothing(nx) && push!(attributes, namedattribute("nx", nx))
-    !isnothing(ny) && push!(attributes, namedattribute("ny", ny))
+    !isnothing(nx) && push!(_attributes, namedattribute("nx", nx))
+    !isnothing(ny) && push!(_attributes, namedattribute("ny", ny))
 
     return IR.create_operation(
         "sparse_tensor.sort_coo",
@@ -1136,7 +1134,7 @@ function sort(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("algorithm", algorithm),]
-    push!(attributes, operandsegmentsizes([1, length(xs), length(ys)]))
+    push!(_attributes, operandsegmentsizes([1, length(xs), length(ys)]))
 
     return IR.create_operation(
         "sparse_tensor.sort",
@@ -1185,7 +1183,7 @@ function storage_specifier_init(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(source) && push!(operands, source)
+    !isnothing(source) && push!(_operands, source)
 
     return IR.create_operation(
         "sparse_tensor.storage_specifier.init",
@@ -1640,7 +1638,7 @@ function yield(result=nothing::Union{Nothing,Value}; location=Location())
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(operands, result)
+    !isnothing(result) && push!(_operands, result)
 
     return IR.create_operation(
         "sparse_tensor.yield",

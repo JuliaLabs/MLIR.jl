@@ -29,7 +29,8 @@ function apply_native_constraint(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("name", name),]
-    !isnothing(constParams) && push!(attributes, namedattribute("constParams", constParams))
+    !isnothing(constParams) &&
+        push!(_attributes, namedattribute("constParams", constParams))
 
     return IR.create_operation(
         "pdl.apply_native_constraint",
@@ -91,7 +92,8 @@ function apply_native_rewrite(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("name", name),]
-    !isnothing(constParams) && push!(attributes, namedattribute("constParams", constParams))
+    !isnothing(constParams) &&
+        push!(_attributes, namedattribute("constParams", constParams))
 
     return IR.create_operation(
         "pdl.apply_native_rewrite",
@@ -138,8 +140,8 @@ function attribute(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(type) && push!(operands, type)
-    !isnothing(value) && push!(attributes, namedattribute("value", value))
+    !isnothing(type) && push!(_operands, type)
+    !isnothing(value) && push!(_attributes, namedattribute("value", value))
 
     return IR.create_operation(
         "pdl.attribute",
@@ -212,7 +214,7 @@ function operand(type=nothing::Union{Nothing,Value}; val::IR.Type, location=Loca
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(type) && push!(operands, type)
+    !isnothing(type) && push!(_operands, type)
 
     return IR.create_operation(
         "pdl.operand",
@@ -253,7 +255,7 @@ function operands(type=nothing::Union{Nothing,Value}; val::IR.Type, location=Loc
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(type) && push!(operands, type)
+    !isnothing(type) && push!(_operands, type)
 
     return IR.create_operation(
         "pdl.operands",
@@ -379,10 +381,10 @@ function operation(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("attributeNames", attributeNames),]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([length(operands), length(attributes), length(types)]),
     )
-    !isnothing(name) && push!(attributes, namedattribute("name", name))
+    !isnothing(name) && push!(_attributes, namedattribute("name", name))
 
     return IR.create_operation(
         "pdl.operation",
@@ -426,7 +428,7 @@ function pattern(; benefit, sym_name=nothing, body::Region, location=Location())
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("benefit", benefit),]
-    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
+    !isnothing(sym_name) && push!(_attributes, namedattribute("sym_name", sym_name))
 
     return IR.create_operation(
         "pdl.pattern",
@@ -476,9 +478,9 @@ function replace(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(replOperation) && push!(operands, replOperation)
+    !isnothing(replOperation) && push!(_operands, replOperation)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, isnothing(replOperation) ? 0 : 1, length(replValues)]),
     )
 
@@ -570,7 +572,7 @@ function results(parent::Value; val::IR.Type, index=nothing, location=Location()
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(index) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(_attributes, namedattribute("index", index))
 
     return IR.create_operation(
         "pdl.results",
@@ -637,11 +639,11 @@ function rewrite(
     _owned_regions = Region[body,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(root) && push!(operands, root)
-    push!(attributes, operandsegmentsizes([isnothing(root) ? 0 : 1, length(externalArgs)]))
-    !isnothing(name) && push!(attributes, namedattribute("name", name))
+    !isnothing(root) && push!(_operands, root)
+    push!(_attributes, operandsegmentsizes([isnothing(root) ? 0 : 1, length(externalArgs)]))
+    !isnothing(name) && push!(_attributes, namedattribute("name", name))
     !isnothing(externalConstParams) &&
-        push!(attributes, namedattribute("externalConstParams", externalConstParams))
+        push!(_attributes, namedattribute("externalConstParams", externalConstParams))
 
     return IR.create_operation(
         "pdl.rewrite",
@@ -679,7 +681,7 @@ function type(; result::IR.Type, type=nothing, location=Location())
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(type) && push!(attributes, namedattribute("type", type))
+    !isnothing(type) && push!(_attributes, namedattribute("type", type))
 
     return IR.create_operation(
         "pdl.type",
@@ -717,7 +719,7 @@ function types(; result::IR.Type, types=nothing, location=Location())
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(types) && push!(attributes, namedattribute("types", types))
+    !isnothing(types) && push!(_attributes, namedattribute("types", types))
 
     return IR.create_operation(
         "pdl.types",

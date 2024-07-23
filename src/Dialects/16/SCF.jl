@@ -345,8 +345,8 @@ function foreach_thread(
     _owned_regions = Region[region,]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(num_threads), length(outputs)]))
-    !isnothing(mapping) && push!(attributes, namedattribute("mapping", mapping))
+    push!(_attributes, operandsegmentsizes([length(num_threads), length(outputs)]))
+    !isnothing(mapping) && push!(_attributes, namedattribute("mapping", mapping))
 
     return IR.create_operation(
         "scf.foreach_thread",
@@ -549,7 +549,7 @@ function parallel(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound), length(upperBound), length(step), length(initVals)
         ]),

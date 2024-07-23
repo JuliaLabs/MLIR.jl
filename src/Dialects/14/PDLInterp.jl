@@ -34,7 +34,8 @@ function apply_constraint(
     _owned_regions = Region[]
     _successors = Block[trueDest, falseDest]
     _attributes = NamedAttribute[namedattribute("name", name),]
-    !isnothing(constParams) && push!(attributes, namedattribute("constParams", constParams))
+    !isnothing(constParams) &&
+        push!(_attributes, namedattribute("constParams", constParams))
 
     return IR.create_operation(
         "pdl_interp.apply_constraint",
@@ -87,7 +88,8 @@ function apply_rewrite(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("name", name),]
-    !isnothing(constParams) && push!(attributes, namedattribute("constParams", constParams))
+    !isnothing(constParams) &&
+        push!(_attributes, namedattribute("constParams", constParams))
 
     return IR.create_operation(
         "pdl_interp.apply_rewrite",
@@ -234,7 +236,7 @@ function check_operand_count(
     _successors = Block[trueDest, falseDest]
     _attributes = NamedAttribute[namedattribute("count", count),]
     !isnothing(compareAtLeast) &&
-        push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+        push!(_attributes, namedattribute("compareAtLeast", compareAtLeast))
 
     return IR.create_operation(
         "pdl_interp.check_operand_count",
@@ -315,7 +317,7 @@ function check_result_count(
     _successors = Block[trueDest, falseDest]
     _attributes = NamedAttribute[namedattribute("count", count),]
     !isnothing(compareAtLeast) &&
-        push!(attributes, namedattribute("compareAtLeast", compareAtLeast))
+        push!(_attributes, namedattribute("compareAtLeast", compareAtLeast))
 
     return IR.create_operation(
         "pdl_interp.check_result_count",
@@ -492,7 +494,7 @@ function create_operation(
         namedattribute("name", name), namedattribute("attributeNames", attributeNames)
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([length(operands), length(attributes), length(types)]),
     )
 
@@ -860,7 +862,7 @@ function get_operands(operation::Value; value::IR.Type, index=nothing, location=
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(index) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(_attributes, namedattribute("index", index))
 
     return IR.create_operation(
         "pdl_interp.get_operands",
@@ -935,7 +937,7 @@ function get_results(operation::Value; value::IR.Type, index=nothing, location=L
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(index) && push!(attributes, namedattribute("index", index))
+    !isnothing(index) && push!(_attributes, namedattribute("index", index))
 
     return IR.create_operation(
         "pdl_interp.get_results",
@@ -1117,10 +1119,10 @@ function record_match(
     _attributes = NamedAttribute[
         namedattribute("rewriter", rewriter), namedattribute("benefit", benefit)
     ]
-    push!(attributes, operandsegmentsizes([length(inputs), length(matchedOps)]))
-    !isnothing(rootKind) && push!(attributes, namedattribute("rootKind", rootKind))
+    push!(_attributes, operandsegmentsizes([length(inputs), length(matchedOps)]))
+    !isnothing(rootKind) && push!(_attributes, namedattribute("rootKind", rootKind))
     !isnothing(generatedOps) &&
-        push!(attributes, namedattribute("generatedOps", generatedOps))
+        push!(_attributes, namedattribute("generatedOps", generatedOps))
 
     return IR.create_operation(
         "pdl_interp.record_match",

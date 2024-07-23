@@ -1524,11 +1524,11 @@ function BranchConditional(
     _successors = Block[trueTarget, falseTarget]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(trueTargetOperands), length(falseTargetOperands)]),
     )
     !isnothing(branch_weights) &&
-        push!(attributes, namedattribute("branch_weights", branch_weights))
+        push!(_attributes, namedattribute("branch_weights", branch_weights))
 
     return IR.create_operation(
         "spirv.BranchConditional",
@@ -3093,12 +3093,12 @@ function CopyMemory(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
     !isnothing(source_memory_access) &&
-        push!(attributes, namedattribute("source_memory_access", source_memory_access))
+        push!(_attributes, namedattribute("source_memory_access", source_memory_access))
     !isnothing(source_alignment) &&
-        push!(attributes, namedattribute("source_alignment", source_alignment))
+        push!(_attributes, namedattribute("source_alignment", source_alignment))
 
     return IR.create_operation(
         "spirv.CopyMemory",
@@ -4297,8 +4297,8 @@ function func(;
         namedattribute("sym_name", sym_name),
         namedattribute("function_control", function_control),
     ]
-    !isnothing(arg_attrs) && push!(attributes, namedattribute("arg_attrs", arg_attrs))
-    !isnothing(res_attrs) && push!(attributes, namedattribute("res_attrs", res_attrs))
+    !isnothing(arg_attrs) && push!(_attributes, namedattribute("arg_attrs", arg_attrs))
+    !isnothing(res_attrs) && push!(_attributes, namedattribute("res_attrs", res_attrs))
 
     return IR.create_operation(
         "spirv.func",
@@ -6225,12 +6225,13 @@ function GlobalVariable(;
     _attributes = NamedAttribute[
         namedattribute("type", type), namedattribute("sym_name", sym_name)
     ]
-    !isnothing(initializer) && push!(attributes, namedattribute("initializer", initializer))
-    !isnothing(location) && push!(attributes, namedattribute("location", location_))
-    !isnothing(binding) && push!(attributes, namedattribute("binding", binding))
+    !isnothing(initializer) &&
+        push!(_attributes, namedattribute("initializer", initializer))
+    !isnothing(location) && push!(_attributes, namedattribute("location", location_))
+    !isnothing(binding) && push!(_attributes, namedattribute("binding", binding))
     !isnothing(descriptor_set) &&
-        push!(attributes, namedattribute("descriptor_set", descriptor_set))
-    !isnothing(builtin) && push!(attributes, namedattribute("builtin", builtin))
+        push!(_attributes, namedattribute("descriptor_set", descriptor_set))
+    !isnothing(builtin) && push!(_attributes, namedattribute("builtin", builtin))
 
     return IR.create_operation(
         "spirv.GlobalVariable",
@@ -6901,7 +6902,7 @@ function GroupNonUniformFAdd(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformFAdd",
@@ -6976,7 +6977,7 @@ function GroupNonUniformFMax(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformFMax",
@@ -7051,7 +7052,7 @@ function GroupNonUniformFMin(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformFMin",
@@ -7123,7 +7124,7 @@ function GroupNonUniformFMul(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformFMul",
@@ -7193,7 +7194,7 @@ function GroupNonUniformIAdd(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformIAdd",
@@ -7263,7 +7264,7 @@ function GroupNonUniformIMul(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformIMul",
@@ -7333,7 +7334,7 @@ function GroupNonUniformSMax(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformSMax",
@@ -7403,7 +7404,7 @@ function GroupNonUniformSMin(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformSMin",
@@ -7674,7 +7675,7 @@ function GroupNonUniformUMax(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformUMax",
@@ -7745,7 +7746,7 @@ function GroupNonUniformUMin(
         namedattribute("execution_scope", execution_scope),
         namedattribute("group_operation", group_operation),
     ]
-    !isnothing(cluster_size) && push!(operands, cluster_size)
+    !isnothing(cluster_size) && push!(_operands, cluster_size)
 
     return IR.create_operation(
         "spirv.GroupNonUniformUMin",
@@ -8259,8 +8260,8 @@ function INTEL_JointMatrixLoad(
         namedattribute("layout", layout), namedattribute("scope", scope)
     ]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "spirv.INTEL.JointMatrixLoad",
@@ -8387,8 +8388,8 @@ function INTEL_JointMatrixStore(
         namedattribute("layout", layout), namedattribute("scope", scope)
     ]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "spirv.INTEL.JointMatrixStore",
@@ -8746,7 +8747,7 @@ function ImageDrefGather(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(imageoperands) &&
-        push!(attributes, namedattribute("imageoperands", imageoperands))
+        push!(_attributes, namedattribute("imageoperands", imageoperands))
 
     return IR.create_operation(
         "spirv.ImageDrefGather",
@@ -9116,8 +9117,8 @@ function Load(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "spirv.Load",
@@ -9643,8 +9644,8 @@ function module_(;
         namedattribute("addressing_model", addressing_model),
         namedattribute("memory_model", memory_model),
     ]
-    !isnothing(vce_triple) && push!(attributes, namedattribute("vce_triple", vce_triple))
-    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
+    !isnothing(vce_triple) && push!(_attributes, namedattribute("vce_triple", vce_triple))
+    !isnothing(sym_name) && push!(_attributes, namedattribute("sym_name", sym_name))
 
     return IR.create_operation(
         "spirv.module",
@@ -9770,7 +9771,7 @@ function NV_CooperativeMatrixLoad(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
+        push!(_attributes, namedattribute("memory_access", memory_access))
 
     return IR.create_operation(
         "spirv.NV.CooperativeMatrixLoad",
@@ -9910,7 +9911,7 @@ function NV_CooperativeMatrixStore(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
+        push!(_attributes, namedattribute("memory_access", memory_access))
 
     return IR.create_operation(
         "spirv.NV.CooperativeMatrixStore",
@@ -10387,7 +10388,7 @@ function SDotAccSat(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(format) && push!(attributes, namedattribute("format", format))
+    !isnothing(format) && push!(_attributes, namedattribute("format", format))
 
     return IR.create_operation(
         "spirv.SDotAccSat",
@@ -10443,7 +10444,7 @@ function SDot(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(format) && push!(attributes, namedattribute("format", format))
+    !isnothing(format) && push!(_attributes, namedattribute("format", format))
 
     return IR.create_operation(
         "spirv.SDot",
@@ -10893,7 +10894,7 @@ function SUDotAccSat(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(format) && push!(attributes, namedattribute("format", format))
+    !isnothing(format) && push!(_attributes, namedattribute("format", format))
 
     return IR.create_operation(
         "spirv.SUDotAccSat",
@@ -10951,7 +10952,7 @@ function SUDot(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(format) && push!(attributes, namedattribute("format", format))
+    !isnothing(format) && push!(_attributes, namedattribute("format", format))
 
     return IR.create_operation(
         "spirv.SUDot",
@@ -11485,8 +11486,8 @@ function Store(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(memory_access) &&
-        push!(attributes, namedattribute("memory_access", memory_access))
-    !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
+        push!(_attributes, namedattribute("memory_access", memory_access))
+    !isnothing(alignment) && push!(_attributes, namedattribute("alignment", alignment))
 
     return IR.create_operation(
         "spirv.Store",
@@ -11698,7 +11699,7 @@ function UDotAccSat(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(format) && push!(attributes, namedattribute("format", format))
+    !isnothing(format) && push!(_attributes, namedattribute("format", format))
 
     return IR.create_operation(
         "spirv.UDotAccSat",
@@ -11756,7 +11757,7 @@ function UDot(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(format) && push!(attributes, namedattribute("format", format))
+    !isnothing(format) && push!(_attributes, namedattribute("format", format))
 
     return IR.create_operation(
         "spirv.UDot",
@@ -12217,7 +12218,7 @@ function Variable(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("storage_class", storage_class),]
-    !isnothing(initializer) && push!(operands, initializer)
+    !isnothing(initializer) && push!(_operands, initializer)
 
     return IR.create_operation(
         "spirv.Variable",

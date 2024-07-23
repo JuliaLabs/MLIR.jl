@@ -320,7 +320,7 @@ function foreach_thread(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(thread_dim_mapping) &&
-        push!(attributes, namedattribute("thread_dim_mapping", thread_dim_mapping))
+        push!(_attributes, namedattribute("thread_dim_mapping", thread_dim_mapping))
 
     return IR.create_operation(
         "scf.foreach_thread",
@@ -466,7 +466,7 @@ function parallel(
     _successors = Block[]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound), length(upperBound), length(step), length(initVals)
         ]),

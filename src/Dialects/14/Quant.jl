@@ -33,8 +33,8 @@ function const_fake_quant(
     ]
     !isnothing(outputs) && push!(_results, outputs)
     !isnothing(narrow_range) &&
-        push!(attributes, namedattribute("narrow_range", narrow_range))
-    !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
+        push!(_attributes, namedattribute("narrow_range", narrow_range))
+    !isnothing(is_signed) && push!(_attributes, namedattribute("is_signed", is_signed))
 
     return IR.create_operation(
         "quant.const_fake_quant",
@@ -80,8 +80,8 @@ function const_fake_quant_per_axis(
     ]
     !isnothing(outputs) && push!(_results, outputs)
     !isnothing(narrow_range) &&
-        push!(attributes, namedattribute("narrow_range", narrow_range))
-    !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
+        push!(_attributes, namedattribute("narrow_range", narrow_range))
+    !isnothing(is_signed) && push!(_attributes, namedattribute("is_signed", is_signed))
 
     return IR.create_operation(
         "quant.const_fake_quant_per_axis",
@@ -265,8 +265,8 @@ function stats(
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("layerStats", layerStats),]
     !isnothing(result_0) && push!(_results, result_0)
-    !isnothing(axisStats) && push!(attributes, namedattribute("axisStats", axisStats))
-    !isnothing(axis) && push!(attributes, namedattribute("axis", axis))
+    !isnothing(axisStats) && push!(_attributes, namedattribute("axisStats", axisStats))
+    !isnothing(axis) && push!(_attributes, namedattribute("axis", axis))
 
     return IR.create_operation(
         "quant.stats",

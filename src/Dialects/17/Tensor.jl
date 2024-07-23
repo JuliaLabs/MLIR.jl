@@ -366,7 +366,7 @@ function extract_slice(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(offsets), length(sizes), length(strides)]),
     )
 
@@ -529,7 +529,7 @@ function gather(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("gather_dims", gather_dims),]
-    !isnothing(unique) && push!(attributes, namedattribute("unique", unique))
+    !isnothing(unique) && push!(_attributes, namedattribute("unique", unique))
 
     return IR.create_operation(
         "tensor.gather",
@@ -702,7 +702,7 @@ function insert_slice(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides)]),
     )
 
@@ -776,13 +776,13 @@ function pack(
         namedattribute("inner_dims_pos", inner_dims_pos),
         namedattribute("static_inner_tiles", static_inner_tiles),
     ]
-    !isnothing(padding_value) && push!(operands, padding_value)
+    !isnothing(padding_value) && push!(_operands, padding_value)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, isnothing(padding_value) ? 0 : 1, length(inner_tiles)]),
     )
     !isnothing(outer_dims_perm) &&
-        push!(attributes, namedattribute("outer_dims_perm", outer_dims_perm))
+        push!(_attributes, namedattribute("outer_dims_perm", outer_dims_perm))
 
     return IR.create_operation(
         "tensor.pack",
@@ -886,8 +886,8 @@ function pad(
     _attributes = NamedAttribute[
         namedattribute("static_low", static_low), namedattribute("static_high", static_high)
     ]
-    push!(attributes, operandsegmentsizes([1, length(low), length(high)]))
-    !isnothing(nofold) && push!(attributes, namedattribute("nofold", nofold))
+    push!(_attributes, operandsegmentsizes([1, length(low), length(high)]))
+    !isnothing(nofold) && push!(_attributes, namedattribute("nofold", nofold))
 
     return IR.create_operation(
         "tensor.pad",
@@ -982,7 +982,7 @@ function parallel_insert_slice(
         namedattribute("static_strides", static_strides),
     ]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(offsets), length(sizes), length(strides)]),
     )
 
@@ -1197,7 +1197,7 @@ function scatter(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("scatter_dims", scatter_dims),]
-    !isnothing(unique) && push!(attributes, namedattribute("unique", unique))
+    !isnothing(unique) && push!(_attributes, namedattribute("unique", unique))
 
     return IR.create_operation(
         "tensor.scatter",
@@ -1298,7 +1298,7 @@ function unpack(
         namedattribute("static_inner_tiles", static_inner_tiles),
     ]
     !isnothing(outer_dims_perm) &&
-        push!(attributes, namedattribute("outer_dims_perm", outer_dims_perm))
+        push!(_attributes, namedattribute("outer_dims_perm", outer_dims_perm))
 
     return IR.create_operation(
         "tensor.unpack",

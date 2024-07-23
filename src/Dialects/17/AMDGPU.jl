@@ -95,14 +95,14 @@ function mfma(
         namedattribute("k", k),
         namedattribute("blocks", blocks),
     ]
-    !isnothing(cbsz) && push!(attributes, namedattribute("cbsz", cbsz))
-    !isnothing(abid) && push!(attributes, namedattribute("abid", abid))
-    !isnothing(blgp) && push!(attributes, namedattribute("blgp", blgp))
+    !isnothing(cbsz) && push!(_attributes, namedattribute("cbsz", cbsz))
+    !isnothing(abid) && push!(_attributes, namedattribute("abid", abid))
+    !isnothing(blgp) && push!(_attributes, namedattribute("blgp", blgp))
     !isnothing(reducePrecision) &&
-        push!(attributes, namedattribute("reducePrecision", reducePrecision))
-    !isnothing(negateA) && push!(attributes, namedattribute("negateA", negateA))
-    !isnothing(negateB) && push!(attributes, namedattribute("negateB", negateB))
-    !isnothing(negateC) && push!(attributes, namedattribute("negateC", negateC))
+        push!(_attributes, namedattribute("reducePrecision", reducePrecision))
+    !isnothing(negateA) && push!(_attributes, namedattribute("negateA", negateA))
+    !isnothing(negateB) && push!(_attributes, namedattribute("negateB", negateB))
+    !isnothing(negateC) && push!(_attributes, namedattribute("negateC", negateC))
 
     return IR.create_operation(
         "amdgpu.mfma",
@@ -151,13 +151,15 @@ function raw_buffer_atomic_cmpswap(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sgprOffset) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(_operands, sgprOffset)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
-    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) &&
+        push!(_attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) &&
+        push!(_attributes, namedattribute("indexOffset", indexOffset))
 
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_cmpswap",
@@ -205,13 +207,15 @@ function raw_buffer_atomic_fadd(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sgprOffset) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(_operands, sgprOffset)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
-    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) &&
+        push!(_attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) &&
+        push!(_attributes, namedattribute("indexOffset", indexOffset))
 
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_fadd",
@@ -258,13 +262,15 @@ function raw_buffer_atomic_fmax(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sgprOffset) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(_operands, sgprOffset)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
-    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) &&
+        push!(_attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) &&
+        push!(_attributes, namedattribute("indexOffset", indexOffset))
 
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_fmax",
@@ -311,13 +317,15 @@ function raw_buffer_atomic_smax(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sgprOffset) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(_operands, sgprOffset)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
-    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) &&
+        push!(_attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) &&
+        push!(_attributes, namedattribute("indexOffset", indexOffset))
 
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_smax",
@@ -364,13 +372,15 @@ function raw_buffer_atomic_umin(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sgprOffset) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(_operands, sgprOffset)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
-    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) &&
+        push!(_attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) &&
+        push!(_attributes, namedattribute("indexOffset", indexOffset))
 
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_umin",
@@ -430,12 +440,15 @@ function raw_buffer_load(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sgprOffset) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(_operands, sgprOffset)
     push!(
-        attributes, operandsegmentsizes([1, length(indices), isnothing(sgprOffset) ? 0 : 1])
+        _attributes,
+        operandsegmentsizes([1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
-    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) &&
+        push!(_attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) &&
+        push!(_attributes, namedattribute("indexOffset", indexOffset))
 
     return IR.create_operation(
         "amdgpu.raw_buffer_load",
@@ -483,13 +496,15 @@ function raw_buffer_store(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(sgprOffset) && push!(operands, sgprOffset)
+    !isnothing(sgprOffset) && push!(_operands, sgprOffset)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
-    !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
-    !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
+    !isnothing(boundsCheck) &&
+        push!(_attributes, namedattribute("boundsCheck", boundsCheck))
+    !isnothing(indexOffset) &&
+        push!(_attributes, namedattribute("indexOffset", indexOffset))
 
     return IR.create_operation(
         "amdgpu.raw_buffer_store",
@@ -537,10 +552,10 @@ function wmma(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(subwordOffset) &&
-        push!(attributes, namedattribute("subwordOffset", subwordOffset))
-    !isnothing(unsignedA) && push!(attributes, namedattribute("unsignedA", unsignedA))
-    !isnothing(unsignedB) && push!(attributes, namedattribute("unsignedB", unsignedB))
-    !isnothing(clamp) && push!(attributes, namedattribute("clamp", clamp))
+        push!(_attributes, namedattribute("subwordOffset", subwordOffset))
+    !isnothing(unsignedA) && push!(_attributes, namedattribute("unsignedA", unsignedA))
+    !isnothing(unsignedB) && push!(_attributes, namedattribute("unsignedB", unsignedB))
+    !isnothing(clamp) && push!(_attributes, namedattribute("clamp", clamp))
 
     return IR.create_operation(
         "amdgpu.wmma",

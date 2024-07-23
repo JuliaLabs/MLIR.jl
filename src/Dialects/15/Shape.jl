@@ -91,15 +91,12 @@ ready to execute.
 %wt = shape.assuming_all %w0, %w2 // Passing
 ```
 """
-function assuming_all(
-    inputs::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
+function assuming_all(inputs::Vector{Value}; result::IR.Type, location=Location())
+    _results = IR.Type[result,]
     _operands = Value[inputs...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.assuming_all",
@@ -108,8 +105,8 @@ function assuming_all(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -202,7 +199,7 @@ function broadcast(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(error) && push!(attributes, namedattribute("error", error))
+    !isnothing(error) && push!(_attributes, namedattribute("error", error))
 
     return IR.create_operation(
         "shape.broadcast",
@@ -360,15 +357,12 @@ shape.broadcast documents.
 %w1 = shape.cstr_broadcastable [2,2], [3,2] // Failure
 ```
 """
-function cstr_broadcastable(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
+function cstr_broadcastable(shapes::Vector{Value}; result::IR.Type, location=Location())
+    _results = IR.Type[result,]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.cstr_broadcastable",
@@ -377,8 +371,8 @@ function cstr_broadcastable(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -395,15 +389,12 @@ Given 1 or more input shapes, determine if all shapes are the exact same.
 %w1 = shape.cstr_eq [2,2], [1,2] // Failure
 ```
 """
-function cstr_eq(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
+function cstr_eq(shapes::Vector{Value}; result::IR.Type, location=Location())
+    _results = IR.Type[result,]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.cstr_eq",
@@ -412,8 +403,8 @@ function cstr_eq(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -565,15 +556,12 @@ the shape.
 %s1 = shape.from_extents
 ```
 """
-function from_extents(
-    extents::Vector{Value}; shape=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
+function from_extents(extents::Vector{Value}; shape::IR.Type, location=Location())
+    _results = IR.Type[shape,]
     _operands = Value[extents...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(shape) && push!(_results, shape)
 
     return IR.create_operation(
         "shape.from_extents",
@@ -582,8 +570,8 @@ function from_extents(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -605,7 +593,7 @@ function func(;
         namedattribute("sym_name", sym_name), namedattribute("function_type", function_type)
     ]
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "shape.func",
@@ -734,15 +722,12 @@ assertion failure.
 %false = shape.is_broadcastable [2,2], [3,2]
 ```
 """
-function is_broadcastable(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
+function is_broadcastable(shapes::Vector{Value}; result::IR.Type, location=Location())
+    _results = IR.Type[result,]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.is_broadcastable",
@@ -751,8 +736,8 @@ function is_broadcastable(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -826,7 +811,7 @@ function meet(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(error) && push!(attributes, namedattribute("error", error))
+    !isnothing(error) && push!(_attributes, namedattribute("error", error))
 
     return IR.create_operation(
         "shape.meet",
@@ -1050,15 +1035,12 @@ as their equivalent non-error shapes. Error shapes can be tested for
 equality like any other shape value, meaning that the error value is equal
 to itself.
 """
-function shape_eq(
-    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    _results = IR.Type[]
+function shape_eq(shapes::Vector{Value}; result::IR.Type, location=Location())
+    _results = IR.Type[result,]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.shape_eq",
@@ -1067,8 +1049,8 @@ function shape_eq(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 

@@ -41,7 +41,7 @@ function addf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.addf",
@@ -443,13 +443,12 @@ forms simple integer and floating point constants.
 %1 = \"arith.constant\"() {value = 42 : i32} : () -> i32
 ```
 """
-function constant(; result=nothing::Union{Nothing,IR.Type}, value, location=Location())
-    _results = IR.Type[]
+function constant(; result::IR.Type, value, location=Location())
+    _results = IR.Type[result,]
     _operands = Value[]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("value", value),]
-    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.constant",
@@ -458,8 +457,8 @@ function constant(; result=nothing::Union{Nothing,IR.Type}, value, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(_results) == 0 ? nothing : _results),
-        result_inference=(length(_results) == 0 ? true : false),
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -480,7 +479,7 @@ function divf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.divf",
@@ -862,7 +861,7 @@ function maxf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.maxf",
@@ -960,7 +959,7 @@ function minf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.minf",
@@ -1063,7 +1062,7 @@ function mulf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.mulf",
@@ -1232,7 +1231,7 @@ function negf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.negf",
@@ -1306,7 +1305,7 @@ function remf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.remf",
@@ -1585,7 +1584,7 @@ function subf(
     _successors = Block[]
     _attributes = NamedAttribute[]
     !isnothing(result) && push!(_results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+    !isnothing(fastmath) && push!(_attributes, namedattribute("fastmath", fastmath))
 
     return IR.create_operation(
         "arith.subf",

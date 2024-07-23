@@ -192,7 +192,7 @@ function cond_br(
     _successors = Block[trueDest, falseDest]
     _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([1, length(trueDestOperands), length(falseDestOperands)]),
     )
 
@@ -439,9 +439,10 @@ function switch(
         "case_operand_segments", case_operand_segments
     ),]
     push!(
-        attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
+        _attributes, operandsegmentsizes([1, length(defaultOperands), length(caseOperands)])
     )
-    !isnothing(case_values) && push!(attributes, namedattribute("case_values", case_values))
+    !isnothing(case_values) &&
+        push!(_attributes, namedattribute("case_values", case_values))
 
     return IR.create_operation(
         "std.switch",
