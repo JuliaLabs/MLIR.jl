@@ -225,16 +225,15 @@ in these contexts.
 function load(
     memref::Value,
     indices::Vector{Value};
-    result=nothing::Union{Nothing,IR.Type},
+    result::IR.Type,
     nontemporal=nothing,
     location=Location(),
 )
-    results = IR.Type[]
+    results = IR.Type[result,]
     operands = Value[memref, indices...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
     !isnothing(nontemporal) && push!(attributes, namedattribute("nontemporal", nontemporal))
 
     return IR.create_operation(
@@ -244,8 +243,8 @@ function load(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -415,8 +414,8 @@ operation:
 If `memref.alloca_scope` returns no value, the `memref.alloca_scope.return ` can
 be left out, and will be inserted implicitly.
 """
-function alloca_scope(; results::Vector{IR.Type}, bodyRegion::Region, location=Location())
-    results = IR.Type[results...,]
+function alloca_scope(; results_::Vector{IR.Type}, bodyRegion::Region, location=Location())
+    results = IR.Type[results_...,]
     operands = Value[]
     owned_regions = Region[bodyRegion,]
     successors = Block[]
@@ -446,9 +445,9 @@ to indicate which values are going to be returned. For example:
 memref.alloca_scope.return %value
 ```
 """
-function alloca_scope_return(results::Vector{Value}; location=Location())
+function alloca_scope_return(results_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[results...,]
+    operands = Value[results_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -730,9 +729,9 @@ TODO: add additional operands to allow source and destination striding, and
 multiple stride levels.
 TODO: Consider replacing src/dst memref indices with view memrefs.
 """
-function dma_start(operands::Vector{Value}; location=Location())
+function dma_start(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

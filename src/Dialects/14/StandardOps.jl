@@ -94,10 +94,10 @@ Function values can be created with the
 function call_indirect(
     callee::Value,
     callee_operands::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[callee, callee_operands...]
     owned_regions = Region[]
     successors = Block[]
@@ -130,10 +130,10 @@ symbol reference attribute named \"callee\".
 ```
 """
 function call(
-    operands::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
+    operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
 )
     results = IR.Type[result_0...,]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee),]
@@ -279,9 +279,9 @@ func @foo() : (i32, f8) {
 }
 ```
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

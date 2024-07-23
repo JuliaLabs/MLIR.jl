@@ -416,9 +416,9 @@ print %1
         3 | 0    0    0
 ```
 """
-function create_mask(operands::Vector{Value}; result_0::IR.Type, location=Location())
+function create_mask(operands_::Vector{Value}; result_0::IR.Type, location=Location())
     results = IR.Type[result_0,]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2036,9 +2036,7 @@ function transfer_read(
     successors = Block[]
     attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
     !isnothing(mask) && push!(operands, mask)
-    push!(
-        attributes, operandsegmentsizes([1, length(indices), 1, (mask == nothing) ? 0 : 1])
-    )
+    push!(attributes, operandsegmentsizes([1, length(indices), 1, isnothing(mask) ? 0 : 1]))
     !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
 
     return IR.create_operation(
@@ -2159,9 +2157,7 @@ function transfer_write(
     successors = Block[]
     attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
     !isnothing(mask) && push!(operands, mask)
-    push!(
-        attributes, operandsegmentsizes([1, 1, length(indices), (mask == nothing) ? 0 : 1])
-    )
+    push!(attributes, operandsegmentsizes([1, 1, length(indices), isnothing(mask) ? 0 : 1]))
     !isnothing(result) && push!(results, result)
     !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
 

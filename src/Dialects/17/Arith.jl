@@ -323,19 +323,12 @@ attribute by the parser.
 %r3 = \"arith.cmpf\"(%0, %1) {predicate: 0} : (f8, f8) -> i1
 ```
 """
-function cmpf(
-    lhs::Value,
-    rhs::Value;
-    result=nothing::Union{Nothing,IR.Type},
-    predicate,
-    location=Location(),
-)
-    results = IR.Type[]
+function cmpf(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
+    results = IR.Type[result,]
     operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
-    !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "arith.cmpf",
@@ -344,8 +337,8 @@ function cmpf(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -414,19 +407,12 @@ complement or large positives
     : (vector<4xi64>, vector<4xi64>) -> vector<4xi1>
 ```
 """
-function cmpi(
-    lhs::Value,
-    rhs::Value;
-    result=nothing::Union{Nothing,IR.Type},
-    predicate,
-    location=Location(),
-)
-    results = IR.Type[]
+function cmpi(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Location())
+    results = IR.Type[result,]
     operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
-    !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "arith.cmpi",
@@ -435,8 +421,8 @@ function cmpi(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 

@@ -602,7 +602,7 @@ function launch_func(
     blockSizeY::Value,
     blockSizeZ::Value,
     dynamicSharedMemorySize=nothing::Union{Nothing,Value};
-    operands::Vector{Value},
+    operands_::Vector{Value},
     asyncToken=nothing::Union{Nothing,IR.Type},
     kernel,
     location=Location(),
@@ -616,7 +616,7 @@ function launch_func(
         blockSizeX,
         blockSizeY,
         blockSizeZ,
-        operands...,
+        operands_...,
     ]
     owned_regions = Region[]
     successors = Block[]
@@ -632,7 +632,8 @@ function launch_func(
             1,
             1,
             1,
-            (dynamicSharedMemorySize == nothing) ? 0 : 1length(operands),
+            isnothing(dynamicSharedMemorySize) ? 0 : 1,
+            length(operands_),
         ]),
     )
     !isnothing(asyncToken) && push!(results, asyncToken)
@@ -760,7 +761,7 @@ function launch(
             1,
             1,
             1,
-            (dynamicSharedMemorySize == nothing) ? 0 : 1,
+            isnothing(dynamicSharedMemorySize) ? 0 : 1,
         ]),
     )
     !isnothing(asyncToken) && push!(results, asyncToken)
@@ -955,9 +956,9 @@ A terminator operation for regions that appear in the body of  `gpu.func`
 functions. The operands to the `gpu.return` are the result values returned
 by an invocation of the `gpu.func`.
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

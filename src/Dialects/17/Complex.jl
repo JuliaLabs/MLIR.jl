@@ -15,13 +15,12 @@ The `abs` op takes a single complex number and computes its absolute value.
 %a = complex.abs %b : complex<f32>
 ```
 """
-function abs(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    results = IR.Type[]
+function abs(complex::Value; result::IR.Type, location=Location())
+    results = IR.Type[result,]
     operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "complex.abs",
@@ -30,8 +29,8 @@ function abs(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Lo
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -79,13 +78,12 @@ The `angle` op takes a single complex number and computes its argument value wit
      %a = complex.angle %b : complex<f32>
 ```
 """
-function angle(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=Location())
-    results = IR.Type[]
+function angle(complex::Value; result::IR.Type, location=Location())
+    results = IR.Type[result,]
     operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "complex.angle",
@@ -94,8 +92,8 @@ function angle(complex::Value; result=nothing::Union{Nothing,IR.Type}, location=
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -434,13 +432,12 @@ The `im` op takes a single complex number and extracts the imaginary part.
 %a = complex.im %b : complex<f32>
 ```
 """
-function im(complex::Value; imaginary=nothing::Union{Nothing,IR.Type}, location=Location())
-    results = IR.Type[]
+function im(complex::Value; imaginary::IR.Type, location=Location())
+    results = IR.Type[imaginary,]
     operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(imaginary) && push!(results, imaginary)
 
     return IR.create_operation(
         "complex.im",
@@ -449,8 +446,8 @@ function im(complex::Value; imaginary=nothing::Union{Nothing,IR.Type}, location=
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -662,13 +659,12 @@ The `re` op takes a single complex number and extracts the real part.
 %a = complex.re %b : complex<f32>
 ```
 """
-function re(complex::Value; real=nothing::Union{Nothing,IR.Type}, location=Location())
-    results = IR.Type[]
+function re(complex::Value; real::IR.Type, location=Location())
+    results = IR.Type[real,]
     operands = Value[complex,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(real) && push!(results, real)
 
     return IR.create_operation(
         "complex.re",
@@ -677,8 +673,8 @@ function re(complex::Value; real=nothing::Union{Nothing,IR.Type}, location=Locat
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 

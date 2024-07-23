@@ -185,11 +185,11 @@ function for_(
     upperBound::Value,
     step::Value,
     initArgs::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[lowerBound, upperBound, step, initArgs...]
     owned_regions = Region[region,]
     successors = Block[]
@@ -309,12 +309,12 @@ Example with thread_dim_mapping attribute:
 """
 function foreach_thread(
     num_threads::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     thread_dim_mapping=nothing,
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[num_threads...,]
     owned_regions = Region[region,]
     successors = Block[]
@@ -382,12 +382,12 @@ scf.if %b  {
 """
 function if_(
     condition::Value;
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     thenRegion::Region,
     elseRegion::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[condition,]
     owned_regions = Region[thenRegion, elseRegion]
     successors = Block[]
@@ -456,11 +456,11 @@ function parallel(
     upperBound::Vector{Value},
     step::Vector{Value},
     initVals::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[lowerBound..., upperBound..., step..., initVals...]
     owned_regions = Region[region,]
     successors = Block[]
@@ -715,12 +715,12 @@ assignment ::= ssa-value `=` ssa-value
 """
 function while_(
     inits::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     before::Region,
     after::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[inits...,]
     owned_regions = Region[before, after]
     successors = Block[]
@@ -751,9 +751,9 @@ left out in the custom syntax and the builders will insert one implicitly.
 Otherwise, it has to be present in the syntax to indicate which values are
 yielded.
 """
-function yield(results::Vector{Value}; location=Location())
+function yield(results_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[results...,]
+    operands = Value[results_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

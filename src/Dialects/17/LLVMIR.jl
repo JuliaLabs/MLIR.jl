@@ -194,7 +194,7 @@ function cmpxchg(
     ptr::Value,
     cmp::Value,
     val::Value;
-    res=nothing::Union{Nothing,IR.Type},
+    res::IR.Type,
     success_ordering,
     failure_ordering,
     syncscope=nothing,
@@ -207,7 +207,7 @@ function cmpxchg(
     tbaa=nothing,
     location=Location(),
 )
-    results = IR.Type[]
+    results = IR.Type[res,]
     operands = Value[ptr, cmp, val]
     owned_regions = Region[]
     successors = Block[]
@@ -215,7 +215,6 @@ function cmpxchg(
         namedattribute("success_ordering", success_ordering),
         namedattribute("failure_ordering", failure_ordering),
     ]
-    !isnothing(res) && push!(results, res)
     !isnothing(syncscope) && push!(attributes, namedattribute("syncscope", syncscope))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     !isnothing(weak) && push!(attributes, namedattribute("weak", weak))
@@ -235,8 +234,8 @@ function cmpxchg(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -247,7 +246,7 @@ end
 function atomicrmw(
     ptr::Value,
     val::Value;
-    res=nothing::Union{Nothing,IR.Type},
+    res::IR.Type,
     bin_op,
     ordering,
     syncscope=nothing,
@@ -259,14 +258,13 @@ function atomicrmw(
     tbaa=nothing,
     location=Location(),
 )
-    results = IR.Type[]
+    results = IR.Type[res,]
     operands = Value[ptr, val]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[
         namedattribute("bin_op", bin_op), namedattribute("ordering", ordering)
     ]
-    !isnothing(res) && push!(results, res)
     !isnothing(syncscope) && push!(attributes, namedattribute("syncscope", syncscope))
     !isnothing(alignment) && push!(attributes, namedattribute("alignment", alignment))
     !isnothing(volatile_) && push!(attributes, namedattribute("volatile_", volatile_))
@@ -285,8 +283,8 @@ function atomicrmw(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -571,15 +569,12 @@ end
 `extractelement`
 
 """
-function extractelement(
-    vector::Value, position::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
-)
-    results = IR.Type[]
+function extractelement(vector::Value, position::Value; res::IR.Type, location=Location())
+    results = IR.Type[res,]
     operands = Value[vector, position]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
 
     return IR.create_operation(
         "llvm.extractelement",
@@ -588,8 +583,8 @@ function extractelement(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -655,17 +650,16 @@ end
 function fcmp(
     lhs::Value,
     rhs::Value;
-    res=nothing::Union{Nothing,IR.Type},
+    res::IR.Type,
     predicate,
     fastmathFlags=nothing,
     location=Location(),
 )
-    results = IR.Type[]
+    results = IR.Type[res,]
     operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
-    !isnothing(res) && push!(results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -676,8 +670,8 @@ function fcmp(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -1271,19 +1265,12 @@ end
 `icmp`
 
 """
-function icmp(
-    lhs::Value,
-    rhs::Value;
-    res=nothing::Union{Nothing,IR.Type},
-    predicate,
-    location=Location(),
-)
-    results = IR.Type[]
+function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location())
+    results = IR.Type[res,]
     operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
-    !isnothing(res) && push!(results, res)
 
     return IR.create_operation(
         "llvm.icmp",
@@ -1292,8 +1279,8 @@ function icmp(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 
@@ -1308,7 +1295,7 @@ Attempting to define or reference any symbol or any global behavior is
 considered undefined behavior at this time.
 """
 function inline_asm(
-    operands::Vector{Value};
+    operands_::Vector{Value};
     res=nothing::Union{Nothing,IR.Type},
     asm_string,
     constraints,
@@ -1319,7 +1306,7 @@ function inline_asm(
     location=Location(),
 )
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[
@@ -2573,12 +2560,12 @@ the MLIR function type of this op to determine which intrinsic to call.
 """
 function call_intrinsic(
     args::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     intrin,
     fastmathFlags=nothing,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[args...,]
     owned_regions = Region[]
     successors = Block[]
@@ -3585,37 +3572,6 @@ function intr_llround(val::Value; res::IR.Type, location=Location())
 end
 
 """
-`intr_log2`
-
-"""
-function intr_log2(
-    in::Value;
-    res=nothing::Union{Nothing,IR.Type},
-    fastmathFlags=nothing,
-    location=Location(),
-)
-    results = IR.Type[]
-    operands = Value[in,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
-    !isnothing(fastmathFlags) &&
-        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
-
-    return IR.create_operation(
-        "llvm.intr.log2",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
-    )
-end
-
-"""
 `intr_log10`
 
 """
@@ -3636,6 +3592,37 @@ function intr_log10(
 
     return IR.create_operation(
         "llvm.intr.log10",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
+    )
+end
+
+"""
+`intr_log2`
+
+"""
+function intr_log2(
+    in::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    fastmathFlags=nothing,
+    location=Location(),
+)
+    results = IR.Type[]
+    operands = Value[in,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(res) && push!(results, res)
+    !isnothing(fastmathFlags) &&
+        push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
+
+    return IR.create_operation(
+        "llvm.intr.log2",
         location;
         operands,
         owned_regions,
@@ -8938,10 +8925,10 @@ function workitem_id_z(; res::IR.Type, location=Location())
 end
 
 """
-`mfma_f32_4x4x1f32`
+`mfma_f32_16x16x16bf16_1k`
 
 """
-function mfma_f32_4x4x1f32(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_16x16x16bf16_1k(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -8949,7 +8936,7 @@ function mfma_f32_4x4x1f32(args::Vector{Value}; res::IR.Type, location=Location(
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.4x4x1f32",
+        "rocdl.mfma.f32.16x16x16bf16.1k",
         location;
         operands,
         owned_regions,
@@ -8961,10 +8948,10 @@ function mfma_f32_4x4x1f32(args::Vector{Value}; res::IR.Type, location=Location(
 end
 
 """
-`mfma_f32_4x4x2bf16`
+`mfma_f32_16x16x16f16`
 
 """
-function mfma_f32_4x4x2bf16(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_16x16x16f16(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -8972,53 +8959,7 @@ function mfma_f32_4x4x2bf16(args::Vector{Value}; res::IR.Type, location=Location
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.4x4x2bf16",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
-        result_inference=false,
-    )
-end
-
-"""
-`mfma_f32_4x4x4bf16_1k`
-
-"""
-function mfma_f32_4x4x4bf16_1k(args::Vector{Value}; res::IR.Type, location=Location())
-    results = IR.Type[res,]
-    operands = Value[args...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "rocdl.mfma.f32.4x4x4bf16.1k",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
-        result_inference=false,
-    )
-end
-
-"""
-`mfma_f32_4x4x4f16`
-
-"""
-function mfma_f32_4x4x4f16(args::Vector{Value}; res::IR.Type, location=Location())
-    results = IR.Type[res,]
-    operands = Value[args...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "rocdl.mfma.f32.4x4x4f16",
+        "rocdl.mfma.f32.16x16x16f16",
         location;
         operands,
         owned_regions,
@@ -9065,6 +9006,98 @@ function mfma_f32_16x16x2bf16(args::Vector{Value}; res::IR.Type, location=Locati
 
     return IR.create_operation(
         "rocdl.mfma.f32.16x16x2bf16",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
+end
+
+"""
+`mfma_f32_16x16x32_bf8_bf8`
+
+"""
+function mfma_f32_16x16x32_bf8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[args...,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+
+    return IR.create_operation(
+        "rocdl.mfma.f32.16x16x32.bf8.bf8",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
+end
+
+"""
+`mfma_f32_16x16x32_bf8_fp8`
+
+"""
+function mfma_f32_16x16x32_bf8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[args...,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+
+    return IR.create_operation(
+        "rocdl.mfma.f32.16x16x32.bf8.fp8",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
+end
+
+"""
+`mfma_f32_16x16x32_fp8_bf8`
+
+"""
+function mfma_f32_16x16x32_fp8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[args...,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+
+    return IR.create_operation(
+        "rocdl.mfma.f32.16x16x32.fp8.bf8",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
+end
+
+"""
+`mfma_f32_16x16x32_fp8_fp8`
+
+"""
+function mfma_f32_16x16x32_fp8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[args...,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+
+    return IR.create_operation(
+        "rocdl.mfma.f32.16x16x32.fp8.fp8",
         location;
         operands,
         owned_regions,
@@ -9191,10 +9224,10 @@ function mfma_f32_16x16x8bf16(args::Vector{Value}; res::IR.Type, location=Locati
 end
 
 """
-`mfma_f32_16x16x16bf16_1k`
+`mfma_f32_32x32x16_bf8_bf8`
 
 """
-function mfma_f32_16x16x16bf16_1k(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_32x32x16_bf8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9202,7 +9235,7 @@ function mfma_f32_16x16x16bf16_1k(args::Vector{Value}; res::IR.Type, location=Lo
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.16x16x16bf16.1k",
+        "rocdl.mfma.f32.32x32x16.bf8.bf8",
         location;
         operands,
         owned_regions,
@@ -9214,10 +9247,10 @@ function mfma_f32_16x16x16bf16_1k(args::Vector{Value}; res::IR.Type, location=Lo
 end
 
 """
-`mfma_f32_16x16x16f16`
+`mfma_f32_32x32x16_bf8_fp8`
 
 """
-function mfma_f32_16x16x16f16(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_32x32x16_bf8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9225,7 +9258,7 @@ function mfma_f32_16x16x16f16(args::Vector{Value}; res::IR.Type, location=Locati
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.16x16x16f16",
+        "rocdl.mfma.f32.32x32x16.bf8.fp8",
         location;
         operands,
         owned_regions,
@@ -9237,10 +9270,10 @@ function mfma_f32_16x16x16f16(args::Vector{Value}; res::IR.Type, location=Locati
 end
 
 """
-`mfma_f32_16x16x32_bf8_bf8`
+`mfma_f32_32x32x16_fp8_bf8`
 
 """
-function mfma_f32_16x16x32_bf8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_32x32x16_fp8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9248,7 +9281,7 @@ function mfma_f32_16x16x32_bf8_bf8(args::Vector{Value}; res::IR.Type, location=L
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.16x16x32.bf8.bf8",
+        "rocdl.mfma.f32.32x32x16.fp8.bf8",
         location;
         operands,
         owned_regions,
@@ -9260,10 +9293,10 @@ function mfma_f32_16x16x32_bf8_bf8(args::Vector{Value}; res::IR.Type, location=L
 end
 
 """
-`mfma_f32_16x16x32_bf8_fp8`
+`mfma_f32_32x32x16_fp8_fp8`
 
 """
-function mfma_f32_16x16x32_bf8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_32x32x16_fp8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9271,53 +9304,7 @@ function mfma_f32_16x16x32_bf8_fp8(args::Vector{Value}; res::IR.Type, location=L
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.16x16x32.bf8.fp8",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
-        result_inference=false,
-    )
-end
-
-"""
-`mfma_f32_16x16x32_fp8_bf8`
-
-"""
-function mfma_f32_16x16x32_fp8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
-    results = IR.Type[res,]
-    operands = Value[args...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "rocdl.mfma.f32.16x16x32.fp8.bf8",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
-        result_inference=false,
-    )
-end
-
-"""
-`mfma_f32_16x16x32_fp8_fp8`
-
-"""
-function mfma_f32_16x16x32_fp8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
-    results = IR.Type[res,]
-    operands = Value[args...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "rocdl.mfma.f32.16x16x32.fp8.fp8",
+        "rocdl.mfma.f32.32x32x16.fp8.fp8",
         location;
         operands,
         owned_regions,
@@ -9536,10 +9523,10 @@ function mfma_f32_32x32x8f16(args::Vector{Value}; res::IR.Type, location=Locatio
 end
 
 """
-`mfma_f32_32x32x16_bf8_bf8`
+`mfma_f32_4x4x1f32`
 
 """
-function mfma_f32_32x32x16_bf8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_4x4x1f32(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9547,7 +9534,7 @@ function mfma_f32_32x32x16_bf8_bf8(args::Vector{Value}; res::IR.Type, location=L
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.32x32x16.bf8.bf8",
+        "rocdl.mfma.f32.4x4x1f32",
         location;
         operands,
         owned_regions,
@@ -9559,10 +9546,10 @@ function mfma_f32_32x32x16_bf8_bf8(args::Vector{Value}; res::IR.Type, location=L
 end
 
 """
-`mfma_f32_32x32x16_bf8_fp8`
+`mfma_f32_4x4x2bf16`
 
 """
-function mfma_f32_32x32x16_bf8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_4x4x2bf16(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9570,7 +9557,7 @@ function mfma_f32_32x32x16_bf8_fp8(args::Vector{Value}; res::IR.Type, location=L
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.32x32x16.bf8.fp8",
+        "rocdl.mfma.f32.4x4x2bf16",
         location;
         operands,
         owned_regions,
@@ -9582,10 +9569,10 @@ function mfma_f32_32x32x16_bf8_fp8(args::Vector{Value}; res::IR.Type, location=L
 end
 
 """
-`mfma_f32_32x32x16_fp8_bf8`
+`mfma_f32_4x4x4bf16_1k`
 
 """
-function mfma_f32_32x32x16_fp8_bf8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_4x4x4bf16_1k(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9593,7 +9580,7 @@ function mfma_f32_32x32x16_fp8_bf8(args::Vector{Value}; res::IR.Type, location=L
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.32x32x16.fp8.bf8",
+        "rocdl.mfma.f32.4x4x4bf16.1k",
         location;
         operands,
         owned_regions,
@@ -9605,10 +9592,10 @@ function mfma_f32_32x32x16_fp8_bf8(args::Vector{Value}; res::IR.Type, location=L
 end
 
 """
-`mfma_f32_32x32x16_fp8_fp8`
+`mfma_f32_4x4x4f16`
 
 """
-function mfma_f32_32x32x16_fp8_fp8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f32_4x4x4f16(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9616,30 +9603,7 @@ function mfma_f32_32x32x16_fp8_fp8(args::Vector{Value}; res::IR.Type, location=L
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.f32.32x32x16.fp8.fp8",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
-        result_inference=false,
-    )
-end
-
-"""
-`mfma_f64_4x4x4f64`
-
-"""
-function mfma_f64_4x4x4f64(args::Vector{Value}; res::IR.Type, location=Location())
-    results = IR.Type[res,]
-    operands = Value[args...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "rocdl.mfma.f64.4x4x4f64",
+        "rocdl.mfma.f32.4x4x4f16",
         location;
         operands,
         owned_regions,
@@ -9674,10 +9638,10 @@ function mfma_f64_16x16x4f64(args::Vector{Value}; res::IR.Type, location=Locatio
 end
 
 """
-`mfma_i32_4x4x4i8`
+`mfma_f64_4x4x4f64`
 
 """
-function mfma_i32_4x4x4i8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_f64_4x4x4f64(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9685,30 +9649,7 @@ function mfma_i32_4x4x4i8(args::Vector{Value}; res::IR.Type, location=Location()
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.i32.4x4x4i8",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
-        result_inference=false,
-    )
-end
-
-"""
-`mfma_i32_16x16x4i8`
-
-"""
-function mfma_i32_16x16x4i8(args::Vector{Value}; res::IR.Type, location=Location())
-    results = IR.Type[res,]
-    operands = Value[args...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "rocdl.mfma.i32.16x16x4i8",
+        "rocdl.mfma.f64.4x4x4f64",
         location;
         operands,
         owned_regions,
@@ -9766,6 +9707,52 @@ function mfma_i32_16x16x32_i8(args::Vector{Value}; res::IR.Type, location=Locati
 end
 
 """
+`mfma_i32_16x16x4i8`
+
+"""
+function mfma_i32_16x16x4i8(args::Vector{Value}; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[args...,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+
+    return IR.create_operation(
+        "rocdl.mfma.i32.16x16x4i8",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
+end
+
+"""
+`mfma_i32_32x32x16_i8`
+
+"""
+function mfma_i32_32x32x16_i8(args::Vector{Value}; res::IR.Type, location=Location())
+    results = IR.Type[res,]
+    operands = Value[args...,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+
+    return IR.create_operation(
+        "rocdl.mfma.i32.32x32x16.i8",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=results,
+        result_inference=false,
+    )
+end
+
+"""
 `mfma_i32_32x32x4i8`
 
 """
@@ -9812,10 +9799,10 @@ function mfma_i32_32x32x8i8(args::Vector{Value}; res::IR.Type, location=Location
 end
 
 """
-`mfma_i32_32x32x16_i8`
+`mfma_i32_4x4x4i8`
 
 """
-function mfma_i32_32x32x16_i8(args::Vector{Value}; res::IR.Type, location=Location())
+function mfma_i32_4x4x4i8(args::Vector{Value}; res::IR.Type, location=Location())
     results = IR.Type[res,]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -9823,7 +9810,7 @@ function mfma_i32_32x32x16_i8(args::Vector{Value}; res::IR.Type, location=Locati
     attributes = NamedAttribute[]
 
     return IR.create_operation(
-        "rocdl.mfma.i32.32x32x16.i8",
+        "rocdl.mfma.i32.4x4x4i8",
         location;
         operands,
         owned_regions,

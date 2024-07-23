@@ -153,9 +153,9 @@ explicitly present. The number and types of the \"affine.for\" results must
 match the initial values in the `iter_args` binding and the yield operands.
 """
 function for_(
-    operand_0::Vector{Value}; results::Vector{IR.Type}, region::Region, location=Location()
+    operand_0::Vector{Value}; results_::Vector{IR.Type}, region::Region, location=Location()
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[operand_0...,]
     owned_regions = Region[region,]
     successors = Block[]
@@ -245,12 +245,12 @@ func.func @pad_edges(%I : memref<10x10xf32>) -> (memref<12x12xf32) {
 """
 function if_(
     operand_0::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     thenRegion::Region,
     elseRegion::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[operand_0...,]
     owned_regions = Region[thenRegion, elseRegion]
     successors = Block[]
@@ -321,9 +321,9 @@ affine map.
 %0 = affine.max (d0) -> (1000, d0 + 512) (%i0) : index
 ```
 """
-function max(operands::Vector{Value}; result_0::IR.Type, map, location=Location())
+function max(operands_::Vector{Value}; result_0::IR.Type, map, location=Location())
     results = IR.Type[result_0,]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("map", map),]
@@ -362,9 +362,9 @@ input operands and result must all have \'index\' type.
 %0 = affine.min affine_map<(d0)[s0] -> (1000, d0 + 512, s0)> (%arg0)[%arg1]
 ```
 """
-function min(operands::Vector{Value}; result_0::IR.Type, map, location=Location())
+function min(operands_::Vector{Value}; result_0::IR.Type, map, location=Location())
     results = IR.Type[result_0,]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("map", map),]
@@ -448,7 +448,7 @@ affine.parallel (%ii, %jj) = (0, 0) to (%N, %M) step (32, 32) {
 """
 function parallel(
     mapOperands::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     reductions,
     lowerBoundsMap,
     lowerBoundsGroups,
@@ -458,7 +458,7 @@ function parallel(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[mapOperands...,]
     owned_regions = Region[region,]
     successors = Block[]
@@ -708,9 +708,9 @@ Otherwise, it has to be present in the syntax to indicate which values are
 yielded.
 ```
 """
-function yield(operands::Vector{Value}; location=Location())
+function yield(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

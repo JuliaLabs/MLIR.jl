@@ -64,9 +64,9 @@ pdl_interp.apply_rewrite \"rewriter\"(%root : !pdl.operation, %value : !pdl.valu
 ```
 """
 function apply_rewrite(
-    args::Vector{Value}; results::Vector{IR.Type}, name, location=Location()
+    args::Vector{Value}; results_::Vector{IR.Type}, name, location=Location()
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[args...,]
     owned_regions = Region[]
     successors = Block[]

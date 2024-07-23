@@ -76,14 +76,7 @@ function alloc_tensor(
     push!(
         attributes,
         operandsegmentsizes([
-            length(dynamic_sizes),
-            if (copy == nothing)
-                0
-            elseif 1(size_hint == nothing)
-                0
-            else
-                1
-            end,
+            length(dynamic_sizes), isnothing(copy) ? 0 : 1, isnothing(size_hint) ? 0 : 1
         ]),
     )
     !isnothing(memory_space) &&
@@ -348,18 +341,13 @@ bufferization. If there are non-bufferizable ops in the IR and
 away. However, such IR is no longer bufferizable with One-Shot Bufferize.
 """
 function to_tensor(
-    memref::Value;
-    result=nothing::Union{Nothing,IR.Type},
-    restrict=nothing,
-    writable=nothing,
-    location=Location(),
+    memref::Value; result::IR.Type, restrict=nothing, writable=nothing, location=Location()
 )
-    results = IR.Type[]
+    results = IR.Type[result,]
     operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
     !isnothing(restrict) && push!(attributes, namedattribute("restrict", restrict))
     !isnothing(writable) && push!(attributes, namedattribute("writable", writable))
 
@@ -370,8 +358,8 @@ function to_tensor(
         owned_regions,
         successors,
         attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=results,
+        result_inference=false,
     )
 end
 

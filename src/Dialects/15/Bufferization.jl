@@ -58,9 +58,7 @@ function alloc_tensor(
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(copy) && push!(operands, copy)
-    push!(
-        attributes, operandsegmentsizes([length(dynamic_sizes), (copy == nothing) ? 0 : 1])
-    )
+    push!(attributes, operandsegmentsizes([length(dynamic_sizes), isnothing(copy) ? 0 : 1]))
     !isnothing(memory_space) &&
         push!(attributes, namedattribute("memory_space", memory_space))
 

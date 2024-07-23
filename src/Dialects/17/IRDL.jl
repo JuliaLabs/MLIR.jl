@@ -187,7 +187,7 @@ function attribute(; sym_name, body::Region, location=Location())
 end
 
 """
-`attributes`
+`attributes_`
 
 `irdl.attributes` defines the attributes of the `irdl.operation` parent 
 operation definition.
@@ -212,7 +212,7 @@ irdl.dialect @example {
 The operation will expect an arbitrary attribute \"attr1\" and an
 attribute \"attr2\" with value `i64`.
 """
-function attributes(
+function attributes_(
     attributeValues::Vector{Value}; attributeValueNames, location=Location()
 )
     results = IR.Type[]
@@ -358,7 +358,7 @@ function is(; output=nothing::Union{Nothing,IR.Type}, expected, location=Locatio
 end
 
 """
-`operands`
+`operands_`
 
 `irdl.operands` define the operands of the `irdl.operation` parent operation
 definition.
@@ -395,7 +395,7 @@ When more than one operand is marked as optional or variadic, the operation
 will expect a \'operandSegmentSizes\' attribute that defines the number of
 operands in each segment.
 """
-function operands(args::Vector{Value}; location=Location())
+function operands_(args::Vector{Value}; location=Location())
     results = IR.Type[]
     operands = Value[args...,]
     owned_regions = Region[]
@@ -557,7 +557,7 @@ function parametric(
 end
 
 """
-`results`
+`results_`
 
 `irdl.results` define the results of the `irdl.operation` parent operation
 definition.
@@ -594,7 +594,7 @@ When more than one result is marked as optional or variadic, the operation
 will expect a \'resultSegmentSizes\' attribute that defines the number of
 results in each segment.
 """
-function results(args::Vector{Value}; location=Location())
+function results_(args::Vector{Value}; location=Location())
     results = IR.Type[]
     operands = Value[args...,]
     owned_regions = Region[]

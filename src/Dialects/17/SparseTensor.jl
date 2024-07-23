@@ -429,12 +429,12 @@ sparse_tensor.foreach in %0 {order=affine_map<(i,j)->(j,i)>}: tensor<2x3xf64> do
 function foreach(
     tensor::Value,
     initArgs::Vector{Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     order=nothing,
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[tensor, initArgs...]
     owned_regions = Region[region,]
     successors = Block[]

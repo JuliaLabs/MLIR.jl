@@ -321,9 +321,9 @@ The operation takes variable number of operands and produces no results.
 The operand number and types must match the signature of the function
 that contains the operation.
 """
-function output(operands::Vector{Value}; location=Location())
+function output(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -349,9 +349,9 @@ The operation takes variable number of operands and produces no results.
 The operand number and types must match the signature of the function
 that contains the operation.
 """
-function return_(operands::Vector{Value}; location=Location())
+function return_(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

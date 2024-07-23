@@ -272,13 +272,13 @@ it is a navigation op.
 """
 function structured_match(
     target::Value;
-    results::IR.Type,
+    results_::IR.Type,
     ops=nothing,
     interface=nothing,
     attribute=nothing,
     location=Location(),
 )
-    results = IR.Type[results,]
+    results = IR.Type[results_,]
     operands = Value[target,]
     owned_regions = Region[]
     successors = Block[]
@@ -1220,11 +1220,11 @@ Remark: this op allows one to implement a simple \"try\" construct as follows:
 """
 function alternatives(
     scope=nothing::Union{Nothing,Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     alternatives::Vector{Region},
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[]
     owned_regions = Region[alternatives...,]
     successors = Block[]
@@ -1452,11 +1452,11 @@ another sequence.
 """
 function sequence(
     root=nothing::Union{Nothing,Value};
-    results::Vector{IR.Type},
+    results_::Vector{IR.Type},
     body::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
+    results = IR.Type[results_...,]
     operands = Value[]
     owned_regions = Region[body,]
     successors = Block[]
@@ -1540,9 +1540,9 @@ This terminator operation yields operation handles from regions of the
 transform IR ops back to the containing op. It is not itself associated with
 any transformation on the payload IR and is used for flow purposes only.
 """
-function yield(operands::Vector{Value}; location=Location())
+function yield(operands_::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands...,]
+    operands = Value[operands_...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
