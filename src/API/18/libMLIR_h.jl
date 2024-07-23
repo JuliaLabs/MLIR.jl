@@ -2,13 +2,8 @@ using CEnum
 
 const intptr_t = Clong
 
-"""
-    mlirStringRefCreate(str, length)
-
-Constructs a string reference from the pointer and length. The pointer need not reference to a null-terminated string.
-"""
 function mlirStringRefCreate(str, length)
-    @ccall (MLIR_C_PATH[]).mlirStringRefCreate(str::Cstring, length::Csize_t)::MlirStringRef
+    @ccall (MLIR_C_PATH[]).mlirStringRefCreate(str::Cstring, length::Cint)::MlirStringRef
 end
 
 """
@@ -120,13 +115,8 @@ function mlirTypeIDEqual(typeID1, typeID2)
     @ccall (MLIR_C_PATH[]).mlirTypeIDEqual(typeID1::MlirTypeID, typeID2::MlirTypeID)::Bool
 end
 
-"""
-    mlirTypeIDHashValue(typeID)
-
-Returns the hash value of the type id.
-"""
 function mlirTypeIDHashValue(typeID)
-    @ccall (MLIR_C_PATH[]).mlirTypeIDHashValue(typeID::MlirTypeID)::Csize_t
+    @ccall (MLIR_C_PATH[]).mlirTypeIDHashValue(typeID::MlirTypeID)::Cint
 end
 
 """
@@ -3579,18 +3569,9 @@ function mlirDenseElementsAttrGet(shapedType, numElements, elements)
     )::MlirAttribute
 end
 
-"""
-    mlirDenseElementsAttrRawBufferGet(shapedType, rawBufferSize, rawBuffer)
-
-Creates a dense elements attribute with the given Shaped type and elements populated from a packed, row-major opaque buffer of contents.
-
-The format of the raw buffer is a densely packed array of values that can be bitcast to the storage format of the element type specified. Types that are not byte aligned will be: - For bitwidth > 1: Rounded up to the next byte. - For bitwidth = 1: Packed into 8bit bytes with bits corresponding to the linear order of the shape type from MSB to LSB, padded to on the right.
-
-A raw buffer of a single element (or for 1-bit, a byte of value 0 or 255) will be interpreted as a splat. User code should be prepared for additional, conformant patterns to be identified as splats in the future.
-"""
 function mlirDenseElementsAttrRawBufferGet(shapedType, rawBufferSize, rawBuffer)
     @ccall (MLIR_C_PATH[]).mlirDenseElementsAttrRawBufferGet(
-        shapedType::MlirType, rawBufferSize::Csize_t, rawBuffer::Ptr{Cvoid}
+        shapedType::MlirType, rawBufferSize::Cint, rawBuffer::Ptr{Cvoid}
     )::MlirAttribute
 end
 
@@ -3930,11 +3911,6 @@ function mlirAttributeIsADenseResourceElements(attr)
     @ccall (MLIR_C_PATH[]).mlirAttributeIsADenseResourceElements(attr::MlirAttribute)::Bool
 end
 
-"""
-    mlirUnmanagedDenseResourceElementsAttrGet(shapedType, name, data, dataLength, dataAlignment, dataIsMutable, deleter, userData)
-
-Unlike the typed accessors below, constructs the attribute with a raw data buffer and no type/alignment checking. Use a more strongly typed accessor if possible. If dataIsMutable is false, then an immutable AsmResourceBlob will be created and that passed data contents will be treated as const. If the deleter is non NULL, then it will be called when the data buffer can no longer be accessed (passing userData to it).
-"""
 function mlirUnmanagedDenseResourceElementsAttrGet(
     shapedType, name, data, dataLength, dataAlignment, dataIsMutable, deleter, userData
 )
@@ -3942,8 +3918,8 @@ function mlirUnmanagedDenseResourceElementsAttrGet(
         shapedType::MlirType,
         name::MlirStringRef,
         data::Ptr{Cvoid},
-        dataLength::Csize_t,
-        dataAlignment::Csize_t,
+        dataLength::Cint,
+        dataAlignment::Cint,
         dataIsMutable::Bool,
         deleter::Ptr{Cvoid},
         userData::Ptr{Cvoid},
@@ -8115,3 +8091,9 @@ end
 function mlirRegisterTransformsViewOpGraph()
     @ccall (MLIR_C_PATH[]).mlirRegisterTransformsViewOpGraph()::Cvoid
 end
+
+const INT64_MAX = Clonglong(9223372036854775807)
+
+const INT64_MIN = -INT64_MAX - 1
+
+const UINT64_MAX = Culonglong(0xffffffffffffffff)
