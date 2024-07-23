@@ -40,23 +40,23 @@ The region has the following allowed forms:
 function atomic_capture(;
     hint_val=nothing, memory_order_val=nothing, region::Region, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(hint_val) && push!(_attributes, namedattribute("hint_val", hint_val))
     !isnothing(memory_order_val) &&
-        push!(attributes, namedattribute("memory_order_val", memory_order_val))
+        push!(_attributes, namedattribute("memory_order_val", memory_order_val))
 
     return IR.create_operation(
         "omp.atomic.capture",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -79,23 +79,23 @@ can be one of `seq_cst`, `acquire` or `relaxed`.
 function atomic_read(
     x::Value, v::Value; hint_val=nothing, memory_order_val=nothing, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[x, v]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    _results = IR.Type[]
+    _operands = Value[x, v]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(hint_val) && push!(_attributes, namedattribute("hint_val", hint_val))
     !isnothing(memory_order_val) &&
-        push!(attributes, namedattribute("memory_order_val", memory_order_val))
+        push!(_attributes, namedattribute("memory_order_val", memory_order_val))
 
     return IR.create_operation(
         "omp.atomic.read",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -137,23 +137,23 @@ function atomic_update(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[x,]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    _results = IR.Type[]
+    _operands = Value[x,]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(hint_val) && push!(_attributes, namedattribute("hint_val", hint_val))
     !isnothing(memory_order_val) &&
-        push!(attributes, namedattribute("memory_order_val", memory_order_val))
+        push!(_attributes, namedattribute("memory_order_val", memory_order_val))
 
     return IR.create_operation(
         "omp.atomic.update",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -182,23 +182,23 @@ function atomic_write(
     memory_order_val=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[address, value]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    _results = IR.Type[]
+    _operands = Value[address, value]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(hint_val) && push!(_attributes, namedattribute("hint_val", hint_val))
     !isnothing(memory_order_val) &&
-        push!(attributes, namedattribute("memory_order_val", memory_order_val))
+        push!(_attributes, namedattribute("memory_order_val", memory_order_val))
 
     return IR.create_operation(
         "omp.atomic.write",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -210,20 +210,20 @@ The barrier construct specifies an explicit barrier at the point at which
 the construct appears.
 """
 function barrier(; location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.barrier",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -239,23 +239,23 @@ function cancel(
     cancellation_construct_type_val,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute(
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute(
         "cancellation_construct_type_val", cancellation_construct_type_val
     ),]
-    !isnothing(if_expr) && push!(operands, if_expr)
+    !isnothing(if_expr) && push!(_operands, if_expr)
 
     return IR.create_operation(
         "omp.cancel",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -268,22 +268,22 @@ point at which implicit or explicit tasks check if cancellation of the
 innermost enclosing region of the type specified has been activated.
 """
 function cancellationpoint(; cancellation_construct_type_val, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute(
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute(
         "cancellation_construct_type_val", cancellation_construct_type_val
     ),]
 
     return IR.create_operation(
         "omp.cancellationpoint",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -296,21 +296,21 @@ Declares a named critical section.
 The name can be used in critical constructs in the dialect.
 """
 function critical_declare(; sym_name, hint_val=nothing, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("sym_name", sym_name),]
-    !isnothing(hint_val) && push!(attributes, namedattribute("hint_val", hint_val))
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("sym_name", sym_name),]
+    !isnothing(hint_val) && push!(_attributes, namedattribute("hint_val", hint_val))
 
     return IR.create_operation(
         "omp.critical.declare",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -322,21 +322,21 @@ The critical construct imposes a restriction on the associated structured
 block (region) to be executed by only a single thread at a time.
 """
 function critical(; name=nothing, region::Region, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(name) && push!(attributes, namedattribute("name", name))
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(name) && push!(_attributes, namedattribute("name", name))
 
     return IR.create_operation(
         "omp.critical",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -350,20 +350,20 @@ enforces an order on the memory operations of the variables explicitly
 specified or implied.
 """
 function flush(varList::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[varList...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[varList...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.flush",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -375,20 +375,20 @@ The master construct specifies a structured block that is executed by
 the master thread of the team.
 """
 function master(; region::Region, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.master",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -417,24 +417,24 @@ function ordered(
     num_loops_val=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[depend_vec_vars...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[depend_vec_vars...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(depend_type_val) &&
-        push!(attributes, namedattribute("depend_type_val", depend_type_val))
+        push!(_attributes, namedattribute("depend_type_val", depend_type_val))
     !isnothing(num_loops_val) &&
-        push!(attributes, namedattribute("num_loops_val", num_loops_val))
+        push!(_attributes, namedattribute("num_loops_val", num_loops_val))
 
     return IR.create_operation(
         "omp.ordered",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -451,21 +451,21 @@ present, it behaves as if the THREADS clause is specified or no clause is
 specified.
 """
 function ordered_region(; simd=nothing, region::Region, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(simd) && push!(attributes, namedattribute("simd", simd))
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(simd) && push!(_attributes, namedattribute("simd", simd))
 
     return IR.create_operation(
         "omp.ordered_region",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -513,39 +513,35 @@ function parallel(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[allocate_vars..., allocators_vars..., reduction_vars...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(if_expr_var) && push!(operands, if_expr_var)
-    !isnothing(num_threads_var) && push!(operands, num_threads_var)
+    _results = IR.Type[]
+    _operands = Value[allocate_vars..., allocators_vars..., reduction_vars...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(if_expr_var) && push!(_operands, if_expr_var)
+    !isnothing(num_threads_var) && push!(_operands, num_threads_var)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            if (if_expr_var == nothing)
-                0
-            elseif 1(num_threads_var == nothing)
-                0
-            else
-                1length(allocate_vars)
-            end,
+            isnothing(if_expr_var) ? 0 : 1,
+            isnothing(num_threads_var) ? 0 : 1,
+            length(allocate_vars),
             length(allocators_vars),
             length(reduction_vars),
         ]),
     )
-    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
+    !isnothing(reductions) && push!(_attributes, namedattribute("reductions", reductions))
     !isnothing(proc_bind_val) &&
-        push!(attributes, namedattribute("proc_bind_val", proc_bind_val))
+        push!(_attributes, namedattribute("proc_bind_val", proc_bind_val))
 
     return IR.create_operation(
         "omp.parallel",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -583,22 +579,22 @@ function reduction_declare(;
     atomicReductionRegion::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[initializerRegion, reductionRegion, atomicReductionRegion]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[initializerRegion, reductionRegion, atomicReductionRegion]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("sym_name", sym_name), namedattribute("type", type)
     ]
 
     return IR.create_operation(
         "omp.reduction.declare",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -612,20 +608,20 @@ identified by the accumulator, but the value of the accumulator may not be
 updated immediately.
 """
 function reduction(operand::Value, accumulator::Value; location=Location())
-    results = IR.Type[]
-    operands = Value[operand, accumulator]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[operand, accumulator]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.reduction",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -638,20 +634,20 @@ sections construct. A section op should always be surrounded by an
 `omp.sections` operation.
 """
 function section(; region::Region, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.section",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -692,28 +688,28 @@ function sections(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[reduction_vars..., allocate_vars..., allocators_vars...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[reduction_vars..., allocate_vars..., allocators_vars...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(reduction_vars), length(allocate_vars), length(allocators_vars)
         ]),
     )
-    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
-    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
+    !isnothing(reductions) && push!(_attributes, namedattribute("reductions", reductions))
+    !isnothing(nowait) && push!(_attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
         "omp.sections",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -751,31 +747,28 @@ function simdloop(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lowerBound..., upperBound..., step...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(if_expr) && push!(operands, if_expr)
+    _results = IR.Type[]
+    _operands = Value[lowerBound..., upperBound..., step...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(if_expr) && push!(_operands, if_expr)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            length(lowerBound),
-            length(upperBound),
-            length(step),
-            (if_expr == nothing) ? 0 : 1,
+            length(lowerBound), length(upperBound), length(step), isnothing(if_expr) ? 0 : 1
         ]),
     )
-    !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
+    !isnothing(inclusive) && push!(_attributes, namedattribute("inclusive", inclusive))
 
     return IR.create_operation(
         "omp.simdloop",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -796,22 +789,24 @@ function single(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[allocate_vars..., allocators_vars...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(allocate_vars), length(allocators_vars)]))
-    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
+    _results = IR.Type[]
+    _operands = Value[allocate_vars..., allocators_vars...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    push!(
+        _attributes, operandsegmentsizes([length(allocate_vars), length(allocators_vars)])
+    )
+    !isnothing(nowait) && push!(_attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
         "omp.single",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -844,35 +839,32 @@ function target(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(if_expr) && push!(operands, if_expr)
-    !isnothing(device) && push!(operands, device)
-    !isnothing(thread_limit) && push!(operands, thread_limit)
-    push!(attributes, operandsegmentsizes([
-        if (if_expr == nothing)
-            0
-        elseif 1(device == nothing)
-            0
-        elseif 1(thread_limit == nothing)
-            0
-        else
-            1
-        end,
-    ]))
-    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(if_expr) && push!(_operands, if_expr)
+    !isnothing(device) && push!(_operands, device)
+    !isnothing(thread_limit) && push!(_operands, thread_limit)
+    push!(
+        _attributes,
+        operandsegmentsizes([
+            isnothing(if_expr) ? 0 : 1,
+            isnothing(device) ? 0 : 1,
+            isnothing(thread_limit) ? 0 : 1,
+        ]),
+    )
+    !isnothing(nowait) && push!(_attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
         "omp.target",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -909,28 +901,28 @@ function taskgroup(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[task_reduction_vars..., allocate_vars..., allocators_vars...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[task_reduction_vars..., allocate_vars..., allocators_vars...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(task_reduction_vars), length(allocate_vars), length(allocators_vars)
         ]),
     )
     !isnothing(task_reductions) &&
-        push!(attributes, namedattribute("task_reductions", task_reductions))
+        push!(_attributes, namedattribute("task_reductions", task_reductions))
 
     return IR.create_operation(
         "omp.taskgroup",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1055,8 +1047,8 @@ function taskloop(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[
+    _results = IR.Type[]
+    _operands = Value[
         lowerBound...,
         upperBound...,
         step...,
@@ -1065,55 +1057,47 @@ function taskloop(
         allocate_vars...,
         allocators_vars...,
     ]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(if_expr) && push!(operands, if_expr)
-    !isnothing(final_expr) && push!(operands, final_expr)
-    !isnothing(priority) && push!(operands, priority)
-    !isnothing(grain_size) && push!(operands, grain_size)
-    !isnothing(num_tasks) && push!(operands, num_tasks)
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(if_expr) && push!(_operands, if_expr)
+    !isnothing(final_expr) && push!(_operands, final_expr)
+    !isnothing(priority) && push!(_operands, priority)
+    !isnothing(grain_size) && push!(_operands, grain_size)
+    !isnothing(num_tasks) && push!(_operands, num_tasks)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound),
             length(upperBound),
             length(step),
-            if (if_expr == nothing)
-                0
-            elseif 1(final_expr == nothing)
-                0
-            else
-                1length(in_reduction_vars)
-            end,
+            isnothing(if_expr) ? 0 : 1,
+            isnothing(final_expr) ? 0 : 1,
+            length(in_reduction_vars),
             length(reduction_vars),
-            (priority == nothing) ? 0 : 1length(allocate_vars),
+            isnothing(priority) ? 0 : 1,
+            length(allocate_vars),
             length(allocators_vars),
-            if (grain_size == nothing)
-                0
-            elseif 1(num_tasks == nothing)
-                0
-            else
-                1
-            end,
+            isnothing(grain_size) ? 0 : 1,
+            isnothing(num_tasks) ? 0 : 1,
         ]),
     )
-    !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
-    !isnothing(untied) && push!(attributes, namedattribute("untied", untied))
-    !isnothing(mergeable) && push!(attributes, namedattribute("mergeable", mergeable))
+    !isnothing(inclusive) && push!(_attributes, namedattribute("inclusive", inclusive))
+    !isnothing(untied) && push!(_attributes, namedattribute("untied", untied))
+    !isnothing(mergeable) && push!(_attributes, namedattribute("mergeable", mergeable))
     !isnothing(in_reductions) &&
-        push!(attributes, namedattribute("in_reductions", in_reductions))
-    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
-    !isnothing(nogroup) && push!(attributes, namedattribute("nogroup", nogroup))
+        push!(_attributes, namedattribute("in_reductions", in_reductions))
+    !isnothing(reductions) && push!(_attributes, namedattribute("reductions", reductions))
+    !isnothing(nogroup) && push!(_attributes, namedattribute("nogroup", nogroup))
 
     return IR.create_operation(
         "omp.taskloop",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1173,41 +1157,38 @@ function task(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[in_reduction_vars..., allocate_vars..., allocators_vars...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(if_expr) && push!(operands, if_expr)
-    !isnothing(final_expr) && push!(operands, final_expr)
-    !isnothing(priority) && push!(operands, priority)
+    _results = IR.Type[]
+    _operands = Value[in_reduction_vars..., allocate_vars..., allocators_vars...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(if_expr) && push!(_operands, if_expr)
+    !isnothing(final_expr) && push!(_operands, final_expr)
+    !isnothing(priority) && push!(_operands, priority)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            if (if_expr == nothing)
-                0
-            elseif 1(final_expr == nothing)
-                0
-            else
-                1length(in_reduction_vars)
-            end,
-            (priority == nothing) ? 0 : 1length(allocate_vars),
+            isnothing(if_expr) ? 0 : 1,
+            isnothing(final_expr) ? 0 : 1,
+            length(in_reduction_vars),
+            isnothing(priority) ? 0 : 1,
+            length(allocate_vars),
             length(allocators_vars),
         ]),
     )
-    !isnothing(untied) && push!(attributes, namedattribute("untied", untied))
-    !isnothing(mergeable) && push!(attributes, namedattribute("mergeable", mergeable))
+    !isnothing(untied) && push!(_attributes, namedattribute("untied", untied))
+    !isnothing(mergeable) && push!(_attributes, namedattribute("mergeable", mergeable))
     !isnothing(in_reductions) &&
-        push!(attributes, namedattribute("in_reductions", in_reductions))
+        push!(_attributes, namedattribute("in_reductions", in_reductions))
 
     return IR.create_operation(
         "omp.task",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1219,20 +1200,20 @@ The taskwait construct specifies a wait on the completion of child tasks
 of the current task.
 """
 function taskwait(; location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.taskwait",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1244,20 +1225,20 @@ The taskyield construct specifies that the current task can be suspended
 in favor of execution of a different task.
 """
 function taskyield(; location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.taskyield",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1271,20 +1252,20 @@ terminator takes no operands. The terminator op returns control to the
 enclosing op.
 """
 function terminator(; location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.terminator",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1308,20 +1289,20 @@ The `sym_addr` refers to the address of the symbol, which is a pointer to
 the original variable.
 """
 function threadprivate(sym_addr::Value; tls_addr::IR.Type, location=Location())
-    results = IR.Type[tls_addr,]
-    operands = Value[sym_addr,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[tls_addr,]
+    _operands = Value[sym_addr,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.threadprivate",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1406,8 +1387,8 @@ function wsloop(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[
+    _results = IR.Type[]
+    _operands = Value[
         lowerBound...,
         upperBound...,
         step...,
@@ -1415,12 +1396,12 @@ function wsloop(
         linear_step_vars...,
         reduction_vars...,
     ]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(schedule_chunk_var) && push!(operands, schedule_chunk_var)
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(schedule_chunk_var) && push!(_operands, schedule_chunk_var)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(lowerBound),
             length(upperBound),
@@ -1428,29 +1409,30 @@ function wsloop(
             length(linear_vars),
             length(linear_step_vars),
             length(reduction_vars),
-            (schedule_chunk_var == nothing) ? 0 : 1,
+            isnothing(schedule_chunk_var) ? 0 : 1,
         ]),
     )
-    !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
+    !isnothing(reductions) && push!(_attributes, namedattribute("reductions", reductions))
     !isnothing(schedule_val) &&
-        push!(attributes, namedattribute("schedule_val", schedule_val))
+        push!(_attributes, namedattribute("schedule_val", schedule_val))
     !isnothing(schedule_modifier) &&
-        push!(attributes, namedattribute("schedule_modifier", schedule_modifier))
+        push!(_attributes, namedattribute("schedule_modifier", schedule_modifier))
     !isnothing(simd_modifier) &&
-        push!(attributes, namedattribute("simd_modifier", simd_modifier))
-    !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
-    !isnothing(ordered_val) && push!(attributes, namedattribute("ordered_val", ordered_val))
-    !isnothing(order_val) && push!(attributes, namedattribute("order_val", order_val))
-    !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
+        push!(_attributes, namedattribute("simd_modifier", simd_modifier))
+    !isnothing(nowait) && push!(_attributes, namedattribute("nowait", nowait))
+    !isnothing(ordered_val) &&
+        push!(_attributes, namedattribute("ordered_val", ordered_val))
+    !isnothing(order_val) && push!(_attributes, namedattribute("order_val", order_val))
+    !isnothing(inclusive) && push!(_attributes, namedattribute("inclusive", inclusive))
 
     return IR.create_operation(
         "omp.wsloop",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1463,20 +1445,20 @@ terminates the region. The semantics of how the values are yielded is
 defined by the parent operation.
 """
 function yield(results::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[results...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[results...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "omp.yield",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

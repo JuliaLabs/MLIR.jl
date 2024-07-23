@@ -26,23 +26,23 @@ module {
 function module_(;
     sym_name=nothing, sym_visibility=nothing, bodyRegion::Region, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[bodyRegion,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(sym_name) && push!(attributes, namedattribute("sym_name", sym_name))
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[bodyRegion,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(sym_name) && push!(_attributes, namedattribute("sym_name", sym_name))
     !isnothing(sym_visibility) &&
-        push!(attributes, namedattribute("sym_visibility", sym_visibility))
+        push!(_attributes, namedattribute("sym_visibility", sym_visibility))
 
     return IR.create_operation(
         "builtin.module",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -84,20 +84,20 @@ operands of arity 0-N.
 function unrealized_conversion_cast(
     inputs::Vector{Value}; outputs::Vector{IR.Type}, location=Location()
 )
-    results = IR.Type[outputs...,]
-    operands = Value[inputs...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[outputs...,]
+    _operands = Value[inputs...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "builtin.unrealized_conversion_cast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

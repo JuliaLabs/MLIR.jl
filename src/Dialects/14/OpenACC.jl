@@ -39,8 +39,8 @@ function data(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[
+    _results = IR.Type[]
+    _operands = Value[
         copyOperands...,
         copyinOperands...,
         copyinReadonlyOperands...,
@@ -53,14 +53,15 @@ function data(
         deviceptrOperands...,
         attachOperands...,
     ]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(ifCond) && push!(operands, ifCond)
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(ifCond) && push!(_operands, ifCond)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            (ifCond == nothing) ? 0 : 1length(copyOperands),
+            isnothing(ifCond) ? 0 : 1,
+            length(copyOperands),
             length(copyinOperands),
             length(copyinReadonlyOperands),
             length(copyoutOperands),
@@ -73,16 +74,17 @@ function data(
             length(attachOperands),
         ]),
     )
-    !isnothing(defaultAttr) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
+    !isnothing(defaultAttr) &&
+        push!(_attributes, namedattribute("defaultAttr", defaultAttr))
 
     return IR.create_operation(
         "acc.data",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -111,49 +113,44 @@ function enter_data(
     wait=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[
+    _results = IR.Type[]
+    _operands = Value[
         waitOperands...,
         copyinOperands...,
         createOperands...,
         createZeroOperands...,
         attachOperands...,
     ]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(ifCond) && push!(operands, ifCond)
-    !isnothing(asyncOperand) && push!(operands, asyncOperand)
-    !isnothing(waitDevnum) && push!(operands, waitDevnum)
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(ifCond) && push!(_operands, ifCond)
+    !isnothing(asyncOperand) && push!(_operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(_operands, waitDevnum)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            if (ifCond == nothing)
-                0
-            elseif 1(asyncOperand == nothing)
-                0
-            elseif 1(waitDevnum == nothing)
-                0
-            else
-                1length(waitOperands)
-            end,
+            isnothing(ifCond) ? 0 : 1,
+            isnothing(asyncOperand) ? 0 : 1,
+            isnothing(waitDevnum) ? 0 : 1,
+            length(waitOperands),
             length(copyinOperands),
             length(createOperands),
             length(createZeroOperands),
             length(attachOperands),
         ]),
     )
-    !isnothing(async) && push!(attributes, namedattribute("async", async))
-    !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
+    !isnothing(async) && push!(_attributes, namedattribute("async", async))
+    !isnothing(wait) && push!(_attributes, namedattribute("wait", wait))
 
     return IR.create_operation(
         "acc.enter_data",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -182,45 +179,40 @@ function exit_data(
     finalize=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[
+    _results = IR.Type[]
+    _operands = Value[
         waitOperands..., copyoutOperands..., deleteOperands..., detachOperands...
     ]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(ifCond) && push!(operands, ifCond)
-    !isnothing(asyncOperand) && push!(operands, asyncOperand)
-    !isnothing(waitDevnum) && push!(operands, waitDevnum)
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(ifCond) && push!(_operands, ifCond)
+    !isnothing(asyncOperand) && push!(_operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(_operands, waitDevnum)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            if (ifCond == nothing)
-                0
-            elseif 1(asyncOperand == nothing)
-                0
-            elseif 1(waitDevnum == nothing)
-                0
-            else
-                1length(waitOperands)
-            end,
+            isnothing(ifCond) ? 0 : 1,
+            isnothing(asyncOperand) ? 0 : 1,
+            isnothing(waitDevnum) ? 0 : 1,
+            length(waitOperands),
             length(copyoutOperands),
             length(deleteOperands),
             length(detachOperands),
         ]),
     )
-    !isnothing(async) && push!(attributes, namedattribute("async", async))
-    !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
-    !isnothing(finalize) && push!(attributes, namedattribute("finalize", finalize))
+    !isnothing(async) && push!(_attributes, namedattribute("async", async))
+    !isnothing(wait) && push!(_attributes, namedattribute("wait", wait))
+    !isnothing(finalize) && push!(_attributes, namedattribute("finalize", finalize))
 
     return IR.create_operation(
         "acc.exit_data",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -244,35 +236,30 @@ function init(
     ifCond=nothing::Union{Nothing,Value},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[deviceTypeOperands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(deviceNumOperand) && push!(operands, deviceNumOperand)
-    !isnothing(ifCond) && push!(operands, ifCond)
+    _results = IR.Type[]
+    _operands = Value[deviceTypeOperands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(deviceNumOperand) && push!(_operands, deviceNumOperand)
+    !isnothing(ifCond) && push!(_operands, ifCond)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(deviceTypeOperands),
-            if (deviceNumOperand == nothing)
-                0
-            elseif 1(ifCond == nothing)
-                0
-            else
-                1
-            end,
+            isnothing(deviceNumOperand) ? 0 : 1,
+            isnothing(ifCond) ? 0 : 1,
         ]),
     )
 
     return IR.create_operation(
         "acc.init",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -315,49 +302,45 @@ function loop(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[tileOperands..., privateOperands..., reductionOperands...]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(gangNum) && push!(operands, gangNum)
-    !isnothing(gangStatic) && push!(operands, gangStatic)
-    !isnothing(workerNum) && push!(operands, workerNum)
-    !isnothing(vectorLength) && push!(operands, vectorLength)
+    _results = IR.Type[results...,]
+    _operands = Value[tileOperands..., privateOperands..., reductionOperands...]
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(gangNum) && push!(_operands, gangNum)
+    !isnothing(gangStatic) && push!(_operands, gangStatic)
+    !isnothing(workerNum) && push!(_operands, workerNum)
+    !isnothing(vectorLength) && push!(_operands, vectorLength)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            if (gangNum == nothing)
-                0
-            elseif 1(gangStatic == nothing)
-                0
-            elseif 1(workerNum == nothing)
-                0
-            elseif 1(vectorLength == nothing)
-                0
-            else
-                1length(tileOperands)
-            end,
+            isnothing(gangNum) ? 0 : 1,
+            isnothing(gangStatic) ? 0 : 1,
+            isnothing(workerNum) ? 0 : 1,
+            isnothing(vectorLength) ? 0 : 1,
+            length(tileOperands),
             length(privateOperands),
             length(reductionOperands),
         ]),
     )
-    !isnothing(collapse) && push!(attributes, namedattribute("collapse", collapse))
-    !isnothing(seq) && push!(attributes, namedattribute("seq", seq))
-    !isnothing(independent) && push!(attributes, namedattribute("independent", independent))
-    !isnothing(auto_) && push!(attributes, namedattribute("auto_", auto_))
-    !isnothing(reductionOp) && push!(attributes, namedattribute("reductionOp", reductionOp))
+    !isnothing(collapse) && push!(_attributes, namedattribute("collapse", collapse))
+    !isnothing(seq) && push!(_attributes, namedattribute("seq", seq))
+    !isnothing(independent) &&
+        push!(_attributes, namedattribute("independent", independent))
+    !isnothing(auto_) && push!(_attributes, namedattribute("auto_", auto_))
+    !isnothing(reductionOp) &&
+        push!(_attributes, namedattribute("reductionOp", reductionOp))
     !isnothing(exec_mapping) &&
-        push!(attributes, namedattribute("exec_mapping", exec_mapping))
+        push!(_attributes, namedattribute("exec_mapping", exec_mapping))
 
     return IR.create_operation(
         "acc.loop",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -407,8 +390,8 @@ function parallel(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[
+    _results = IR.Type[]
+    _operands = Value[
         waitOperands...,
         reductionOperands...,
         copyOperands...,
@@ -425,32 +408,26 @@ function parallel(
         gangPrivateOperands...,
         gangFirstPrivateOperands...,
     ]
-    owned_regions = Region[region,]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(async) && push!(operands, async)
-    !isnothing(numGangs) && push!(operands, numGangs)
-    !isnothing(numWorkers) && push!(operands, numWorkers)
-    !isnothing(vectorLength) && push!(operands, vectorLength)
-    !isnothing(ifCond) && push!(operands, ifCond)
-    !isnothing(selfCond) && push!(operands, selfCond)
+    _owned_regions = Region[region,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(async) && push!(_operands, async)
+    !isnothing(numGangs) && push!(_operands, numGangs)
+    !isnothing(numWorkers) && push!(_operands, numWorkers)
+    !isnothing(vectorLength) && push!(_operands, vectorLength)
+    !isnothing(ifCond) && push!(_operands, ifCond)
+    !isnothing(selfCond) && push!(_operands, selfCond)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            (async == nothing) ? 0 : 1length(waitOperands),
-            if (numGangs == nothing)
-                0
-            elseif 1(numWorkers == nothing)
-                0
-            elseif 1(vectorLength == nothing)
-                0
-            elseif 1(ifCond == nothing)
-                0
-            elseif 1(selfCond == nothing)
-                0
-            else
-                1length(reductionOperands)
-            end,
+            isnothing(async) ? 0 : 1,
+            length(waitOperands),
+            isnothing(numGangs) ? 0 : 1,
+            isnothing(numWorkers) ? 0 : 1,
+            isnothing(vectorLength) ? 0 : 1,
+            isnothing(ifCond) ? 0 : 1,
+            isnothing(selfCond) ? 0 : 1,
+            length(reductionOperands),
             length(copyOperands),
             length(copyinOperands),
             length(copyinReadonlyOperands),
@@ -466,20 +443,22 @@ function parallel(
             length(gangFirstPrivateOperands),
         ]),
     )
-    !isnothing(asyncAttr) && push!(attributes, namedattribute("asyncAttr", asyncAttr))
-    !isnothing(waitAttr) && push!(attributes, namedattribute("waitAttr", waitAttr))
-    !isnothing(selfAttr) && push!(attributes, namedattribute("selfAttr", selfAttr))
-    !isnothing(reductionOp) && push!(attributes, namedattribute("reductionOp", reductionOp))
-    !isnothing(defaultAttr) && push!(attributes, namedattribute("defaultAttr", defaultAttr))
+    !isnothing(asyncAttr) && push!(_attributes, namedattribute("asyncAttr", asyncAttr))
+    !isnothing(waitAttr) && push!(_attributes, namedattribute("waitAttr", waitAttr))
+    !isnothing(selfAttr) && push!(_attributes, namedattribute("selfAttr", selfAttr))
+    !isnothing(reductionOp) &&
+        push!(_attributes, namedattribute("reductionOp", reductionOp))
+    !isnothing(defaultAttr) &&
+        push!(_attributes, namedattribute("defaultAttr", defaultAttr))
 
     return IR.create_operation(
         "acc.parallel",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -503,35 +482,30 @@ function shutdown(
     ifCond=nothing::Union{Nothing,Value},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[deviceTypeOperands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(deviceNumOperand) && push!(operands, deviceNumOperand)
-    !isnothing(ifCond) && push!(operands, ifCond)
+    _results = IR.Type[]
+    _operands = Value[deviceTypeOperands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(deviceNumOperand) && push!(_operands, deviceNumOperand)
+    !isnothing(ifCond) && push!(_operands, ifCond)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(deviceTypeOperands),
-            if (deviceNumOperand == nothing)
-                0
-            elseif 1(ifCond == nothing)
-                0
-            else
-                1
-            end,
+            isnothing(deviceNumOperand) ? 0 : 1,
+            isnothing(ifCond) ? 0 : 1,
         ]),
     )
 
     return IR.create_operation(
         "acc.shutdown",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -545,20 +519,20 @@ value so the terminator takes no operands. The terminator op returns control
 to the enclosing op.
 """
 function terminator(; location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "acc.terminator",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -590,45 +564,40 @@ function update(
     ifPresent=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[
+    _results = IR.Type[]
+    _operands = Value[
         waitOperands..., deviceTypeOperands..., hostOperands..., deviceOperands...
     ]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(ifCond) && push!(operands, ifCond)
-    !isnothing(asyncOperand) && push!(operands, asyncOperand)
-    !isnothing(waitDevnum) && push!(operands, waitDevnum)
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(ifCond) && push!(_operands, ifCond)
+    !isnothing(asyncOperand) && push!(_operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(_operands, waitDevnum)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
-            if (ifCond == nothing)
-                0
-            elseif 1(asyncOperand == nothing)
-                0
-            elseif 1(waitDevnum == nothing)
-                0
-            else
-                1length(waitOperands)
-            end,
+            isnothing(ifCond) ? 0 : 1,
+            isnothing(asyncOperand) ? 0 : 1,
+            isnothing(waitDevnum) ? 0 : 1,
+            length(waitOperands),
             length(deviceTypeOperands),
             length(hostOperands),
             length(deviceOperands),
         ]),
     )
-    !isnothing(async) && push!(attributes, namedattribute("async", async))
-    !isnothing(wait) && push!(attributes, namedattribute("wait", wait))
-    !isnothing(ifPresent) && push!(attributes, namedattribute("ifPresent", ifPresent))
+    !isnothing(async) && push!(_attributes, namedattribute("async", async))
+    !isnothing(wait) && push!(_attributes, namedattribute("wait", wait))
+    !isnothing(ifPresent) && push!(_attributes, namedattribute("ifPresent", ifPresent))
 
     return IR.create_operation(
         "acc.update",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -654,39 +623,33 @@ function wait(
     async=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[waitOperands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(asyncOperand) && push!(operands, asyncOperand)
-    !isnothing(waitDevnum) && push!(operands, waitDevnum)
-    !isnothing(ifCond) && push!(operands, ifCond)
+    _results = IR.Type[]
+    _operands = Value[waitOperands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(asyncOperand) && push!(_operands, asyncOperand)
+    !isnothing(waitDevnum) && push!(_operands, waitDevnum)
+    !isnothing(ifCond) && push!(_operands, ifCond)
     push!(
-        attributes,
+        _attributes,
         operandsegmentsizes([
             length(waitOperands),
-            if (asyncOperand == nothing)
-                0
-            elseif 1(waitDevnum == nothing)
-                0
-            elseif 1(ifCond == nothing)
-                0
-            else
-                1
-            end,
+            isnothing(asyncOperand) ? 0 : 1,
+            isnothing(waitDevnum) ? 0 : 1,
+            isnothing(ifCond) ? 0 : 1,
         ]),
     )
-    !isnothing(async) && push!(attributes, namedattribute("async", async))
+    !isnothing(async) && push!(_attributes, namedattribute("async", async))
 
     return IR.create_operation(
         "acc.wait",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -699,20 +662,20 @@ acc ops (parallel and loop). It returns values to the immediately enclosing
 acc op.
 """
 function yield(operands::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "acc.yield",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

@@ -145,14 +145,13 @@ namespace
     // https://docs.julialang.org/en/v1/base/base/#Keywords
     // aditionally check that name doesn't conflict with local variables defined in the function (results, operands, owned_regions, successors, attributes)
     std::vector<std::string> reservedKeywords = {
-      "results", "operands", "owned_regions", "successors", "attributes", 
+      "_results", "_operands", "_owned_regions", "_successors", "_attributes", 
       "include", "location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"
       };
     if (modulename.has_value()) {
       reservedKeywords.push_back(modulename.value());
     }
-    if (std::find(reservedKeywords.begin(), reservedKeywords.end(), name) != reservedKeywords.end())
-    {
+    while (std::find(reservedKeywords.begin(), reservedKeywords.end(), name) != reservedKeywords.end()) {
       name = name + "_";
     }
     // replace all .'s with _'s
@@ -212,15 +211,18 @@ function {0}({1}location=Location())
     {2}
 end
 )";      // 0: functionname, 1: functionarguments, 2: functionbody
-  const char *functionbodytemplate = R"(results = IR.Type[{0}]
-    operands = Value[{1}]
-    owned_regions = Region[{2}]
-    successors = Block[{3}]
-    attributes = NamedAttribute[{4}]
+  const char *functionbodytemplate = R"(_results = IR.Type[{0}]
+    _operands = Value[{1}]
+    _owned_regions = Region[{2}]
+    _successors = Block[{3}]
+    _attributes = NamedAttribute[{4}]
     {5}
     IR.create_operation(
         "{6}", location;
-        operands, owned_regions, successors, attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results={7},
         result_inference={8}
     ))"; // 0: results, 1: operands, 2: owned_regions, 3: successors, 4: attributes, 5: optionals, 6: opname, 7: results expression, 8: result_inference
@@ -279,7 +281,7 @@ end
       std::string separator = ", ";
       if (optional)
       {
-        optionals += llvm::formatv(R"(!isnothing({0}) && push!(operands, {0}{1})
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(_operands, {0}{1})
     )",
                                    operandname, (variadic ? "..." : ""));
         type = "Union{Nothing, " + type + "}";
@@ -304,7 +306,7 @@ end
 
     if (op.getTrait("::mlir::OpTrait::AttrSizedOperandSegments"))
     {
-      std::vector<std::string> opseglist;
+      std::string operandsegmentsizes = "";
       for (int i = 0; i < op.getNumOperands(); i++)
       {
         const auto &named_operand = op.getOperand(i);
@@ -314,16 +316,15 @@ end
           operandname = "operand_" + std::to_string(i);
         }
         if (named_operand.isOptional())
-          opseglist.push_back("isnothing(" + operandname + ") ? 0 : 1");
+        {
+          operandsegmentsizes += "isnothing(" + operandname + ") ? 0 : 1, ";
+        }
         else
-          opseglist.push_back(named_operand.isVariadic() ? "length(" + operandname + "), " : "1, ");
+        {
+          operandsegmentsizes += named_operand.isVariadic() ? "length(" + operandname + "), " : "1, ";
+        }
       }
-      std::string operandsegmentsizes = std::accumulate(std::begin(opseglist), std::end(opseglist), std::string(),
-                                [](std::string &ss, std::string &s)
-                                {
-                                    return ss.empty() ? s : ss + "," + s;
-                                });
-      optionals += llvm::formatv(R"(push!(attributes, operandsegmentsizes([{0}]))
+      optionals += llvm::formatv(R"(push!(_attributes, operandsegmentsizes([{0}]))
     )",
                                  operandsegmentsizes);
     }
@@ -352,7 +353,7 @@ end
 
       if (optional)
       {
-        optionals += llvm::formatv(R"(!isnothing({0}) && push!(results, {0}{1})
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(_results, {0}{1})
     )",
                                    resultname, (variadic ? "..." : ""));
         type = "Union{Nothing, " + type + "}";
@@ -365,8 +366,8 @@ end
       resultarguments += resultname + defaultvalue + "::" + type + ", ";
     }
 
-    std::string resultsexpression = (inferrable ? "(length(results) == 0 ? nothing : results)" : "results");
-    std::string resultinference = (inferrable ? "(length(results) == 0 ? true : false)" : "false");
+    std::string resultsexpression = (inferrable ? "(length(_results) == 0 ? nothing : _results)" : "_results");
+    std::string resultinference = (inferrable ? "(length(_results) == 0 ? true : false)" : "false");
 
     std::string attributearguments = "";
     std::string attributecontainer = "";
@@ -388,7 +389,7 @@ end
 
       if (optional)
       {
-        optionals += llvm::formatv(R"(!isnothing({0}) && push!(attributes, namedattribute("{0}", {1}))
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(_attributes, namedattribute("{0}", {1}))
     )",
                                    attributename, sanitizedname);
         defaultvalue = "=nothing";
