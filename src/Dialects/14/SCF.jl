@@ -92,7 +92,7 @@ function execute_region(; result_0::Vector{IR.Type}, region::Region, location=Lo
 end
 
 """
-`_for`
+`for_`
 
 The \"scf.for\" operation represents a loop taking 3 SSA value as operands
 that represent the lower bound, upper bound and step respectively. The
@@ -180,7 +180,7 @@ func @conditional_reduce(%buffer: memref<1024xf32>, %lb: index,
 }
 ```
 """
-function _for(
+function for_(
     lowerBound::Value,
     upperBound::Value,
     step::Value,
@@ -208,7 +208,7 @@ function _for(
 end
 
 """
-`_if`
+`if_`
 
 The `scf.if` operation represents an if-then-else construct for
 conditionally executing two regions of code. The operand to an if operation
@@ -253,7 +253,7 @@ scf.if %b  {
 }
 ```
 """
-function _if(
+function if_(
     condition::Value;
     results::Vector{IR.Type},
     thenRegion::Region,
@@ -443,7 +443,7 @@ function reduce_return(result::Value; location=Location())
 end
 
 """
-`_while`
+`while_`
 
 This operation represents a generic \"while\"/\"do-while\" loop that keeps
 iterating as long as a condition is satisfied. There is no restriction on
@@ -556,7 +556,7 @@ assignment-list ::= assignment | assignment `,` assignment-list
 assignment ::= ssa-value `=` ssa-value
 ```
 """
-function _while(
+function while_(
     inits::Vector{Value};
     results::Vector{IR.Type},
     before::Region,

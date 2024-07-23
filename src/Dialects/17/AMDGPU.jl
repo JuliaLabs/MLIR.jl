@@ -20,20 +20,20 @@ operations on global memory can be issued far in advance of when their results
 are used (for example, by writing them to LDS).
 """
 function lds_barrier(; location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "amdgpu.lds_barrier",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -85,11 +85,11 @@ function mfma(
     negateC=nothing,
     location=Location(),
 )
-    results = IR.Type[destD,]
-    operands = Value[sourceA, sourceB, destC]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[destD,]
+    _operands = Value[sourceA, sourceB, destC]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("m", m),
         namedattribute("n", n),
         namedattribute("k", k),
@@ -107,11 +107,11 @@ function mfma(
     return IR.create_operation(
         "amdgpu.mfma",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -146,15 +146,15 @@ function raw_buffer_atomic_cmpswap(
     indexOffset=nothing,
     location=Location(),
 )
-    results = IR.Type[value,]
-    operands = Value[src, cmp, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[value,]
+    _operands = Value[src, cmp, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
+        operandsegmentsizes([1, 1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -162,11 +162,11 @@ function raw_buffer_atomic_cmpswap(
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_cmpswap",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -200,15 +200,15 @@ function raw_buffer_atomic_fadd(
     indexOffset=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[value, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[value, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
+        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -216,11 +216,11 @@ function raw_buffer_atomic_fadd(
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_fadd",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -253,15 +253,15 @@ function raw_buffer_atomic_fmax(
     indexOffset=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[value, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[value, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
+        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -269,11 +269,11 @@ function raw_buffer_atomic_fmax(
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_fmax",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -306,15 +306,15 @@ function raw_buffer_atomic_smax(
     indexOffset=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[value, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[value, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
+        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -322,11 +322,11 @@ function raw_buffer_atomic_smax(
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_smax",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -359,15 +359,15 @@ function raw_buffer_atomic_umin(
     indexOffset=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[value, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[value, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
+        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -375,11 +375,11 @@ function raw_buffer_atomic_umin(
     return IR.create_operation(
         "amdgpu.raw_buffer_atomic_umin",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -425,15 +425,14 @@ function raw_buffer_load(
     indexOffset=nothing,
     location=Location(),
 )
-    results = IR.Type[value,]
-    operands = Value[memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[value,]
+    _operands = Value[memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
-        attributes,
-        operandsegmentsizes([1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
+        attributes, operandsegmentsizes([1, length(indices), isnothing(sgprOffset) ? 0 : 1])
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -441,11 +440,11 @@ function raw_buffer_load(
     return IR.create_operation(
         "amdgpu.raw_buffer_load",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -479,15 +478,15 @@ function raw_buffer_store(
     indexOffset=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[value, memref, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[value, memref, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
+        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -495,11 +494,11 @@ function raw_buffer_store(
     return IR.create_operation(
         "amdgpu.raw_buffer_store",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -532,11 +531,11 @@ function wmma(
     clamp=nothing,
     location=Location(),
 )
-    results = IR.Type[destD,]
-    operands = Value[sourceA, sourceB, destC]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[destD,]
+    _operands = Value[sourceA, sourceB, destC]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(subwordOffset) &&
         push!(attributes, namedattribute("subwordOffset", subwordOffset))
     !isnothing(unsignedA) && push!(attributes, namedattribute("unsignedA", unsignedA))
@@ -546,11 +545,11 @@ function wmma(
     return IR.create_operation(
         "amdgpu.wmma",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

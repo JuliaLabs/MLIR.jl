@@ -130,7 +130,7 @@ function constant(; result_0::IR.Type, value, location=Location())
 end
 
 """
-`_include`
+`include_`
 
 The `include` operation allows to define a source file inclusion via the
 `#include` directive.
@@ -151,12 +151,12 @@ emitc.include \"myheader.h\"
 \"emitc.include\" (){include = \"myheader.h\"} : () -> ()
 ```
 """
-function _include(; _include, is_standard_include=nothing, location=Location())
+function include_(; include_, is_standard_include=nothing, location=Location())
     _results = IR.Type[]
     _operands = Value[]
     _owned_regions = Region[]
     _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("include", _include),]
+    _attributes = NamedAttribute[namedattribute("include", include_),]
     !isnothing(is_standard_include) &&
         push!(attributes, namedattribute("is_standard_include", is_standard_include))
 

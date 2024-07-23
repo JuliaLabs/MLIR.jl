@@ -398,7 +398,7 @@ function check_types(
 end
 
 """
-`_continue`
+`continue_`
 
 `pdl_interp.continue` operation breaks the current iteration within the
 `pdl_interp.foreach` region and continues with the next iteration from
@@ -410,7 +410,7 @@ the beginning of the region.
 pdl_interp.continue
 ```
 """
-function _continue(; location=Location())
+function continue_(; location=Location())
     _results = IR.Type[]
     _operands = Value[]
     _owned_regions = Region[]

@@ -46,7 +46,7 @@ function apply(mapOperands::Vector{Value}; result_0::IR.Type, map, location=Loca
 end
 
 """
-`_for`
+`for_`
 
 # Syntax
 
@@ -152,7 +152,7 @@ If the `affine.for` defines any values, a yield terminator must be
 explicitly present. The number and types of the \"affine.for\" results must
 match the initial values in the `iter_args` binding and the yield operands.
 """
-function _for(
+function for_(
     operand_0::Vector{Value}; results::Vector{IR.Type}, region::Region, location=Location()
 )
     _results = IR.Type[results...,]
@@ -174,7 +174,7 @@ function _for(
 end
 
 """
-`_if`
+`if_`
 
 # Syntax
 
@@ -243,7 +243,7 @@ func @pad_edges(%I : memref<10x10xf32>) -> (memref<12x12xf32) {
 }
 ```
 """
-function _if(
+function if_(
     operand_0::Vector{Value};
     results::Vector{IR.Type},
     thenRegion::Region,

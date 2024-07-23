@@ -2837,10 +2837,10 @@ function resume(value::Value; location=Location())
 end
 
 """
-`_return`
+`return_`
 
 """
-function _return(args::Vector{Value}; location=Location())
+function return_(args::Vector{Value}; location=Location())
     _results = IR.Type[]
     _operands = Value[args...,]
     _owned_regions = Region[]

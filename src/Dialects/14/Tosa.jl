@@ -431,12 +431,12 @@ function concat(input1::Vector{Value}; output::IR.Type, axis, location=Location(
 end
 
 """
-`_const`
+`const_`
 
 A node containing constant data for use as the input to an operation. May
 hold data in any of the supported data formats.
 """
-function _const(; output=nothing::Union{Nothing,IR.Type}, value, location=Location())
+function const_(; output=nothing::Union{Nothing,IR.Type}, value, location=Location())
     _results = IR.Type[]
     _operands = Value[]
     _owned_regions = Region[]

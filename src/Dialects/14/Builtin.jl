@@ -67,7 +67,7 @@ function func(; sym_name, type, sym_visibility=nothing, body::Region, location=L
 end
 
 """
-`_module`
+`module_`
 
 A `module` represents a top-level container operation. It contains a single
 [graph region](../LangRef.md#control-flow-and-ssacfg-regions) containing a single block
@@ -85,7 +85,7 @@ module {
 }
 ```
 """
-function _module(;
+function module_(;
     sym_name=nothing, sym_visibility=nothing, body::Region, location=Location()
 )
     _results = IR.Type[]

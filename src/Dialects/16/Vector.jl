@@ -19,22 +19,22 @@ Right now we only support one contiguous set of scalable dimensions, all of
 them grouped and scaled with the value returned by \'vscale\'.
 """
 function vscale(; res=nothing::Union{Nothing,IR.Type}, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "vector.vscale",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -63,20 +63,20 @@ equal.
 ```
 """
 function bitcast(source::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[source,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[source,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.bitcast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -113,20 +113,20 @@ shaped vector with the same element type is always legal.
 ```
 """
 function broadcast(source::Value; vector::IR.Type, location=Location())
-    results = IR.Type[vector,]
-    operands = Value[source,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[vector,]
+    _operands = Value[source,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.broadcast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -169,20 +169,20 @@ function compressstore(
     valueToStore::Value;
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[base, indices..., mask, valueToStore]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[base, indices..., mask, valueToStore]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.compressstore",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -219,20 +219,20 @@ print %1
 ```
 """
 function constant_mask(; result_0::IR.Type, mask_dim_sizes, location=Location())
-    results = IR.Type[result_0,]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mask_dim_sizes", mask_dim_sizes),]
+    _results = IR.Type[result_0,]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mask_dim_sizes", mask_dim_sizes),]
 
     return IR.create_operation(
         "vector.constant_mask",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -366,11 +366,11 @@ function contract(
     kind=nothing,
     location=Location(),
 )
-    results = IR.Type[result_0,]
-    operands = Value[lhs, rhs, acc, masks...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result_0,]
+    _operands = Value[lhs, rhs, acc, masks...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("indexing_maps", indexing_maps),
         namedattribute("iterator_types", iterator_types),
     ]
@@ -379,11 +379,11 @@ function contract(
     return IR.create_operation(
         "vector.contract",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -419,20 +419,20 @@ print %1
 ```
 """
 function create_mask(operands::Vector{Value}; result_0::IR.Type, location=Location())
-    results = IR.Type[result_0,]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result_0,]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.create_mask",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -476,20 +476,20 @@ function expandload(
     result::IR.Type,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[base, indices..., mask, pass_thru]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[base, indices..., mask, pass_thru]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.expandload",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -519,26 +519,25 @@ https://llvm.org/docs/LangRef.html#extractelement-instruction
 function extractelement(
     vector::Value,
     position=nothing::Union{Nothing,Value};
-    result=nothing::Union{Nothing,IR.Type},
+    result::IR.Type,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[vector,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[vector,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(position) && push!(operands, position)
-    !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "vector.extractelement",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
+        result_inference=false,
     )
 end
 
@@ -558,22 +557,22 @@ the proper position. Degenerates to an element type in the 0-D case.
 function extract(
     vector::Value; result_0=nothing::Union{Nothing,IR.Type}, position, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[vector,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("position", position),]
-    !isnothing(result_0) && push!(results, result_0)
+    _results = IR.Type[]
+    _operands = Value[vector,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("position", position),]
+    !isnothing(result_0) && push!(_results, result_0)
 
     return IR.create_operation(
         "vector.extract",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -606,11 +605,11 @@ attribute. The returned subvector contains the elements starting at offset
 function extract_strided_slice(
     vector::Value; result_0::IR.Type, offsets, sizes, strides, location=Location()
 )
-    results = IR.Type[result_0,]
-    operands = Value[vector,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[result_0,]
+    _operands = Value[vector,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("offsets", offsets),
         namedattribute("sizes", sizes),
         namedattribute("strides", strides),
@@ -619,11 +618,11 @@ function extract_strided_slice(
     return IR.create_operation(
         "vector.extract_strided_slice",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -652,22 +651,22 @@ function fma(
     result=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[lhs, rhs, acc]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[lhs, rhs, acc]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "vector.fma",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -697,22 +696,22 @@ http://llvm.org/docs/LangRef.html#llvm-matrix-transpose-intrinsic
 ```
 """
 function flat_transpose(matrix::Value; res::IR.Type, rows, columns, location=Location())
-    results = IR.Type[res,]
-    operands = Value[matrix,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[res,]
+    _operands = Value[matrix,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("rows", rows), namedattribute("columns", columns)
     ]
 
     return IR.create_operation(
         "vector.flat_transpose",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -755,20 +754,20 @@ function gather(
     result::IR.Type,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[base, indices..., index_vec, mask, pass_thru]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[base, indices..., index_vec, mask, pass_thru]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.gather",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -801,23 +800,23 @@ function insertelement(
     result=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[source, dest]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[source, dest]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(position) && push!(operands, position)
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "vector.insertelement",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -842,22 +841,22 @@ function insert(
     position,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[source, dest]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("position", position),]
-    !isnothing(res) && push!(results, res)
+    _results = IR.Type[]
+    _operands = Value[source, dest]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("position", position),]
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "vector.insert",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -891,24 +890,24 @@ function insert_strided_slice(
     strides,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[source, dest]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[source, dest]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("offsets", offsets), namedattribute("strides", strides)
     ]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "vector.insert_strided_slice",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -969,20 +968,20 @@ Example 6:  Explicit out-of-bound vector load.
 ```
 """
 function load(base::Value, indices::Vector{Value}; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[base, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[base, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.load",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1042,21 +1041,21 @@ function mask(
     maskRegion::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[mask,]
-    owned_regions = Region[maskRegion,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results...,]
+    _operands = Value[mask,]
+    _owned_regions = Region[maskRegion,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(passthru) && push!(operands, passthru)
 
     return IR.create_operation(
         "vector.mask",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1097,20 +1096,20 @@ function maskedload(
     result::IR.Type,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[base, indices..., mask, pass_thru]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[base, indices..., mask, pass_thru]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.maskedload",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1150,20 +1149,20 @@ function maskedstore(
     valueToStore::Value;
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[base, indices..., mask, valueToStore]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[base, indices..., mask, valueToStore]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.maskedstore",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1204,11 +1203,11 @@ function matrix_multiply(
     rhs_columns,
     location=Location(),
 )
-    results = IR.Type[res,]
-    operands = Value[lhs, rhs]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[res,]
+    _operands = Value[lhs, rhs]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("lhs_rows", lhs_rows),
         namedattribute("lhs_columns", lhs_columns),
         namedattribute("rhs_columns", rhs_columns),
@@ -1217,11 +1216,11 @@ function matrix_multiply(
     return IR.create_operation(
         "vector.matrix_multiply",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1251,24 +1250,24 @@ function multi_reduction(
     reduction_dims,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[source, acc]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[source, acc]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("kind", kind), namedattribute("reduction_dims", reduction_dims)
     ]
-    !isnothing(dest) && push!(results, dest)
+    !isnothing(dest) && push!(_results, dest)
 
     return IR.create_operation(
         "vector.multi_reduction",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1330,21 +1329,21 @@ function outerproduct(
     kind=nothing,
     location=Location(),
 )
-    results = IR.Type[result_0,]
-    operands = Value[lhs, rhs, acc...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result_0,]
+    _operands = Value[lhs, rhs, acc...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(kind) && push!(attributes, namedattribute("kind", kind))
 
     return IR.create_operation(
         "vector.outerproduct",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1374,20 +1373,20 @@ newline).
 ```
 """
 function print(source::Value; location=Location())
-    results = IR.Type[]
-    operands = Value[source,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[source,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.print",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1421,21 +1420,21 @@ function reduction(
     kind,
     location=Location(),
 )
-    results = IR.Type[dest,]
-    operands = Value[vector,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("kind", kind),]
+    _results = IR.Type[dest,]
+    _operands = Value[vector,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("kind", kind),]
     !isnothing(acc) && push!(operands, acc)
 
     return IR.create_operation(
         "vector.reduction",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1532,21 +1531,21 @@ function reshape(
     fixed_vector_sizes,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[vector, input_shape..., output_shape...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("fixed_vector_sizes", fixed_vector_sizes),]
+    _results = IR.Type[result,]
+    _operands = Value[vector, input_shape..., output_shape...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("fixed_vector_sizes", fixed_vector_sizes),]
     push!(attributes, operandsegmentsizes([1, length(input_shape), length(output_shape)]))
 
     return IR.create_operation(
         "vector.reshape",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1576,20 +1575,20 @@ Invalid example:
 ```
 """
 function scalable_extract(source::Value; res::IR.Type, pos, location=Location())
-    results = IR.Type[res,]
-    operands = Value[source,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("pos", pos),]
+    _results = IR.Type[res,]
+    _operands = Value[source,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("pos", pos),]
 
     return IR.create_operation(
         "vector.scalable.extract",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1629,22 +1628,22 @@ function scalable_insert(
     pos,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[source, dest]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("pos", pos),]
-    !isnothing(res) && push!(results, res)
+    _results = IR.Type[]
+    _operands = Value[source, dest]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("pos", pos),]
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "vector.scalable.insert",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1675,27 +1674,27 @@ function scan(
     inclusive,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[source, initial_value]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[source, initial_value]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("kind", kind),
         namedattribute("reduction_dim", reduction_dim),
         namedattribute("inclusive", inclusive),
     ]
-    !isnothing(dest) && push!(results, dest)
-    !isnothing(accumulated_value) && push!(results, accumulated_value)
+    !isnothing(dest) && push!(_results, dest)
+    !isnothing(accumulated_value) && push!(_results, accumulated_value)
 
     return IR.create_operation(
         "vector.scan",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1740,20 +1739,20 @@ function scatter(
     valueToStore::Value;
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[base, indices..., index_vec, mask, valueToStore]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[base, indices..., index_vec, mask, valueToStore]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.scatter",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1794,20 +1793,20 @@ is supported in that particular case, for now.
 ```
 """
 function shape_cast(source::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[source,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[source,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.shape_cast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1850,22 +1849,22 @@ The legality rules are:
 function shuffle(
     v1::Value, v2::Value; vector=nothing::Union{Nothing,IR.Type}, mask, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[v1, v2]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("mask", mask),]
-    !isnothing(vector) && push!(results, vector)
+    _results = IR.Type[]
+    _operands = Value[v1, v2]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("mask", mask),]
+    !isnothing(vector) && push!(_results, vector)
 
     return IR.create_operation(
         "vector.shuffle",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1883,20 +1882,20 @@ required to be of integer/index/float type.
 ```
 """
 function splat(input::Value; aggregate::IR.Type, location=Location())
-    results = IR.Type[aggregate,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[aggregate,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.splat",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1958,20 +1957,20 @@ vector.store %valueToStore, %memref[%c0] : memref<7xf32>, vector<8xf32>
 function store(
     valueToStore::Value, base::Value, indices::Vector{Value}; location=Location()
 )
-    results = IR.Type[]
-    operands = Value[valueToStore, base, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[valueToStore, base, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.store",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2158,25 +2157,23 @@ function transfer_read(
     in_bounds=nothing,
     location=Location(),
 )
-    results = IR.Type[vector,]
-    operands = Value[source, indices..., padding]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
+    _results = IR.Type[vector,]
+    _operands = Value[source, indices..., padding]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
     !isnothing(mask) && push!(operands, mask)
-    push!(
-        attributes, operandsegmentsizes([1, length(indices), 1, (mask == nothing) ? 0 : 1])
-    )
+    push!(attributes, operandsegmentsizes([1, length(indices), 1, isnothing(mask) ? 0 : 1]))
     !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
 
     return IR.create_operation(
         "vector.transfer_read",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2290,26 +2287,24 @@ function transfer_write(
     in_bounds=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[vector, source, indices...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
+    _results = IR.Type[]
+    _operands = Value[vector, source, indices...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("permutation_map", permutation_map),]
     !isnothing(mask) && push!(operands, mask)
-    push!(
-        attributes, operandsegmentsizes([1, 1, length(indices), (mask == nothing) ? 0 : 1])
-    )
-    !isnothing(result) && push!(results, result)
+    push!(attributes, operandsegmentsizes([1, 1, length(indices), isnothing(mask) ? 0 : 1]))
+    !isnothing(result) && push!(_results, result)
     !isnothing(in_bounds) && push!(attributes, namedattribute("in_bounds", in_bounds))
 
     return IR.create_operation(
         "vector.transfer_write",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2341,20 +2336,20 @@ the transp array [i_1, .., i_n] must be a permutation of [0, .., n-1].
 ```
 """
 function transpose(vector::Value; result::IR.Type, transp, location=Location())
-    results = IR.Type[result,]
-    operands = Value[vector,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("transp", transp),]
+    _results = IR.Type[result,]
+    _operands = Value[vector,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("transp", transp),]
 
     return IR.create_operation(
         "vector.transpose",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2382,20 +2377,20 @@ operation ::= `vector.type_cast` ssa-use : memref-type to memref-type
 ```
 """
 function type_cast(memref::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[memref,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[memref,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.type_cast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2510,20 +2505,20 @@ function warp_execute_on_lane_0(
     warpRegion::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[laneid, args...]
-    owned_regions = Region[warpRegion,]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("warp_size", warp_size),]
+    _results = IR.Type[results...,]
+    _operands = Value[laneid, args...]
+    _owned_regions = Region[warpRegion,]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("warp_size", warp_size),]
 
     return IR.create_operation(
         "vector.warp_execute_on_lane_0",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2540,20 +2535,20 @@ If the parent operation defines no value the vector.yield may be omitted
 when printing the region.
 """
 function yield(operands::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "vector.yield",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

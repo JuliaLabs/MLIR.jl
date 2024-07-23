@@ -209,10 +209,10 @@ function region(
 end
 
 """
-`_return`
+`return_`
 
 """
-function _return(results::Vector{Value}; location=Location())
+function return_(results::Vector{Value}; location=Location())
     _results = IR.Type[]
     _operands = Value[results...,]
     _owned_regions = Region[]

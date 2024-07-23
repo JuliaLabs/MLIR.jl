@@ -338,7 +338,7 @@ function func(; body::Region, location=Location())
 end
 
 """
-`_module`
+`module_`
 
 GPU module contains code that is intended to be run on a GPU. A host device
 can launch this code through a gpu.launc_func that creates a fully
@@ -363,7 +363,7 @@ or not intended to be run on the separate device.
 
 ```
 """
-function _module(; body::Region, location=Location())
+function module_(; body::Region, location=Location())
     _results = IR.Type[]
     _operands = Value[]
     _owned_regions = Region[body,]
@@ -855,13 +855,13 @@ function printf(args::Vector{Value}; format, location=Location())
 end
 
 """
-`_return`
+`return_`
 
 A terminator operation for regions that appear in the body of  `gpu.func`
 functions. The operands to the `gpu.return` are the result values returned
 by an invocation of the `gpu.func`.
 """
-function _return(operands::Vector{Value}; location=Location())
+function return_(operands::Vector{Value}; location=Location())
     _results = IR.Type[]
     _operands = Value[operands...,]
     _owned_regions = Region[]

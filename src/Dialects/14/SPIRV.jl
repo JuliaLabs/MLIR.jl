@@ -5214,7 +5214,7 @@ function GlobalVariable(;
     type,
     sym_name,
     initializer=nothing,
-    _location=nothing,
+    location_=nothing,
     binding=nothing,
     descriptorSet=nothing,
     builtin=nothing,
@@ -5228,7 +5228,7 @@ function GlobalVariable(;
         namedattribute("type", type), namedattribute("sym_name", sym_name)
     ]
     !isnothing(initializer) && push!(attributes, namedattribute("initializer", initializer))
-    !isnothing(location) && push!(attributes, namedattribute("location", _location))
+    !isnothing(location) && push!(attributes, namedattribute("location", location_))
     !isnothing(binding) && push!(attributes, namedattribute("binding", binding))
     !isnothing(descriptorSet) &&
         push!(attributes, namedattribute("descriptorSet", descriptorSet))
@@ -7253,7 +7253,7 @@ function mlir_merge(; location=Location())
 end
 
 """
-`_module`
+`module_`
 
 This op defines a SPIR-V module using a MLIR region. The region contains
 one block. Module-level operations, including functions definitions,
@@ -7295,7 +7295,7 @@ spv.module Logical Vulkan
 }
 ```
 """
-function _module(;
+function module_(;
     addressing_model,
     memory_model,
     vce_triple=nothing,

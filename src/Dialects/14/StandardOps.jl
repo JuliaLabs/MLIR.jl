@@ -263,7 +263,7 @@ function constant(; result_0::IR.Type, value, location=Location())
 end
 
 """
-`_return`
+`return_`
 
 The `return` operation represents a return operation within a function.
 The operation takes variable number of operands and produces no results.
@@ -279,7 +279,7 @@ func @foo() : (i32, f8) {
 }
 ```
 """
-function _return(operands::Vector{Value}; location=Location())
+function return_(operands::Vector{Value}; location=Location())
     _results = IR.Type[]
     _operands = Value[operands...,]
     _owned_regions = Region[]

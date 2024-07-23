@@ -40,11 +40,11 @@ function affine_simplify_bounded_affine_ops(
     upper_bounds,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[target, bounded_values...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[]
+    _operands = Value[target, bounded_values...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("lower_bounds", lower_bounds),
         namedattribute("upper_bounds", upper_bounds),
     ]
@@ -52,11 +52,11 @@ function affine_simplify_bounded_affine_ops(
     return IR.create_operation(
         "transform.affine.simplify_bounded_affine_ops",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -79,20 +79,20 @@ always succeeds.
 function bufferization_empty_tensor_to_alloc_tensor(
     target::Value; transformed::IR.Type, location=Location()
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.bufferization.empty_tensor_to_alloc_tensor",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -130,11 +130,11 @@ function bufferization_one_shot_bufferize(
     print_conflicts=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(function_boundary_type_conversion) && push!(
         attributes,
         namedattribute(
@@ -161,11 +161,11 @@ function bufferization_one_shot_bufferize(
     return IR.create_operation(
         "transform.bufferization.one_shot_bufferize",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -219,11 +219,11 @@ function gpu_map_foreach_to_blocks(
     generate_gpu_launch=nothing,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(gridDim) && push!(attributes, namedattribute("gridDim", gridDim))
     !isnothing(generate_gpu_launch) &&
         push!(attributes, namedattribute("generate_gpu_launch", generate_gpu_launch))
@@ -231,11 +231,11 @@ function gpu_map_foreach_to_blocks(
     return IR.create_operation(
         "transform.gpu.map_foreach_to_blocks",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -326,11 +326,11 @@ function gpu_map_nested_foreach_to_threads(
     syncAfterDistribute=nothing,
     location=Location(),
 )
-    results = IR.Type[result,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(blockDim) && push!(attributes, namedattribute("blockDim", blockDim))
     !isnothing(syncAfterDistribute) &&
         push!(attributes, namedattribute("syncAfterDistribute", syncAfterDistribute))
@@ -338,11 +338,11 @@ function gpu_map_nested_foreach_to_threads(
     return IR.create_operation(
         "transform.gpu.map_nested_foreach_to_threads",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -367,20 +367,20 @@ The return handle points to only the subset of successfully produced
 computational operations, which can be empty.
 """
 function structured_decompose(target::Value; transformed::IR.Type, location=Location())
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.structured.decompose",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -422,20 +422,20 @@ This operation reads the containing op handle.
 function structured_fuse_into_containing_op(
     producer_op::Value, containing_op::Value; fused_op::IR.Type, location=Location()
 )
-    results = IR.Type[fused_op,]
-    operands = Value[producer_op, containing_op]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[fused_op,]
+    _operands = Value[producer_op, containing_op]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.structured.fuse_into_containing_op",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -454,11 +454,11 @@ function structured_fuse(
     tile_interchange=nothing,
     location=Location(),
 )
-    results = IR.Type[transformed, loops...]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed, loops...]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(tile_sizes) && push!(attributes, namedattribute("tile_sizes", tile_sizes))
     !isnothing(tile_interchange) &&
         push!(attributes, namedattribute("tile_interchange", tile_interchange))
@@ -466,11 +466,11 @@ function structured_fuse(
     return IR.create_operation(
         "transform.structured.fuse",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -491,20 +491,20 @@ equivalent generic operations, which can be empty or contain the original
 ops if they were already in generic form.
 """
 function structured_generalize(target::Value; transformed::IR.Type, location=Location())
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.structured.generalize",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -528,22 +528,22 @@ interchanged operations, which can be empty.
 function structured_interchange(
     target::Value; transformed::IR.Type, iterator_interchange=nothing, location=Location()
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(iterator_interchange) &&
         push!(attributes, namedattribute("iterator_interchange", iterator_interchange))
 
     return IR.create_operation(
         "transform.structured.interchange",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -571,22 +571,22 @@ function structured_masked_vectorize(
     static_vector_sizes=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[target, vector_sizes...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[target, vector_sizes...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(static_vector_sizes) &&
         push!(attributes, namedattribute("static_vector_sizes", static_vector_sizes))
 
     return IR.create_operation(
         "transform.structured.masked_vectorize",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -630,11 +630,11 @@ function structured_match(
     filter_result_type=nothing,
     location=Location(),
 )
-    results = IR.Type[results,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(ops) && push!(attributes, namedattribute("ops", ops))
     !isnothing(interface) && push!(attributes, namedattribute("interface", interface))
     !isnothing(op_attrs) && push!(attributes, namedattribute("op_attrs", op_attrs))
@@ -644,11 +644,11 @@ function structured_match(
     return IR.create_operation(
         "transform.structured.match",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -719,11 +719,11 @@ function structured_multitile_sizes(
     divisor=nothing,
     location=Location(),
 )
-    results = IR.Type[low_size, high_size, split_point]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[low_size, high_size, split_point]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("dimension", dimension), namedattribute("target_size", target_size)
     ]
     !isnothing(divisor) && push!(attributes, namedattribute("divisor", divisor))
@@ -731,11 +731,11 @@ function structured_multitile_sizes(
     return IR.create_operation(
         "transform.structured.multitile_sizes",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -808,22 +808,22 @@ function structured_pack(
     static_packed_sizes=nothing,
     location=Location(),
 )
-    results = IR.Type[packed_op,]
-    operands = Value[target, packed_sizes...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[packed_op,]
+    _operands = Value[target, packed_sizes...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(static_packed_sizes) &&
         push!(attributes, namedattribute("static_packed_sizes", static_packed_sizes))
 
     return IR.create_operation(
         "transform.structured.pack",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -876,22 +876,22 @@ function structured_pack_transpose(
     inner_perm=nothing,
     location=Location(),
 )
-    results = IR.Type[packed_op, pack_op, un_pack_op]
-    operands = Value[target_pack_or_un_pack_op, target_linalg_op]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[packed_op, pack_op, un_pack_op]
+    _operands = Value[target_pack_or_un_pack_op, target_linalg_op]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(outer_perm) && push!(attributes, namedattribute("outer_perm", outer_perm))
     !isnothing(inner_perm) && push!(attributes, namedattribute("inner_perm", inner_perm))
 
     return IR.create_operation(
         "transform.structured.pack_transpose",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -922,11 +922,11 @@ function structured_pad(
     transpose_paddings=nothing,
     location=Location(),
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(padding_values) &&
         push!(attributes, namedattribute("padding_values", padding_values))
     !isnothing(padding_dimensions) &&
@@ -941,11 +941,11 @@ function structured_pad(
     return IR.create_operation(
         "transform.structured.pad",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -979,11 +979,11 @@ function structured_promote(
     alignment=nothing,
     location=Location(),
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(operands_to_promote) &&
         push!(attributes, namedattribute("operands_to_promote", operands_to_promote))
     !isnothing(use_full_tile_buffers) &&
@@ -998,11 +998,11 @@ function structured_promote(
     return IR.create_operation(
         "transform.structured.promote",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1023,20 +1023,20 @@ This operation consumes the `target` handle.
 function structured_replace(
     target::Value; replacement::IR.Type, bodyRegion::Region, location=Location()
 )
-    results = IR.Type[replacement,]
-    operands = Value[target,]
-    owned_regions = Region[bodyRegion,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[replacement,]
+    _operands = Value[target,]
+    _owned_regions = Region[bodyRegion,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.structured.replace",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1066,20 +1066,20 @@ Loops can always be recovered by navigating from the tiled operations if
 needed.
 """
 function structured_scalarize(target::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[result,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.structured.scalarize",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1114,11 +1114,11 @@ function structured_split(
     static_split_point,
     location=Location(),
 )
-    results = IR.Type[first, second]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[
+    _results = IR.Type[first, second]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[
         namedattribute("dimension", dimension),
         namedattribute("static_split_point", static_split_point),
     ]
@@ -1127,11 +1127,11 @@ function structured_split(
     return IR.create_operation(
         "transform.structured.split",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1285,11 +1285,11 @@ function structured_split_reduction(
     use_alloc=nothing,
     location=Location(),
 )
-    results = IR.Type[init_or_alloc_op, fill_op, split_linalg_op, combining_linalg_op]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[init_or_alloc_op, fill_op, split_linalg_op, combining_linalg_op]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(split_factor) &&
         push!(attributes, namedattribute("split_factor", split_factor))
     !isnothing(insert_split_dimension) &&
@@ -1303,11 +1303,11 @@ function structured_split_reduction(
     return IR.create_operation(
         "transform.structured.split_reduction",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1360,11 +1360,11 @@ function structured_tile(
     interchange=nothing,
     location=Location(),
 )
-    results = IR.Type[tiled_linalg_op, loops...]
-    operands = Value[target, dynamic_sizes...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[tiled_linalg_op, loops...]
+    _operands = Value[target, dynamic_sizes...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(static_sizes) &&
         push!(attributes, namedattribute("static_sizes", static_sizes))
     !isnothing(interchange) && push!(attributes, namedattribute("interchange", interchange))
@@ -1372,11 +1372,11 @@ function structured_tile(
     return IR.create_operation(
         "transform.structured.tile",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1459,11 +1459,11 @@ function structured_tile_reduction_using_foreach_thread(
     mapping=nothing,
     location=Location(),
 )
-    results = IR.Type[foreach_thread_op, fill_op, split_linalg_op, combining_linalg_op]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[foreach_thread_op, fill_op, split_linalg_op, combining_linalg_op]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(num_threads) && push!(attributes, namedattribute("num_threads", num_threads))
     !isnothing(tile_sizes) && push!(attributes, namedattribute("tile_sizes", tile_sizes))
     !isnothing(mapping) && push!(attributes, namedattribute("mapping", mapping))
@@ -1471,11 +1471,11 @@ function structured_tile_reduction_using_foreach_thread(
     return IR.create_operation(
         "transform.structured.tile_reduction_using_foreach_thread",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1559,21 +1559,21 @@ function structured_tile_reduction_using_scf(
     tile_sizes=nothing,
     location=Location(),
 )
-    results = IR.Type[for_op, fill_op, split_linalg_op, combining_linalg_op]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[for_op, fill_op, split_linalg_op, combining_linalg_op]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(tile_sizes) && push!(attributes, namedattribute("tile_sizes", tile_sizes))
 
     return IR.create_operation(
         "transform.structured.tile_reduction_using_scf",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1648,11 +1648,11 @@ function structured_tile_to_foreach_thread_op(
     mapping=nothing,
     location=Location(),
 )
-    results = IR.Type[foreach_thread_op, tiled_op]
-    operands = Value[target, num_threads..., tile_sizes...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[foreach_thread_op, tiled_op]
+    _operands = Value[target, num_threads..., tile_sizes...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(packed_num_threads) && push!(operands, packed_num_threads)
     !isnothing(packed_tile_sizes) && push!(operands, packed_tile_sizes)
     push!(
@@ -1661,13 +1661,8 @@ function structured_tile_to_foreach_thread_op(
             1,
             length(num_threads),
             length(tile_sizes),
-            if (packed_num_threads == nothing)
-                0
-            elseif 1(packed_tile_sizes == nothing)
-                0
-            else
-                1
-            end,
+            isnothing(packed_num_threads) ? 0 : 1,
+            isnothing(packed_tile_sizes) ? 0 : 1,
         ]),
     )
     !isnothing(static_num_threads) &&
@@ -1679,11 +1674,11 @@ function structured_tile_to_foreach_thread_op(
     return IR.create_operation(
         "transform.structured.tile_to_foreach_thread_op",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1736,11 +1731,11 @@ function structured_tile_to_scf_for(
     interchange=nothing,
     location=Location(),
 )
-    results = IR.Type[tiled_linalg_op, loops...]
-    operands = Value[target, dynamic_sizes...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[tiled_linalg_op, loops...]
+    _operands = Value[target, dynamic_sizes...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(static_sizes) &&
         push!(attributes, namedattribute("static_sizes", static_sizes))
     !isnothing(interchange) && push!(attributes, namedattribute("interchange", interchange))
@@ -1748,11 +1743,11 @@ function structured_tile_to_scf_for(
     return IR.create_operation(
         "transform.structured.tile_to_scf_for",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1803,11 +1798,11 @@ function structured_vectorize(
     disable_transfer_permutation_map_lowering_patterns=nothing,
     location=Location(),
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(vectorize_padding) &&
         push!(attributes, namedattribute("vectorize_padding", vectorize_padding))
     !isnothing(vectorize_nd_extract) &&
@@ -1830,11 +1825,11 @@ function structured_vectorize(
     return IR.create_operation(
         "transform.structured.vectorize",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1860,20 +1855,20 @@ succeeds, and failure otherwise.
 function memref_multibuffer(
     target::Value; transformed::IR.Type, factor, location=Location()
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("factor", factor),]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("factor", factor),]
 
     return IR.create_operation(
         "transform.memref.multibuffer",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1895,22 +1890,22 @@ that are parents to more than one input which are only present once.
 function loop_get_parent_for(
     target::Value; parent::IR.Type, num_loops=nothing, affine=nothing, location=Location()
 )
-    results = IR.Type[parent,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[parent,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(num_loops) && push!(attributes, namedattribute("num_loops", num_loops))
     !isnothing(affine) && push!(attributes, namedattribute("affine", affine))
 
     return IR.create_operation(
         "transform.loop.get_parent_for",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1927,20 +1922,20 @@ The return handle points to the coalesced loop if coalescing happens, or
 the given input loop if coalescing does not happen.
 """
 function loop_coalesce(target::Value; transformed::IR.Type, location=Location())
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.loop.coalesce",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1960,20 +1955,20 @@ module). Returns the handle to the list of outlined functions in the same
 order as the operand handle.
 """
 function loop_outline(target::Value; transformed::IR.Type, func_name, location=Location())
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("func_name", func_name),]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("func_name", func_name),]
 
     return IR.create_operation(
         "transform.loop.outline",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2008,11 +2003,11 @@ function loop_peel(
     fail_if_already_divisible=nothing,
     location=Location(),
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(fail_if_already_divisible) && push!(
         attributes,
         namedattribute("fail_if_already_divisible", fail_if_already_divisible),
@@ -2021,11 +2016,11 @@ function loop_peel(
     return IR.create_operation(
         "transform.loop.peel",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2060,11 +2055,11 @@ function loop_pipeline(
     read_latency=nothing,
     location=Location(),
 )
-    results = IR.Type[transformed,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[transformed,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(iteration_interval) &&
         push!(attributes, namedattribute("iteration_interval", iteration_interval))
     !isnothing(read_latency) &&
@@ -2073,11 +2068,11 @@ function loop_pipeline(
     return IR.create_operation(
         "transform.loop.pipeline",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2100,20 +2095,20 @@ Does not return handles as the operation may result in the loop being
 removed after a full unrolling.
 """
 function loop_unroll(target::Value; factor, location=Location())
-    results = IR.Type[]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("factor", factor),]
+    _results = IR.Type[]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("factor", factor),]
 
     return IR.create_operation(
         "transform.loop.unroll",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2189,21 +2184,21 @@ function alternatives(
     alternatives::Vector{Region},
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[]
-    owned_regions = Region[alternatives...,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results...,]
+    _operands = Value[]
+    _owned_regions = Region[alternatives...,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(scope) && push!(operands, scope)
 
     return IR.create_operation(
         "transform.alternatives",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2213,20 +2208,20 @@ end
 
 """
 function cast(input::Value; output::IR.Type, location=Location())
-    results = IR.Type[output,]
-    operands = Value[input,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[output,]
+    _operands = Value[input,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.cast",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2254,20 +2249,20 @@ For each result, the payload ops of the corresponding YieldOp operand are
 merged and mapped to the same resulting handle.
 """
 function foreach(target::Value; results::Vector{IR.Type}, body::Region, location=Location())
-    results = IR.Type[results...,]
-    operands = Value[target,]
-    owned_regions = Region[body,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results...,]
+    _operands = Value[target,]
+    _owned_regions = Region[body,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.foreach",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2291,20 +2286,20 @@ is applied, e.g., \"B\" may itself be a parent of \"A\". This may have an impact
 on the further transformation applied to the handle produced here.
 """
 function get_closest_isolated_parent(target::Value; parent::IR.Type, location=Location())
-    results = IR.Type[parent,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[parent,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.get_closest_isolated_parent",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2323,20 +2318,20 @@ be empty.
 function get_consumers_of_result(
     target::Value; consumers::IR.Type, result_number, location=Location()
 )
-    results = IR.Type[consumers,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("result_number", result_number),]
+    _results = IR.Type[consumers,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("result_number", result_number),]
 
     return IR.create_operation(
         "transform.get_consumers_of_result",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2354,20 +2349,20 @@ computational operations, which can be empty.
 function get_producer_of_operand(
     target::Value; producer::IR.Type, operand_number, location=Location()
 )
-    results = IR.Type[producer,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("operand_number", operand_number),]
+    _results = IR.Type[producer,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("operand_number", operand_number),]
 
     return IR.create_operation(
         "transform.get_producer_of_operand",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2390,23 +2385,23 @@ function merge_handles(
     deduplicate=nothing,
     location=Location(),
 )
-    results = IR.Type[]
-    operands = Value[handles...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    _results = IR.Type[]
+    _operands = Value[handles...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
     !isnothing(deduplicate) && push!(attributes, namedattribute("deduplicate", deduplicate))
 
     return IR.create_operation(
         "transform.merge_handles",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2429,20 +2424,20 @@ Payload IR ops actually matched the pattern and only fails if the pattern
 could not be looked up or compiled.
 """
 function pdl_match(root::Value; matched::IR.Type, pattern_name, location=Location())
-    results = IR.Type[matched,]
-    operands = Value[root,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("pattern_name", pattern_name),]
+    _results = IR.Type[matched,]
+    _operands = Value[root,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("pattern_name", pattern_name),]
 
     return IR.create_operation(
         "transform.pdl_match",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2457,22 +2452,22 @@ specified, the top-level op is dumped.
 This op is useful for printf-style debugging.
 """
 function print(target=nothing::Union{Nothing,Value}; name=nothing, location=Location())
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(target) && push!(operands, target)
     !isnothing(name) && push!(attributes, namedattribute("name", name))
 
     return IR.create_operation(
         "transform.print",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2505,20 +2500,20 @@ MergeHandlesOp can be used to construct arbitrary lists with repetitions.
 function replicate(
     pattern::Value, handles::Vector{Value}; replicated::Vector{IR.Type}, location=Location()
 )
-    results = IR.Type[replicated...,]
-    operands = Value[pattern, handles...]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[replicated...,]
+    _operands = Value[pattern, handles...]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.replicate",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2561,11 +2556,11 @@ function sequence(
     body::Region,
     location=Location(),
 )
-    results = IR.Type[results...,]
-    operands = Value[]
-    owned_regions = Region[body,]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute(
+    _results = IR.Type[results...,]
+    _operands = Value[]
+    _owned_regions = Region[body,]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute(
         "failure_propagation_mode", failure_propagation_mode
     ),]
     !isnothing(root) && push!(operands, root)
@@ -2573,11 +2568,11 @@ function sequence(
     return IR.create_operation(
         "transform.sequence",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2599,20 +2594,20 @@ operations contained in the source `handle`. Otherwise it silently fails.
 function split_handles(
     handle::Value; results::Vector{IR.Type}, num_result_handles, location=Location()
 )
-    results = IR.Type[results...,]
-    operands = Value[handle,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[namedattribute("num_result_handles", num_result_handles),]
+    _results = IR.Type[results...,]
+    _operands = Value[handle,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[namedattribute("num_result_handles", num_result_handles),]
 
     return IR.create_operation(
         "transform.split_handles",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2656,21 +2651,21 @@ ops associated with its operand when provided.
 function with_pdl_patterns(
     root=nothing::Union{Nothing,Value}; body::Region, location=Location()
 )
-    results = IR.Type[]
-    operands = Value[]
-    owned_regions = Region[body,]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[]
+    _owned_regions = Region[body,]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(root) && push!(operands, root)
 
     return IR.create_operation(
         "transform.with_pdl_patterns",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2683,20 +2678,20 @@ transform IR ops back to the containing op. It is not itself associated with
 any transformation on the payload IR and is used for flow purposes only.
 """
 function yield(operands::Vector{Value}; location=Location())
-    results = IR.Type[]
-    operands = Value[operands...,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[]
+    _operands = Value[operands...,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
 
     return IR.create_operation(
         "transform.yield",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2727,11 +2722,11 @@ function vector_lower_vectors(
     unroll_vector_transfers=nothing,
     location=Location(),
 )
-    results = IR.Type[results,]
-    operands = Value[target,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
+    _results = IR.Type[results,]
+    _operands = Value[target,]
+    _owned_regions = Region[]
+    _successors = Block[]
+    _attributes = NamedAttribute[]
     !isnothing(contraction_lowering) &&
         push!(attributes, namedattribute("contraction_lowering", contraction_lowering))
     !isnothing(multireduction_lowering) && push!(
@@ -2751,11 +2746,11 @@ function vector_lower_vectors(
     return IR.create_operation(
         "transform.vector.lower_vectors",
         location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=results,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
+        results=_results,
         result_inference=false,
     )
 end

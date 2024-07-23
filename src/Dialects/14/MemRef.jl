@@ -856,7 +856,7 @@ function get_global(; result::IR.Type, name, location=Location())
 end
 
 """
-`_global`
+`global_`
 
 The `memref.global` operation declares or defines a named global memref
 variable. The backing memory for the variable is allocated statically and is
@@ -893,7 +893,7 @@ memref.global @z : memref<3xf16> = uninitialized
 memref.global constant @c : memref<2xi32> = dense<1, 4>
 ```
 """
-function _global(;
+function global_(;
     sym_name,
     sym_visibility=nothing,
     type,
