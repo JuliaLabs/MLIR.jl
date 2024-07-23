@@ -152,7 +152,7 @@ namespace
       reservedKeywords.push_back(modulename.value());
     }
     while (std::find(reservedKeywords.begin(), reservedKeywords.end(), name) != reservedKeywords.end()) {
-      name = "_" + name;
+      name = name + "_";
     }
     // replace all .'s with _'s
     std::replace(name.begin(), name.end(), '.', '_');
