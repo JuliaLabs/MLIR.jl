@@ -163,13 +163,13 @@ function tiled_loop(
     step::Vector{Value},
     inputs::Vector{Value},
     outputs::Vector{Value};
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     iterator_types,
     distribution_types=nothing,
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[lowerBound..., upperBound..., step..., inputs..., outputs...]
     owned_regions = Region[region,]
     successors = Block[]

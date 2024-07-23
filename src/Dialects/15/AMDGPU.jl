@@ -75,7 +75,7 @@ function raw_buffer_atomic_fadd(
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
+        operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -140,7 +140,8 @@ function raw_buffer_load(
     attributes = NamedAttribute[]
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
-        attributes, operandsegmentsizes([1, length(indices), isnothing(sgprOffset) ? 0 : 1])
+        attributes,
+        operandsegmentsizes([1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))
@@ -194,7 +195,7 @@ function raw_buffer_store(
     !isnothing(sgprOffset) && push!(operands, sgprOffset)
     push!(
         attributes,
-        operandsegmentsizes([1, 1, length(indices), isnothing(sgprOffset) ? 0 : 1]),
+        operandsegmentsizes([1, 1, length(indices), (sgprOffset == nothing) ? 0 : 1]),
     )
     !isnothing(boundsCheck) && push!(attributes, namedattribute("boundsCheck", boundsCheck))
     !isnothing(indexOffset) && push!(attributes, namedattribute("indexOffset", indexOffset))

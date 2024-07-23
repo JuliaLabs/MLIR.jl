@@ -60,8 +60,7 @@ function data(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(ifCond) ? 0 : 1,
-            length(copyOperands),
+            (ifCond == nothing) ? 0 : 1length(copyOperands),
             length(copyinOperands),
             length(copyinReadonlyOperands),
             length(copyoutOperands),
@@ -129,10 +128,15 @@ function enter_data(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(ifCond) ? 0 : 1,
-            isnothing(asyncOperand) ? 0 : 1,
-            isnothing(waitDevnum) ? 0 : 1,
-            length(waitOperands),
+            if (ifCond == nothing)
+                0
+            elseif 1(asyncOperand == nothing)
+                0
+            elseif 1(waitDevnum == nothing)
+                0
+            else
+                1length(waitOperands)
+            end,
             length(copyinOperands),
             length(createOperands),
             length(createZeroOperands),
@@ -191,10 +195,15 @@ function exit_data(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(ifCond) ? 0 : 1,
-            isnothing(asyncOperand) ? 0 : 1,
-            isnothing(waitDevnum) ? 0 : 1,
-            length(waitOperands),
+            if (ifCond == nothing)
+                0
+            elseif 1(asyncOperand == nothing)
+                0
+            elseif 1(waitDevnum == nothing)
+                0
+            else
+                1length(waitOperands)
+            end,
             length(copyoutOperands),
             length(deleteOperands),
             length(detachOperands),
@@ -246,8 +255,13 @@ function init(
         attributes,
         operandsegmentsizes([
             length(deviceTypeOperands),
-            isnothing(deviceNumOperand) ? 0 : 1,
-            isnothing(ifCond) ? 0 : 1,
+            if (deviceNumOperand == nothing)
+                0
+            elseif 1(ifCond == nothing)
+                0
+            else
+                1
+            end,
         ]),
     )
 
@@ -291,7 +305,7 @@ function loop(
     tileOperands::Vector{Value},
     privateOperands::Vector{Value},
     reductionOperands::Vector{Value},
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     collapse=nothing,
     seq=nothing,
     independent=nothing,
@@ -301,7 +315,7 @@ function loop(
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[tileOperands..., privateOperands..., reductionOperands...]
     owned_regions = Region[region,]
     successors = Block[]
@@ -313,11 +327,17 @@ function loop(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(gangNum) ? 0 : 1,
-            isnothing(gangStatic) ? 0 : 1,
-            isnothing(workerNum) ? 0 : 1,
-            isnothing(vectorLength) ? 0 : 1,
-            length(tileOperands),
+            if (gangNum == nothing)
+                0
+            elseif 1(gangStatic == nothing)
+                0
+            elseif 1(workerNum == nothing)
+                0
+            elseif 1(vectorLength == nothing)
+                0
+            else
+                1length(tileOperands)
+            end,
             length(privateOperands),
             length(reductionOperands),
         ]),
@@ -417,14 +437,20 @@ function parallel(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(async) ? 0 : 1,
-            length(waitOperands),
-            isnothing(numGangs) ? 0 : 1,
-            isnothing(numWorkers) ? 0 : 1,
-            isnothing(vectorLength) ? 0 : 1,
-            isnothing(ifCond) ? 0 : 1,
-            isnothing(selfCond) ? 0 : 1,
-            length(reductionOperands),
+            (async == nothing) ? 0 : 1length(waitOperands),
+            if (numGangs == nothing)
+                0
+            elseif 1(numWorkers == nothing)
+                0
+            elseif 1(vectorLength == nothing)
+                0
+            elseif 1(ifCond == nothing)
+                0
+            elseif 1(selfCond == nothing)
+                0
+            else
+                1length(reductionOperands)
+            end,
             length(copyOperands),
             length(copyinOperands),
             length(copyinReadonlyOperands),
@@ -488,8 +514,13 @@ function shutdown(
         attributes,
         operandsegmentsizes([
             length(deviceTypeOperands),
-            isnothing(deviceNumOperand) ? 0 : 1,
-            isnothing(ifCond) ? 0 : 1,
+            if (deviceNumOperand == nothing)
+                0
+            elseif 1(ifCond == nothing)
+                0
+            else
+                1
+            end,
         ]),
     )
 
@@ -572,10 +603,15 @@ function update(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(ifCond) ? 0 : 1,
-            isnothing(asyncOperand) ? 0 : 1,
-            isnothing(waitDevnum) ? 0 : 1,
-            length(waitOperands),
+            if (ifCond == nothing)
+                0
+            elseif 1(asyncOperand == nothing)
+                0
+            elseif 1(waitDevnum == nothing)
+                0
+            else
+                1length(waitOperands)
+            end,
             length(deviceTypeOperands),
             length(hostOperands),
             length(deviceOperands),
@@ -630,9 +666,15 @@ function wait(
         attributes,
         operandsegmentsizes([
             length(waitOperands),
-            isnothing(asyncOperand) ? 0 : 1,
-            isnothing(waitDevnum) ? 0 : 1,
-            isnothing(ifCond) ? 0 : 1,
+            if (asyncOperand == nothing)
+                0
+            elseif 1(waitDevnum == nothing)
+                0
+            elseif 1(ifCond == nothing)
+                0
+            else
+                1
+            end,
         ]),
     )
     !isnothing(async) && push!(attributes, namedattribute("async", async))
@@ -656,9 +698,9 @@ end
 acc ops (parallel and loop). It returns values to the immediately enclosing
 acc op.
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

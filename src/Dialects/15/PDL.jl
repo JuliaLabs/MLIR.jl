@@ -66,9 +66,9 @@ void registerNativeRewrite(PDLPatternModule &pdlModule) {
 ```
 """
 function apply_native_rewrite(
-    args::Vector{Value}; results_::Vector{IR.Type}, name, location=Location()
+    args::Vector{Value}; results::Vector{IR.Type}, name, location=Location()
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[args...,]
     owned_regions = Region[]
     successors = Block[]
@@ -208,7 +208,7 @@ function operand(type=nothing::Union{Nothing,Value}; val::IR.Type, location=Loca
 end
 
 """
-`operands_`
+`operands`
 
 `pdl.operands` operations capture external operand range edges into an
 operation node that originate from operations or block arguments not
@@ -228,7 +228,7 @@ operands by specifying expected value types (via `pdl.types` operations).
 %typed_operands = pdl.operands : %types
 ```
 """
-function operands_(type=nothing::Union{Nothing,Value}; val::IR.Type, location=Location())
+function operands(type=nothing::Union{Nothing,Value}; val::IR.Type, location=Location())
     results = IR.Type[val,]
     operands = Value[]
     owned_regions = Region[]
@@ -346,8 +346,8 @@ def MyOp {
 ```
 """
 function operation(
-    operands_::Vector{Value},
-    attributes_::Vector{Value},
+    operands::Vector{Value},
+    attributes::Vector{Value},
     types::Vector{Value};
     op::IR.Type,
     name=nothing,
@@ -355,13 +355,13 @@ function operation(
     location=Location(),
 )
     results = IR.Type[op,]
-    operands = Value[operands_..., attributes_..., types...]
+    operands = Value[operands..., attributes..., types...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("attributeNames", attributeNames),]
     push!(
         attributes,
-        operandsegmentsizes([length(operands_), length(attributes_), length(types)]),
+        operandsegmentsizes([length(operands), length(attributes), length(types)]),
     )
     !isnothing(name) && push!(attributes, namedattribute("name", name))
 
@@ -460,7 +460,7 @@ function replace(
     !isnothing(replOperation) && push!(operands, replOperation)
     push!(
         attributes,
-        operandsegmentsizes([1, isnothing(replOperation) ? 0 : 1, length(replValues)]),
+        operandsegmentsizes([1, (replOperation == nothing) ? 0 : 1length(replValues)]),
     )
 
     return IR.create_operation(
@@ -517,7 +517,7 @@ function result(parent::Value; val::IR.Type, index, location=Location())
 end
 
 """
-`results_`
+`results`
 
 `pdl.results` operations extract a result group from an operation within a
 pattern or rewrite region. If an index is provided, this operation extracts
@@ -545,7 +545,7 @@ operation.
 %results = pdl.results 1 of %operation -> !pdl.value
 ```
 """
-function results_(parent::Value; val::IR.Type, index=nothing, location=Location())
+function results(parent::Value; val::IR.Type, index=nothing, location=Location())
     results = IR.Type[val,]
     operands = Value[parent,]
     owned_regions = Region[]
@@ -617,7 +617,7 @@ function rewrite(
     successors = Block[]
     attributes = NamedAttribute[]
     !isnothing(root) && push!(operands, root)
-    push!(attributes, operandsegmentsizes([isnothing(root) ? 0 : 1, length(externalArgs)]))
+    push!(attributes, operandsegmentsizes([(root == nothing) ? 0 : 1length(externalArgs)]))
     !isnothing(name) && push!(attributes, namedattribute("name", name))
 
     return IR.create_operation(

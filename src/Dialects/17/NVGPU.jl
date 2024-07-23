@@ -74,7 +74,7 @@ function device_async_copy(
     push!(
         attributes,
         operandsegmentsizes([
-            1, length(dstIndices), 1, length(srcIndices), isnothing(srcElements) ? 0 : 1
+            1, length(dstIndices), 1, length(srcIndices), (srcElements == nothing) ? 0 : 1
         ]),
     )
     !isnothing(bypassL1) && push!(attributes, namedattribute("bypassL1", bypassL1))

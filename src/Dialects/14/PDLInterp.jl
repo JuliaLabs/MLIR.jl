@@ -77,12 +77,12 @@ pdl_interp.apply_rewrite \"rewriter\"[42](%root : !pdl.operation, %value : !pdl.
 """
 function apply_rewrite(
     args::Vector{Value};
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     name,
     constParams=nothing,
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[args...,]
     owned_regions = Region[]
     successors = Block[]
@@ -476,8 +476,8 @@ this operation.
 ```
 """
 function create_operation(
-    operands_::Vector{Value},
-    attributes_::Vector{Value},
+    operands::Vector{Value},
+    attributes::Vector{Value},
     types::Vector{Value};
     operation::IR.Type,
     name,
@@ -485,7 +485,7 @@ function create_operation(
     location=Location(),
 )
     results = IR.Type[operation,]
-    operands = Value[operands_..., attributes_..., types...]
+    operands = Value[operands..., attributes..., types...]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[
@@ -493,7 +493,7 @@ function create_operation(
     ]
     push!(
         attributes,
-        operandsegmentsizes([length(operands_), length(attributes_), length(types)]),
+        operandsegmentsizes([length(operands), length(attributes), length(types)]),
     )
 
     return IR.create_operation(

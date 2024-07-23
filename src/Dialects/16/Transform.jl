@@ -623,14 +623,14 @@ it is a navigation op.
 """
 function structured_match(
     target::Value;
-    results_::IR.Type,
+    results::IR.Type,
     ops=nothing,
     interface=nothing,
     op_attrs=nothing,
     filter_result_type=nothing,
     location=Location(),
 )
-    results = IR.Type[results_,]
+    results = IR.Type[results,]
     operands = Value[target,]
     owned_regions = Region[]
     successors = Block[]
@@ -1661,8 +1661,13 @@ function structured_tile_to_foreach_thread_op(
             1,
             length(num_threads),
             length(tile_sizes),
-            isnothing(packed_num_threads) ? 0 : 1,
-            isnothing(packed_tile_sizes) ? 0 : 1,
+            if (packed_num_threads == nothing)
+                0
+            elseif 1(packed_tile_sizes == nothing)
+                0
+            else
+                1
+            end,
         ]),
     )
     !isnothing(static_num_threads) &&
@@ -2180,11 +2185,11 @@ Remark: this op allows one to implement a simple \"try\" construct as follows:
 """
 function alternatives(
     scope=nothing::Union{Nothing,Value};
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     alternatives::Vector{Region},
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[]
     owned_regions = Region[alternatives...,]
     successors = Block[]
@@ -2248,10 +2253,8 @@ This op generates as many handles as the terminating YieldOp has operands.
 For each result, the payload ops of the corresponding YieldOp operand are
 merged and mapped to the same resulting handle.
 """
-function foreach(
-    target::Value; results_::Vector{IR.Type}, body::Region, location=Location()
-)
-    results = IR.Type[results_...,]
+function foreach(target::Value; results::Vector{IR.Type}, body::Region, location=Location())
+    results = IR.Type[results...,]
     operands = Value[target,]
     owned_regions = Region[body,]
     successors = Block[]
@@ -2553,12 +2556,12 @@ results of the sequence op.
 """
 function sequence(
     root=nothing::Union{Nothing,Value};
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     failure_propagation_mode,
     body::Region,
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[]
     owned_regions = Region[body,]
     successors = Block[]
@@ -2594,9 +2597,9 @@ specified `num_result_handles` corresponds to the dynamic number of
 operations contained in the source `handle`. Otherwise it silently fails.
 """
 function split_handles(
-    handle::Value; results_::Vector{IR.Type}, num_result_handles, location=Location()
+    handle::Value; results::Vector{IR.Type}, num_result_handles, location=Location()
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[handle,]
     owned_regions = Region[]
     successors = Block[]
@@ -2679,9 +2682,9 @@ This terminator operation yields operation handles from regions of the
 transform IR ops back to the containing op. It is not itself associated with
 any transformation on the payload IR and is used for flow purposes only.
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -2715,7 +2718,7 @@ process of lowering to e.g. LLVM or NVVM.
 """
 function vector_lower_vectors(
     target::Value;
-    results_::IR.Type,
+    results::IR.Type,
     contraction_lowering=nothing,
     multireduction_lowering=nothing,
     split_transfers=nothing,
@@ -2724,7 +2727,7 @@ function vector_lower_vectors(
     unroll_vector_transfers=nothing,
     location=Location(),
 )
-    results = IR.Type[results_,]
+    results = IR.Type[results,]
     operands = Value[target,]
     owned_regions = Region[]
     successors = Block[]

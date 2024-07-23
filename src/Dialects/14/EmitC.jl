@@ -61,7 +61,7 @@ specifying order of operands and attributes in the call as follows:
 ```
 """
 function call(
-    operands_::Vector{Value};
+    operands::Vector{Value};
     result_0::Vector{IR.Type},
     callee,
     args=nothing,
@@ -69,7 +69,7 @@ function call(
     location=Location(),
 )
     results = IR.Type[result_0...,]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee),]

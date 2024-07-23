@@ -212,9 +212,9 @@ end
 `return_`
 
 """
-function return_(results_::Vector{Value}; location=Location())
+function return_(results::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[results_...,]
+    operands = Value[results...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

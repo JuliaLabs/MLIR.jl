@@ -409,11 +409,11 @@ sparse_tensor.foreach in %0 : tensor<2x3xf64, #ROW_MAJOR> do {
 function foreach(
     tensor::Value,
     initArgs::Vector{Value};
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     region::Region,
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[tensor, initArgs...]
     owned_regions = Region[region,]
     successors = Block[]

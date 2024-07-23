@@ -2187,14 +2187,14 @@ it is a navigation op.
 """
 function structured_match(
     target::Value;
-    results_::IR.Type,
+    results::IR.Type,
     ops=nothing,
     interface=nothing,
     op_attrs=nothing,
     filter_result_type=nothing,
     location=Location(),
 )
-    results = IR.Type[results_,]
+    results = IR.Type[results,]
     operands = Value[target,]
     owned_regions = Region[]
     successors = Block[]
@@ -3376,8 +3376,13 @@ function structured_tile_to_forall_op(
             1,
             length(num_threads),
             length(tile_sizes),
-            isnothing(packed_num_threads) ? 0 : 1,
-            isnothing(packed_tile_sizes) ? 0 : 1,
+            if (packed_num_threads == nothing)
+                0
+            elseif 1(packed_tile_sizes == nothing)
+                0
+            else
+                1
+            end,
         ]),
     )
     !isnothing(static_num_threads) &&
@@ -4607,11 +4612,11 @@ Remark: this op allows one to implement a simple \"try\" construct as follows:
 """
 function alternatives(
     scope=nothing::Union{Nothing,Value};
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     alternatives::Vector{Region},
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[]
     owned_regions = Region[alternatives...,]
     successors = Block[]
@@ -4992,10 +4997,8 @@ This op generates as many handles as the terminating YieldOp has operands.
 For each result, the payload ops of the corresponding YieldOp operand are
 merged and mapped to the same resulting handle.
 """
-function foreach(
-    target::Value; results_::Vector{IR.Type}, body::Region, location=Location()
-)
-    results = IR.Type[results_...,]
+function foreach(target::Value; results::Vector{IR.Type}, body::Region, location=Location())
+    results = IR.Type[results...,]
     operands = Value[target,]
     owned_regions = Region[body,]
     successors = Block[]
@@ -5232,14 +5235,14 @@ of this operation are the same as those associated with the operands of the
 `transform.yield` in the referenced named sequence.
 """
 function include_(
-    operands_::Vector{Value};
-    results_::Vector{IR.Type},
+    operands::Vector{Value};
+    results::Vector{IR.Type},
     target,
     failure_propagation_mode,
     location=Location(),
 )
-    results = IR.Type[results_...,]
-    operands = Value[operands_...,]
+    results = IR.Type[results...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[
@@ -5601,12 +5604,12 @@ results of the sequence op.
 function sequence(
     root=nothing::Union{Nothing,Value};
     extra_bindings::Vector{Value},
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     failure_propagation_mode,
     body::Region,
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[extra_bindings...,]
     owned_regions = Region[body,]
     successors = Block[]
@@ -5615,7 +5618,7 @@ function sequence(
     ),]
     !isnothing(root) && push!(operands, root)
     push!(
-        attributes, operandsegmentsizes([isnothing(root) ? 0 : 1, length(extra_bindings)])
+        attributes, operandsegmentsizes([(root == nothing) ? 0 : 1length(extra_bindings)])
     )
 
     return IR.create_operation(
@@ -5656,13 +5659,13 @@ regardless of `fail_on_payload_too_small`.
 """
 function split_handle(
     handle::Value;
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     pass_through_empty_handle=nothing,
     fail_on_payload_too_small=nothing,
     overflow_result=nothing,
     location=Location(),
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[handle,]
     owned_regions = Region[]
     successors = Block[]
@@ -5729,9 +5732,9 @@ This terminator operation yields operation handles from regions of the
 transform IR ops back to the containing op. It is not itself associated with
 any transformation on the payload IR and is used for flow purposes only.
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -523,9 +523,13 @@ function parallel(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(if_expr_var) ? 0 : 1,
-            isnothing(num_threads_var) ? 0 : 1,
-            length(allocate_vars),
+            if (if_expr_var == nothing)
+                0
+            elseif 1(num_threads_var == nothing)
+                0
+            else
+                1length(allocate_vars)
+            end,
             length(allocators_vars),
             length(reduction_vars),
         ]),
@@ -756,7 +760,10 @@ function simdloop(
     push!(
         attributes,
         operandsegmentsizes([
-            length(lowerBound), length(upperBound), length(step), isnothing(if_expr) ? 0 : 1
+            length(lowerBound),
+            length(upperBound),
+            length(step),
+            (if_expr == nothing) ? 0 : 1,
         ]),
     )
     !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
@@ -845,14 +852,17 @@ function target(
     !isnothing(if_expr) && push!(operands, if_expr)
     !isnothing(device) && push!(operands, device)
     !isnothing(thread_limit) && push!(operands, thread_limit)
-    push!(
-        attributes,
-        operandsegmentsizes([
-            isnothing(if_expr) ? 0 : 1,
-            isnothing(device) ? 0 : 1,
-            isnothing(thread_limit) ? 0 : 1,
-        ]),
-    )
+    push!(attributes, operandsegmentsizes([
+        if (if_expr == nothing)
+            0
+        elseif 1(device == nothing)
+            0
+        elseif 1(thread_limit == nothing)
+            0
+        else
+            1
+        end,
+    ]))
     !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
@@ -1069,15 +1079,23 @@ function taskloop(
             length(lowerBound),
             length(upperBound),
             length(step),
-            isnothing(if_expr) ? 0 : 1,
-            isnothing(final_expr) ? 0 : 1,
-            length(in_reduction_vars),
+            if (if_expr == nothing)
+                0
+            elseif 1(final_expr == nothing)
+                0
+            else
+                1length(in_reduction_vars)
+            end,
             length(reduction_vars),
-            isnothing(priority) ? 0 : 1,
-            length(allocate_vars),
+            (priority == nothing) ? 0 : 1length(allocate_vars),
             length(allocators_vars),
-            isnothing(grain_size) ? 0 : 1,
-            isnothing(num_tasks) ? 0 : 1,
+            if (grain_size == nothing)
+                0
+            elseif 1(num_tasks == nothing)
+                0
+            else
+                1
+            end,
         ]),
     )
     !isnothing(inclusive) && push!(attributes, namedattribute("inclusive", inclusive))
@@ -1166,11 +1184,14 @@ function task(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(if_expr) ? 0 : 1,
-            isnothing(final_expr) ? 0 : 1,
-            length(in_reduction_vars),
-            isnothing(priority) ? 0 : 1,
-            length(allocate_vars),
+            if (if_expr == nothing)
+                0
+            elseif 1(final_expr == nothing)
+                0
+            else
+                1length(in_reduction_vars)
+            end,
+            (priority == nothing) ? 0 : 1length(allocate_vars),
             length(allocators_vars),
         ]),
     )
@@ -1407,7 +1428,7 @@ function wsloop(
             length(linear_vars),
             length(linear_step_vars),
             length(reduction_vars),
-            isnothing(schedule_chunk_var) ? 0 : 1,
+            (schedule_chunk_var == nothing) ? 0 : 1,
         ]),
     )
     !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
@@ -1441,9 +1462,9 @@ end
 terminates the region. The semantics of how the values are yielded is
 defined by the parent operation.
 """
-function yield(results_::Vector{Value}; location=Location())
+function yield(results::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[results_...,]
+    operands = Value[results...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -364,18 +364,18 @@ attached body region as an %unwrapped value of f32 type.
 """
 function execute(
     dependencies::Vector{Value},
-    operands_::Vector{Value};
+    operands::Vector{Value};
     token::IR.Type,
-    results_::Vector{IR.Type},
+    results::Vector{IR.Type},
     body::Region,
     location=Location(),
 )
-    results = IR.Type[token, results_...]
-    operands = Value[dependencies..., operands_...]
+    results = IR.Type[token, results...]
+    operands = Value[dependencies..., operands...]
     owned_regions = Region[body,]
     successors = Block[]
     attributes = NamedAttribute[]
-    push!(attributes, operandsegmentsizes([length(dependencies), length(operands_)]))
+    push!(attributes, operandsegmentsizes([length(dependencies), length(operands)]))
 
     return IR.create_operation(
         "async.execute",
@@ -760,9 +760,9 @@ end
 The `async.yield` is a special terminator operation for the block inside
 `async.execute` operation.
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

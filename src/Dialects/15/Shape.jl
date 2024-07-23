@@ -124,9 +124,9 @@ nothing else. They should not exist after a program is fully lowered and
 ready to execute.
 """
 function assuming(
-    witness::Value; results_::Vector{IR.Type}, doRegion::Region, location=Location()
+    witness::Value; results::Vector{IR.Type}, doRegion::Region, location=Location()
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[witness,]
     owned_regions = Region[doRegion,]
     successors = Block[]
@@ -152,9 +152,9 @@ This yield operation represents a return operation within the
 operands and produces no results. The operand number and types must match
 the number and types of parent `shape.assuming` results.
 """
-function assuming_yield(operands_::Vector{Value}; location=Location())
+function assuming_yield(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1022,9 +1022,9 @@ end
 The `shape.return` operation represents a return operation within a function.
 The operation takes variable number of operands and produces no results.
 """
-function return_(operands_::Vector{Value}; location=Location())
+function return_(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -1301,9 +1301,9 @@ end
 `yield`
 
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

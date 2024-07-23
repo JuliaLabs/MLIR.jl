@@ -445,13 +445,19 @@ specified by `k1` and `k2`. A match in corresponding elements of `a` and
 registers.
 """
 function avx512_vp2intersect(
-    a::Value, b::Value; k1::IR.Type, k2::IR.Type, location=Location()
+    a::Value,
+    b::Value;
+    k1=nothing::Union{Nothing,IR.Type},
+    k2=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    results = IR.Type[k1, k2]
+    results = IR.Type[]
     operands = Value[a, b]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
+    !isnothing(k1) && push!(results, k1)
+    !isnothing(k2) && push!(results, k2)
 
     return IR.create_operation(
         "x86vector.avx512.vp2intersect",
@@ -460,8 +466,8 @@ function avx512_vp2intersect(
         owned_regions,
         successors,
         attributes,
-        results=results,
-        result_inference=false,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 

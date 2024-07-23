@@ -1251,7 +1251,7 @@ Attempting to define or reference any symbol or any global behavior is
 considered undefined behavior at this time.
 """
 function inline_asm(
-    operands_::Vector{Value};
+    operands::Vector{Value};
     res=nothing::Union{Nothing,IR.Type},
     asm_string,
     constraints,
@@ -1262,7 +1262,7 @@ function inline_asm(
     location=Location(),
 )
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[

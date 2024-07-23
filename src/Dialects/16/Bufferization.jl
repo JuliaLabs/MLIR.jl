@@ -73,7 +73,14 @@ function alloc_tensor(
     push!(
         attributes,
         operandsegmentsizes([
-            length(dynamic_sizes), isnothing(copy) ? 0 : 1, isnothing(size_hint) ? 0 : 1
+            length(dynamic_sizes),
+            if (copy == nothing)
+                0
+            elseif 1(size_hint == nothing)
+                0
+            else
+                1
+            end,
         ]),
     )
     !isnothing(memory_space) &&
@@ -228,12 +235,15 @@ involving tensors and memrefs.
 If tensor load is used in the bufferization steps, mutating the source
 buffer after loading leads to undefined behavior.
 """
-function to_tensor(memref::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
+function to_tensor(
+    memref::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    results = IR.Type[]
     operands = Value[memref,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "bufferization.to_tensor",
@@ -242,8 +252,8 @@ function to_tensor(memref::Value; result::IR.Type, location=Location())
         owned_regions,
         successors,
         attributes,
-        results=results,
-        result_inference=false,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 

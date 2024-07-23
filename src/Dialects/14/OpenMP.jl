@@ -463,9 +463,13 @@ function parallel(
     push!(
         attributes,
         operandsegmentsizes([
-            isnothing(if_expr_var) ? 0 : 1,
-            isnothing(num_threads_var) ? 0 : 1,
-            length(private_vars),
+            if (if_expr_var == nothing)
+                0
+            elseif 1(num_threads_var == nothing)
+                0
+            else
+                1length(private_vars)
+            end,
             length(firstprivate_vars),
             length(shared_vars),
             length(copyin_vars),
@@ -709,14 +713,17 @@ function target(
     !isnothing(if_expr) && push!(operands, if_expr)
     !isnothing(device) && push!(operands, device)
     !isnothing(thread_limit) && push!(operands, thread_limit)
-    push!(
-        attributes,
-        operandsegmentsizes([
-            isnothing(if_expr) ? 0 : 1,
-            isnothing(device) ? 0 : 1,
-            isnothing(thread_limit) ? 0 : 1,
-        ]),
-    )
+    push!(attributes, operandsegmentsizes([
+        if (if_expr == nothing)
+            0
+        elseif 1(device == nothing)
+            0
+        elseif 1(thread_limit == nothing)
+            0
+        else
+            1
+        end,
+    ]))
     !isnothing(nowait) && push!(attributes, namedattribute("nowait", nowait))
 
     return IR.create_operation(
@@ -919,7 +926,7 @@ function wsloop(
             length(linear_vars),
             length(linear_step_vars),
             length(reduction_vars),
-            isnothing(schedule_chunk_var) ? 0 : 1,
+            (schedule_chunk_var == nothing) ? 0 : 1,
         ]),
     )
     !isnothing(reductions) && push!(attributes, namedattribute("reductions", reductions))
@@ -957,9 +964,9 @@ defined by the parent operation.
 If \"omp.yield\" has any operands, the operands must match the parent
 operation\'s results.
 """
-function yield(results_::Vector{Value}; location=Location())
+function yield(results::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[results_...,]
+    operands = Value[results...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

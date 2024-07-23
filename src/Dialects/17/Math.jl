@@ -846,46 +846,6 @@ function ipowi(
 end
 
 """
-`log10`
-
-Computes the base-10 logarithm of the given value. It takes one operand of
-floating point type (i.e., scalar, tensor or vector) and returns one result of
-the same type.
-
-# Example
-
-```mlir
-// Scalar log10 operation.
-%y = math.log10 %x : f64
-```
-"""
-function log10(
-    operand::Value;
-    result=nothing::Union{Nothing,IR.Type},
-    fastmath=nothing,
-    location=Location(),
-)
-    results = IR.Type[]
-    operands = Value[operand,]
-    owned_regions = Region[]
-    successors = Block[]
-    attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
-    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
-
-    return IR.create_operation(
-        "math.log10",
-        location;
-        operands,
-        owned_regions,
-        successors,
-        attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
-    )
-end
-
-"""
 `log1p`
 
 Computes the base-e logarithm of one plus the given value. It takes one
@@ -957,6 +917,46 @@ function log2(
 
     return IR.create_operation(
         "math.log2",
+        location;
+        operands,
+        owned_regions,
+        successors,
+        attributes,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
+    )
+end
+
+"""
+`log10`
+
+Computes the base-10 logarithm of the given value. It takes one operand of
+floating point type (i.e., scalar, tensor or vector) and returns one result of
+the same type.
+
+# Example
+
+```mlir
+// Scalar log10 operation.
+%y = math.log10 %x : f64
+```
+"""
+function log10(
+    operand::Value;
+    result=nothing::Union{Nothing,IR.Type},
+    fastmath=nothing,
+    location=Location(),
+)
+    results = IR.Type[]
+    operands = Value[operand,]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
+    !isnothing(fastmath) && push!(attributes, namedattribute("fastmath", fastmath))
+
+    return IR.create_operation(
+        "math.log10",
         location;
         operands,
         owned_regions,

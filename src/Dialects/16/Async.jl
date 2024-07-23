@@ -131,10 +131,10 @@ is encoded as a symbol reference attribute named \"callee\".
 ```
 """
 function call(
-    operands_::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
+    operands::Vector{Value}; result_0::Vector{IR.Type}, callee, location=Location()
 )
     results = IR.Type[result_0...,]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("callee", callee),]
@@ -501,9 +501,9 @@ async.func @foo() : !async.token {
 }
 ```
 """
-function return_(operands_::Vector{Value}; location=Location())
+function return_(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
@@ -738,12 +738,15 @@ end
 The `async.runtime.load` operation loads the value from the runtime
 async.value storage.
 """
-function runtime_load(storage::Value; result::IR.Type, location=Location())
-    results = IR.Type[result,]
+function runtime_load(
+    storage::Value; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    results = IR.Type[]
     operands = Value[storage,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
+    !isnothing(result) && push!(results, result)
 
     return IR.create_operation(
         "async.runtime.load",
@@ -752,8 +755,8 @@ function runtime_load(storage::Value; result::IR.Type, location=Location())
         owned_regions,
         successors,
         attributes,
-        results=results,
-        result_inference=false,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -891,9 +894,9 @@ end
 The `async.yield` is a special terminator operation for the block inside
 `async.execute` operation.
 """
-function yield(operands_::Vector{Value}; location=Location())
+function yield(operands::Vector{Value}; location=Location())
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]

@@ -554,12 +554,15 @@ end
 `extractelement`
 
 """
-function extractelement(vector::Value, position::Value; res::IR.Type, location=Location())
-    results = IR.Type[res,]
+function extractelement(
+    vector::Value, position::Value; res=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    results = IR.Type[]
     operands = Value[vector, position]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[]
+    !isnothing(res) && push!(results, res)
 
     return IR.create_operation(
         "llvm.extractelement",
@@ -568,8 +571,8 @@ function extractelement(vector::Value, position::Value; res::IR.Type, location=L
         owned_regions,
         successors,
         attributes,
-        results=results,
-        result_inference=false,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -635,16 +638,17 @@ end
 function fcmp(
     lhs::Value,
     rhs::Value;
-    res::IR.Type,
+    res=nothing::Union{Nothing,IR.Type},
     predicate,
     fastmathFlags=nothing,
     location=Location(),
 )
-    results = IR.Type[res,]
+    results = IR.Type[]
     operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(res) && push!(results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -655,8 +659,8 @@ function fcmp(
         owned_regions,
         successors,
         attributes,
-        results=results,
-        result_inference=false,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1247,12 +1251,19 @@ end
 `icmp`
 
 """
-function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location())
-    results = IR.Type[res,]
+function icmp(
+    lhs::Value,
+    rhs::Value;
+    res=nothing::Union{Nothing,IR.Type},
+    predicate,
+    location=Location(),
+)
+    results = IR.Type[]
     operands = Value[lhs, rhs]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[namedattribute("predicate", predicate),]
+    !isnothing(res) && push!(results, res)
 
     return IR.create_operation(
         "llvm.icmp",
@@ -1261,8 +1272,8 @@ function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location
         owned_regions,
         successors,
         attributes,
-        results=results,
-        result_inference=false,
+        results=(length(results) == 0 ? nothing : results),
+        result_inference=(length(results) == 0 ? true : false),
     )
 end
 
@@ -1277,7 +1288,7 @@ Attempting to define or reference any symbol or any global behavior is
 considered undefined behavior at this time.
 """
 function inline_asm(
-    operands_::Vector{Value};
+    operands::Vector{Value};
     res=nothing::Union{Nothing,IR.Type},
     asm_string,
     constraints,
@@ -1288,7 +1299,7 @@ function inline_asm(
     location=Location(),
 )
     results = IR.Type[]
-    operands = Value[operands_...,]
+    operands = Value[operands...,]
     owned_regions = Region[]
     successors = Block[]
     attributes = NamedAttribute[
@@ -2544,9 +2555,9 @@ Call the specified llvm intrinsic. If the intrinsic is overloaded, use
 the MLIR function type of this op to determine which intrinsic to call.
 """
 function call_intrinsic(
-    args::Vector{Value}; results_::Vector{IR.Type}, intrin, location=Location()
+    args::Vector{Value}; results::Vector{IR.Type}, intrin, location=Location()
 )
-    results = IR.Type[results_...,]
+    results = IR.Type[results...,]
     operands = Value[args...,]
     owned_regions = Region[]
     successors = Block[]
