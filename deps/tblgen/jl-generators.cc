@@ -145,15 +145,14 @@ namespace
     // https://docs.julialang.org/en/v1/base/base/#Keywords
     // aditionally check that name doesn't conflict with local variables defined in the function (results, operands, owned_regions, successors, attributes)
     std::vector<std::string> reservedKeywords = {
-      "results", "operands", "owned_regions", "successors", "attributes", 
+      "_results", "_operands", "_owned_regions", "_successors", "_attributes", 
       "include", "location", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "false", "finally", "for", "function", "global", "if", "import", "let", "local", "macro", "module", "public", "quote", "return", "struct", "true", "try", "using", "while"
       };
     if (modulename.has_value()) {
       reservedKeywords.push_back(modulename.value());
     }
-    if (std::find(reservedKeywords.begin(), reservedKeywords.end(), name) != reservedKeywords.end())
-    {
-      name = name + "_";
+    while (std::find(reservedKeywords.begin(), reservedKeywords.end(), name) != reservedKeywords.end()) {
+      name = "_" + name;
     }
     // replace all .'s with _'s
     std::replace(name.begin(), name.end(), '.', '_');
@@ -212,15 +211,18 @@ function {0}({1}location=Location())
     {2}
 end
 )";      // 0: functionname, 1: functionarguments, 2: functionbody
-  const char *functionbodytemplate = R"(results = IR.Type[{0}]
-    operands = Value[{1}]
-    owned_regions = Region[{2}]
-    successors = Block[{3}]
-    attributes = NamedAttribute[{4}]
+  const char *functionbodytemplate = R"(_results = IR.Type[{0}]
+    _operands = Value[{1}]
+    _owned_regions = Region[{2}]
+    _successors = Block[{3}]
+    _attributes = NamedAttribute[{4}]
     {5}
     IR.create_operation(
         "{6}", location;
-        operands, owned_regions, successors, attributes,
+        operands=_operands,
+        owned_regions=_owned_regions,
+        successors=_successors,
+        attributes=_attributes,
         results={7},
         result_inference={8}
     ))"; // 0: results, 1: operands, 2: owned_regions, 3: successors, 4: attributes, 5: optionals, 6: opname, 7: results expression, 8: result_inference
