@@ -353,7 +353,7 @@ end
 
       if (optional)
       {
-        optionals += llvm::formatv(R"(!isnothing({0}) && push!(results, {0}{1})
+        optionals += llvm::formatv(R"(!isnothing({0}) && push!(_results, {0}{1})
     )",
                                    resultname, (variadic ? "..." : ""));
         type = "Union{Nothing, " + type + "}";
@@ -366,8 +366,8 @@ end
       resultarguments += resultname + defaultvalue + "::" + type + ", ";
     }
 
-    std::string resultsexpression = (inferrable ? "(length(results) == 0 ? nothing : results)" : "results");
-    std::string resultinference = (inferrable ? "(length(results) == 0 ? true : false)" : "false");
+    std::string resultsexpression = (inferrable ? "(length(_results) == 0 ? nothing : _results)" : "_results");
+    std::string resultinference = (inferrable ? "(length(_results) == 0 ? true : false)" : "false");
 
     std::string attributearguments = "";
     std::string attributecontainer = "";
