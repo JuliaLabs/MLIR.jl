@@ -36,7 +36,7 @@ function apply(operand::Value; result::IR.Type, applicableOperator, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -84,7 +84,7 @@ function call(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -124,7 +124,7 @@ function constant(; result_0::IR.Type, value, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -167,7 +167,7 @@ function _include(; _include, is_standard_include=nothing, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end

@@ -36,7 +36,7 @@ function addf(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.addf",
@@ -45,8 +45,8 @@ function addf(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -79,7 +79,7 @@ function addi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.addi",
@@ -88,8 +88,8 @@ function addi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -122,7 +122,7 @@ function andi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.andi",
@@ -131,8 +131,8 @@ function andi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -168,7 +168,7 @@ function bitcast(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -196,7 +196,7 @@ function ceildivsi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.ceildivsi",
@@ -205,8 +205,8 @@ function ceildivsi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -235,7 +235,7 @@ function ceildivui(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.ceildivui",
@@ -244,8 +244,8 @@ function ceildivui(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -290,7 +290,7 @@ function cmpf(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -374,7 +374,7 @@ function cmpi(lhs::Value, rhs::Value; result::IR.Type, predicate, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -410,7 +410,7 @@ function constant(; result::IR.Type, value, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -427,7 +427,7 @@ function divf(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.divf",
@@ -436,8 +436,8 @@ function divf(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -471,7 +471,7 @@ function divsi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.divsi",
@@ -480,8 +480,8 @@ function divsi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -516,7 +516,7 @@ function divui(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.divui",
@@ -525,8 +525,8 @@ function divui(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -551,7 +551,7 @@ function extf(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -590,7 +590,7 @@ function extsi(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -628,7 +628,7 @@ function extui(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -654,7 +654,7 @@ function fptosi(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -680,7 +680,7 @@ function fptoui(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -709,7 +709,7 @@ function floordivsi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.floordivsi",
@@ -718,8 +718,8 @@ function floordivsi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -745,7 +745,7 @@ function index_cast(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -777,7 +777,7 @@ function maxf(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.maxf",
@@ -786,8 +786,8 @@ function maxf(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -803,7 +803,7 @@ function maxsi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.maxsi",
@@ -812,8 +812,8 @@ function maxsi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -829,7 +829,7 @@ function maxui(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.maxui",
@@ -838,8 +838,8 @@ function maxui(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -870,7 +870,7 @@ function minf(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.minf",
@@ -879,8 +879,8 @@ function minf(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -896,7 +896,7 @@ function minsi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.minsi",
@@ -905,8 +905,8 @@ function minsi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -922,7 +922,7 @@ function minui(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.minui",
@@ -931,8 +931,8 @@ function minui(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -968,7 +968,7 @@ function mulf(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.mulf",
@@ -977,8 +977,8 @@ function mulf(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -994,7 +994,7 @@ function muli(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.muli",
@@ -1003,8 +1003,8 @@ function muli(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1035,7 +1035,7 @@ function negf(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.negf",
@@ -1044,8 +1044,8 @@ function negf(operand::Value; result=nothing::Union{Nothing,IR.Type}, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1078,7 +1078,7 @@ function ori(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.ori",
@@ -1087,8 +1087,8 @@ function ori(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1104,7 +1104,7 @@ function remf(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.remf",
@@ -1113,8 +1113,8 @@ function remf(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1148,7 +1148,7 @@ function remsi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.remsi",
@@ -1157,8 +1157,8 @@ function remsi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1192,7 +1192,7 @@ function remui(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.remui",
@@ -1201,8 +1201,8 @@ function remui(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1228,7 +1228,7 @@ function sitofp(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1255,7 +1255,7 @@ function shli(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.shli",
@@ -1264,8 +1264,8 @@ function shli(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1295,7 +1295,7 @@ function shrsi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.shrsi",
@@ -1304,8 +1304,8 @@ function shrsi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1332,7 +1332,7 @@ function shrui(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.shrui",
@@ -1341,8 +1341,8 @@ function shrui(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1378,7 +1378,7 @@ function subf(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.subf",
@@ -1387,8 +1387,8 @@ function subf(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1404,7 +1404,7 @@ function subi(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.subi",
@@ -1413,8 +1413,8 @@ function subi(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1440,7 +1440,7 @@ function truncf(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1477,7 +1477,7 @@ function trunci(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1504,7 +1504,7 @@ function uitofp(in::Value; out::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1538,7 +1538,7 @@ function xori(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.xori",
@@ -1547,8 +1547,8 @@ function xori(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

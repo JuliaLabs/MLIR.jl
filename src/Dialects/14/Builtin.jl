@@ -61,7 +61,7 @@ function func(; sym_name, type, sym_visibility=nothing, body::Region, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -104,7 +104,7 @@ function _module(;
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -159,7 +159,7 @@ function unrealized_conversion_cast(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end

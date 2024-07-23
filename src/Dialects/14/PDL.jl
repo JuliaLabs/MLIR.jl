@@ -38,7 +38,7 @@ function apply_native_constraint(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -100,7 +100,7 @@ function apply_native_rewrite(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -148,7 +148,7 @@ function attribute(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -180,7 +180,7 @@ function erase(operation::Value; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -221,7 +221,7 @@ function operand(type=nothing::Union{Nothing,Value}; val::IR.Type, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -262,7 +262,7 @@ function operands(type=nothing::Union{Nothing,Value}; val::IR.Type, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -391,7 +391,7 @@ function operation(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -435,7 +435,7 @@ function pattern(; benefit, sym_name=nothing, body::Region, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -489,7 +489,7 @@ function replace(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -530,7 +530,7 @@ function result(parent::Value; val::IR.Type, index, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -579,7 +579,7 @@ function results(parent::Value; val::IR.Type, index=nothing, location=Location()
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -650,7 +650,7 @@ function rewrite(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -688,7 +688,7 @@ function type(; result::IR.Type, type=nothing, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -726,7 +726,7 @@ function types(; result::IR.Type, types=nothing, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end

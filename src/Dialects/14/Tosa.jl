@@ -23,7 +23,7 @@ function abs(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -48,7 +48,7 @@ function add(input1::Value, input2::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -84,7 +84,7 @@ function apply_scale(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -109,7 +109,7 @@ function argmax(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -136,7 +136,7 @@ function arithmetic_right_shift(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -176,7 +176,7 @@ function avg_pool2d(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -201,7 +201,7 @@ function bitwise_and(input1::Value, input2::Value; output::IR.Type, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -225,7 +225,7 @@ function bitwise_not(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -250,7 +250,7 @@ function bitwise_or(input1::Value, input2::Value; output::IR.Type, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -275,7 +275,7 @@ function bitwise_xor(input1::Value, input2::Value; output::IR.Type, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -317,7 +317,7 @@ function cast(input::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -341,7 +341,7 @@ function ceil(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -376,7 +376,7 @@ function clamp(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -400,7 +400,7 @@ function clz(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -425,7 +425,7 @@ function concat(input1::Vector{Value}; output::IR.Type, axis, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -442,7 +442,7 @@ function _const(; output=nothing::Union{Nothing,IR.Type}, value, location=Locati
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("value", value),]
-    !isnothing(output) && push!(results, output)
+    !isnothing(output) && push!(_results, output)
 
     return IR.create_operation(
         "tosa.const",
@@ -451,8 +451,8 @@ function _const(; output=nothing::Union{Nothing,IR.Type}, value, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -492,7 +492,7 @@ function conv2d(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -532,7 +532,7 @@ function conv3d(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -561,7 +561,7 @@ function custom(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -602,7 +602,7 @@ function depthwise_conv2d(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -627,7 +627,7 @@ function div(input1::Value, input2::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -651,7 +651,7 @@ function equal(input1::Value, input2::Value; output::IR.Type, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -675,7 +675,7 @@ function exp(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -699,7 +699,7 @@ function floor(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -732,7 +732,7 @@ function fully_connected(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -757,7 +757,7 @@ function gather(values::Value, indices::Value; output::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -781,7 +781,7 @@ function greater_equal(input1::Value, input2::Value; output::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -805,7 +805,7 @@ function greater(input1::Value, input2::Value; output::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -830,7 +830,7 @@ function identity(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -862,7 +862,7 @@ function cond_if(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -886,7 +886,7 @@ function log(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -911,7 +911,7 @@ function logical_and(input1::Value, input2::Value; z::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -938,7 +938,7 @@ function logical_left_shift(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -962,7 +962,7 @@ function logical_not(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -987,7 +987,7 @@ function logical_or(input1::Value, input2::Value; z::IR.Type, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1014,7 +1014,7 @@ function logical_right_shift(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1039,7 +1039,7 @@ function logical_xor(input1::Value, input2::Value; z::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1069,7 +1069,7 @@ function matmul(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1100,7 +1100,7 @@ function max_pool2d(input::Value; output::IR.Type, kernel, stride, pad, location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1125,7 +1125,7 @@ function maximum(input1::Value, input2::Value; output::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1150,7 +1150,7 @@ function minimum(input1::Value, input2::Value; output::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1175,7 +1175,7 @@ function mul(input1::Value, input2::Value; output::IR.Type, shift, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1203,7 +1203,7 @@ function negate(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1237,7 +1237,7 @@ function pad(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1262,7 +1262,7 @@ function pow(input1::Value, input2::Value; z::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1287,7 +1287,7 @@ function reciprocal(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1311,7 +1311,7 @@ function reduce_all(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1335,7 +1335,7 @@ function reduce_any(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1359,7 +1359,7 @@ function reduce_max(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1383,7 +1383,7 @@ function reduce_min(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1407,7 +1407,7 @@ function reduce_prod(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1431,7 +1431,7 @@ function reduce_sum(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1457,7 +1457,7 @@ function reluN(input::Value; output::IR.Type, max_int, max_fp, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1515,7 +1515,7 @@ function rescale(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1541,7 +1541,7 @@ function reshape(input1::Value; output::IR.Type, new_shape, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1587,7 +1587,7 @@ function resize(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1613,7 +1613,7 @@ function reverse(input::Value; output::IR.Type, axis, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1638,7 +1638,7 @@ function rsqrt(input1::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1665,7 +1665,7 @@ function scatter(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1691,7 +1691,7 @@ function select(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1719,7 +1719,7 @@ function sigmoid(input::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1747,7 +1747,7 @@ function slice(input::Value; output::IR.Type, start, size, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1772,7 +1772,7 @@ function sub(input1::Value, input2::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1809,7 +1809,7 @@ function table(input::Value, table::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1836,7 +1836,7 @@ function tanh(input::Value; output::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1860,7 +1860,7 @@ function tile(input1::Value; output::IR.Type, multiples, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1903,7 +1903,7 @@ function transpose_conv2d(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1927,7 +1927,7 @@ function transpose(input1::Value, perms::Value; output::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1960,7 +1960,7 @@ function while_loop(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1986,7 +1986,7 @@ function yield(inputs::Vector{Value}; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end

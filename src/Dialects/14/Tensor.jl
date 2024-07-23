@@ -41,7 +41,7 @@ function cast(source::Value; dest::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -85,7 +85,7 @@ function collapse_shape(src::Value; result::IR.Type, reassociation, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -123,7 +123,7 @@ function dim(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result) && push!(results, result)
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "tensor.dim",
@@ -132,8 +132,8 @@ function dim(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -176,7 +176,7 @@ function expand_shape(src::Value; result::IR.Type, reassociation, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -215,7 +215,7 @@ function extract(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -294,7 +294,7 @@ function extract_slice(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -331,7 +331,7 @@ function from_elements(elements::Vector{Value}; result::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -374,7 +374,7 @@ function generate(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -416,7 +416,7 @@ function insert(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -504,7 +504,7 @@ function insert_slice(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -609,7 +609,7 @@ function pad(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -632,7 +632,7 @@ function rank(tensor::Value; result_0=nothing::Union{Nothing,IR.Type}, location=
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(result_0) && push!(results, result_0)
+    !isnothing(result_0) && push!(_results, result_0)
 
     return IR.create_operation(
         "tensor.rank",
@@ -641,8 +641,8 @@ function rank(tensor::Value; result_0=nothing::Union{Nothing,IR.Type}, location=
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -694,7 +694,7 @@ function reshape(source::Value, shape::Value; result::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -720,7 +720,7 @@ function yield(value::Value; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end

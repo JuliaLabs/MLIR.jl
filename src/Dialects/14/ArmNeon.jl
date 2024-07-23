@@ -29,7 +29,7 @@ function intr_smull(a::Value, b::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -60,7 +60,7 @@ function _2d_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -89,7 +89,7 @@ function intr_sdot(a::Value, b::Value, c::Value; res::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end

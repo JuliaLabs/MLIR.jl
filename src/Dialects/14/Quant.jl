@@ -31,7 +31,7 @@ function const_fake_quant(
         namedattribute("max", max),
         namedattribute("num_bits", num_bits),
     ]
-    !isnothing(outputs) && push!(results, outputs)
+    !isnothing(outputs) && push!(_results, outputs)
     !isnothing(narrow_range) &&
         push!(attributes, namedattribute("narrow_range", narrow_range))
     !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
@@ -43,8 +43,8 @@ function const_fake_quant(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -78,7 +78,7 @@ function const_fake_quant_per_axis(
         namedattribute("axis", axis),
         namedattribute("num_bits", num_bits),
     ]
-    !isnothing(outputs) && push!(results, outputs)
+    !isnothing(outputs) && push!(_results, outputs)
     !isnothing(narrow_range) &&
         push!(attributes, namedattribute("narrow_range", narrow_range))
     !isnothing(is_signed) && push!(attributes, namedattribute("is_signed", is_signed))
@@ -90,8 +90,8 @@ function const_fake_quant_per_axis(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -113,7 +113,7 @@ function coupled_ref(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("coupledKey", coupledKey),]
-    !isnothing(result_0) && push!(results, result_0)
+    !isnothing(result_0) && push!(_results, result_0)
 
     return IR.create_operation(
         "quant.coupled_ref",
@@ -122,8 +122,8 @@ function coupled_ref(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -145,7 +145,7 @@ function dcast(arg::Value; result_0::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -168,7 +168,7 @@ function qcast(arg::Value; result_0::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -203,7 +203,7 @@ function region(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -226,7 +226,7 @@ function _return(results::Vector{Value}; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -264,7 +264,7 @@ function stats(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("layerStats", layerStats),]
-    !isnothing(result_0) && push!(results, result_0)
+    !isnothing(result_0) && push!(_results, result_0)
     !isnothing(axisStats) && push!(attributes, namedattribute("axisStats", axisStats))
     !isnothing(axis) && push!(attributes, namedattribute("axis", axis))
 
@@ -275,8 +275,8 @@ function stats(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -297,7 +297,7 @@ function stats_ref(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("statsKey", statsKey),]
-    !isnothing(result_0) && push!(results, result_0)
+    !isnothing(result_0) && push!(_results, result_0)
 
     return IR.create_operation(
         "quant.stats_ref",
@@ -306,8 +306,8 @@ function stats_ref(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -329,7 +329,7 @@ function scast(arg::Value; result_0::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end

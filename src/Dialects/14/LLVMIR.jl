@@ -16,7 +16,7 @@ function ashr(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.ashr",
@@ -25,8 +25,8 @@ function ashr(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -56,7 +56,7 @@ function access_group(; sym_name, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -73,7 +73,7 @@ function add(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.add",
@@ -82,8 +82,8 @@ function add(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -105,7 +105,7 @@ function addrspacecast(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -153,7 +153,7 @@ function mlir_addressof(; res::IR.Type, global_name, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -181,7 +181,7 @@ function alias_scope_domain(; sym_name, description=nothing, location=Location()
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -236,7 +236,7 @@ function alias_scope(; sym_name, domain, description=nothing, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -260,7 +260,7 @@ function alloca(arraySize::Value; res::IR.Type, alignment=nothing, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -277,7 +277,7 @@ function and(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.and",
@@ -286,8 +286,8 @@ function and(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -309,7 +309,7 @@ function intr_assume(cond::Value; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -343,7 +343,7 @@ function cmpxchg(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -370,7 +370,7 @@ function atomicrmw(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -387,7 +387,7 @@ function intr_bitreverse(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.bitreverse",
@@ -396,8 +396,8 @@ function intr_bitreverse(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -419,7 +419,7 @@ function bitcast(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -442,7 +442,7 @@ function br(destOperands::Vector{Value}; dest::Block, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -500,7 +500,7 @@ function call(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -537,7 +537,7 @@ function cond_br(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -586,7 +586,7 @@ function mlir_constant(; res::IR.Type, value, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -603,7 +603,7 @@ function intr_copysign(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.copysign",
@@ -612,8 +612,8 @@ function intr_copysign(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -635,7 +635,7 @@ function intr_coro_align(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -658,7 +658,7 @@ function intr_coro_begin(token::Value, mem::Value; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -681,7 +681,7 @@ function intr_coro_end(handle::Value, unwind::Value; res::IR.Type, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -704,7 +704,7 @@ function intr_coro_free(id::Value, handle::Value; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -734,7 +734,7 @@ function intr_coro_id(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -757,7 +757,7 @@ function intr_coro_resume(handle::Value; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -780,7 +780,7 @@ function intr_coro_save(handle::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -803,7 +803,7 @@ function intr_coro_size(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -826,7 +826,7 @@ function intr_coro_suspend(save::Value, final::Value; res::IR.Type, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -841,7 +841,7 @@ function intr_cos(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.cos",
@@ -850,8 +850,8 @@ function intr_cos(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -873,7 +873,7 @@ function intr_ctlz(in::Value, zero_undefined::Value; res::IR.Type, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -896,7 +896,7 @@ function intr_cttz(in::Value, zero_undefined::Value; res::IR.Type, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -911,7 +911,7 @@ function intr_ctpop(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loc
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.ctpop",
@@ -920,8 +920,8 @@ function intr_ctpop(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -943,7 +943,7 @@ function intr_eh_typeid_for(type_info::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -958,7 +958,7 @@ function intr_exp2(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.exp2",
@@ -967,8 +967,8 @@ function intr_exp2(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -982,7 +982,7 @@ function intr_exp(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.exp",
@@ -991,8 +991,8 @@ function intr_exp(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1014,7 +1014,7 @@ function extractelement(vector::Value, position::Value; res::IR.Type, location=L
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1037,7 +1037,7 @@ function extractvalue(container::Value; res::IR.Type, position, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1052,7 +1052,7 @@ function intr_fabs(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.fabs",
@@ -1061,8 +1061,8 @@ function intr_fabs(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1082,7 +1082,7 @@ function fadd(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -1093,8 +1093,8 @@ function fadd(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1108,7 +1108,7 @@ function intr_ceil(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.ceil",
@@ -1117,8 +1117,8 @@ function intr_ceil(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1149,7 +1149,7 @@ function fcmp(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1170,7 +1170,7 @@ function fdiv(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -1181,8 +1181,8 @@ function fdiv(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1196,7 +1196,7 @@ function intr_floor(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loc
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.floor",
@@ -1205,8 +1205,8 @@ function intr_floor(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1222,7 +1222,7 @@ function intr_fma(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.fma",
@@ -1231,8 +1231,8 @@ function intr_fma(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1248,7 +1248,7 @@ function intr_fmuladd(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.fmuladd",
@@ -1257,8 +1257,8 @@ function intr_fmuladd(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1278,7 +1278,7 @@ function fmul(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -1289,8 +1289,8 @@ function fmul(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1309,7 +1309,7 @@ function fneg(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -1320,8 +1320,8 @@ function fneg(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1343,7 +1343,7 @@ function fpext(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1366,7 +1366,7 @@ function fptosi(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1389,7 +1389,7 @@ function fptoui(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1412,7 +1412,7 @@ function fptrunc(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1433,7 +1433,7 @@ function frem(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -1444,8 +1444,8 @@ function frem(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1465,7 +1465,7 @@ function fsub(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
     !isnothing(fastmathFlags) &&
         push!(attributes, namedattribute("fastmathFlags", fastmathFlags))
 
@@ -1476,8 +1476,8 @@ function fsub(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1501,7 +1501,7 @@ function fence(; ordering, syncscope, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1516,7 +1516,7 @@ function freeze(val::Value; res=nothing::Union{Nothing,IR.Type}, location=Locati
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.freeze",
@@ -1525,8 +1525,8 @@ function freeze(val::Value; res=nothing::Union{Nothing,IR.Type}, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1550,7 +1550,7 @@ function getelementptr(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1573,7 +1573,7 @@ function intr_get_active_lane_mask(base::Value, n::Value; res::IR.Type, location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1616,7 +1616,7 @@ function mlir_global_ctors(; ctors, priorities, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1656,7 +1656,7 @@ function mlir_global_dtors(; dtors, priorities, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1797,7 +1797,7 @@ function mlir_global(;
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1820,7 +1820,7 @@ function icmp(lhs::Value, rhs::Value; res::IR.Type, predicate, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1853,7 +1853,7 @@ function inline_asm(
     _attributes = NamedAttribute[
         namedattribute("asm_string", asm_string), namedattribute("constraints", constraints)
     ]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
     !isnothing(has_side_effects) &&
         push!(attributes, namedattribute("has_side_effects", has_side_effects))
     !isnothing(is_align_stack) &&
@@ -1869,7 +1869,7 @@ function inline_asm(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1894,7 +1894,7 @@ function insertelement(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1919,7 +1919,7 @@ function insertvalue(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1942,7 +1942,7 @@ function inttoptr(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -1981,7 +1981,7 @@ function invoke(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2040,7 +2040,7 @@ function func(;
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2057,7 +2057,7 @@ function lshr(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.lshr",
@@ -2066,8 +2066,8 @@ function lshr(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2092,7 +2092,7 @@ function landingpad(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2134,7 +2134,7 @@ function load(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2149,7 +2149,7 @@ function intr_log10(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loc
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.log10",
@@ -2158,8 +2158,8 @@ function intr_log10(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2173,7 +2173,7 @@ function intr_log2(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.log2",
@@ -2182,8 +2182,8 @@ function intr_log2(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2197,7 +2197,7 @@ function intr_log(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.log",
@@ -2206,8 +2206,8 @@ function intr_log(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2236,7 +2236,7 @@ function intr_masked_load(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2261,7 +2261,7 @@ function intr_masked_store(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2290,7 +2290,7 @@ function intr_matrix_column_major_load(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2325,7 +2325,7 @@ function intr_matrix_column_major_store(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2360,7 +2360,7 @@ function intr_matrix_multiply(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2387,7 +2387,7 @@ function intr_matrix_transpose(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2404,7 +2404,7 @@ function intr_maxnum(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.maxnum",
@@ -2413,8 +2413,8 @@ function intr_maxnum(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2430,7 +2430,7 @@ function intr_maximum(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.maximum",
@@ -2439,8 +2439,8 @@ function intr_maximum(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2464,7 +2464,7 @@ function intr_memcpy_inline(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2489,7 +2489,7 @@ function intr_memcpy(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2514,7 +2514,7 @@ function intr_memmove(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2539,7 +2539,7 @@ function intr_memset(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2570,7 +2570,7 @@ function metadata(; sym_name, body::Region, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2587,7 +2587,7 @@ function intr_minnum(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.minnum",
@@ -2596,8 +2596,8 @@ function intr_minnum(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2613,7 +2613,7 @@ function intr_minimum(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.minimum",
@@ -2622,8 +2622,8 @@ function intr_minimum(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2639,7 +2639,7 @@ function mul(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.mul",
@@ -2648,8 +2648,8 @@ function mul(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2685,7 +2685,7 @@ function mlir_null(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2702,7 +2702,7 @@ function or(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.or",
@@ -2711,8 +2711,8 @@ function or(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2734,7 +2734,7 @@ function intr_powi(a::Value, b::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2751,7 +2751,7 @@ function intr_pow(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.pow",
@@ -2760,8 +2760,8 @@ function intr_pow(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2785,7 +2785,7 @@ function intr_prefetch(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2808,7 +2808,7 @@ function ptrtoint(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2831,7 +2831,7 @@ function resume(value::Value; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2854,7 +2854,7 @@ function _return(args::Vector{Value}; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2879,7 +2879,7 @@ function intr_sadd_with_overflow(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2896,7 +2896,7 @@ function sdiv(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.sdiv",
@@ -2905,8 +2905,8 @@ function sdiv(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2928,7 +2928,7 @@ function sext(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2951,7 +2951,7 @@ function sitofp(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -2968,7 +2968,7 @@ function intr_smax(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.smax",
@@ -2977,8 +2977,8 @@ function intr_smax(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -2994,7 +2994,7 @@ function intr_smin(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.smin",
@@ -3003,8 +3003,8 @@ function intr_smin(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3028,7 +3028,7 @@ function intr_smul_with_overflow(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3045,7 +3045,7 @@ function srem(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.srem",
@@ -3054,8 +3054,8 @@ function srem(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3079,7 +3079,7 @@ function intr_ssub_with_overflow(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3100,7 +3100,7 @@ function select(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.select",
@@ -3109,8 +3109,8 @@ function select(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3126,7 +3126,7 @@ function shl(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.shl",
@@ -3135,8 +3135,8 @@ function shl(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3158,7 +3158,7 @@ function shufflevector(v1::Value, v2::Value; res::IR.Type, mask, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3173,7 +3173,7 @@ function intr_sin(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.sin",
@@ -3182,8 +3182,8 @@ function intr_sin(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3197,7 +3197,7 @@ function intr_sqrt(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.sqrt",
@@ -3206,8 +3206,8 @@ function intr_sqrt(in::Value; res=nothing::Union{Nothing,IR.Type}, location=Loca
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3229,7 +3229,7 @@ function intr_stackrestore(ptr::Value; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3252,7 +3252,7 @@ function intr_stacksave(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3294,7 +3294,7 @@ function store(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3311,7 +3311,7 @@ function sub(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.sub",
@@ -3320,8 +3320,8 @@ function sub(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3361,7 +3361,7 @@ function switch(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3384,7 +3384,7 @@ function trunc(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3409,7 +3409,7 @@ function intr_uadd_with_overflow(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3426,7 +3426,7 @@ function udiv(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.udiv",
@@ -3435,8 +3435,8 @@ function udiv(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3458,7 +3458,7 @@ function uitofp(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3475,7 +3475,7 @@ function intr_umax(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.umax",
@@ -3484,8 +3484,8 @@ function intr_umax(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3501,7 +3501,7 @@ function intr_umin(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.intr.umin",
@@ -3510,8 +3510,8 @@ function intr_umin(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3535,7 +3535,7 @@ function intr_umul_with_overflow(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3552,7 +3552,7 @@ function urem(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.urem",
@@ -3561,8 +3561,8 @@ function urem(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3586,7 +3586,7 @@ function intr_usub_with_overflow(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3620,7 +3620,7 @@ function mlir_undef(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3643,7 +3643,7 @@ function unreachable(; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3660,7 +3660,7 @@ function xor(
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
-    !isnothing(res) && push!(results, res)
+    !isnothing(res) && push!(_results, res)
 
     return IR.create_operation(
         "llvm.xor",
@@ -3669,8 +3669,8 @@ function xor(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=(length(results) == 0 ? nothing : results),
-        result_inference=(length(results) == 0 ? true : false),
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -3692,7 +3692,7 @@ function zext(arg::Value; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3717,7 +3717,7 @@ function intr_masked_compressstore(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3742,7 +3742,7 @@ function intr_masked_expandload(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3772,7 +3772,7 @@ function intr_masked_gather(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3797,7 +3797,7 @@ function intr_masked_scatter(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3820,7 +3820,7 @@ function intr_vector_reduce_add(operand_0::Value; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3843,7 +3843,7 @@ function intr_vector_reduce_and(operand_0::Value; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3869,7 +3869,7 @@ function intr_vector_reduce_fadd(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3892,7 +3892,7 @@ function intr_vector_reduce_fmax(operand_0::Value; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3915,7 +3915,7 @@ function intr_vector_reduce_fmin(operand_0::Value; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3941,7 +3941,7 @@ function intr_vector_reduce_fmul(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3964,7 +3964,7 @@ function intr_vector_reduce_mul(operand_0::Value; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -3987,7 +3987,7 @@ function intr_vector_reduce_or(operand_0::Value; res::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4010,7 +4010,7 @@ function intr_vector_reduce_smax(operand_0::Value; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4033,7 +4033,7 @@ function intr_vector_reduce_smin(operand_0::Value; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4056,7 +4056,7 @@ function intr_vector_reduce_umax(operand_0::Value; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4079,7 +4079,7 @@ function intr_vector_reduce_umin(operand_0::Value; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4102,7 +4102,7 @@ function intr_vector_reduce_xor(operand_0::Value; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4125,7 +4125,7 @@ function intr_vscale(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4152,7 +4152,7 @@ function barrier0(; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4175,7 +4175,7 @@ function read_ptx_sreg_ntid_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4198,7 +4198,7 @@ function read_ptx_sreg_ntid_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4221,7 +4221,7 @@ function read_ptx_sreg_ntid_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4244,7 +4244,7 @@ function read_ptx_sreg_ctaid_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4267,7 +4267,7 @@ function read_ptx_sreg_ctaid_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4290,7 +4290,7 @@ function read_ptx_sreg_ctaid_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4313,7 +4313,7 @@ function cp_async_commit_group(; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4336,7 +4336,7 @@ function cp_async_shared_global(dst::Value, src::Value; size, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4359,7 +4359,7 @@ function cp_async_wait_group(; n, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4382,7 +4382,7 @@ function read_ptx_sreg_nctaid_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4405,7 +4405,7 @@ function read_ptx_sreg_nctaid_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4428,7 +4428,7 @@ function read_ptx_sreg_nctaid_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4451,7 +4451,7 @@ function read_ptx_sreg_laneid(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4474,7 +4474,7 @@ function mma_sync(args::Vector{Value}; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4510,7 +4510,7 @@ function shfl_sync(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4533,7 +4533,7 @@ function read_ptx_sreg_tid_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4556,7 +4556,7 @@ function read_ptx_sreg_tid_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4579,7 +4579,7 @@ function read_ptx_sreg_tid_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4602,7 +4602,7 @@ function vote_ballot_sync(mask::Value, pred::Value; res::IR.Type, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4643,7 +4643,7 @@ function wmma_load(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4685,7 +4685,7 @@ function wmma_mma(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4724,7 +4724,7 @@ function wmma_store(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4747,7 +4747,7 @@ function read_ptx_sreg_warpsize(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4774,7 +4774,7 @@ function barrier(; location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4797,7 +4797,7 @@ function workgroup_dim_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4820,7 +4820,7 @@ function workgroup_dim_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4843,7 +4843,7 @@ function workgroup_dim_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4866,7 +4866,7 @@ function workgroup_id_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4889,7 +4889,7 @@ function workgroup_id_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4912,7 +4912,7 @@ function workgroup_id_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4935,7 +4935,7 @@ function grid_dim_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4958,7 +4958,7 @@ function grid_dim_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -4981,7 +4981,7 @@ function grid_dim_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5012,7 +5012,7 @@ function buffer_load(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5043,7 +5043,7 @@ function buffer_store(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5066,7 +5066,7 @@ function workitem_id_x(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5089,7 +5089,7 @@ function workitem_id_y(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5112,7 +5112,7 @@ function workitem_id_z(; res::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5135,7 +5135,7 @@ function mfma_f32_16x16x16f16(args::Vector{Value}; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5158,7 +5158,7 @@ function mfma_f32_16x16x1f32(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5181,7 +5181,7 @@ function mfma_f32_16x16x2bf16(args::Vector{Value}; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5204,7 +5204,7 @@ function mfma_f32_16x16x4f16(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5227,7 +5227,7 @@ function mfma_f32_16x16x4f32(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5250,7 +5250,7 @@ function mfma_f32_16x16x8bf16(args::Vector{Value}; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5273,7 +5273,7 @@ function mfma_f32_32x32x1f32(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5296,7 +5296,7 @@ function mfma_f32_32x32x2bf16(args::Vector{Value}; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5319,7 +5319,7 @@ function mfma_f32_32x32x2f32(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5342,7 +5342,7 @@ function mfma_f32_32x32x4bf16(args::Vector{Value}; res::IR.Type, location=Locati
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5365,7 +5365,7 @@ function mfma_f32_32x32x4f16(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5388,7 +5388,7 @@ function mfma_f32_32x32x8f16(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5411,7 +5411,7 @@ function mfma_f32_4x4x1f32(args::Vector{Value}; res::IR.Type, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5434,7 +5434,7 @@ function mfma_f32_4x4x2bf16(args::Vector{Value}; res::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5457,7 +5457,7 @@ function mfma_f32_4x4x4f16(args::Vector{Value}; res::IR.Type, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5480,7 +5480,7 @@ function mfma_i32_16x16x16i8(args::Vector{Value}; res::IR.Type, location=Locatio
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5503,7 +5503,7 @@ function mfma_i32_16x16x4i8(args::Vector{Value}; res::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5526,7 +5526,7 @@ function mfma_i32_32x32x4i8(args::Vector{Value}; res::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5549,7 +5549,7 @@ function mfma_i32_32x32x8i8(args::Vector{Value}; res::IR.Type, location=Location
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
@@ -5572,7 +5572,7 @@ function mfma_i32_4x4x4i8(args::Vector{Value}; res::IR.Type, location=Location()
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=results,
+        results=_results,
         result_inference=false,
     )
 end
