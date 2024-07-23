@@ -443,12 +443,13 @@ forms simple integer and floating point constants.
 %1 = \"arith.constant\"() {value = 42 : i32} : () -> i32
 ```
 """
-function constant(; result::IR.Type, value, location=Location())
-    _results = IR.Type[result,]
+function constant(; result=nothing::Union{Nothing,IR.Type}, value, location=Location())
+    _results = IR.Type[]
     _operands = Value[]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("value", value),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "arith.constant",
@@ -457,8 +458,8 @@ function constant(; result::IR.Type, value, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

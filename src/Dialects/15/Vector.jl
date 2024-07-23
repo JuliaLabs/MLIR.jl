@@ -933,13 +933,18 @@ For instance:
 ```
 """
 function insert_map(
-    vector::Value, dest::Value, ids::Vector{Value}; result::IR.Type, location=Location()
+    vector::Value,
+    dest::Value,
+    ids::Vector{Value};
+    result=nothing::Union{Nothing,IR.Type},
+    location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[vector, dest, ids...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "vector.insert_map",
@@ -948,8 +953,8 @@ function insert_map(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

@@ -54,15 +54,16 @@ function atomic_rmw(
     value::Value,
     memref::Value,
     indices::Vector{Value};
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     kind,
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[value, memref, indices...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[namedattribute("kind", kind),]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "memref.atomic_rmw",
@@ -71,8 +72,8 @@ function atomic_rmw(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

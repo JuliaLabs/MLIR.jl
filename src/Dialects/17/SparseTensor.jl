@@ -174,14 +174,15 @@ function compress(
     count::Value,
     tensor::Value,
     lvlCoords::Vector{Value};
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[values, filled, added, count, tensor, lvlCoords...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "sparse_tensor.compress",
@@ -190,8 +191,8 @@ function compress(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -524,14 +525,15 @@ function insert(
     value::Value,
     tensor::Value,
     lvlCoords::Vector{Value};
-    result::IR.Type,
+    result=nothing::Union{Nothing,IR.Type},
     location=Location(),
 )
-    _results = IR.Type[result,]
+    _results = IR.Type[]
     _operands = Value[value, tensor, lvlCoords...]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "sparse_tensor.insert",
@@ -540,8 +542,8 @@ function insert(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 

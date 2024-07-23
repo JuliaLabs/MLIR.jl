@@ -91,12 +91,15 @@ ready to execute.
 %wt = shape.assuming_all %w0, %w2 // Passing
 ```
 """
-function assuming_all(inputs::Vector{Value}; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function assuming_all(
+    inputs::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[inputs...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.assuming_all",
@@ -105,8 +108,8 @@ function assuming_all(inputs::Vector{Value}; result::IR.Type, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -357,12 +360,15 @@ shape.broadcast documents.
 %w1 = shape.cstr_broadcastable [2,2], [3,2] // Failure
 ```
 """
-function cstr_broadcastable(shapes::Vector{Value}; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function cstr_broadcastable(
+    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.cstr_broadcastable",
@@ -371,8 +377,8 @@ function cstr_broadcastable(shapes::Vector{Value}; result::IR.Type, location=Loc
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -389,12 +395,15 @@ Given 1 or more input shapes, determine if all shapes are the exact same.
 %w1 = shape.cstr_eq [2,2], [1,2] // Failure
 ```
 """
-function cstr_eq(shapes::Vector{Value}; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function cstr_eq(
+    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.cstr_eq",
@@ -403,8 +412,8 @@ function cstr_eq(shapes::Vector{Value}; result::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -556,12 +565,15 @@ the shape.
 %s1 = shape.from_extents
 ```
 """
-function from_extents(extents::Vector{Value}; shape::IR.Type, location=Location())
-    _results = IR.Type[shape,]
+function from_extents(
+    extents::Vector{Value}; shape=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[extents...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(shape) && push!(_results, shape)
 
     return IR.create_operation(
         "shape.from_extents",
@@ -570,8 +582,8 @@ function from_extents(extents::Vector{Value}; shape::IR.Type, location=Location(
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -722,12 +734,15 @@ assertion failure.
 %false = shape.is_broadcastable [2,2], [3,2]
 ```
 """
-function is_broadcastable(shapes::Vector{Value}; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function is_broadcastable(
+    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.is_broadcastable",
@@ -736,8 +751,8 @@ function is_broadcastable(shapes::Vector{Value}; result::IR.Type, location=Locat
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
@@ -1035,12 +1050,15 @@ as their equivalent non-error shapes. Error shapes can be tested for
 equality like any other shape value, meaning that the error value is equal
 to itself.
 """
-function shape_eq(shapes::Vector{Value}; result::IR.Type, location=Location())
-    _results = IR.Type[result,]
+function shape_eq(
+    shapes::Vector{Value}; result=nothing::Union{Nothing,IR.Type}, location=Location()
+)
+    _results = IR.Type[]
     _operands = Value[shapes...,]
     _owned_regions = Region[]
     _successors = Block[]
     _attributes = NamedAttribute[]
+    !isnothing(result) && push!(_results, result)
 
     return IR.create_operation(
         "shape.shape_eq",
@@ -1049,8 +1067,8 @@ function shape_eq(shapes::Vector{Value}; result::IR.Type, location=Location())
         owned_regions=_owned_regions,
         successors=_successors,
         attributes=_attributes,
-        results=_results,
-        result_inference=false,
+        results=(length(_results) == 0 ? nothing : _results),
+        result_inference=(length(_results) == 0 ? true : false),
     )
 end
 
