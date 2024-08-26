@@ -117,10 +117,6 @@ end
 ### abstract type for array-like types ###
 abstract type MLIRArrayLike{T, N} <: AbstractArray{T, N} end
 
-# implementation detail: reinterpret shouldn't try reinterpreting individual elements:
-function Base.reinterpret(::Type{Tuple{A}}, array::A) where {A<:MLIRArrayLike}
-    return (array, )
-end
 ValueTrait(::Type{<:MLIRArrayLike}) = Convertible()
 Base.show(io::IO, a::A) where {A<:MLIRArrayLike{T, N}} where {T, N} = print(io, "$A[...]")
 Base.show(io::IO, ::MIME{Symbol("text/plain")}, a::A) where {A<:MLIRArrayLike{T, N}} where {T, N} = print(io, "$A[...]")

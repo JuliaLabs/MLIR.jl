@@ -16,13 +16,13 @@ function handle_gotoifnot(cg, cond::Bool, true_dest, false_dest, true_args, fals
     end
 end
 function handle_phi(cg, T, i)
-    T(IR.argument(currentblock(cg), i)) # TODO: flimsy conversion from IR.Value to T. only works if T's constructor can handle this.
+    T(IR.argument(IR.currentblock[], i)) # TODO: flimsy conversion from IR.Value to T. only works if T's constructor can handle this.
 end
 function handle_return(cg, val::T) where T
     if isnothing(val)
         returnvalues = []
     else
-        returnvalues = reinterpret(Tuple{IR.unpack(T)...}, val)
+        returnvalues = Base._reinterpret(Tuple{IR.unpack(T)...}, val)
     end
     generate_return(cg, returnvalues; location=IR.Location())
 end
@@ -38,7 +38,7 @@ function handle_invoke(cg, fname, ret, args...)
     end
     unpacked = []
     for arg in args
-        push!(unpacked, reinterpret(Tuple{IR.unpack(typeof(arg))...}, arg)...)
+        push!(unpacked, Base._reinterpret(Tuple{IR.unpack(typeof(arg))...}, arg)...)
     end
     generate_invoke(cg, fname, ret, unpacked)
 end
@@ -48,11 +48,12 @@ end
 "Given some IR generates a MethodInstance suitable for passing to infer_ir!, if you don't already have one with the right argument types"
 function get_toplevel_mi_from_ir(ir, _module::Module)
     mi = ccall(:jl_new_method_instance_uninit, Ref{Core.MethodInstance}, ());
-    argtypes = map(ir.argtypes) do argtype
+    argtypes = []
+    for argtype in ir.argtypes
         if argtype isa Core.Const
-            return argtype.val
+            push!(argtypes, argtype.val)
         else
-            return argtype
+            push!(argtypes, argtype)
         end
     end
     mi.specTypes = Tuple{argtypes...}
@@ -96,12 +97,14 @@ function collect_phi_nodes(ir)
     return phi_nodes
 end
 
-function get_block_args(phi_nodes, from, to)
+function get_block_args(phi_nodes, from, to, ssa_rename)
     values = []
     for phi in phi_nodes[to]
         i = findfirst(isequal(from), phi.edges)
         val = isnothing(i) ? nothing : phi.values[i]
-
+        if val isa Core.SSAValue
+            val = ssa_rename[val.id]
+        end
         push!(values, val)
     end
     return values
@@ -154,7 +157,7 @@ function generate!(cg, ir::CC.IRCode, ret; mi=get_toplevel_mi_from_ir(ir, @__MOD
             arg = IR.push_argument!(entryblock, IR.Type(t))
             t(arg)
         end
-        return reinterpret(argtype, Tuple(temp))
+        return Base._reinterpret(argtype, Tuple(temp))
     end
 
     currentblockindex = 0
@@ -301,17 +304,16 @@ function transform(cg, ir, blocks, next_block)
     
         if inst isa Union{Core.GotoIfNot, Core.GotoNode, Core.PhiNode, Core.ReturnNode}
             if inst isa Core.GotoIfNot
-                compact[ssa][:inst] = Expr(:call, Core.tuple, get_block_args(phi_nodes, compact.active_bb-1, inst.dest)...)
-                
                 false_dest = inst.dest
                 true_dest = compact.active_bb
+                compact[ssa][:inst] = Expr(:call, Core.tuple, get_block_args(phi_nodes, compact.active_bb-1, false_dest, compact.ssa_rename)...)
                 
                 false_args = ssa
                 # when cond is true, branch to next block
                 true_args = Core.Compiler.insert_node_here!(
                     compact,
                     Core.Compiler.NewInstruction(
-                        Expr(:call, Core.tuple, get_block_args(phi_nodes, compact.active_bb-1, compact.active_bb)...),
+                        Expr(:call, Core.tuple, get_block_args(phi_nodes, compact.active_bb-1, true_dest, compact.ssa_rename)...),
                         Any,
                         Core.Compiler.NoCallInfo(),
                         Int32(1),
@@ -331,7 +333,7 @@ function transform(cg, ir, blocks, next_block)
                     true # insert within the current basic block, not at the start of the next one
                 )    
             elseif inst isa Core.GotoNode
-                compact[ssa][:inst] = Expr(:call, Core.tuple, get_block_args(phi_nodes, compact.active_bb-1, inst.label)...)
+                compact[ssa][:inst] = Expr(:call, Core.tuple, get_block_args(phi_nodes, compact.active_bb-1, inst.label, compact.ssa_rename)...)
                 Core.Compiler.insert_node_here!(
                     compact,
                     Core.Compiler.NewInstruction(
@@ -368,10 +370,13 @@ function transform(cg, ir, blocks, next_block)
             mi, called_func, args... = inst.args
             if called_func == bool_conversion_intrinsic
                 compact[ssa][:inst] = only(args)
+
+                # Set general type Any and set flag to allow re-inferring type.
+                compact[ssa][:type] = Any
+                compact[ssa][:flag] = CC.IR_FLAG_REFINED
             elseif !is_intrinsic(mi.specTypes)
                 fname = name(cg, mi)
                 compact[ssa][:inst] = Expr(:call, handle_invoke, cg, fname, compact[ssa][:type], called_func, args...)
-                compact[ssa][:type] = Any
             end
         end
     end
@@ -399,7 +404,7 @@ function transform(cg, ir, blocks, next_block)
     deleteat!(ir.cfg.blocks[end].succs, 1:length(ir.cfg.blocks[end].succs))
     
     ir = CC.compact!(ir)
-    
+
     # type inference
     interp = CC.NativeInterpreter()
     mi = get_toplevel_mi_from_ir(ir, @__MODULE__);

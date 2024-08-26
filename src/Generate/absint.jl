@@ -81,8 +81,7 @@ CC.getresult_impl(info::MLIRIntrinsicCallInfo, idx::Int) = CC.getresult(info.inf
 function CC.abstract_call_gf_by_type(interp::MLIRInterpreter, @nospecialize(f), arginfo::CC.ArgInfo, si::CC.StmtInfo, @nospecialize(atype),
     sv::CC.AbsIntState, max_methods::Int)
 
-    argtype_tuple = Tuple{map(_type, arginfo.argtypes)...}
-    if interp.active && is_intrinsic(argtype_tuple)
+    if interp.active && is_intrinsic(atype)
         interp′ = MLIRInterpreter(interp; active=false)
     else
         interp′ = interp
@@ -91,7 +90,7 @@ function CC.abstract_call_gf_by_type(interp::MLIRInterpreter, @nospecialize(f), 
     cm = @invoke CC.abstract_call_gf_by_type(interp′::CC.AbstractInterpreter, f::Any,
         arginfo::CC.ArgInfo, si::CC.StmtInfo, atype::Any, sv::CC.AbsIntState, max_methods::Int)
             
-    if interp.active && is_intrinsic(argtype_tuple)
+    if interp.active && is_intrinsic(atype)
         return CC.CallMeta(cm.rt, cm.exct, cm.effects, MLIRIntrinsicCallInfo(cm.info))
     else
         return cm
