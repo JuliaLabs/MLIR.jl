@@ -39,3 +39,7 @@ function Base.show(io::IO, location::Location)
     API.mlirLocationPrint(location, c_print_callback, ref)
     return print(io, " =#)")
 end
+
+macro here()
+    return :(Location(@__FILE__, @__LINE__, 0))
+end

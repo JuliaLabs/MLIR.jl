@@ -83,4 +83,43 @@ function verifyall(operation::Operation; debug=false)
 end
 verifyall(module_::IR.Module) = verifyall(Operation(module_))
 
+const current = (; var"module"=ScopedValue{Union{Nothing,Core.Module}}(nothing),)
+# const current_module = ScopedValue{Union{Nothing,Core.Module}}(nothing)
+
+function var"@module"(__source__::LineNumberNode, __module__::Core.Module, block)
+    location = :(Location(string($(__source__.file)), $(__source__.line), 0))
+    quote
+        with(current.module => Module($location)) do
+            block
+        end
+    end
+end
+
+function var"@op"(__source__::LineNumberNode, __module__::Core.Module, opcall)
+    @assert opcall.head === :call
+
+    name = opcall.args[1]
+    location = :(Location(string($(__source__.file)), $(__source__.line), 0))
+    operands = opcall.args[2:end]
+
+    quote
+        operands = results.($tuple($(esc.(operands)...)))
+        create_operation($name, $location; operands)
+    end
+end
+
+function var"@op"(__source__::LineNumberNode, __module__::Core.Module, opcall, attributes)
+    @assert opcall.head === :call
+    @assert attributes.head === :tuple
+
+    name = opcall.args[1]
+    location = :(Location(string($(__source__.file)), $(__source__.line), 0))
+    operands = opcall.args[2:end]
+
+    quote
+        operands = results.($tuple($(esc.(operands)...)))
+        create_operation($name, $location; operands)
+    end
+end
+
 end # module IR
