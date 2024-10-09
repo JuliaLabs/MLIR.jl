@@ -614,10 +614,10 @@ end
 # TODO mlirDenseElementsAttrGetRawData
 
 """
-      isopaqueelements(attr)
+    isopaqueelements(attr)
 
-  Checks whether the given attribute is an opaque elements attribute.
-  """
+Checks whether the given attribute is an opaque elements attribute.
+"""
 function isopaqueelements(attr::Attribute)
     MLIR_VERSION[] >= v"15" || throw(
         MLIRException("`isopaqueelements(::Attribute)` requires MLIR version 15 or later"),
@@ -637,10 +637,10 @@ issparseelements(attr::Attribute) = API.mlirAttributeIsASparseElements(attr)
 # TODO mlirSparseElementsAttrGetValues
 
 """
-      isdensearray(attr, ::Core.Type{T})
+    isdensearray(attr, ::Core.Type{T})
 
-  Checks whether the given attribute is a dense array attribute.
-  """
+Checks whether the given attribute is a dense array attribute.
+"""
 function isdensearray end
 
 function isdensearray(attr::Attribute, ::Core.Type{Bool})
@@ -707,10 +707,10 @@ function isdensearray(attr::Attribute, ::Core.Type{Float64})
 end
 
 """
-      DenseArrayAttribute(array; context=context())
+    DenseArrayAttribute(array; context=context())
 
-  Create a dense array attribute with the given elements.
-  """
+Create a dense array attribute with the given elements.
+"""
 function DenseArrayAttribute end
 
 function DenseArrayAttribute(values::AbstractArray{Bool}; context::Context=context())

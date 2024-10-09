@@ -141,10 +141,10 @@ end
 
 # Floating point types
 """
-      Float8E5M2(; context=context())
+    Float8E5M2(; context=context())
 
-  Creates an f8E5M2 type in the given context. The type is owned by the context.
-  """
+Creates an f8E5M2 type in the given context. The type is owned by the context.
+"""
 function Float8E5M2(; context::Context=context())
     MLIR_VERSION[] >= v"16" ||
         throw(MLIRException("`Float8E5M2()` requires MLIR version 16 or later"))
@@ -152,10 +152,10 @@ function Float8E5M2(; context::Context=context())
 end
 
 """
-      Float8E4M3FN(; context=context())
+    Float8E4M3FN(; context=context())
 
-  Creates an f8E4M3FN type in the given context. The type is owned by the context.
-  """
+Creates an f8E4M3FN type in the given context. The type is owned by the context.
+"""
 function Float8E4M3FN(; context::Context=context())
     MLIR_VERSION[] >= v"16" ||
         throw(MLIRException("`Float8E4M3FN()` requires MLIR version 16 or later"))
@@ -191,10 +191,10 @@ Creates a f64 type in the given context. The type is owned by the context.
 Type(::Core.Type{Float64}; context::Context=context()) = Type(API.mlirF64TypeGet(context))
 
 """
-      isf8e5m2(type)
+    isf8e5m2(type)
 
-  Checks whether the given type is an f8E5M2 type.
-  """
+Checks whether the given type is an f8E5M2 type.
+"""
 function isf8e5m2(type::Type)
     MLIR_VERSION[] >= v"16" ||
         throw(MLIRException("`isf8e5m2()` requires MLIR version 16 or later"))
@@ -202,10 +202,10 @@ function isf8e5m2(type::Type)
 end
 
 """
-      isf8e4m3fn(type)
+    isf8e4m3fn(type)
 
-  Checks whether the given type is an f8E4M3FN type.
-  """
+Checks whether the given type is an f8E4M3FN type.
+"""
 function isf8e4m3fn(type::Type)
     MLIR_VERSION[] >= v"16" ||
         throw(MLIRException("`isf8e4m3fn()` requires MLIR version 16 or later"))
