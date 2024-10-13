@@ -1,6 +1,6 @@
 module API
 
-using ..MLIR: MLIR_VERSION, MLIRException
+using ..MLIR: MLIR_VERSION, MLIRException, MLIR_VERSION_MIN, MLIR_VERSION_MAX
 
 include("Types.jl")
 using .Types

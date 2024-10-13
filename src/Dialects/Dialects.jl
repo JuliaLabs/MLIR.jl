@@ -1,5 +1,7 @@
 module Dialects
 
+using ..MLIR: MLIR_VERSION_MIN, MLIR_VERSION_MAX
+
 include("Utils.jl")
 
 # generate versioned modules
