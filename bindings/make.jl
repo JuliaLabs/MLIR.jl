@@ -377,7 +377,7 @@ function mlir_dialects(version::VersionNumber)
             ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
             ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
             ("polynomial", "Polynomial.jl", ["Polynomial/IR/Polynomial.td"]),
-            ("ptr", "Ptr.jl", ["Ptr/IR/PtrOps.td"]),
+            # ("ptr", "Ptr.jl", ["Ptr/IR/PtrOps.td"]),
             ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
             ("scf", "SCF.jl", ["SCF/IR/SCFOps.td"]),
             ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
@@ -427,7 +427,7 @@ julia_llvm = [
     (v"1.11", v"16.0.6+2"),
     (v"1.12", v"17.0.6+3"),
     (v"1.12", v"18.1.7+2"),
-    # (v"1.12", v"19.1.1+0"),
+    (v"1.12", v"19.1.1+0"),
 ]
 options = load_options(joinpath(@__DIR__, "wrap.toml"))
 
