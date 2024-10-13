@@ -11,6 +11,36 @@ Base.convert(::Core.Type{API.MlirValue}, value::Value) = value.value
 Base.size(value::Value) = Base.size(type(value))
 Base.ndims(value::Value) = Base.ndims(type(value))
 
+abstract type ValueTrait end
+struct Convertible <: ValueTrait end
+struct NonConvertible <: ValueTrait end
+
+ValueTrait(T) = NonConvertible()
+value(x::Value) = x
+value(x::T) where T = value(ValueTrait(T), x)
+value(::Convertible, x) = x.value
+value(::NonConvertible, x::T) where T = error("Type $T does not have the Convertible ValueTrait")
+
+unpack(T) = unpack(IR.ValueTrait(T), T)
+unpack(::IR.Convertible, T) = (T, )
+function unpack(::IR.NonConvertible, T)
+    isbitstype(T) || error("Cannot unpack type $T that is not `isbitstype`")
+    fc = fieldcount(T)
+    if (fc == 0)
+        if (sizeof(T) == 0)
+            return []
+        else
+            error("Unable to unpack NonConvertible type $T any further")
+        end
+    end
+    unpacked = []
+    for i in 1:fc
+        ft = fieldtype(T, i)
+        append!(unpacked, unpack(ft))
+    end
+    return unpacked
+end
+
 """
     ==(value1, value2)
 

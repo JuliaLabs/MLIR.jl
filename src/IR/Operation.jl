@@ -286,7 +286,7 @@ function create_operation(
     attributes=nothing,
     result_inference=isnothing(results),
 )
-    GC.@preserve name loc begin
+    op = GC.@preserve name loc begin
         state = Ref(API.mlirOperationStateGet(name, loc))
         if !isnothing(results)
             if result_inference
@@ -324,4 +324,8 @@ function create_operation(
         end
         Operation(op, true)
     end
+    if (!isnothing(currentblock[]))
+        push!(currentblock[], op)
+    end
+    return op
 end

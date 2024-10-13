@@ -1,9 +1,14 @@
 using MLIR
 using Test
 
-include("examples.jl")
-include("executionengine.jl")
-include("ir.jl")
+@testset "$file" for file in (
+    "examples.jl",
+    "executionengine.jl",
+    "ir.jl"
+)
+    @info "testing" file
+    include(file)
+end
 
 @testset "MlirStringRef conversion" begin
     s = "mlir 😄 α γ 🍕"

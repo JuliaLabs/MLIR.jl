@@ -1,7 +1,6 @@
 module builtin
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -81,24 +80,18 @@ operands of arity 0-N.
 %result3 = unrealized_conversion_cast %operand, %operand : !foo.type, !foo.type to !bar.tuple_type<!foo.type, !foo.type>
 ```
 """
-function unrealized_conversion_cast(
-    inputs::Vector{Value}; outputs::Vector{IR.Type}, location=Location()
-)
-    _results = IR.Type[outputs...,]
-    _operands = Value[inputs...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "builtin.unrealized_conversion_cast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function unrealized_conversion_cast(inputs; outputs::Vector{IR.Type}, location=Location())
+    results = IR.Type[outputs..., ]
+    operands = Value[value.(inputs)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "builtin.unrealized_conversion_cast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 

@@ -1,29 +1,24 @@
 module quant
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
 `dcast`
 
 """
-function dcast(arg::Value; result_0::IR.Type, location=Location())
-    _results = IR.Type[result_0,]
-    _operands = Value[arg,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "quant.dcast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function dcast(arg; result_0::IR.Type, location=Location())
+    results = IR.Type[result_0, ]
+    operands = Value[value(arg), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "quant.dcast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -31,22 +26,18 @@ end
 `qcast`
 
 """
-function qcast(arg::Value; result_0::IR.Type, location=Location())
-    _results = IR.Type[result_0,]
-    _operands = Value[arg,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "quant.qcast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function qcast(arg; result_0::IR.Type, location=Location())
+    results = IR.Type[result_0, ]
+    operands = Value[value(arg), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "quant.qcast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -54,22 +45,18 @@ end
 `scast`
 
 """
-function scast(arg::Value; result_0::IR.Type, location=Location())
-    _results = IR.Type[result_0,]
-    _operands = Value[arg,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "quant.scast",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function scast(arg; result_0::IR.Type, location=Location())
+    results = IR.Type[result_0, ]
+    operands = Value[value(arg), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "quant.scast", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 

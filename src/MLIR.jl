@@ -21,5 +21,6 @@ Base.showerror(io::IO, err::MLIRException) = print(io, err.msg)
 include("API/API.jl")
 include("IR/IR.jl")
 include("Dialects/Dialects.jl")
+include("Generate/Generate.jl")
 
 end # module MLIR

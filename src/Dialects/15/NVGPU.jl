@@ -1,7 +1,6 @@
 module nvgpu
 
-import ...IR:
-    IR, NamedAttribute, Value, Location, Block, Region, Attribute, context, IndexType
+import ...IR: IR, NamedAttribute, Value, value, Location, Block, Region, Attribute, context, IndexType
 import ..Dialects: namedattribute, operandsegmentsizes
 
 """
@@ -46,33 +45,20 @@ gpu.device_async_wait %token2
   memref<4x5xf32> to memref<2x7x5xf32, 3>
 ```
 """
-function device_async_copy(
-    dst::Value,
-    dstIndices::Vector{Value},
-    src::Value,
-    srcIndices::Vector{Value};
-    asyncToken::IR.Type,
-    numElements,
-    bypassL1=nothing,
-    location=Location(),
-)
-    _results = IR.Type[asyncToken,]
-    _operands = Value[dst, dstIndices..., src, srcIndices...]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("numElements", numElements),]
-    push!(_attributes, operandsegmentsizes([1, length(dstIndices), 1, length(srcIndices)]))
-    !isnothing(bypassL1) && push!(_attributes, namedattribute("bypassL1", bypassL1))
-
-    return IR.create_operation(
-        "nvgpu.device_async_copy",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function device_async_copy(dst, dstIndices, src, srcIndices; asyncToken::IR.Type, numElements, bypassL1=nothing, location=Location())
+    results = IR.Type[asyncToken, ]
+    operands = Value[value(dst), value.(dstIndices)..., value(src), value.(srcIndices)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("numElements", numElements), ]
+    push!(attributes, operandsegmentsizes([1, length(dstIndices), 1, length(srcIndices), ]))
+    !isnothing(bypassL1) && push!(attributes, namedattribute("bypassL1", bypassL1))
+    
+    IR.create_operation(
+        "nvgpu.device_async_copy", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -96,24 +82,18 @@ Groups are executed in the order they are created.
 %0 = gpu.device_async_create_group
 ```
 """
-function device_async_create_group(
-    inputTokens::Vector{Value}; asyncToken::IR.Type, location=Location()
-)
-    _results = IR.Type[asyncToken,]
-    _operands = Value[inputTokens...,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-
-    return IR.create_operation(
-        "nvgpu.device_async_create_group",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function device_async_create_group(inputTokens; asyncToken::IR.Type, location=Location())
+    results = IR.Type[asyncToken, ]
+    operands = Value[value.(inputTokens)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    
+    IR.create_operation(
+        "nvgpu.device_async_create_group", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -131,23 +111,19 @@ associated with the source token is fully completed.
 gpu.device_async_wait %0
 ```
 """
-function device_async_wait(asyncDependencies::Value; numGroups=nothing, location=Location())
-    _results = IR.Type[]
-    _operands = Value[asyncDependencies,]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[]
-    !isnothing(numGroups) && push!(_attributes, namedattribute("numGroups", numGroups))
-
-    return IR.create_operation(
-        "nvgpu.device_async_wait",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function device_async_wait(asyncDependencies; numGroups=nothing, location=Location())
+    results = IR.Type[]
+    operands = Value[value(asyncDependencies), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[]
+    !isnothing(numGroups) && push!(attributes, namedattribute("numGroups", numGroups))
+    
+    IR.create_operation(
+        "nvgpu.device_async_wait", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -169,31 +145,18 @@ https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#warp-level-mat
   memref<?x?xf16, 3> -> vector<4x2xf16>
 ```
 """
-function ldmatrix(
-    srcMemref::Value,
-    indices::Vector{Value};
-    res::IR.Type,
-    transpose,
-    numTiles,
-    location=Location(),
-)
-    _results = IR.Type[res,]
-    _operands = Value[srcMemref, indices...]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[
-        namedattribute("transpose", transpose), namedattribute("numTiles", numTiles)
-    ]
-
-    return IR.create_operation(
-        "nvgpu.ldmatrix",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function ldmatrix(srcMemref, indices; res::IR.Type, transpose, numTiles, location=Location())
+    results = IR.Type[res, ]
+    operands = Value[value(srcMemref), value.(indices)..., ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("transpose", transpose), namedattribute("numTiles", numTiles), ]
+    
+    IR.create_operation(
+        "nvgpu.ldmatrix", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
@@ -220,29 +183,18 @@ nvgpu.mma.sync (%a, %b, %c) :
   (vector<4x2xf16>, vector<2x2xf16>, vector<2x2xf16>) -> vector<2x2xf16>
 ```
 """
-function mma_sync(
-    matrixA::Value,
-    matrixB::Value,
-    matrixC::Value;
-    res::IR.Type,
-    mmaShape,
-    location=Location(),
-)
-    _results = IR.Type[res,]
-    _operands = Value[matrixA, matrixB, matrixC]
-    _owned_regions = Region[]
-    _successors = Block[]
-    _attributes = NamedAttribute[namedattribute("mmaShape", mmaShape),]
-
-    return IR.create_operation(
-        "nvgpu.mma.sync",
-        location;
-        operands=_operands,
-        owned_regions=_owned_regions,
-        successors=_successors,
-        attributes=_attributes,
-        results=_results,
-        result_inference=false,
+function mma_sync(matrixA, matrixB, matrixC; res::IR.Type, mmaShape, location=Location())
+    results = IR.Type[res, ]
+    operands = Value[value(matrixA), value(matrixB), value(matrixC), ]
+    owned_regions = Region[]
+    successors = Block[]
+    attributes = NamedAttribute[namedattribute("mmaShape", mmaShape), ]
+    
+    IR.create_operation(
+        "nvgpu.mma.sync", location;
+        operands, owned_regions, successors, attributes,
+        results=results,
+        result_inference=false
     )
 end
 
