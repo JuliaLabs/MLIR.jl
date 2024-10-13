@@ -327,7 +327,91 @@ function mlir_dialects(version::VersionNumber)
             ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
             ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
         ]
-
+    elseif v"19" <= version < v"20"
+        [
+            ("acc", "OpenACC.jl", ["OpenACC/OpenACCOps.td"]),
+            ("affine", "Affine.jl", ["Affine/IR/AffineOps.td"]),
+            ("amdgpu", "AMDGPU.jl", ["AMDGPU/IR/AMDGPU.td"]),
+            ("amx", "AMX.jl", ["AMX/AMX.td"]),
+            ("arith", "Arith.jl", ["Arith/IR/ArithOps.td"]),
+            ("arm_neon", "ArmNeon.jl", ["ArmNeon/ArmNeon.td"]),
+            (
+                "arm_sme",
+                "ArmSME.jl",
+                ["ArmSME/IR/ArmSMEOps.td", "ArmSME/IR/ArmSMEIntrinsicOps.td"],
+            ),
+            ("arm_sve", "ArmSVE.jl", ["ArmSVE/IR/ArmSVE.td"]),
+            ("async", "Async.jl", ["Async/IR/AsyncOps.td"]),
+            ("bufferization", "Bufferization.jl", ["Bufferization/IR/BufferizationOps.td"]),
+            ("builtin", "Builtin.jl", ["../IR/BuiltinOps.td"]),
+            ("cf", "ControlFlow.jl", ["ControlFlow/IR/ControlFlowOps.td"]),
+            ("complex", "Complex.jl", ["Complex/IR/ComplexOps.td"]),
+            # ("dlti", "DLTI.jl", ["DLTI/DLTI.td"]), # TODO crashes
+            ("emitc", "EmitC.jl", ["EmitC/IR/EmitC.td"]),
+            ("func", "Func.jl", ["Func/IR/FuncOps.td"]),
+            ("gpu", "GPU.jl", ["GPU/IR/GPUOps.td"]),
+            ("index", "Index.jl", ["Index/IR/IndexOps.td"]),
+            ("irdl", "IRDL.jl", ["IRDL/IR/IRDLOps.td"]),
+            (
+                "linalg",
+                "Linalg.jl",
+                ["Linalg/IR/LinalgOps.td", "Linalg/IR/LinalgStructuredOps.td"],
+            ),
+            (
+                "llvm",
+                "LLVMIR.jl",
+                [
+                    "LLVMIR/LLVMOps.td",
+                    "LLVMIR/LLVMIntrinsicOps.td",
+                    "LLVMIR/NVVMOps.td",
+                    "LLVMIR/ROCDLOps.td",
+                ],
+            ),
+            ("math", "Math.jl", ["Math/IR/MathOps.td"]),
+            ("memref", "MemRef.jl", ["MemRef/IR/MemRefOps.td"]),
+            ("mesh", "Mesh.jl", ["Mesh/IR/MeshOps.td"]),
+            ("ml_program", "MLProgram.jl", ["MLProgram/IR/MLProgramOps.td"]),
+            ("mpi", "MPI.jl", ["MPI/IR/MPIOps.td"]),
+            ("nvgpu", "NVGPU.jl", ["NVGPU/IR/NVGPU.td"]),
+            ("omp", "OpenMP.jl", ["OpenMP/OpenMPOps.td"]),
+            ("pdl_interp", "PDLInterp.jl", ["PDLInterp/IR/PDLInterpOps.td"]),
+            ("pdl", "PDL.jl", ["PDL/IR/PDLOps.td"]),
+            ("polynomial", "Polynomial.jl", ["Polynomial/IR/Polynomial.td"]),
+            # ("ptr", "Ptr.jl", ["Ptr/IR/PtrOps.td"]),
+            ("quant", "Quant.jl", ["Quant/QuantOps.td"]),
+            ("scf", "SCF.jl", ["SCF/IR/SCFOps.td"]),
+            ("shape", "Shape.jl", ["Shape/IR/ShapeOps.td"]),
+            ("sparse_tensor", "SparseTensor.jl", ["SparseTensor/IR/SparseTensorOps.td"]),
+            ("spirv", "SPIRV.jl", ["SPIRV/IR/SPIRVOps.td"]),
+            ("tensor", "Tensor.jl", ["Tensor/IR/TensorOps.td"]),
+            ("tosa", "Tosa.jl", ["Tosa/IR/TosaOps.td"]),
+            (
+                "transform",
+                "Transform.jl",
+                [
+                    "Affine/TransformOps/AffineTransformOps.td",
+                    "Bufferization/TransformOps/BufferizationTransformOps.td",
+                    "Func/TransformOps/FuncTransformOps.td",
+                    "GPU/TransformOps/GPUTransformOps.td",
+                    "Linalg/TransformOps/LinalgMatchOps.td",
+                    "Linalg/TransformOps/LinalgTransformOps.td",
+                    "MemRef/TransformOps/MemRefTransformOps.td",
+                    "NVGPU/TransformOps/NVGPUTransformOps.td",
+                    "SCF/TransformOps/SCFTransformOps.td",
+                    "SparseTensor/TransformOps/SparseTensorTransformOps.td",
+                    "Tensor/TransformOps/TensorTransformOps.td",
+                    "Transform/IR/TransformOps.td",
+                    "Transform/DebugExtension/DebugExtensionOps.td",
+                    "Transform/LoopExtension/LoopExtensionOps.td",
+                    "Transform/PDLExtension/PDLExtensionOps.td",
+                    "Vector/TransformOps/VectorTransformOps.td",
+                ],
+            ),
+            ("ub", "UB.jl", ["UB/IR/UBOps.td"]),
+            ("vector", "Vector.jl", ["Vector/IR/VectorOps.td"]),
+            ("x86vector", "X86Vector.jl", ["X86Vector/X86Vector.td"]),
+            ("xegpu", "XeGPU.jl", ["XeGPU/IR/XeGPUOps.td"]),
+        ]
     else
         error("Unsupported MLIR version: $version")
     end
@@ -343,6 +427,7 @@ julia_llvm = [
     (v"1.11", v"16.0.6+2"),
     (v"1.12", v"17.0.6+3"),
     (v"1.12", v"18.1.7+2"),
+    (v"1.12", v"19.1.1+0"),
 ]
 options = load_options(joinpath(@__DIR__, "wrap.toml"))
 
