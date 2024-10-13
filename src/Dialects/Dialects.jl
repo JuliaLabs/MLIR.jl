@@ -47,7 +47,7 @@ begin
 
             @eval mod function $op(args...; kwargs...)
                 version = MLIR_VERSION[]
-                if !(MLIR_VERSION_MIN <= version <= MLIR_VERSION_MAX)
+                if !($MLIR_VERSION_MIN <= version <= $MLIR_VERSION_MAX)
                     error("Unsupported MLIR version $version")
                 end
 
