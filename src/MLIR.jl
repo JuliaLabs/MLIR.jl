@@ -9,6 +9,9 @@ const MLIR_VERSION = ScopedValue(
 )
 const MLIR_C_PATH = ScopedValue(@load_preference("MLIR_C_PATH", MLIR_jll.mlir_c))
 
+const MLIR_VERSION_MIN = v"15"
+const MLIR_VERSION_MAX = v"19"
+
 struct MLIRException <: Exception
     msg::String
 end

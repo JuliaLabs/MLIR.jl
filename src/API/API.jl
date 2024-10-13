@@ -18,14 +18,14 @@ end
 
 # generate version-less API functions
 begin
-    local ops = mapreduce(∪, [v14, v15, v16, v17, v18]) do mod
+    local ops = mapreduce(∪, [v14, v15, v16, v17, v18, v19]) do mod
         filter(names(mod; all=true)) do name
             name ∉ [nameof(mod), :eval, :include] && !startswith(string(name), '#')
         end
     end
 
     for op in ops
-        container_mods = filter([v14, v15, v16, v17, v18]) do mod
+        container_mods = filter([v14, v15, v16, v17, v18, v19]) do mod
             op in names(mod; all=true)
         end
         container_mods = map(container_mods) do mod
@@ -34,7 +34,7 @@ begin
 
         @eval function $op(args...; kwargs...)
             version = MLIR_VERSION[]
-            if v"14" > version <= v"17"
+            if !(MLIR_VERSION_MIN <= version <= MLIR_VERSION_MAX)
                 error("Unsupported MLIR version $version")
             end
 
